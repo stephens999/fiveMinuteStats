@@ -6,10 +6,11 @@ title: "Home"
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-## About
+## Tutorials
 
-*  [Collaborating on GitHub](plan.html)
+*  [Making a project site](tutorial.html) ([2015-12-12 lab meeting slides](../docs/repo-setup-tutorial-stephens-lab-2015-12-03.pdf))
 
-## Analysis
+
+## Document anaysis using Rmarkdonw: An example
 
 *  [Use PCA to visualize some single-cell data](single-cell-pca.html)
