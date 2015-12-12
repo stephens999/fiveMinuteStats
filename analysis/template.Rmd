@@ -1,0 +1,29 @@
+---
+title: "Untitled"
+author: "First Last"
+date: YYYY-MM-DD
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+This is a template for writing reports with R Markdown.
+
+## Section title
+
+You can create a new file from the template using the command `cp`.
+
+```bash
+cp analysis/template.Rmd analysis/newfile.Rmd
+```
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

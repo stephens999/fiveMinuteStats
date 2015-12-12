@@ -1,0 +1,15 @@
+---
+title: "Home"
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+## About
+
+*  [Collaborating on GitHub](plan.html)
+
+## Analysis
+
+*  [Batch-effect correction](noisy-gene.html)

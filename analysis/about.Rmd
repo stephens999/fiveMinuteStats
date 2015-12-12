@@ -1,0 +1,11 @@
+---
+title: "About"
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+[Joyce Hsiao][github-io] is a postdoctoral fellow in the Department of Human Genetics at the University of Chicago.
+
+[github-io]: http://jhsiao999.github.io/

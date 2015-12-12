@@ -1,0 +1,22 @@
+---
+title: "License"
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+## Code
+
+The code is licensed under the [GPLv3][code-license].
+We use multiple [Bioconductor][bioc] packages which are GPL'd.
+
+[bioc]: https://www.bioconductor.org/about
+
+## Site
+
+The text is currently licensed under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License][site-license].
+A more permissive license will be applied upon future publication of the results.
+
+[code-license]: https://www.gnu.org/licenses/gpl-3.0.txt
+[site-license]: https://creativecommons.org/licenses/by-nc-nd/4.0/

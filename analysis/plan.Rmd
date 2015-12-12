@@ -1,0 +1,18 @@
+---
+title: "Collaborating on GitHub"
+author: "Joyce Hsiao"
+date: 2015-12-03
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+This is an example site for collaborating using GitHub and Rmarkdown. 
+
+I also created a tutorial that was preseted at Stephens Lab weekly meeting. The tutorial will be posted on the site soon!!
+
