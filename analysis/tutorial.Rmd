@@ -75,7 +75,7 @@ git push origin gh-pages
 
 Note that since the site is kept under the anaysis folder, your site address is under the analysis directory.
 
-*https://jhsiao999.github.io/ashlar/analysis*
+*https://jhsiao999.github.io/ashlar-trial/analysis*
 
 This two-branch workflow is set up to keep the source files (such as *Rmds*) separate from the *html* pages and the output figures. It allows me to keep clean repositories: master for the source, and gh-pages only for the website. 
 
