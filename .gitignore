@@ -1,8 +1,8 @@
 .Rproj.user
 .R*
-analysis/*html
-analysis/*png
-analysis/*pdf
+*html
+*png
+*pdf
 data
 analysis/rda
 
