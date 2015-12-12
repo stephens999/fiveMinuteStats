@@ -13,4 +13,5 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 AutoAppendNewline: Yes
-StripTrailingWhiteSpace: Yes
+
+BuildType: Makefile

@@ -1,7 +1,7 @@
 ---
-title: "Untitled"
-author: "First Last"
-date: YYYY-MM-DD
+title: "Use PCA to visualize single-cell data"
+author: "Joyce Hsiao"
+date: 2015-12-12
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -12,15 +12,64 @@ date: YYYY-MM-DD
 source("chunk-options.R")
 ```
 
-This is a template for writing reports with R Markdown.
+## Objectives
 
-## Section title
+We import data collected in [singleCellSeq][] and visualize the data using principal component analysis. The PCA code was created by [John Blischak][JB] and are stored in *ashlar/codes*. 
 
-You can create a new file from the template using the command `cp`.
+[singleCellSeq]: http://jdblischak.github.io/singleCellSeq/analysis
+[JB]: http://jdblischak.github.io
 
-```bash
-cp analysis/template.Rmd analysis/newfile.Rmd
+PCA visualization was performed to inspect the first two major sources of variation. Do cells come from different individuals share similar variation? Do cells come from different batches share similar variation? 
+
+
+## Prepare data
+
+Import gene by sample (cell) matrix. Each column consists of molecule counts of a single cell. 
+
+```{r}
+molecule_final <- read.table("../data/molecules-final.txt",
+                             header = TRUE, 
+                             sep = "\t",
+                             stringsAsFactors = FALSE,
+                             row.names = 1)
 ```
+
+Import metadata information. This annotates for every cell the individual (cell line) labels, replicate labels, etc. 
+
+```{r}
+annotation_filter <- read.table("../data/annotation-filter.txt",
+                                header = TRUE,
+                                sep = "\t",
+                                stringsAsFactors = FALSE)
+```
+
+
+## Making PCA plots
+
+Source PCA functions.
+
+```{r}
+source("../code/functions.R")
+```
+
+Run PCA.
+
+```{r}
+pca_results <- run_pca(as.matrix(molecule_final))
+```
+
+Visualize PCA results.
+
+```{r}
+plot_pca(pca_results$PCs,
+         explained = pca_results$explained,
+         metadata = annotation_filter,
+         color = "individual",
+         shape = "batch") +
+  labs(title = "Molecules (log2 cpm) for single cells")
+```
+
+
 
 ## Session information
 

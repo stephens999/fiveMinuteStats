@@ -1,7 +1,7 @@
 ---
 title: "Collaborating on GitHub"
 author: "Joyce Hsiao"
-date: 2015-12-03
+date: 2015-12-12
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -12,7 +12,9 @@ date: 2015-12-03
 source("chunk-options.R")
 ```
 
-This is an example site for collaborating using GitHub and Rmarkdown. 
+Here's an example workflow for collaborating on GitHub. 
 
-I also created a tutorial that was preseted at Stephens Lab weekly meeting. The tutorial will be posted on the site soon!!
+You can find some [tips](../docs/repo-setup-tutorial-stephens-lab-2015-12-03.pdf) in this presentation I gave on 12/3 at the [Stephens Lab][lab] meeting. 
+
+[lab]: http://stephenslab.uchicago.edu/
 

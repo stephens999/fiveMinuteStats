@@ -8,10 +8,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
-<meta name="author" content="First Last" />
+<meta name="author" content="Joyce Hsiao" />
 
+<meta name="date" content="2015-12-12" />
 
-<title>Untitled</title>
+<title>Use PCA to visualize single-cell data</title>
 
 <script src="libs/jquery-1.11.0/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -118,25 +119,62 @@ img {
 </div><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">Untitled</h1>
-<h4 class="author"><em>First Last</em></h4>
-<h4 class="date"><em>YYYY-MM-DD</em></h4>
+<h1 class="title">Use PCA to visualize single-cell data</h1>
+<h4 class="author"><em>Joyce Hsiao</em></h4>
+<h4 class="date"><em>2015-12-12</em></h4>
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#section-title">Section title</a></li>
+<li><a href="#objectives">Objectives</a></li>
+<li><a href="#prepare-data">Prepare data</a></li>
+<li><a href="#making-pca-plots">Making PCA plots</a></li>
 <li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
 <p><strong>Last updated:</strong> 2015-12-12</p>
-<p><strong>Code version:</strong> 55aa8c7328b286101acf500f3f8f404cda36a2d4</p>
-<p>This is a template for writing reports with R Markdown.</p>
-<div id="section-title" class="section level2">
-<h2>Section title</h2>
-<p>You can create a new file from the template using the command <code>cp</code>.</p>
-<pre class="bash"><code>cp analysis/template.Rmd analysis/newfile.Rmd</code></pre>
+<p><strong>Code version:</strong> ae0de0480ecf624a63d8246b604c6ee26f7699ad</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<p>We import data collected in <a href="http://jdblischak.github.io/singleCellSeq/analysis">singleCellSeq</a> and visualize the data using principal component analysis. The PCA code was created by <a href="http://jdblischak.github.io">John Blischak</a> and are stored in <em>ashlar/codes</em>.</p>
+<p>PCA visualization was performed to inspect the first two major sources of variation. Do cells come from different individuals share similar variation? Do cells come from different batches share similar variation?</p>
+</div>
+<div id="prepare-data" class="section level2">
+<h2>Prepare data</h2>
+<p>Import gene by sample (cell) matrix. Each column consists of molecule counts of a single cell.</p>
+<pre class="r"><code>molecule_final &lt;- read.table(&quot;../data/molecules-final.txt&quot;,
+                             header = TRUE, 
+                             sep = &quot;\t&quot;,
+                             stringsAsFactors = FALSE,
+                             row.names = 1)</code></pre>
+<p>Import metadata information. This annotates for every cell the individual (cell line) labels, replicate labels, etc.</p>
+<pre class="r"><code>annotation_filter &lt;- read.table(&quot;../data/annotation-filter.txt&quot;,
+                                header = TRUE,
+                                sep = &quot;\t&quot;,
+                                stringsAsFactors = FALSE)</code></pre>
+</div>
+<div id="making-pca-plots" class="section level2">
+<h2>Making PCA plots</h2>
+<p>Source PCA functions.</p>
+<pre class="r"><code>source(&quot;../code/functions.R&quot;)</code></pre>
+<p>Run PCA.</p>
+<pre class="r"><code>pca_results &lt;- run_pca(as.matrix(molecule_final))</code></pre>
+<p>Visualize PCA results.</p>
+<pre class="r"><code>plot_pca(pca_results$PCs,
+         explained = pca_results$explained,
+         metadata = annotation_filter,
+         color = &quot;individual&quot;,
+         shape = &quot;batch&quot;) +
+  labs(title = &quot;Molecules (log2 cpm) for single cells&quot;)</code></pre>
+<pre><code>Warning: The shape palette can deal with a maximum of 6 discrete values
+because more than 6 becomes difficult to discriminate; you have 8.
+Consider specifying shapes manually if you must have them.</code></pre>
+<pre><code>Warning: Removed 147 rows containing missing values (geom_point).</code></pre>
+<pre><code>Warning: The shape palette can deal with a maximum of 6 discrete values
+because more than 6 becomes difficult to discriminate; you have 8.
+Consider specifying shapes manually if you must have them.</code></pre>
+<p><img src="figure/single-cell-pca.Rmd/unnamed-chunk-5-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -152,12 +190,15 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] knitr_1.11
+[1] ggplot2_1.0.1 testit_0.4    knitr_1.11   
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    formatR_1.2.1   tools_3.2.1     htmltools_0.2.6
- [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.8.1 stringr_1.0.0  
- [9] digest_0.6.8    evaluate_0.8   </code></pre>
+ [1] Rcpp_0.12.2      digest_0.6.8     MASS_7.3-45      grid_3.2.1      
+ [5] plyr_1.8.3       gtable_0.1.2     formatR_1.2.1    magrittr_1.5    
+ [9] scales_0.3.0     evaluate_0.8     stringi_1.0-1    reshape2_1.4.1  
+[13] rmarkdown_0.8.1  labeling_0.3     proto_0.3-10     tools_3.2.1     
+[17] stringr_1.0.0    munsell_0.4.2    yaml_2.1.13      colorspace_1.2-6
+[21] htmltools_0.2.6 </code></pre>
 </div>
 
 

@@ -1,0 +1,17 @@
+{
+    "contents" : "---\ntitle: \"Collaborating on GitHub\"\nauthor: \"Joyce Hsiao\"\ndate: 2015-12-12\n---\n\n**Last updated:** `r Sys.Date()`\n\n**Code version:** `r system(\"git log -1 --format='%H'\", intern = TRUE)`\n\n```{r chunk-options, include=FALSE}\nsource(\"chunk-options.R\")\n```\n\nHere's an example workflow for collaborating on GitHub. \n\nYou can find some [tips](../docs/repo-setup-tutorial-stephens-lab-2015-12-03.pdf) in this presentation I gave on 12/3 at the [Stephens Lab][lab] meeting. \n\n[lab]: http://stephenslab.uchicago.edu/\n\n",
+    "created" : 1449905146311.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4051655701",
+    "id" : "9FDE0E6C",
+    "lastKnownWriteTime" : 1449905581,
+    "path" : "~/Dropbox/GitHub/ashlar/analysis/plan.Rmd",
+    "project_path" : "plan.Rmd",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}
