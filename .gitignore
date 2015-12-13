@@ -1,6 +1,7 @@
 .DS_Store
 .Rproj.user
 .R*
+.Rhistory
 *html
 *png
 *pdf
