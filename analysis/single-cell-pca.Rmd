@@ -1,7 +1,7 @@
 ---
 title: "Use PCA to visualize single-cell data"
 author: "Joyce Hsiao"
-date: 2015-12-12
+date: 2015-12-18
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -14,12 +14,14 @@ source("chunk-options.R")
 
 ## Objectives
 
-We import data collected in [singleCellSeq][] and visualize the data using principal component analysis. The PCA code was created by [John Blischak][JB] and are stored in *ashlar/codes*. 
+I imported a subset of the [singleCellSeq][] data and performed a principal component analysis to explore visually the similarity between batches in transcriptional expression profile. The data set includes 225 induced pluripotent stem cells (iPSCs) derived from a Yoruba cell line (NA19239) and a subsample of 1,000 genes). The cells were collected from the same cell culture and processed in three different batches. 
+
+I used the PCA functions created by [John Blischak][JB] (*ashlar/codes*) to inspect the first two major sources of variation in expression profiles. I was interested in learning: Do cells collected in different batches share similar variation? A batch  
+
 
 [singleCellSeq]: http://jdblischak.github.io/singleCellSeq/analysis
 [JB]: http://jdblischak.github.io
 
-PCA visualization was performed to inspect the first two major sources of variation. Do cells come from different individuals share similar variation? Do cells come from different batches share similar variation? 
 
 
 ## Prepare data
@@ -27,20 +29,20 @@ PCA visualization was performed to inspect the first two major sources of variat
 Import gene by sample (cell) matrix. Each column consists of molecule counts of a single cell. 
 
 ```{r}
-molecule_final <- read.table("../data/molecules-final.txt",
-                             header = TRUE, 
-                             sep = "\t",
-                             stringsAsFactors = FALSE,
-                             row.names = 1)
+molecules_filter_subsample <- read.table("../data/molecules-filter-subsample.txt",
+                                         header = TRUE, 
+                                         stringsAsFactors = FALSE)
+dim(molecules_filter_subsample)
 ```
 
 Import metadata information. This annotates for every cell the individual (cell line) labels, replicate labels, etc. 
 
 ```{r}
-annotation_filter <- read.table("../data/annotation-filter.txt",
-                                header = TRUE,
-                                sep = "\t",
-                                stringsAsFactors = FALSE)
+annotation_filter_subsample <- read.table("../data/annotation-filter-subsample.txt",
+                                          header = TRUE,
+                                          stringsAsFactors = FALSE)
+head(annotation_filter_subsample)
+dim(annotation_filter_subsample)
 ```
 
 
@@ -55,7 +57,7 @@ source("../code/functions.R")
 Run PCA.
 
 ```{r}
-pca_results <- run_pca(as.matrix(molecule_final))
+pca_results <- run_pca(as.matrix(molecules_filter_subsample))
 ```
 
 Visualize PCA results.
@@ -63,10 +65,9 @@ Visualize PCA results.
 ```{r}
 plot_pca(pca_results$PCs,
          explained = pca_results$explained,
-         metadata = annotation_filter,
-         color = "individual",
-         shape = "batch") +
-  labs(title = "Molecules (log2 cpm) for single cells")
+         metadata = annotation_filter_subsample,
+         color = "batch") +
+  labs(title = "Single-cell transcript counts")
 ```
 
 
