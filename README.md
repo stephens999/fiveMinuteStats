@@ -1,6 +1,23 @@
-# ashlar: A GitHub workflow template
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-[*ashlar*](http://github.com/jhsiao999/ashlar) repository is a workflow template created for [Stephens Lab](http://stephenslab.uchicago.edu/) at the University of Chicago. 
+- [ashlar: A workflow template for statistical computing projects](#ashlar-a-workflow-template-for-statistical-computing-projects)
+    - [Step-by-step guide](#step-by-step-guide)
+    - [Resources(#resources)](#resourcesresources)
+  - [](#)
+    - [Cloning [*ashlar*](http://github.com/jhsiao999/ashlar])](#cloning-ashlarhttpgithubcomjhsiao999ashlar)
+  - [](#-1)
+    - [Reset git remote directory](#reset-git-remote-directory)
+  - [](#-2)
+    - [Producing and publishing the website <a id = 'publish-website'></a>](#producing-and-publishing-the-website-a-id--publish-websitea)
+    - [Resources <a id = 'resources'></a>](#resources-a-id--resourcesa)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# ashlar: A workflow template for statistical computing projects
+
+[*ashlar*](http://github.com/jhsiao999/ashlar) repository is a workflow template created foe pr [Stephens Lab](http://stephenslab.uchicago.edu/) at the University of Chicago. [*ashlar*](http://github.com/jhsiao999/ashlar) 
 
 ### Step-by-step guide
 	* [Cloning ashlar](#cloning)
@@ -9,8 +26,10 @@
 
 ### Resources(#resources)
 
+
 ---
-### Cloning [*ashlar*](http://github.com/jhsiao999/ashlar]) <a id = 'cloning'></a>
+
+### Cloning [*ashlar*](http://github.com/jhsiao999/ashlar]) 
 
 [*ashlar*](http://github.com/jhsiao999/ashlar) is set up to mimic the workflow implemented in [*singleCellSeq*](https://github.com/jdblischak/singleCellSeq). Both projects adopt the popular [*rmarkdown*](http://rmarkdown.rstudio.com/) website layout.
 
@@ -22,7 +41,7 @@ git clone https://github.com/jhsiao999/ashlar.git ashlar-trial
 
 ---
 
-### Reset git remote directory <a id = 'reset-git'></a>
+### Reset git remote directory 
 
 Remote directory of the clone is still  [*ashlar*][http://github.com/jhsiao999/ashlar]. Make sure you change the name of the remote repository.
 
