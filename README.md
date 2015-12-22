@@ -2,19 +2,19 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [](#)
 - [ashlar: A workflow template for statistical computing projects](#ashlar-a-workflow-template-for-statistical-computing-projects)
-    - [Step-by-step guide](#step-by-step-guide)
-    - [Resources(#resources)](#resourcesresources)
-  - [](#)
-    - [Cloning [*ashlar*](http://github.com/jhsiao999/ashlar])](#cloning-ashlarhttpgithubcomjhsiao999ashlar)
-  - [](#-1)
-    - [Reset git remote directory](#reset-git-remote-directory)
-  - [](#-2)
-    - [Producing and publishing the website <a id = 'publish-website'></a>](#producing-and-publishing-the-website-a-id--publish-websitea)
-    - [Resources <a id = 'resources'></a>](#resources-a-id--resourcesa)
+- [](#-1)
+- [Making your own ashlar](#making-your-own-ashlar)
+  - [Cloning [*ashlar*](http://github.com/jhsiao999/ashlar])](#cloning-ashlarhttpgithubcomjhsiao999ashlar)
+  - [Reset git remote directory](#reset-git-remote-directory)
+  - [Producing and publishing the website](#producing-and-publishing-the-website)
+    - [Option 1: All content for my eyes only](#option-1-all-content-for-my-eyes-only)
+    - [Option 2: Publish it! Keep a two-branch workflow.](#option-2-publish-it-keep-a-two-branch-workflow)
+- [](#-2)
+- [Resources](#resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 
 
 ---
