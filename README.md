@@ -15,21 +15,21 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# ashlar: A workflow template for statistical computing projects
-
-[*ashlar*](http://github.com/jhsiao999/ashlar) repository is a workflow template created foe pr [Stephens Lab](http://stephenslab.uchicago.edu/) at the University of Chicago. [*ashlar*](http://github.com/jhsiao999/ashlar) 
-
-### Step-by-step guide
-	* [Cloning ashlar](#cloning)
-	* [Resetting git remote directory](#reset-git)
-	* [Producing and publishing website](#publish-website)
-
-### Resources(#resources)
 
 
 ---
 
-### Cloning [*ashlar*](http://github.com/jhsiao999/ashlar]) 
+# ashlar: A workflow template for statistical computing projects
+
+[*ashlar*](http://github.com/jhsiao999/ashlar) repository is a workflow template created foe pr [Stephens Lab](http://stephenslab.uchicago.edu/) at the University of Chicago. [*ashlar*](http://github.com/jhsiao999/ashlar) 
+
+
+---
+
+# Making your own ashlar
+
+
+## Cloning [*ashlar*](http://github.com/jhsiao999/ashlar]) 
 
 [*ashlar*](http://github.com/jhsiao999/ashlar) is set up to mimic the workflow implemented in [*singleCellSeq*](https://github.com/jdblischak/singleCellSeq). Both projects adopt the popular [*rmarkdown*](http://rmarkdown.rstudio.com/) website layout.
 
@@ -39,9 +39,8 @@ I suggest cloning into a new folder in order to distinguish your work from the e
 git clone https://github.com/jhsiao999/ashlar.git ashlar-trial
 ```
 
----
 
-### Reset git remote directory 
+## Reset git remote directory 
 
 Remote directory of the clone is still  [*ashlar*][http://github.com/jhsiao999/ashlar]. Make sure you change the name of the remote repository.
 
@@ -58,18 +57,18 @@ git commit -m "first commit"
 git push origin master
 ```
 
----
 
-### Producing and publishing the website <a id = 'publish-website'></a>
 
-Option 1: All content for my eyes only
+## Producing and publishing the website 
+
+### Option 1: All content for my eyes only
 
 Open index.html. This is the homepage of your unpubished website. You are DONE!
 
 If you choose this option, you only have the master branch. The default of the master branch is to not push *htmls, pngs, pdfs, etc*, so edit the *.gitignore* to add these files when updating the remote directory. 
 
 
-Option 2: Publish it! Keep a two-branch workflow.
+### Option 2: Publish it! Keep a two-branch workflow.
 
 Create a branch named gh-pages. GitHub then publishes the content for you.
 
@@ -130,8 +129,9 @@ git push origin gh-pages
 
 
 
+---
 
-### Resources <a id = 'resources'></a>
+## Resources 
 
 * [John Blischak's tips on worflow management.][contrib]
 
