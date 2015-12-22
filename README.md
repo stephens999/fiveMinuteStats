@@ -17,34 +17,34 @@
 
 ## ashlar: A workflow template for statistical computing projects
 
-[*ashlar*](http://github.com/jhsiao999/ashlar) repository is a workflow template created foe pr [Stephens Lab](http://stephenslab.uchicago.edu/) at the University of Chicago. [*ashlar*](http://github.com/jhsiao999/ashlar) 
+[*ashlar*](http://github.com/jhsiao999/ashlar) is our attempt to streamline workflow and to do reproducible research here at the University of Chicago [Stephens Lab](http://stephenslab.uchicago.edu/). 
 
 
 
 ## Making your own ashlar
 
-
 ### Cloning [*ashlar*](http://github.com/jhsiao999/ashlar) 
 
-[*ashlar*](http://github.com/jhsiao999/ashlar) is set up to mimic the workflow implemented in [*singleCellSeq*](https://github.com/jdblischak/singleCellSeq). Both projects adopt the popular [*rmarkdown*](http://rmarkdown.rstudio.com/) website layout.
+[*ashlar*](http://github.com/jhsiao999/ashlar) is inspired by [*singleCellSeq*](https://github.com/jdblischak/singleCellSeq) - a collaborative project between biologists, bioinformaticians and statisticians that aim at exploring and understanding batch effects in single-cell RNA sequencing data. Both projects adopt the popular [*rmarkdown*](http://rmarkdown.rstudio.com/) website layout.
 
-I suggest cloning into a new folder in order to distinguish your work from the example repository.
+I suggest cloning into a new folder to distinguish your work from the example repository.
 
 ```
 git clone https://github.com/jhsiao999/ashlar.git ashlar-trial
 ```
 
 
+
 ### Reset git remote directory 
 
-Remote directory of the clone is still  [*ashlar*](http://github.com/jhsiao999/ashlar). Make sure you change the name of the remote repository.
+At this point, your remote directory of the clone is still [*ashlar*](http://github.com/jhsiao999/ashlar). Make sure you change the name of the remote repository to match your local directory.
 
 ```
 git remote rm origin
 git remote add origin https://github.com/jhsiao999/ashlar-trial.git
 ```
 
-Create a repository at *github.com*. Then, push content of the entire directory to the *master* branch. We use *git add -f* option to force add *html* files to the master branch, such as *index.html* for table of content. The default *.gitignore* in [*ashlar*](http://github.com/jhsiao999/ashlar) ignores *htmls*. 
+Create a repository at [*github.com*](http://github.com). Then, push contents of the entire directory to the *master* branch. We use *git add -f* option to force add *html* files to the master branch, such as *index.html* for table of content. The default *.gitignore* in [*ashlar*](http://github.com/jhsiao999/ashlar) ignores *htmls*. 
 
 ```
 git add -f --all
@@ -56,16 +56,16 @@ git push origin master
 
 ### Producing and publishing the website 
 
-#### Option 1: All content for my eyes only
+#### Option 1: All contents for my eyes only
 
 Open index.html. This is the homepage of your unpubished website. You are DONE!
 
-If you choose this option, you only have the master branch. The default of the master branch is to not push *htmls, pngs, pdfs, etc*, so edit the *.gitignore* to add these files when updating the remote directory. 
+If you choose this option, you only have the master branch. The *gitignore* is set up to not to push *htmls, pngs, pdfs, etc* to the remote *master* brach, so edit the *.gitignore* to add these files if you want to add them to the remote directory. 
 
 
 #### Option 2: Publish it! Keep a two-branch workflow.
 
-Create a branch named gh-pages. GitHub then publishes the content for you.
+Create a branch named gh-pages. GitHub turns the htmls in the gh-pages branch into a website. You now have a project website for free. This feature makes all contents in the gh-pages public, even if the master branch is private. 
 
 ```
 git checkout -b gh-pages 
@@ -74,7 +74,7 @@ git commit -m "Build site"
 git push origin gh-pages
 ```
 
-Note that since the site is kept under the anaysis folder, your site address is under the analysis directory.
+The site address is udner the analysis directory since the site contents are kept under the analysis directory.
 
 *https://jhsiao999.github.io/ashlar-trial/analysis*
 
