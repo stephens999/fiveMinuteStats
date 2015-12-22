@@ -2,34 +2,29 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [](#)
 - [ashlar: A workflow template for statistical computing projects](#ashlar-a-workflow-template-for-statistical-computing-projects)
-- [](#-1)
 - [Making your own ashlar](#making-your-own-ashlar)
-  - [Cloning [*ashlar*](http://github.com/jhsiao999/ashlar])](#cloning-ashlarhttpgithubcomjhsiao999ashlar)
+  - [Cloning [*ashlar*](http://github.com/jhsiao999/ashlar)](#cloning-ashlarhttpgithubcomjhsiao999ashlar)
   - [Reset git remote directory](#reset-git-remote-directory)
   - [Producing and publishing the website](#producing-and-publishing-the-website)
     - [Option 1: All content for my eyes only](#option-1-all-content-for-my-eyes-only)
     - [Option 2: Publish it! Keep a two-branch workflow.](#option-2-publish-it-keep-a-two-branch-workflow)
-- [](#-2)
 - [Resources](#resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
----
 
 ## ashlar: A workflow template for statistical computing projects
 
 [*ashlar*](http://github.com/jhsiao999/ashlar) repository is a workflow template created foe pr [Stephens Lab](http://stephenslab.uchicago.edu/) at the University of Chicago. [*ashlar*](http://github.com/jhsiao999/ashlar) 
 
 
----
 
 ## Making your own ashlar
 
 
-### Cloning [*ashlar*](http://github.com/jhsiao999/ashlar]) 
+### Cloning [*ashlar*](http://github.com/jhsiao999/ashlar) 
 
 [*ashlar*](http://github.com/jhsiao999/ashlar) is set up to mimic the workflow implemented in [*singleCellSeq*](https://github.com/jdblischak/singleCellSeq). Both projects adopt the popular [*rmarkdown*](http://rmarkdown.rstudio.com/) website layout.
 
@@ -42,14 +37,14 @@ git clone https://github.com/jhsiao999/ashlar.git ashlar-trial
 
 ### Reset git remote directory 
 
-Remote directory of the clone is still  [*ashlar*][http://github.com/jhsiao999/ashlar]. Make sure you change the name of the remote repository.
+Remote directory of the clone is still  [*ashlar*](http://github.com/jhsiao999/ashlar). Make sure you change the name of the remote repository.
 
 ```
 git remote rm origin
 git remote add origin https://github.com/jhsiao999/ashlar-trial.git
 ```
 
-Create a repository at *github.com*. Then, push content of the entire directory to the *master* branch. We use *git add -f* option to force add *html* files to the master branch, such as *index.html* for table of content. The default *.gitignore* in [*ashlar*][http://github.com/jhsiao999/ashlar] ignores *htmls*. 
+Create a repository at *github.com*. Then, push content of the entire directory to the *master* branch. We use *git add -f* option to force add *html* files to the master branch, such as *index.html* for table of content. The default *.gitignore* in [*ashlar*](http://github.com/jhsiao999/ashlar) ignores *htmls*. 
 
 ```
 git add -f --all
@@ -128,8 +123,6 @@ git push origin gh-pages
 ```
 
 
-
----
 
 ## Resources 
 
