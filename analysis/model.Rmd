@@ -1,0 +1,88 @@
+---
+title: "Statistical Models"
+author: "Matthew Stephens"
+date: 2016-01-04
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+
+# Pre-requisites
+
+To understand this document you should be familiar with basic concepts from probability, including independence and the concept of a probability distribution.
+
+# Overview
+
+Statistical models play a key role in drawing statistical inferences from data. Models have a wide range of applications. For example, they are used in extrapolating from a sample to a population,
+in making scientific inferences about the underlying process that generated a particular data set, and in classifying or clustering
+observations into groups.
+
+# Definition
+
+In the simplest case, a statistical model for a data set $X$ is simply a *probability distribution on a set of possible values that could have been observed for X*.  We might refer to such a model as a "simple model". 
+
+More generally, the term model is also used to refer to a *collection* of such distributions, not just a single distribution. We might refer to such a model as a "compound model", to distinguish it from a simple model, although it is common practice to just use the term "model" for both.
+
+The set of possible values that could have been observed for $X$ is referred to as the *sample space* of the model, and here we will denote it $S$. Specifying an appropriate sample space for a given data set is often straightforward based on the nature of the data, and 
+the way that they were generated or collected.
+
+Usually, in a compound model, the collection of distributions 
+is naturally indexed by some "parameter", often denoted $\theta$, which lives in some "parameter space", often denoted $\Theta$. See examples below for illustration.
+
+
+# Examples
+
+## Toy Example: coin tossing
+
+Suppose we obtain data by tossing a coin 3 times and recording the outcomes. The possible outcomes are S={HHH,HHT,HTH,HTT,THH,THT,TTH,TTT} where H denotes the coin landing heads and T denotes tails (so, for example, HTH denotes the outcome where the first toss lands heads, the second lands tails, and the third lands heads).
+
+One simple model would be that all 8 outcomes are equally likely.
+That is, each outcome has probability 1/8. This model corresponds to the assumption that the tosses are independent, and the coin has probability 0.5 of landing heads on each toss.
+Thus the model might be described in words as "the coin is fair, and the tosses independent".
+
+A compound model would arise if we assume that the tosses are independent, but allow that the coin may be "biased", landing heads with some probability $p$. Each value of $p$ determines a distribution $f_p$ on $S$, and so the set of distributions ${f_p: p \in [0,1]}$ 
+defines a (compound) model, with parameter $p \in [0,1]$. 
+This model might be described in words as "the tosses are independent".
+
+A more complex compound model might include distributions that allow for dependence between tosses. In the context of tossing a coin allowing for such dependence might be unnecessary. However, if we replace the coin toss with some other binary phenomenon - for example, whether or not it rains in a particular location each day -
+and perhaps increase the number of observations to something more than three, then allowing for dependence could be crucial.
+
+## More Interesting Examples
+
+to follow.
+
+# Some Common Models
+
+There are a huge variety of probability distributions that are 
+used for statistical modelling. Here is a non-exhaustive list of some commonly-used ones. Maybe you have come across some of them already.
+
+- Simple iid (independent and identically distributed) sampling from common distributions (normal, Poisson, Binomial, Exponential, Gamma, ...)
+- Linear regression
+- Generalized linear models
+- Multivariate normal, Gaussian graphical models and Gaussian processes
+- Mixture models
+- Markov chains and Markov processes
+- Hidden Markov models
+- Poisson processes
+- Autoregressive processes
+
+
+# Exercise
+
+Identify examples of practical applications of statistical models (e.g. in scientific papers). Identify the sample space, say whether the model is simple or compound. For compound models identify the parameter and parameter space, if any.
+
+# Further Reading
+
+to follow
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

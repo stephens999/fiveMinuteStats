@@ -12,15 +12,15 @@ date: YYYY-MM-DD
 source("chunk-options.R")
 ```
 
-This is a template for writing reports with R Markdown.
+## Pre-requisites
 
-## Section title
+include the most complex concepts required to understand the material.
 
-You can create a new file from the template using the command `cp`.
+## Overview
 
-```bash
-cp analysis/template.Rmd analysis/newfile.Rmd
-```
+## Definition
+
+## Examples
 
 ## Session information
 
