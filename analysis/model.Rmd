@@ -29,11 +29,13 @@ In the simplest case, a statistical model for a data set $X$ is simply a *probab
 
 More generally, the term model is also used to refer to a *collection* of such distributions, not just a single distribution. We might refer to such a model as a "compound model", to distinguish it from a simple model, although it is common practice to just use the term "model" for both.
 
-The set of possible values that could have been observed for $X$ is referred to as the *sample space* of the model, and here we will denote it $S$. Specifying an appropriate sample space for a given data set is often straightforward based on the nature of the data, and 
-the way that they were generated or collected.
-
 Usually, in a compound model, the collection of distributions 
-is naturally indexed by some "parameter", often denoted $\theta$, which lives in some "parameter space", often denoted $\Theta$. See examples below for illustration.
+is naturally indexed by some "parameter", often denoted $\theta$, which lives in some "parameter space", often denoted $\Theta$. Such a model is referred to as a ``parametric model". 
+See examples below for illustration.
+
+The set of possible values that could have been observed for $X$ is referred to as the *sample space* of the model, and here we will denote it $S$. Specifying an appropriate sample space for a given data set is often straightforward based on the nature of the data, and the way that they were generated or collected.
+
+
 
 
 # Examples
@@ -44,11 +46,11 @@ Suppose we obtain data by tossing a coin 3 times and recording the outcomes. The
 
 One simple model would be that all 8 outcomes are equally likely.
 That is, each outcome has probability 1/8. This model corresponds to the assumption that the tosses are independent, and the coin has probability 0.5 of landing heads on each toss.
-Thus the model might be described in words as "the coin is fair, and the tosses independent".
+The modelling assumptions that underlie this model might be described in words as "the coin is fair, and the tosses independent".
 
-A compound model would arise if we assume that the tosses are independent, but allow that the coin may be "biased", landing heads with some probability $p$. Each value of $p$ determines a distribution $f_p$ on $S$, and so the set of distributions ${f_p: p \in [0,1]}$ 
-defines a (compound) model, with parameter $p \in [0,1]$. 
-This model might be described in words as "the tosses are independent".
+A compound model would arise if we assume that the tosses are independent, but allow that the coin may be "biased", landing heads with some probability $\theta$. Each value of $\theta$ determines a distribution $p_\theta$ on $S$, and so the set of distributions ${f_\theta: \theta \in [0,1]}$ 
+defines a parametric model, with parameter $\theta \in [0,1]$. 
+The modelling assumptions that underlie this model might be described in words as "the tosses are independent".
 
 A more complex compound model might include distributions that allow for dependence between tosses. In the context of tossing a coin allowing for such dependence might be unnecessary. However, if we replace the coin toss with some other binary phenomenon - for example, whether or not it rains in a particular location each day -
 and perhaps increase the number of observations to something more than three, then allowing for dependence could be crucial.
@@ -71,6 +73,7 @@ used for statistical modelling. Here is a non-exhaustive list of some commonly-u
 - Hidden Markov models
 - Poisson processes
 - Autoregressive processes
+- Factor models
 
 
 # Exercise

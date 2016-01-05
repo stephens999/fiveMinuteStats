@@ -12,15 +12,15 @@ date: YYYY-MM-DD
 source("chunk-options.R")
 ```
 
-## Pre-requisites
+# Pre-requisites
 
 include the most complex concepts required to understand the material.
 
-## Overview
+# Overview
 
-## Definition
+# Definition
 
-## Examples
+# Examples
 
 ## Session information
 
