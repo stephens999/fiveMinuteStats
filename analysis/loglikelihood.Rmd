@@ -1,0 +1,54 @@
+---
+title: "Log-likelihood and log-likelihood ratio"
+author: "Matthew Stephens"
+date: 2016-01-05
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+You should have come across the concept of [likelihood](likelihood.html), and be aware that likelihood provides
+a measure of the *relative* support in the data for different values of a parameter.
+
+# Overview
+
+Our purpose here is simply to define and motivate the use of the log-likelihood and the log-likelihood ratio. 
+
+For many reasons it is often convenient to work with the logarithm of the likelihood function rather that the likelihood function itself. This is referred to as the log-likelihood function, and usually denoted with $l$ (a lower-case $L$):
+$$l(\theta):=\log_e L(\theta).$$
+
+Similarly, it is often convenient to work with the log-likelihood-ratio, rather than the likelihood ratio.
+Recall that the likelihood ratio (LR) for $\theta=\theta_1$ vs $\theta=\theta_0$ is given by 
+$$LR(\theta_1,\theta_0) = L(\theta_1)/L(\theta_0).$$
+Therefore the logarithm of this, 
+known as the log-likelihood-ratio, is 
+$$\log_e(LR(\theta_1,\theta_0)) = l(\theta_1)-l(\theta_0).$$
+
+Recall that the likelihood function $L(\theta)$ provides a measure of the *relative* support in the data for different values of the parameter $\theta$. In particular, when comparing the likelihood for two different values of $\theta$, what matters is the likelihood ratio. Similarly, when comparing the log-likelihood for different values of $\theta$, what matters is the difference $l(\theta_1)-l(\theta_0)$ (the log-likelihood ratio).
+
+# Examples
+
+We can plot the log-likelihood-ratio for the coin-tossing example as follows.
+```{r}
+theta = seq(0,1,length=100)
+l =function(theta){2*log(theta) + log(1-theta)}
+plot(theta, l(theta)-l(0.5), xlab="theta", ylab="l(theta)-l(0.5)",type="l")
+```
+
+
+
+
+
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

@@ -10,4 +10,4 @@ title: "Home"
 
 *  [Statistical Models](model.html)
 *  [Intro to Likelihoood](likelihood.html) 
-
+*  [The log-Likelihoood](loglikelihood.html) 
