@@ -10,9 +10,9 @@
 
 <meta name="author" content="Matthew Stephens" />
 
-<meta name="date" content="2016-01-06" />
+<meta name="date" content="2016-01-04" />
 
-<title>Comparing two models with a likelihood ratio</title>
+<title>Statistical Models</title>
 
 <script src="libs/jquery-1.11.0/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -134,21 +134,23 @@ img {
 </div><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">Comparing two models with a likelihood ratio</h1>
+<h1 class="title">Statistical Models</h1>
 <h4 class="author"><em>Matthew Stephens</em></h4>
-<h4 class="date"><em>2016-01-06</em></h4>
+<h4 class="date"><em>2016-01-04</em></h4>
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#summary">Summary</a></li>
 <li><a href="#pre-requisites">Pre-requisites</a></li>
-<li><a href="#motivating-problem">Motivating Problem</a></li>
-<li><a href="#solution">Solution</a><ul>
-<li><a href="#the-likelihood-ratio">The likelihood ratio</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#definition">Definition</a></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#toy-example-coin-tossing">Toy Example: coin tossing</a></li>
+<li><a href="#more-interesting-examples">More Interesting Examples</a></li>
 </ul></li>
+<li><a href="#some-common-models">Some Common Models</a></li>
 <li><a href="#exercise">Exercise</a></li>
-<li><a href="#summary-1">Summary</a><ul>
+<li><a href="#further-reading">Further Reading</a><ul>
 <li><a href="#session-information">Session information</a></li>
 </ul></li>
 </ul>
@@ -156,129 +158,58 @@ img {
 
 <p><strong>Last updated:</strong> 2016-01-07</p>
 <p><strong>Code version:</strong> 2501cb8543ac6f32bc39b7758b18975dc7020598</p>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
-<p>This document introduces the concept of likelihood ratio for comparing two simple statistical models - one of the most fundamental concepts in statistical inference.</p>
-</div>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
-<p>Be familiar with basic concepts from probability, particularly the concept of a probability distribution.</p>
+<p>To understand this document you should be familiar with basic concepts from probability, including independence and the concept of a probability distribution.</p>
 </div>
-<div id="motivating-problem" class="section level1">
-<h1>Motivating Problem</h1>
-<p>[Technical Note: to simplify this problem I have assumed that elephants are haploid, which they are not. If you do not know what this means you should simply ignore this comment.]</p>
-<p>There are two subspecies of African Elephant: savannah and forest elephants, which differ in their genetic makeup. Interpol have seized an illegally-smuggled elephant tusk, and they want to know which subspecies of elephant the tusk came from. To try to answer this they collect DNA from the tusk and measure it at a number of locations (“markers” in genetics jargon) along the elephant genome. At each marker the DNA can be one of two types (“alleles” in genetics jargon), which for simplicity we will label 0 and 1. So the available data on the tusk might look something like this.</p>
-<table>
-<thead>
-<tr class="header">
-<th align="left">Marker</th>
-<th align="left">Allele</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">1</td>
-<td align="left">1</td>
-</tr>
-<tr class="even">
-<td align="left">2</td>
-<td align="left">0</td>
-</tr>
-<tr class="odd">
-<td align="left">3</td>
-<td align="left">1</td>
-</tr>
-<tr class="even">
-<td align="left">4</td>
-<td align="left">0</td>
-</tr>
-<tr class="odd">
-<td align="left">5</td>
-<td align="left">0</td>
-</tr>
-<tr class="even">
-<td align="left">6</td>
-<td align="left">1</td>
-</tr>
-</tbody>
-</table>
-<p>Interpol also have information on the frequency of each allele in each of the two subspecies - this was obtained by measuring the DNA of a large number of savanna elephants and a large number of forest elephants. We will use <span class="math inline"><em>f</em><sub><em>S</em><em>j</em></sub></span> and <span class="math inline"><em>f</em><sub><em>F</em><em>j</em></sub></span> to denote the frequency of “1” allele at marker <span class="math inline"><em>j</em></span> in savanna and forest elephants respectively (and since there are only two alleles, the frequency of the 0 allele is <span class="math inline">1 − <em>f</em><sub><em>S</em><em>j</em></sub></span> and <span class="math inline">1 − <em>f</em><sub><em>F</em><em>j</em></sub></span>). Here is a table of this information.</p>
-<table>
-<thead>
-<tr class="header">
-<th align="left">marker</th>
-<th align="left"><span class="math inline"><em>f</em><sub><em>S</em></sub></span></th>
-<th align="left"><span class="math inline"><em>f</em><sub><em>F</em></sub></span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">1</td>
-<td align="left">0.40</td>
-<td align="left">0.80</td>
-</tr>
-<tr class="even">
-<td align="left">2</td>
-<td align="left">0.12</td>
-<td align="left">0.20</td>
-</tr>
-<tr class="odd">
-<td align="left">3</td>
-<td align="left">0.21</td>
-<td align="left">0.11</td>
-</tr>
-<tr class="even">
-<td align="left">4</td>
-<td align="left">0.12</td>
-<td align="left">0.17</td>
-</tr>
-<tr class="odd">
-<td align="left">5</td>
-<td align="left">0.02</td>
-<td align="left">0.03</td>
-</tr>
-<tr class="even">
-<td align="left">6</td>
-<td align="left">0.32</td>
-<td align="left">0.25</td>
-</tr>
-</tbody>
-</table>
-<p>The question before us is: Which subspecies of elephant did the tusk come from, and how confident should we be in this conclusion?</p>
-<p>To get some intuition, let us examine the data at the first few markers. At marker 1 our tusk has the allele 1. This allele is less common in savanna elephants than forest elephants (40% of savanna elephants carry this allele, vs 80% of forest elephants), so this observation seems to support the sample coming from forest. However, at the same time 40% of savanna samples carry this allele, so it remains plausible that the sample came from savanna.</p>
-<p>Moving to marker 2, our tusk has the allele 0, which is more common in savanna (88%) than forest elephants (80%). And at marker 3 the tusk has allele 1 which is also more common in savanna (21% vs 11%). So, in contrast to marker 1, the data at these two markers are more consistent with the tusk coming from a savanna elephant than a forest elephant.</p>
-<p>We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.</p>
-<p>(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See  and  for more details.)</p>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Statistical models play a key role in drawing statistical inferences from data. Models have a wide range of applications. For example, they are used in extrapolating from a sample to a population, in making scientific inferences about the underlying process that generated a particular data set, and in classifying or clustering observations into groups.</p>
 </div>
-<div id="solution" class="section level1">
-<h1>Solution</h1>
-<p>We can phrase this problem as a “model comparison” problem. We have data <span class="math inline"><em>X</em> = <em>x</em></span> from our tusk, and we have two different models for how those data might have arisen: it could have been sampled from a savanna elephant, or it could have been sampled from a forest elephant. We will use <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and <span class="math inline"><em>M</em><sub><em>F</em></sub></span> as shorthand for these two models. A key point is that these two models imply different probability distributions for <span class="math inline"><em>X</em></span>: some values of <span class="math inline"><em>X</em></span> are more common under <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and others are more common under <span class="math inline"><em>M</em><sub><em>F</em></sub></span>.</p>
-<p>Denoting the probability mass functions of these two distributions <span class="math inline"><em>p</em>(⋅|<em>M</em><sub><em>S</em></sub>)</span> and <span class="math inline"><em>p</em>(⋅|<em>M</em><sub><em>F</em></sub>)</span>, and assuming the data at different markers are independent, these probability distributions are: <br /><span class="math display"><em>p</em>(<em>x</em>|<em>M</em><sub><em>S</em></sub>)=∏<sub><em>j</em></sub><em>f</em><sub><em>S</em><em>j</em></sub><sup><em>x</em><sub><em>j</em></sub></sup>(1 − <em>f</em><sub><em>S</em><em>j</em></sub>)<sup>1 − <em>x</em><sub><em>j</em></sub></sup></span><br /> and <br /><span class="math display"><em>p</em>(<em>x</em>|<em>M</em><sub><em>F</em></sub>)=∏<sub><em>j</em></sub><em>f</em><sub><em>F</em><em>j</em></sub><sup><em>x</em><sub><em>j</em></sub></sup>(1 − <em>f</em><sub><em>F</em><em>j</em></sub>)<sup>1 − <em>x</em><sub><em>j</em></sub></sup>,</span><br /> where the values of <span class="math inline"><em>f</em><sub><em>S</em></sub></span> and <span class="math inline"><em>f</em><sub><em>F</em></sub></span> are given in the table above.</p>
-<p>Note that a key feature of these models is that they are “fully specified”. This means there are no unknown values in the probability distributions. Comparing fully-specified models is the simplest kind of model comparison, and so a good place to start in understanding the key concept of likelihood ratio introduced here.</p>
-<div id="the-likelihood-ratio" class="section level2">
-<h2>The likelihood ratio</h2>
-<p>The key idea to introduce here is that a useful summary of how strongly the data <span class="math inline"><em>x</em></span> support one model vs another model is given by the “likelihood ratio” (LR).</p>
-<p>The likelihood ratio comparing two fully-spefied models is simply the ratio of the probability of the data under each model. The name Likelihood ratio comes from the fact that the probability of the data under each model is called the “likelihood” for that model. (I recommended saying “likelihood for” the model, rather than “likelihood of” the model, to help avoid confusing likelihood with probability.)</p>
-<p>That is, given data <span class="math inline"><em>x</em></span> the likelihood for a fully-specified model <span class="math inline"><em>M</em></span> is defined as <br /><span class="math display"><em>L</em>(<em>M</em>):=<em>p</em>(<em>x</em>|<em>M</em>),</span><br /> and the likelihood ratio comparing fully-specified models <span class="math inline"><em>M</em><sub><em>S</em></sub></span> vs <span class="math inline"><em>M</em><sub><em>F</em></sub></span> is defined as <br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub><em>S</em></sub>, <em>M</em><sub><em>F</em></sub>):=<em>L</em>(<em>M</em><sub><em>S</em></sub>)/<em>L</em>(<em>M</em><sub><em>F</em></sub>).</span><br /> Note that the likelihood for <span class="math inline"><em>M</em></span> depends on the data <span class="math inline"><em>x</em></span>. To make this dependence explicit the likelihood is sometimes written <span class="math inline"><em>L</em>(<em>M</em>; <em>x</em>)</span> instead of just <span class="math inline"><em>L</em>(<em>M</em>)</span>. Large values of <span class="math inline"><em>L</em><em>R</em>(<em>M</em><sub><em>S</em></sub>, <em>M</em><sub><em>F</em></sub>)</span> indicate that the data are much more probable under model <span class="math inline"><em>M</em><sub><em>S</em></sub></span> than under model <span class="math inline"><em>M</em><sub><em>F</em></sub></span>, and so indicate support for <span class="math inline"><em>M</em><sub><em>S</em></sub></span>. Conversely, small values of <span class="math inline"><em>L</em><em>R</em></span> indicate support for model <span class="math inline"><em>M</em><sub><em>F</em></sub></span>.</p>
-<p>Using the numbers in the tables above we can compute these quantities:</p>
-<pre class="r"><code>x = c(1,0,1,0,0,1)
-fS = c(0.40, 0.12,0.21,0.12,0.02,0.32)
-fF = c(0.8,0.2,0.11,0.17,0.23,0.25)
-L = function(x,f){ prod(f^x*(1-f)^(1-x)) }
-LR = L(x,fS)/L(x,fF)
-print(LR)</code></pre>
-<pre><code>[1] 1.81359</code></pre>
-<p>So the likelihood ratio is <code>1.8135904</code>. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor – not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered “convincing” later.</p>
-<p>Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another. However, the meaning of the likelihood ratio is in some sense consistent across contexts: a LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.</p>
+<div id="definition" class="section level1">
+<h1>Definition</h1>
+<p>In the simplest case, a statistical model for a data set <span class="math inline"><em>X</em></span> is simply a <em>probability distribution on a set of possible values that could have been observed for X</em>. We might refer to such a model as a “simple model”.</p>
+<p>More generally, the term model is also used to refer to a <em>collection</em> of such distributions, not just a single distribution. We might refer to such a model as a “compound model”, to distinguish it from a simple model, although it is common practice to just use the term “model” for both.</p>
+<p>Usually, in a compound model, the collection of distributions is naturally indexed by some “parameter”, often denoted <span class="math inline"><em>θ</em></span>, which lives in some “parameter space”, often denoted <span class="math inline"><em>Θ</em></span>. Such a model is referred to as a ``parametric model“. See examples below for illustration.</p>
+<p>The set of possible values that could have been observed for <span class="math inline"><em>X</em></span> is referred to as the <em>sample space</em> of the model, and here we will denote it <span class="math inline"><em>S</em></span>. Specifying an appropriate sample space for a given data set is often straightforward based on the nature of the data, and the way that they were generated or collected.</p>
 </div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<div id="toy-example-coin-tossing" class="section level2">
+<h2>Toy Example: coin tossing</h2>
+<p>Suppose we obtain data by tossing a coin 3 times and recording the outcomes. The possible outcomes are S={HHH,HHT,HTH,HTT,THH,THT,TTH,TTT} where H denotes the coin landing heads and T denotes tails (so, for example, HTH denotes the outcome where the first toss lands heads, the second lands tails, and the third lands heads).</p>
+<p>One simple model would be that all 8 outcomes are equally likely. That is, each outcome has probability 1/8. This model corresponds to the assumption that the tosses are independent, and the coin has probability 0.5 of landing heads on each toss. The modelling assumptions that underlie this model might be described in words as “the coin is fair, and the tosses independent”.</p>
+<p>A compound model would arise if we assume that the tosses are independent, but allow that the coin may be “biased”, landing heads with some probability <span class="math inline"><em>θ</em></span>. Each value of <span class="math inline"><em>θ</em></span> determines a distribution <span class="math inline"><em>p</em><sub><em>θ</em></sub></span> on <span class="math inline"><em>S</em></span>, and so the set of distributions <span class="math inline"><em>f</em><sub><em>θ</em></sub> : <em>θ</em> ∈ [0, 1]</span> defines a parametric model, with parameter <span class="math inline"><em>θ</em> ∈ [0, 1]</span>. The modelling assumptions that underlie this model might be described in words as “the tosses are independent”.</p>
+<p>A more complex compound model might include distributions that allow for dependence between tosses. In the context of tossing a coin allowing for such dependence might be unnecessary. However, if we replace the coin toss with some other binary phenomenon - for example, whether or not it rains in a particular location each day - and perhaps increase the number of observations to something more than three, then allowing for dependence could be crucial.</p>
+</div>
+<div id="more-interesting-examples" class="section level2">
+<h2>More Interesting Examples</h2>
+<p>to follow.</p>
+</div>
+</div>
+<div id="some-common-models" class="section level1">
+<h1>Some Common Models</h1>
+<p>There are a huge variety of probability distributions that are used for statistical modelling. Here is a non-exhaustive list of some commonly-used ones. Maybe you have come across some of them already.</p>
+<ul>
+<li>Simple iid (independent and identically distributed) sampling from common distributions (normal, Poisson, Binomial, Exponential, Gamma, …)</li>
+<li>Linear regression</li>
+<li>Generalized linear models</li>
+<li>Multivariate normal, Gaussian graphical models and Gaussian processes</li>
+<li>Mixture models</li>
+<li>Markov chains and Markov processes</li>
+<li>Hidden Markov models</li>
+<li>Poisson processes</li>
+<li>Autoregressive processes</li>
+<li>Factor models</li>
+</ul>
 </div>
 <div id="exercise" class="section level1">
 <h1>Exercise</h1>
-<p>You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4 The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. Looking at these results, does intuition say that they support the green dice or the blue dice? Strongly or weakly? Phrase the problem as a model comparison problem. State your modelling assumptions, and compute a likelihood ratio. Does it support your intuition?</p>
+<p>Identify examples of practical applications of statistical models (e.g. in scientific papers). Identify the sample space, say whether the model is simple or compound. For compound models identify the parameter and parameter space, if any.</p>
 </div>
-<div id="summary-1" class="section level1">
-<h1>Summary</h1>
-<p>You should now feel comfortable answering the following questions: i) what is a fully specified model? ii) what is the likelihood for a fully specified model? iii) what is the likelihood ratio for comparing two fully specified models?</p>
+<div id="further-reading" class="section level1">
+<h1>Further Reading</h1>
+<p>to follow</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
