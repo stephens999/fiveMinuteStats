@@ -8,6 +8,8 @@ title: "Home"
 
 ## Inference
 
+*  [Likelihood Ratio for Simple Models](likelihood_ratio_simple_models.html)
+
 *  [Statistical Models](model.html)
 *  [Intro to Likelihoood](likelihood.html) 
 *  [The log-Likelihoood](loglikelihood.html) 

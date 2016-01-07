@@ -1,0 +1,129 @@
+---
+title: "Comparing two models with a likelihood ratio"
+author: "Matthew Stephens"
+date: 2016-01-06
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+
+# Summary
+
+This document introduces the concept of likelihood ratio for comparing two simple statistical models - one of the most fundamental concepts in statistical inference.
+
+# Pre-requisites
+
+Be familiar with basic concepts from probability, particularly the concept of a probability distribution.
+
+# Motivating Problem
+
+[Technical Note: to simplify this problem I have 
+assumed that elephants are haploid, which they are not. If you do not know what this means you should simply ignore this comment.]
+
+There are two subspecies of African Elephant: savannah and forest elephants, which differ in their genetic makeup. Interpol have 
+seized an illegally-smuggled elephant tusk, and they want to know which subspecies of elephant the tusk came from. To try to answer this they collect DNA from the tusk and measure it at a number of locations ("markers" in genetics jargon) along the elephant genome. At each marker the DNA can be one of two types ("alleles" in genetics jargon), which for simplicity we will label 0 and 1.  So the available data on the tusk might look something like this.
+
+Marker | Allele
+------ | -------
+1 | 1
+2 | 0
+3 | 1
+4 | 0
+5 | 0
+6 | 1
+
+Interpol also have information on the frequency of each allele in each of the two subspecies - this was obtained by measuring the DNA of a large number of savanna elephants and a large number of forest elephants. We will use $f_{Sj}$ and $f_{Fj}$ to denote the frequency of "1" allele at marker $j$ in savanna and forest elephants respectively (and since there are only two alleles, the frequency of the 0 allele is $1-f_{Sj}$ and $1-f_{Fj}$). Here is a table of this information.
+
+marker | $f_S$ | $f_F$ |
+------ | ------| ------ |
+1 | 0.40 | 0.80 | 
+2 | 0.12 | 0.20 |
+3 | 0.21 | 0.11 |
+4 | 0.12 | 0.17 |
+5 | 0.02 | 0.03 |
+6 | 0.32 | 0.25 |
+
+The question before us is: Which subspecies of elephant did the tusk come from, and how confident should we be in this conclusion?
+
+To get some intuition, let us examine the data at the first few markers. At marker 1 our tusk has the allele 1. This allele is less common in savanna elephants than forest elephants (40% of savanna elephants carry this allele, vs 80% of forest elephants), so this observation seems to support the sample coming from forest. However, at the same time 40% of savanna samples carry this allele, so it remains plausible that the sample came from savanna.
+
+Moving to marker 2, our tusk has the allele 0, which is more common in savanna (88%) than forest elephants (80%). And at marker 3 the tusk has allele 1 which is also more common in savanna (21% vs 11%). So, in contrast to marker 1, the data at these two markers are more consistent with the tusk coming from a savanna elephant than a forest elephant.
+
+We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.
+
+(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See
+\cite{wasser.etal.07} and \cite{wasser.etal.08}
+for more details.)
+
+# Solution
+
+We can phrase this problem as a "model comparison" problem.
+We have data $X=x$ from our tusk, and we have two different models for how those data might have arisen: it could have been sampled from a savanna elephant, or it could have been sampled from a forest elephant. We will use $M_S$ and $M_F$ as shorthand for these two models. A key point is that these two models imply different probability distributions for $X$: some values of $X$ are more common under $M_S$ and others are more common under $M_F$. 
+
+Denoting the probability mass functions of these two distributions $p(\cdot | M_S)$ and $p(\cdot | M_F)$, and assuming the data at different markers are independent, these probability distributions are:
+$$p(x | M_S) = \prod_j f_{Sj}^{x_j} (1-f_{Sj})^{1-x_j}$$
+and
+$$p(x | M_F) = \prod_j f_{Fj}^{x_j} (1-f_{Fj})^{1-x_j},$$ 
+where the values of $f_S$ and $f_F$ are given in the table above.
+
+Note that a key feature of these models is that they are "fully specified". This means there are no unknown values in the probability distributions. Comparing fully-specified models is the simplest kind of model comparison, and so a good place to start in understanding the key concept of likelihood ratio introduced here. 
+
+## The likelihood ratio
+
+The key idea to introduce here is that a useful summary of 
+how strongly the data $x$ support one model vs another model is given by the "likelihood ratio" (LR).
+
+The likelihood ratio comparing two fully-spefied models is simply the ratio of the probability of the data under each model. The name Likelihood ratio comes from the fact that the probability of the data under each model is called the "likelihood" for that model.
+(I recommended saying "likelihood for" the model, rather than "likelihood of" the model, to help avoid confusing likelihood with probability.)
+
+That is, given data $x$ the likelihood for a fully-specified 
+model $M$ is defined as
+$$L(M):=p(x | M),$$
+and the likelihood ratio comparing fully-specified models 
+$M_S$ vs $M_F$ is defined as
+$$LR(M_S, M_F) := L(M_S)/L(M_F).$$
+Note that the likelihood for $M$ depends on the data $x$. To make this dependence explicit the likelihood is sometimes written $L(M;x)$ instead of just $L(M)$.
+Large values of $LR(M_S,M_F)$ indicate that the data are much
+more probable under model $M_S$ than under model $M_F$, and so indicate support for $M_S$. Conversely, small values of $LR$ indicate support for model $M_F$.
+
+Using the numbers in the tables above we can compute these
+quantities:
+```{r}
+x = c(1,0,1,0,0,1)
+fS = c(0.40, 0.12,0.21,0.12,0.02,0.32)
+fF = c(0.8,0.2,0.11,0.17,0.23,0.25)
+L = function(x,f){ prod(f^x*(1-f)^(1-x)) }
+LR = L(x,fS)/L(x,fF)
+print(LR)
+```
+
+So the likelihood ratio is ``r LR``. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor -- not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered "convincing" later.
+
+Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another.  However, the meaning of the likelihood ratio is in some sense consistent across contexts: a LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.
+
+
+# Exercise
+
+You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4 The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. 
+Looking at these results, does intuition say that they support the green dice or the blue dice? Strongly or weakly? Phrase the problem as a model comparison problem. State your modelling assumptions, and compute a likelihood ratio. Does it support your intuition?
+
+
+# Summary
+
+You should now feel comfortable answering the following questions:
+i) what is a fully specified model?
+ii) what is the likelihood for a fully specified model?
+iii) what is the likelihood ratio for comparing two fully specified models?
+
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
