@@ -8,7 +8,12 @@ title: "Home"
 
 ## Inference
 
-*  [Likelihood Ratio for Simple Models](likelihood_ratio_simple_models.html)
+*  [Likelihood Ratio for fully specified models, discrete data](likelihood_ratio_simple_models.html)
+
+*  [Likelihood Ratio for fully specified models, continuous data](tbd)
+*  [Likelihood Ratios: how big is convincing?](LR_and_BF.html)
+
+
 
 *  [Statistical Models](model.html)
 *  [Intro to Likelihoood](likelihood.html) 
