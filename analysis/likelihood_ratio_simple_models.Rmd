@@ -15,7 +15,7 @@ source("chunk-options.R")
 
 # Summary
 
-This document introduces the concept of likelihood ratio for comparing two simple statistical models - one of the most fundamental concepts in statistical inference.
+This document introduces the concept of likelihood ratio for comparing two simple ("fully specified") statistical models - one of the most fundamental concepts in statistical inference.
 
 # Pre-requisites
 
@@ -68,8 +68,10 @@ We have data $X=x$ from our tusk, and we have two different models for how those
 
 Denoting the probability mass functions of these two distributions $p(\cdot | M_S)$ and $p(\cdot | M_F)$, and assuming the data at different markers are independent, these probability distributions are:
 $$p(x | M_S) = \prod_j f_{Sj}^{x_j} (1-f_{Sj})^{1-x_j}$$
+
 and
 $$p(x | M_F) = \prod_j f_{Fj}^{x_j} (1-f_{Fj})^{1-x_j},$$ 
+
 where the values of $f_S$ and $f_F$ are given in the table above.
 
 Note that a key feature of these models is that they are "fully specified". This means there are no unknown values in the probability distributions. Comparing fully-specified models is the simplest kind of model comparison, and so a good place to start in understanding the key concept of likelihood ratio introduced here. 
@@ -77,49 +79,103 @@ Note that a key feature of these models is that they are "fully specified". This
 ## The likelihood ratio
 
 The key idea to introduce here is that a useful summary of 
-how strongly the data $x$ support one model vs another model is given by the "likelihood ratio" (LR).
+how strongly the data $x$ support one model vs another model is given by the "likelihood ratio" (LR). 
 
-The likelihood ratio comparing two fully-spefied models is simply the ratio of the probability of the data under each model. The name Likelihood ratio comes from the fact that the probability of the data under each model is called the "likelihood" for that model.
-(I recommended saying "likelihood for" the model, rather than "likelihood of" the model, to help avoid confusing likelihood with probability.)
+The LR comparing two fully-specified models is simply the ratio of the probability of the data under each model. 
+(In saying the ``probability of the data" here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail [here](likelihood_ratio_simple_continuous_data.html))
+
+The name Likelihood ratio comes from the fact that the probability of the data under each model is called the "likelihood" for that model.
+I recommended saying "likelihood for" the model, or "likelihood under" the model, rather than "likelihood of" the model, to help avoid confusing likelihood with probability.
 
 That is, given data $x$ the likelihood for a fully-specified 
-model $M$ is defined as
-$$L(M):=p(x | M),$$
-and the likelihood ratio comparing fully-specified models 
-$M_S$ vs $M_F$ is defined as
-$$LR(M_S, M_F) := L(M_S)/L(M_F).$$
-Note that the likelihood for $M$ depends on the data $x$. To make this dependence explicit the likelihood is sometimes written $L(M;x)$ instead of just $L(M)$.
-Large values of $LR(M_S,M_F)$ indicate that the data are much
-more probable under model $M_S$ than under model $M_F$, and so indicate support for $M_S$. Conversely, small values of $LR$ indicate support for model $M_F$.
+(discrete) model $M$ is defined as
 
-Using the numbers in the tables above we can compute these
-quantities:
+$$L(M):=p(x | M)$$
+
+where $p(\cdot | M)$ denotes the probabilty mass function for model $M$. And the likelihood ratio comparing two fully-specified (discrete) models 
+$M_1$ vs $M_0$ is defined as
+
+$$LR(M_1, M_0) := L(M_1)/L(M_0).$$
+
+Note that the likelihood for $M$ depends on the data $x$. To make this dependence explicit the likelihood is sometimes written $L(M;x)$ instead of just $L(M)$.
+Large values of $LR(M_1,M_0)$ indicate that the data are much
+more probable under model $M_1$ than under model $M_0$, and so indicate support for $M_1$. Conversely, small values of $LR$ indicate support for model $M_0$.
+
+## Example 
+
+Using the numbers in the tables above we can compute the likelihood and LR for $M_S$ vs $M_F$:
 ```{r}
 x = c(1,0,1,0,0,1)
 fS = c(0.40, 0.12,0.21,0.12,0.02,0.32)
 fF = c(0.8,0.2,0.11,0.17,0.23,0.25)
-L = function(x,f){ prod(f^x*(1-f)^(1-x)) }
-LR = L(x,fS)/L(x,fF)
+L = function(f,x){ prod(f^x*(1-f)^(1-x)) }
+LR = L(fS,x)/L(fF,x)
 print(LR)
 ```
 
-So the likelihood ratio is ``r LR``. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor -- not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered "convincing" later.
+So $LR(M_S,M_F;x)$ is ``r LR``. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor -- not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered "convincing" later.
 
-Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another.  However, the meaning of the likelihood ratio is in some sense consistent across contexts: a LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.
+Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another.  However, the meaning of the likelihood ratio is in some sense consistent across contexts: LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.
 
 
-# Exercise
+# Exercises
 
-You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4 The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. 
+1. You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4. The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. 
 Looking at these results, does intuition say that they support the green dice or the blue dice? Strongly or weakly? Phrase the problem as a model comparison problem. State your modelling assumptions, and compute a likelihood ratio. Does it support your intuition?
+
+2. (Read the whole question before starting!)
+  a) Perform the following simulation study. Simulate 1000 tusks (values of $x$) from each of the models $M_S$ and $M_F$. For each simulated tusk compute the LR for $M_S$ vs $M_F$, 
+so you have computed 2000 LRs. Now consider using the LR to classify each tusk as being from a savanna or a forest elephant. Recall that large values for LR indicate support for $M_S$, so a natural classification rule is "classify as savanna if $LR>c$, otherwise classify as forest" for some threshold $c$. Plot the misclassification rate (= number of tusks wrongly classified/2000) for this rule, as $c$ ranges from 0.01 to 100. What value of $c$ minimizes the misclassification rate? [Hint: the plot will look best if you do things on the log scale, so you could let log10(c) vary from -2 to 2 using an equally spaced grid, and plot the misclassification rate on the $y$ axis against log10(c) on the $x$ axis.]
+
+  b) Repeat the above simulation study using 100 tusks from $M_S$ and 1900 tusks from $M_F$. What value of $c$ minimizes the misclassification rate? Comment. 
+
+  Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using roxygen2 format. See [Karl Broman's tutorial](http://kbroman.org/pkg_primer/pages/docs.html) for example.
+
+
+*DO NOT REPEAT THE SIMULATION STUDY BY COPYING AND PASTING CODE AND MODIFYING A FEW NUMBERS! GET INTO THE HABIT OF DOING IT PROPERLY*
+
+To be more explicit, at the top level 
+your code should probably include a function something like this:
+
+```
+#' Simulation study 
+#'
+#' Simulates data from forest and savanna tusks from prespecified frequencies, and uses LR to classify them.
+#'
+#' @param nS number of savanna tusks to use
+#' @param nF number of forest tusks to use
+#' @param fS allele frequencies of savanna elephants
+#' @param fF allele frequencies of forest elephants
+#' @param lc vector of log(c) values of LR cutoff to use
+#'
+#' @return Plot of misclassification rate against threshold
+#'
+#' @example simulation_study(1000,1000,(0.40, 0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100))
+#'
+#'
+simulation_study(nS,nF,fS,fF,c){
+...
+}
+```
+
+Then you can just call this simulation study function twice to complete the assignment.
+
+
+
+3. Consider now modifying our example above on the tusk to allow for errors in the data. Specifically, suppose that there is an error probability of 0.02 when measuring each marker: with probability 0.98 you observe the true $x_j$, but with probability 0.02 an error is made and you observe $1-x_j$. Assume that errors occur independently at each marker $j$. 
+Let $M'_S$ and $M'_F$ denote the models with this error process incorporated. Derive expressions for the likelihood for $M'_S$ and $M'_F$, and compute the LR for the example tusk data given here.
+
 
 
 # Summary
 
-You should now feel comfortable answering the following questions:
-i) what is a fully specified model?
-ii) what is the likelihood for a fully specified model?
-iii) what is the likelihood ratio for comparing two fully specified models?
+Repeat after me:
+
+1. "The likelihood for a model is the probability of the data under the model"
+
+2. "Individual likelihood values are mostly irrelevant: it is likelihood ratios that matter"
+
+3. "If the likelihood ratio for model 1 vs model 2 is x, then this means the data favour model 1 by a factor of x". (Or, if x <1 then it means "the data favour model 2 by a factor of 1/x"")
 
 
 ## Session information
