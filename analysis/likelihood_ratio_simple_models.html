@@ -146,19 +146,20 @@ img {
 <li><a href="#motivating-problem">Motivating Problem</a></li>
 <li><a href="#solution">Solution</a><ul>
 <li><a href="#the-likelihood-ratio">The likelihood ratio</a></li>
+<li><a href="#example">Example</a></li>
 </ul></li>
-<li><a href="#exercise">Exercise</a></li>
+<li><a href="#exercises">Exercises</a></li>
 <li><a href="#summary-1">Summary</a><ul>
 <li><a href="#session-information">Session information</a></li>
 </ul></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-07</p>
-<p><strong>Code version:</strong> 2501cb8543ac6f32bc39b7758b18975dc7020598</p>
+<p><strong>Last updated:</strong> 2016-01-08</p>
+<p><strong>Code version:</strong> 1cfb1a1aa576a8d94a8d0eb3f69baced5d7dcdcb</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>This document introduces the concept of likelihood ratio for comparing two simple statistical models - one of the most fundamental concepts in statistical inference.</p>
+<p>This document introduces the concept of likelihood ratio for comparing two simple (“fully specified”) statistical models - one of the most fundamental concepts in statistical inference.</p>
 </div>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
@@ -253,32 +254,79 @@ img {
 <div id="solution" class="section level1">
 <h1>Solution</h1>
 <p>We can phrase this problem as a “model comparison” problem. We have data <span class="math inline"><em>X</em> = <em>x</em></span> from our tusk, and we have two different models for how those data might have arisen: it could have been sampled from a savanna elephant, or it could have been sampled from a forest elephant. We will use <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and <span class="math inline"><em>M</em><sub><em>F</em></sub></span> as shorthand for these two models. A key point is that these two models imply different probability distributions for <span class="math inline"><em>X</em></span>: some values of <span class="math inline"><em>X</em></span> are more common under <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and others are more common under <span class="math inline"><em>M</em><sub><em>F</em></sub></span>.</p>
-<p>Denoting the probability mass functions of these two distributions <span class="math inline"><em>p</em>(⋅|<em>M</em><sub><em>S</em></sub>)</span> and <span class="math inline"><em>p</em>(⋅|<em>M</em><sub><em>F</em></sub>)</span>, and assuming the data at different markers are independent, these probability distributions are: <br /><span class="math display"><em>p</em>(<em>x</em>|<em>M</em><sub><em>S</em></sub>)=∏<sub><em>j</em></sub><em>f</em><sub><em>S</em><em>j</em></sub><sup><em>x</em><sub><em>j</em></sub></sup>(1 − <em>f</em><sub><em>S</em><em>j</em></sub>)<sup>1 − <em>x</em><sub><em>j</em></sub></sup></span><br /> and <br /><span class="math display"><em>p</em>(<em>x</em>|<em>M</em><sub><em>F</em></sub>)=∏<sub><em>j</em></sub><em>f</em><sub><em>F</em><em>j</em></sub><sup><em>x</em><sub><em>j</em></sub></sup>(1 − <em>f</em><sub><em>F</em><em>j</em></sub>)<sup>1 − <em>x</em><sub><em>j</em></sub></sup>,</span><br /> where the values of <span class="math inline"><em>f</em><sub><em>S</em></sub></span> and <span class="math inline"><em>f</em><sub><em>F</em></sub></span> are given in the table above.</p>
+<p>Denoting the probability mass functions of these two distributions <span class="math inline"><em>p</em>(⋅|<em>M</em><sub><em>S</em></sub>)</span> and <span class="math inline"><em>p</em>(⋅|<em>M</em><sub><em>F</em></sub>)</span>, and assuming the data at different markers are independent, these probability distributions are: <br /><span class="math display"><em>p</em>(<em>x</em>|<em>M</em><sub><em>S</em></sub>)=∏<sub><em>j</em></sub><em>f</em><sub><em>S</em><em>j</em></sub><sup><em>x</em><sub><em>j</em></sub></sup>(1 − <em>f</em><sub><em>S</em><em>j</em></sub>)<sup>1 − <em>x</em><sub><em>j</em></sub></sup></span><br /></p>
+<p>and <br /><span class="math display"><em>p</em>(<em>x</em>|<em>M</em><sub><em>F</em></sub>)=∏<sub><em>j</em></sub><em>f</em><sub><em>F</em><em>j</em></sub><sup><em>x</em><sub><em>j</em></sub></sup>(1 − <em>f</em><sub><em>F</em><em>j</em></sub>)<sup>1 − <em>x</em><sub><em>j</em></sub></sup>,</span><br /></p>
+<p>where the values of <span class="math inline"><em>f</em><sub><em>S</em></sub></span> and <span class="math inline"><em>f</em><sub><em>F</em></sub></span> are given in the table above.</p>
 <p>Note that a key feature of these models is that they are “fully specified”. This means there are no unknown values in the probability distributions. Comparing fully-specified models is the simplest kind of model comparison, and so a good place to start in understanding the key concept of likelihood ratio introduced here.</p>
 <div id="the-likelihood-ratio" class="section level2">
 <h2>The likelihood ratio</h2>
 <p>The key idea to introduce here is that a useful summary of how strongly the data <span class="math inline"><em>x</em></span> support one model vs another model is given by the “likelihood ratio” (LR).</p>
-<p>The likelihood ratio comparing two fully-spefied models is simply the ratio of the probability of the data under each model. The name Likelihood ratio comes from the fact that the probability of the data under each model is called the “likelihood” for that model. (I recommended saying “likelihood for” the model, rather than “likelihood of” the model, to help avoid confusing likelihood with probability.)</p>
-<p>That is, given data <span class="math inline"><em>x</em></span> the likelihood for a fully-specified model <span class="math inline"><em>M</em></span> is defined as <br /><span class="math display"><em>L</em>(<em>M</em>):=<em>p</em>(<em>x</em>|<em>M</em>),</span><br /> and the likelihood ratio comparing fully-specified models <span class="math inline"><em>M</em><sub><em>S</em></sub></span> vs <span class="math inline"><em>M</em><sub><em>F</em></sub></span> is defined as <br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub><em>S</em></sub>, <em>M</em><sub><em>F</em></sub>):=<em>L</em>(<em>M</em><sub><em>S</em></sub>)/<em>L</em>(<em>M</em><sub><em>F</em></sub>).</span><br /> Note that the likelihood for <span class="math inline"><em>M</em></span> depends on the data <span class="math inline"><em>x</em></span>. To make this dependence explicit the likelihood is sometimes written <span class="math inline"><em>L</em>(<em>M</em>; <em>x</em>)</span> instead of just <span class="math inline"><em>L</em>(<em>M</em>)</span>. Large values of <span class="math inline"><em>L</em><em>R</em>(<em>M</em><sub><em>S</em></sub>, <em>M</em><sub><em>F</em></sub>)</span> indicate that the data are much more probable under model <span class="math inline"><em>M</em><sub><em>S</em></sub></span> than under model <span class="math inline"><em>M</em><sub><em>F</em></sub></span>, and so indicate support for <span class="math inline"><em>M</em><sub><em>S</em></sub></span>. Conversely, small values of <span class="math inline"><em>L</em><em>R</em></span> indicate support for model <span class="math inline"><em>M</em><sub><em>F</em></sub></span>.</p>
-<p>Using the numbers in the tables above we can compute these quantities:</p>
+<p>The LR comparing two fully-specified models is simply the ratio of the probability of the data under each model. (In saying the ``probability of the data&quot; here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail <a href="likelihood_ratio_simple_continuous_data.html">here</a>)</p>
+<p>The name Likelihood ratio comes from the fact that the probability of the data under each model is called the “likelihood” for that model. I recommended saying “likelihood for” the model, or “likelihood under” the model, rather than “likelihood of” the model, to help avoid confusing likelihood with probability.</p>
+<p>That is, given data <span class="math inline"><em>x</em></span> the likelihood for a fully-specified (discrete) model <span class="math inline"><em>M</em></span> is defined as</p>
+<p><br /><span class="math display"><em>L</em>(<em>M</em>):=<em>p</em>(<em>x</em>|<em>M</em>)</span><br /></p>
+<p>where <span class="math inline"><em>p</em>(⋅|<em>M</em>)</span> denotes the probabilty mass function for model <span class="math inline"><em>M</em></span>. And the likelihood ratio comparing two fully-specified (discrete) models <span class="math inline"><em>M</em><sub>1</sub></span> vs <span class="math inline"><em>M</em><sub>0</sub></span> is defined as</p>
+<p><br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub>1</sub>, <em>M</em><sub>0</sub>):=<em>L</em>(<em>M</em><sub>1</sub>)/<em>L</em>(<em>M</em><sub>0</sub>).</span><br /></p>
+<p>Note that the likelihood for <span class="math inline"><em>M</em></span> depends on the data <span class="math inline"><em>x</em></span>. To make this dependence explicit the likelihood is sometimes written <span class="math inline"><em>L</em>(<em>M</em>; <em>x</em>)</span> instead of just <span class="math inline"><em>L</em>(<em>M</em>)</span>. Large values of <span class="math inline"><em>L</em><em>R</em>(<em>M</em><sub>1</sub>, <em>M</em><sub>0</sub>)</span> indicate that the data are much more probable under model <span class="math inline"><em>M</em><sub>1</sub></span> than under model <span class="math inline"><em>M</em><sub>0</sub></span>, and so indicate support for <span class="math inline"><em>M</em><sub>1</sub></span>. Conversely, small values of <span class="math inline"><em>L</em><em>R</em></span> indicate support for model <span class="math inline"><em>M</em><sub>0</sub></span>.</p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Using the numbers in the tables above we can compute the likelihood and LR for <span class="math inline"><em>M</em><sub><em>S</em></sub></span> vs <span class="math inline"><em>M</em><sub><em>F</em></sub></span>:</p>
 <pre class="r"><code>x = c(1,0,1,0,0,1)
 fS = c(0.40, 0.12,0.21,0.12,0.02,0.32)
 fF = c(0.8,0.2,0.11,0.17,0.23,0.25)
-L = function(x,f){ prod(f^x*(1-f)^(1-x)) }
-LR = L(x,fS)/L(x,fF)
+L = function(f,x){ prod(f^x*(1-f)^(1-x)) }
+LR = L(fS,x)/L(fF,x)
 print(LR)</code></pre>
 <pre><code>[1] 1.81359</code></pre>
-<p>So the likelihood ratio is <code>1.8135904</code>. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor – not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered “convincing” later.</p>
-<p>Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another. However, the meaning of the likelihood ratio is in some sense consistent across contexts: a LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.</p>
+<p>So <span class="math inline"><em>L</em><em>R</em>(<em>M</em><sub><em>S</em></sub>, <em>M</em><sub><em>F</em></sub>; <em>x</em>)</span> is <code>1.8135904</code>. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor – not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered “convincing” later.</p>
+<p>Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another. However, the meaning of the likelihood ratio is in some sense consistent across contexts: LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.</p>
 </div>
 </div>
-<div id="exercise" class="section level1">
-<h1>Exercise</h1>
-<p>You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4 The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. Looking at these results, does intuition say that they support the green dice or the blue dice? Strongly or weakly? Phrase the problem as a model comparison problem. State your modelling assumptions, and compute a likelihood ratio. Does it support your intuition?</p>
+<div id="exercises" class="section level1">
+<h1>Exercises</h1>
+<ol style="list-style-type: decimal">
+<li><p>You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4. The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. Looking at these results, does intuition say that they support the green dice or the blue dice? Strongly or weakly? Phrase the problem as a model comparison problem. State your modelling assumptions, and compute a likelihood ratio. Does it support your intuition?</p></li>
+<li>(Read the whole question before starting!)</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><p>Perform the following simulation study. Simulate 1000 tusks (values of <span class="math inline"><em>x</em></span>) from each of the models <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and <span class="math inline"><em>M</em><sub><em>F</em></sub></span>. For each simulated tusk compute the LR for <span class="math inline"><em>M</em><sub><em>S</em></sub></span> vs <span class="math inline"><em>M</em><sub><em>F</em></sub></span>, so you have computed 2000 LRs. Now consider using the LR to classify each tusk as being from a savanna or a forest elephant. Recall that large values for LR indicate support for <span class="math inline"><em>M</em><sub><em>S</em></sub></span>, so a natural classification rule is “classify as savanna if <span class="math inline"><em>L</em><em>R</em> &gt; <em>c</em></span>, otherwise classify as forest” for some threshold <span class="math inline"><em>c</em></span>. Plot the misclassification rate (= number of tusks wrongly classified/2000) for this rule, as <span class="math inline"><em>c</em></span> ranges from 0.01 to 100. What value of <span class="math inline"><em>c</em></span> minimizes the misclassification rate? [Hint: the plot will look best if you do things on the log scale, so you could let log10(c) vary from -2 to 2 using an equally spaced grid, and plot the misclassification rate on the <span class="math inline"><em>y</em></span> axis against log10(c) on the <span class="math inline"><em>x</em></span> axis.]</p></li>
+<li><p>Repeat the above simulation study using 100 tusks from <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and 1900 tusks from <span class="math inline"><em>M</em><sub><em>F</em></sub></span>. What value of <span class="math inline"><em>c</em></span> minimizes the misclassification rate? Comment.</p></li>
+</ol>
+<p>Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using roxygen2 format. See <a href="http://kbroman.org/pkg_primer/pages/docs.html">Karl Broman’s tutorial</a> for example.</p>
+<p><em>DO NOT REPEAT THE SIMULATION STUDY BY COPYING AND PASTING CODE AND MODIFYING A FEW NUMBERS! GET INTO THE HABIT OF DOING IT PROPERLY</em></p>
+<p>To be more explicit, at the top level your code should probably include a function something like this:</p>
+<pre><code>#&#39; Simulation study 
+#&#39;
+#&#39; Simulates data from forest and savanna tusks from prespecified frequencies, and uses LR to classify them.
+#&#39;
+#&#39; @param nS number of savanna tusks to use
+#&#39; @param nF number of forest tusks to use
+#&#39; @param fS allele frequencies of savanna elephants
+#&#39; @param fF allele frequencies of forest elephants
+#&#39; @param lc vector of log(c) values of LR cutoff to use
+#&#39;
+#&#39; @return Plot of misclassification rate against threshold
+#&#39;
+#&#39; @example simulation_study(1000,1000,(0.40, 0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100))
+#&#39;
+#&#39;
+simulation_study(nS,nF,fS,fF,c){
+...
+}</code></pre>
+<p>Then you can just call this simulation study function twice to complete the assignment.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Consider now modifying our example above on the tusk to allow for errors in the data. Specifically, suppose that there is an error probability of 0.02 when measuring each marker: with probability 0.98 you observe the true <span class="math inline"><em>x</em><sub><em>j</em></sub></span>, but with probability 0.02 an error is made and you observe <span class="math inline">1 − <em>x</em><sub><em>j</em></sub></span>. Assume that errors occur independently at each marker <span class="math inline"><em>j</em></span>. Let <span class="math inline"><em>M</em>′<sub><em>S</em></sub></span> and <span class="math inline"><em>M</em>′<sub><em>F</em></sub></span> denote the models with this error process incorporated. Derive expressions for the likelihood for <span class="math inline"><em>M</em>′<sub><em>S</em></sub></span> and <span class="math inline"><em>M</em>′<sub><em>F</em></sub></span>, and compute the LR for the example tusk data given here.</li>
+</ol>
 </div>
 <div id="summary-1" class="section level1">
 <h1>Summary</h1>
-<p>You should now feel comfortable answering the following questions: i) what is a fully specified model? ii) what is the likelihood for a fully specified model? iii) what is the likelihood ratio for comparing two fully specified models?</p>
+<p>Repeat after me:</p>
+<ol style="list-style-type: decimal">
+<li><p>“The likelihood for a model is the probability of the data under the model”</p></li>
+<li><p>“Individual likelihood values are mostly irrelevant: it is likelihood ratios that matter”</p></li>
+<li><p>“If the likelihood ratio for model 1 vs model 2 is x, then this means the data favour model 1 by a factor of x”. (Or, if x &lt;1 then it means “the data favour model 2 by a factor of 1/x”“)</p></li>
+</ol>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
