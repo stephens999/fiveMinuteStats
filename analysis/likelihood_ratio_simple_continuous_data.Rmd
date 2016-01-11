@@ -1,0 +1,98 @@
+---
+title: "The likelihood ratio for continuous data"
+author: "Matthew Stephens"
+date: 2016-01-07
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+
+# Summary
+
+This document introduces the likelihood ratio for continuous data and models, and explains its connection with discrete models.
+
+# Pre-requisites
+
+Be familiar with the [likelihood ratio for discrete data](likelihood_ratio_simple_models.html)
+
+# Definition
+
+Recall that if models $M_0$ and $M_1$ are fully-specified 
+model for discrete data $X=x$,
+with probability mass functions $p(\cdot | M_0)$ and $p(\cdot | M_1$, then
+the likelihood ratio for $M_1$ vs $M_0$ is defined as
+
+$$LR(M_1,M_0) := p(x | M_1)/p(x | M_0).$$
+
+Now suppose that the data and models are continuous. So instead of a probability *mass* function, each model has a probability 
+*density* function. Then the likelihood ratio 
+for $M_1$ vs $M_0$ is usually defined as the ratio of the probability density functions. That is, we have exactly the same expression for the LR,
+
+$$LR(M_1,M_0) := p(x | M_1)/p(x | M_0)$$
+
+but now  $p(\cdot | M_1)$ and $p(\cdot | M_0)$ are probability density functions instead of probability mass functions. 
+
+
+# Example
+
+A medical screening test for a disease involves measuring the concentration ($X$) of a protein in the blood. In normal individuals $X$ has a Gamma distribution with mean 1 and shape 2.
+In diseased individuals the protein becomes elevated, and $X$ has a Gamma distribution with mean 2 and shape 2. Plotting the probability density functions of these distributions yields:
+```{r}
+x = seq(0,10,length=100)
+plot(x, dgamma(x,scale = 0.5,shape = 2), type="l", xlab="protein concentration")
+lines(x, dgamma(x,scale = 1,shape = 2), type="l", col="red")
+```
+
+Suppose that for a particular patient we observe $X=4.02$. Then the likelihood ratio for 
+the model that this patient is from the normal group ($M_n$) vs the model
+that the patient is from the diseased group ($M_d$) is ``dgamma(4.02,scale=0.5,shape=2)/dgamma(4.02,scale=1,shape=2)``
+which is ``r signif(dgamma(4.02,scale=0.5,shape=2)/dgamma(4.02,scale=1,shape=2),3)``. 
+That is, the data favour this individual being diseased by a factor of approximately
+``r signif(dgamma(4.02,scale=1,shape=2)/dgamma(4.02,scale=0.5,shape=2),2)``. 
+
+# Connection with Discrete Models
+
+Often the likelihood ratio for continuous models is simply *defined* as the ratio of the
+densities, as above. However, an alternative approach, which can yield greater insight, is instead to *derive* this result as an approximation, from the definition of likelihood ratio for discrete models, as follows.
+
+The first step is to recognize that in practice all observations are actually discrete, because
+of finite precision. Sometimes the measurement precision is made explicit, but often
+it is implicit in the number of decimal places used to report an observation. For example, in the example above, where we were told that we observed a protein concentration of $X=4.02$, it would be reasonable to think that the measurement precision
+is 2 decimal places, and that this observation actually corresponds to "$X$ lies in the interval $[4.015,4.025)$". The probability of this observation, under a continuous model for $X$, is the integral of the probability density function from $4.015$ to $4.025$. In other words, it is$F_X(4.025)-F_X(4.015)$ where $F_X$ denotes the cumulative distribution function for $X$.
+
+With this view, the likelihood for the "observation" $X=4.02$ under $M_n$ is actually
+``pgamma(4.025,scale=0.5,shape=2)-pgamma(4.015,scale=0.5,shape=2)`` = ``r pgamma(4.025,scale=0.5,shape=2)-pgamma(4.015,scale=0.5,shape=2)``.
+Similarly, the likelihood under $M_d$ is ``r pgamma(4.025,scale=1,shape=2)-pgamma(4.015,scale=1,shape=2)``, and the likelihood ratio is
+``r (pgamma(4.025,scale=0.5,shape=2)-pgamma(4.015,scale=0.5,shape=2))/(pgamma(4.025,scale=1,shape=2)-pgamma(4.015,scale=1,shape=2))``. 
+
+As you can see, this approach yields a LR that is numerically very close to that obtained using the ratio of the densities, as above. This is not a coincidence! Here is why we should expect this to happen more generally. Suppose we assume that measurement precision is $\epsilon$. So the "observation" $X=x$ really means $X \in [x-\epsilon,x+\epsilon]$.
+Then the likelihood for a model $M$, given this observation,
+is $\Pr(X \in [x-\epsilon,x+\epsilon] | M)$.
+Provided $\epsilon$ is small, and assuming that the density $p(x|M)$ is well-behaved (e.g. continuous, and not infinite) in the region around $x$, then this probability is approximately $2\epsilon p(x | M)$. Thus the LR for two models $M_1$ vs $M_0$, is given by
+
+$$LR = \Pr(X \in [x-\epsilon,x+\epsilon] | M_1)/ \Pr(X \in [x-\epsilon,x+\epsilon] | M_0) 
+\approx 2\epsilon p(x | M_1)/2\epsilon p(x|M_0) = p(x|M_1)/p(x|M_0).$$
+
+
+# Summary
+
+In most cases, the Likelihood ratio for model $M_1$ vs model $M_0$ for a continuous
+random variable $X$, given an observation 
+$X=x$, can we well approximated by
+the ratio of the model densities of $X$, evaluated at $x$.
+This approximation comes from assuming that measurement precision is high
+and that the model density functions are well behaved near $x$.
+
+ 
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
