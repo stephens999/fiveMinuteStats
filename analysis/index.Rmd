@@ -10,7 +10,7 @@ title: "Home"
 
 *  [Likelihood Ratio for fully specified models, discrete data](likelihood_ratio_simple_models.html)
 
-*  [Likelihood Ratio for fully specified models, continuous data](likelihood_ratio_simple_continuous.html)
+*  [Likelihood Ratio for fully specified models, continuous data](likelihood_ratio_simple_continuous_data.html)
 
 *  [Likelihood Ratios: how big is convincing?](LR_and_BF.html)
 
