@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-01-07" />
+
+<title>Likelihood Ratio: how big is convincing?</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Likelihood Ratio: how big is convincing?</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-07</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#calculations-using-bayes-theorem">Calculations using Bayes Theorem</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#a-useful-formula">A useful formula</a></li>
+<li><a href="#example-1">Example</a></li>
+<li><a href="#exercise">Exercise</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-01-12</p>
+<p><strong>Code version:</strong> 2d91d9556ed2635832d538afd250736a7e23b2fc</p>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>This document introduces the idea that drawing conclusions from likelihood ratios (or Bayes Factors) from fully specified models is context dependent. In particular, it involves weighing the information in the data against the relative (prior) plausibility of the models.</p>
+</div>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Recall that a fully specified model is one with no free parameters. So a fully specified model for <span class="math inline"><em>X</em></span> is simply a probability distribution <span class="math inline"><em>p</em>(<em>x</em>|<em>M</em>)</span>. And, given observed data <span class="math inline"><em>X</em> = <em>x</em></span> the Likelihood Ratio for comparing two fully specified models, <span class="math inline"><em>M</em><sub>1</sub></span> vs <span class="math inline"><em>M</em><sub>0</sub></span>, is defined as the ratio of the probabilities of the observed data under each model:</p>
+<p><br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub>1</sub>, <em>M</em><sub>0</sub>):=<em>p</em>(<em>x</em>|<em>M</em><sub>1</sub>)/<em>p</em>(<em>x</em>|<em>M</em><sub>0</sub>).</span><br /></p>
+<p>For fully specified models, the likelihood ratio is also known as the “Bayes Factor” (BF), so we could also define the Bayes Factor for <span class="math inline"><em>M</em><sub>1</sub></span> vs <span class="math inline"><em>M</em><sub>0</sub></span> as <br /><span class="math display"><em>B</em><em>F</em>(<em>M</em><sub>1</sub>, <em>M</em><sub>0</sub>):=<em>p</em>(<em>x</em>|<em>M</em><sub>1</sub>)/<em>p</em>(<em>x</em>|<em>M</em><sub>0</sub>).</span><br /> When comparing fully specified models the LR and BF are just two different names for the same thing.</p>
+<p>In the example <a href="likelihood_ratio_simple_models.html">here</a> we considered the problem of determining whether an elephant tusk came from a savanna elephant or a forest elephant, based on examining DNA data. Specifically we computed the LR (or BF) comparing two models, <span class="math inline"><em>M</em><sub><em>S</em></sub></span> and <span class="math inline"><em>M</em><sub><em>F</em></sub></span>, where <span class="math inline"><em>M</em><sub><em>S</em></sub></span> denotes the model that the tusk came from a savanna elephant and <span class="math inline"><em>M</em><sub><em>F</em></sub></span> denotes the model that the tusk came from a forest elephant. In our example we found LR=1.8, so the data favor <span class="math inline"><em>M</em><sub><em>S</em></sub></span> by a factor of 1.8. We commented that a factor of 1.8 is relatively modest, and not sufficient to convince that the tusk definitely came from a savanna elephant.</p>
+<p>In the example <a href="likelihood_ratio_simple_continous_data.html">here</a> we considered the problem of testing a patient for a disease based on measuring the concentration of a particular diagnostic protein in the blood. Specifically we computed the LR (or BF) comparing two models, <span class="math inline"><em>M</em><sub><em>n</em></sub></span> and <span class="math inline"><em>M</em><sub><em>d</em></sub></span>, where <span class="math inline"><em>M</em><sub><em>S</em></sub></span> denotes the model that the patient is normal and <span class="math inline"><em>M</em><sub><em>d</em></sub></span> denotes the model that the patient has the disease. In our example we found LR for <span class="math inline"><em>M</em><sub><em>n</em></sub></span> vs <span class="math inline"><em>M</em><sub><em>d</em></sub></span> to be approximately 0.07, so the data favor <span class="math inline"><em>M</em><sub><em>d</em></sub></span> by a factor of 14. This is a much larger LR than in the first case, but is it convincing? Can we confidently conclude that the patient has the disease?</p>
+<p>More generally, we would like to address the question: what value of the LR should we treat as<br />
+“convincing” evidence for one model vs another?</p>
+<p>It is crucial to recognize that the answer to this question has to be context dependent. In particular, the extent to which we should be “convinced” by a particular LR value has to depend on the relative plausibility of the models we are comparing. For example, in statistics there are many situations where we want to compare models that are not equally plausible. Suppose that model <span class="math inline"><em>M</em><sub>1</sub></span> is much less plausible than <span class="math inline"><em>M</em><sub>0</sub></span>. Then we must surely demand stronger evidence from the data (larger LR) to be “convinced” that it arose from model <span class="math inline"><em>M</em><sub>1</sub></span> rather than <span class="math inline"><em>M</em><sub>0</sub></span>, than in contexts where <span class="math inline"><em>M</em><sub>1</sub></span> and <span class="math inline"><em>M</em><sub>0</sub></span> are equally plausible.</p>
+<p>In the disease screening example, the interpretation depends on the frequency of the disease in the population being screened. For example, suppose that only 5% of people screened actually have the disease. Then to outweigh that fact, we would have to demand a high LR to “convince” us that a particular person has the disease. In contrast, if 50% of people screened have the disease then we might be convinced by a much smaller LR.</p>
+</div>
+<div id="calculations-using-bayes-theorem" class="section level1">
+<h1>Calculations using Bayes Theorem</h1>
+<p>The following calculation formalizes this intuition. Suppose we are presented with a series of observations <span class="math inline"><em>x</em><sub>1</sub>, …, <em>x</em><sub><em>n</em></sub></span>, some of which are generated from model <span class="math inline"><em>M</em><sub>0</sub></span> and the others of which are generated from model <span class="math inline"><em>M</em><sub>1</sub></span>. Let <span class="math inline"><em>Z</em><sub><em>i</em></sub> ∈ 0, 1</span> denote whether <span class="math inline"><em>x</em><sub><em>i</em></sub></span> was generated from model <span class="math inline"><em>M</em><sub>0</sub></span> or <span class="math inline"><em>M</em><sub>1</sub></span>, and let <span class="math inline"><em>π</em><sub><em>j</em></sub></span> denote the proportion of the observations that came from model <span class="math inline"><em>M</em><sub><em>j</em></sub></span> (<span class="math inline"><em>j</em> = 0, 1</span>). So in the disease screening example, <span class="math inline"><em>π</em><sub>1</sub></span> would be the proportion of screened individuals who have the disease. That is, <span class="math inline"><em>π</em><sub><em>j</em></sub> = Pr(<em>Z</em><sub><em>i</em></sub> = <em>j</em>)</span>.</p>
+<p>Bayes Theorem says that <br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 1|<em>x</em><sub><em>i</em></sub>)=Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 1)Pr(<em>Z</em><sub><em>i</em></sub> = 1)/Pr(<em>x</em><sub><em>i</em></sub>).</span><br /> Also, <br /><span class="math display">Pr(<em>x</em><sub><em>i</em></sub>)=Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 0)Pr(<em>Z</em><sub><em>i</em></sub> = 0)+Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 1)Pr(<em>Z</em><sub><em>i</em></sub> = 1).</span><br /></p>
+<p>Putting these together, substituting <span class="math inline"><em>π</em><sub><em>j</em></sub></span> for <span class="math inline">Pr(<em>Z</em><sub><em>i</em></sub> = <em>j</em>)</span>, and dividing numerator and denominator by <span class="math inline">Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 0)</span> yields:</p>
+<p><br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 1|<em>x</em><sub><em>i</em></sub>)=<em>π</em><sub>1</sub><em>L</em><em>R</em><sub><em>i</em></sub>/(<em>π</em><sub>0</sub> + <em>π</em><sub>1</sub><em>L</em><em>R</em><sub><em>i</em></sub>)</span><br /></p>
+<p>where <span class="math inline"><em>L</em><em>R</em><sub><em>i</em></sub></span> denotes the likelihood ratio for <span class="math inline"><em>M</em><sub>1</sub></span> vs <span class="math inline"><em>M</em><sub>0</sub></span> computed for observation <span class="math inline"><em>x</em><sub><em>i</em></sub></span>.</p>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>Suppose that only 5% of screened people have the disease. Then a LR of 14 in favor of disease yields: <br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 1|<em>x</em><sub><em>i</em></sub>)=0.05 * 14/(0.95 + 0.05 * 14)</span><br /> = <code>0.4242424</code>.</p>
+<p>In contrast, if 50% of screened people have the disease then the LR of 14 yields <br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 1|<em>x</em><sub><em>i</em></sub>)=0.5 * 14/(0.5 + 0.5 * 14)</span><br /> = <code>0.9333333</code>.</p>
+<p>Thus in the first case, of patients with <span class="math inline"><em>L</em><em>R</em> = 14</span>, less than half would actually have the disease. In the second case, of patients with <span class="math inline"><em>L</em><em>R</em> = 14</span>, more than 90% would have the disease!</p>
+</div>
+<div id="a-useful-formula" class="section level1">
+<h1>A useful formula</h1>
+<p>There is another way of laying out this kind of calculation, which may be slightly easier to interpret and remember, and also has the advantage of holding even when more than two models are under consideration. From Bayes theorem we have</p>
+<p><br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 1|<em>x</em><sub><em>i</em></sub>)=Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 1)Pr(<em>Z</em><sub><em>i</em></sub> = 1)/Pr(<em>x</em><sub><em>i</em></sub>).</span><br /></p>
+<p>and</p>
+<p><br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 0|<em>x</em><sub><em>i</em></sub>)=Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 0)Pr(<em>Z</em><sub><em>i</em></sub> = 0)/Pr(<em>x</em><sub><em>i</em></sub>).</span><br /></p>
+<p>Taking the ratio of these gives <br /><span class="math display">Pr(<em>Z</em><sub><em>i</em></sub> = 1|<em>x</em><sub><em>i</em></sub>)/Pr(<em>Z</em><sub><em>i</em></sub> = 0|<em>x</em><sub><em>i</em></sub>)=[Pr(<em>Z</em><sub><em>i</em></sub> = 1)/Pr(<em>Z</em><sub><em>i</em></sub> = 0)] × [Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 1)/Pr(<em>x</em><sub><em>i</em></sub>|<em>Z</em><sub><em>i</em></sub> = 1)].</span><br /></p>
+<p>This formula can be conveniently stated in words, using the notion of ``odds“, as follows: <br /><span class="math display">Posterior Odds = Prior Odds x LR</span><br /> or, recalling that the LR is sometimes referred to as the Bayes Factor (BF), we have <br /><span class="math display">Posterior Odds = Prior Odds x BF.</span><br /></p>
+<p>Note that the “Odds” of an event <span class="math inline"><em>E</em><sub>1</sub></span> vs an event <span class="math inline"><em>E</em><sub>2</sub></span> means the ratio of their probabilities. So <span class="math inline">Pr(<em>Z</em><sub><em>i</em></sub> = 1)/Pr(<em>Z</em><sub><em>i</em></sub> = 0)</span> is the “Odds” of <span class="math inline"><em>Z</em><sub><em>i</em></sub> = 1</span> vs <span class="math inline"><em>Z</em><sub><em>i</em></sub> = 0</span>. It is referred to as the “Prior Odds”, because it is the odds prior to seeing the data <span class="math inline"><em>x</em></span>. Similarly the Posterior Odds refers to the Odds of <span class="math inline"><em>Z</em><sub><em>i</em></sub> = 1</span> vs <span class="math inline"><em>Z</em><sub><em>i</em></sub> = 0</span> “posterior to” (after) seeing the data <span class="math inline"><em>x</em></span>.</p>
+</div>
+<div id="example-1" class="section level1">
+<h1>Example</h1>
+<p>Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/20. And a LR of 14 in favor of disease yields a posterior odds of 14/20 (or “14 to 20”, or “7 to 10”).</p>
+<p>Suppose that 50% of screened people have the disease. Then the prior odds for disease is 1. And a LR of 14 in favor of disease yields a posterior odds of 14 (or “14 to 1”).</p>
+<p>In cases where there are only two possibilities, as here, then the posterior odds determines the posterior probabilities.</p>
+</div>
+<div id="exercise" class="section level1">
+<h1>Exercise</h1>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.11
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.3     htmltools_0.2.6
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.8.1 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+
+</body>
+</html>

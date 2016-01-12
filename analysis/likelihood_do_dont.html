@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-01-11" />
+
+<title>Likelihood Ratios: examples and pitfalls</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Likelihood Ratios: examples and pitfalls</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-11</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#infinite-and-zero-lrs">Infinite and zero LRs</a></li>
+<li><a href="#avoid-focussing-on-the-likelihood-itself-only-ratios-matter">Avoid focussing on the likelihood itself: only ratios matter</a></li>
+<li><a href="#only-compare-likelihoods-for-the-same-data">Only compare likelihoods for the same data!</a></li>
+<li><a href="#dealing-with-missing-data-and-the-missing-at-random-assumption">Dealing with missing data; and the missing at random assumption</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-01-12</p>
+<p><strong>Code version:</strong> 2d91d9556ed2635832d538afd250736a7e23b2fc</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Be familiar with the <a href="likelihood_ratio_simple_models.html">likelihood ratio for discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The aim here is to give some simple (somewhat artificial) examples to illustrate the idea of a likelihood ratio, and to mention some pitfalls to be avoided.</p>
+</div>
+<div id="infinite-and-zero-lrs" class="section level1">
+<h1>Infinite and zero LRs</h1>
+<p>Suppose you are throwing a six-sided die with sides marked 1,2,3,4,5 and 6. Consider comparing the models <span class="math inline"><em>M</em><sub>0</sub></span>: the die is fair (ie each face has probability 1/6) vs <span class="math inline"><em>M</em><sub>1</sub></span>: the die is loaded, and will always land 6.</p>
+<p>If we observe a “6” then the likelihood ratio for <span class="math inline"><em>M</em><sub>1</sub></span> is 1/(1/6)=6.</p>
+<p>If we observe any other number then the likelihood ratio for <span class="math inline"><em>M</em><sub>1</sub></span> vs <span class="math inline"><em>M</em><sub>0</sub></span> is <span class="math inline">0/(1/6)</span> = 0.</p>
+<p>Note that LR=0 in the latter case because the data are impossible under <span class="math inline"><em>M</em><sub>1</sub></span>. Indeed, <span class="math inline"><em>L</em><em>R</em>(<em>M</em><sub>1</sub>, <em>M</em><sub>0</sub>)=0</span> if and only if the data are impossible under <span class="math inline"><em>M</em><sub>1</sub></span>, and so <span class="math inline"><em>L</em><em>R</em> = 0</span> means that the data exclude <span class="math inline"><em>M</em><sub>1</sub></span>. Note also that in this case the LR for <span class="math inline"><em>M</em><sub>0</sub></span> vs <span class="math inline"><em>M</em><sub>1</sub></span> is infinity. However, in general strong support for <span class="math inline"><em>M</em><sub>0</sub></span> vs <span class="math inline"><em>M</em><sub>1</sub></span> does not imply that <span class="math inline"><em>M</em><sub>0</sub></span> is “true”, or even a good model. It only implies that <span class="math inline"><em>M</em><sub>0</sub></span> is favored over <span class="math inline"><em>M</em><sub>1</sub></span>. There could always be other models that explain the data much better than <span class="math inline"><em>M</em><sub>0</sub></span>!</p>
+</div>
+<div id="avoid-focussing-on-the-likelihood-itself-only-ratios-matter" class="section level1">
+<h1>Avoid focussing on the likelihood itself: only ratios matter</h1>
+<p>Suppose we toss a coin 100 times, and get 50 Heads and 50 Tails (in some order). If the coin is fair, (ie 50% chance of landing heads independently for each toss) then the probability of any given sequence with 50 heads and 50 tails is <span class="math inline">0.5<sup>100</sup></span>. That is, given these data, the likelihood for the model <span class="math inline"><em>M</em></span> “the coin is fair” is <span class="math inline">0.5<sup>100</sup></span>.</p>
+<p>Is this a big likelihood or a small likelihood? The point here is that this is not really a meaningful question. Although the number <span class="math inline">0.5<sup>100</sup></span> is, in most contexts, “small”, in this context it would be wrong to call this a “small” likelihood. Indeed, the data are entirely consistent with the model!</p>
+<p>Don’t focus on likelihoods: focus on likelihood ratios.</p>
+<p>Similarly when looking at log-likelihoods, it is the difference between log-likelihoods (ie the log-likelihood ratio) that matters, not the actual log-likelihoods. For example, suppose the log-likelihood (all logs base e here) for model <span class="math inline"><em>M</em><sub>0</sub></span> is -33999445.1 and for model <span class="math inline"><em>M</em><sub>1</sub></span> is -33998325.7. Because both these numbers are very big (in absolute terms) it is tempting the view the difference (<code>1119.4</code>) as not very big relative to these big numbers. But remember that the actual log-likelihoods themselves are irrelevant! It is only the logLR, or the difference in the log-likelihoods, that matters. So here the logLR is <code>1119.4</code> and the data support the model 1 by a factor of more than <span class="math inline"><em>e</em><em>x</em><em>p</em>(1000)</span>.</p>
+</div>
+<div id="only-compare-likelihoods-for-the-same-data" class="section level1">
+<h1>Only compare likelihoods for the same data!</h1>
+<p>Remember that the likelihood ratio is computed for two different models on the <em>same data</em>. It must really be exactly the same data. In the continuous case this means it can’t even be a 1-1 transform of the same data - it has to be the same data.</p>
+<p>For example, suppose you observe data <span class="math inline"><em>x</em><sub>1</sub>, …, <em>x</em><sub><em>n</em></sub></span>, and you want to compare the models <span class="math inline"><em>M</em><sub>0</sub> : <em>x</em><sub>1</sub>, …, <em>x</em><sub><em>n</em></sub></span> are normally distributed vs <span class="math inline"><em>M</em><sub>1</sub> : <em>l</em><em>o</em><em>g</em>(<em>x</em><sub>1</sub>),…,log(<em>x</em><sub><em>n</em></sub>)</span> are normally distributed. You have to rephrase <span class="math inline"><em>M</em><sub>1</sub></span> in terms of the original <span class="math inline"><em>x</em><sub><em>j</em></sub></span>: that is <span class="math inline"><em>M</em><sub>1</sub> : <em>x</em><sub>1</sub>, …, <em>x</em><sub><em>n</em></sub></span> are log-normally distributed.</p>
+</div>
+<div id="dealing-with-missing-data-and-the-missing-at-random-assumption" class="section level1">
+<h1>Dealing with missing data; and the missing at random assumption</h1>
+<p>Consider the tusk example, and suppose now that at marker 1 the DNA assay failed, and so the data are “missing”. How does this impact the LR?</p>
+<p>The trick here is to note that “the data are missing” is really an “observation”. The likelihood ratio for an observation is the ratio of the probability of that observation under the two models, so the LR for this marker alone for <span class="math inline"><em>M</em><sub><em>S</em></sub></span> vs <span class="math inline"><em>M</em><sub><em>F</em></sub></span> is <br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub><em>S</em></sub>, <em>M</em><sub><em>F</em></sub>)=Pr(data missing|<em>M</em><sub><em>S</em></sub>)/Pr(data missing|<em>M</em><sub><em>F</em></sub>).</span><br /></p>
+<p>If the probability of getting missing data is the same for both models then the LR is 1 (and we don’t actually have to worry about what that probability of getting missing data is).</p>
+<p>On the other hand, it is conceivable that missing data occurs more commonly in one group than in another, for one reason or another. In this case the LR for a missing observation could be something other than 1. This is called “informative missingness”, and to compute the LR our models would have to explicitly incorporate probabilities for observations to be missing.</p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.11
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.3     htmltools_0.2.6
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.8.1 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+
+</body>
+</html>
