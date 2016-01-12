@@ -8,9 +8,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
+<meta name="author" content="Matthew Stephens" />
 
+<meta name="date" content="2016-01-12" />
 
-<title>Home</title>
+<title>The Likelihood Function</title>
 
 <script src="libs/jquery-1.11.0/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -132,26 +134,83 @@ img {
 </div><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">Home</h1>
+<h1 class="title">The Likelihood Function</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-12</em></h4>
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#inference">Inference</a></li>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#the-log-likelihood">The log-likelihood</a></li>
+<li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-12</p>
 <p><strong>Code version:</strong> 1c7e05711819b1e147769ef43fe9cfefcedc27c4</p>
-<div id="inference" class="section level2">
-<h2>Inference</h2>
-<ul>
-<li><p><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></p></li>
-<li><p><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></p></li>
-<li><p><a href="likelihood_do_dont.html">Likelihood Ratios: Examples and Pitfalls</a></p></li>
-<li><p><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></p></li>
-<li><p><a href="likelihood_function.html">The Likelihood Function</a></p></li>
-</ul>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>We have seen how one can use the likelihood ratio to compare the support in the data for two fully-specified models. In practice we often want to compare more than two models - indeed, we often want to compare a continuum of models. This is where the idea of a likelihood function comes from.</p>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>In our example <a href="likelihood_ratio_simple_models.html">here</a> we assumed that the frequencies of different alleles (genetic types) in forest and savanna elephants were given to us. In practice these frequencies themselves would have to be estimated from data.</p>
+<p>For example, suppose we collect data on 100 savanna elephants, and see that 30 of them carry allele 1 at marker 1, while 70 carry the allele 0 (again we are treating elephants as haploid to simplify things). Intuitively we might estimate that the frequency of the 1 allele at that marker is 30/100, or 0.3. But we might think that the data are also consistent with other frequencies near 0.3. For example maybe the data are consistent with a frequency of 0.29 also. Or 0.28? Or …</p>
+<p>In this case we have many more than just two models to compare. Indeed, if we allow that the frequency could, in principle lie anywhere in the interval [0,1], then we have a continuum of models to compare.</p>
+<p>Specifically, for each <span class="math inline"><em>q</em> ∈ [0, 1]</span> let <span class="math inline"><em>M</em><sub><em>q</em></sub></span> denote the model that the true frequency of the 1 allele is <span class="math inline"><em>q</em></span>. Then, given our observation that 30 of 100 elephants carried allele 1 at marker 1, the likelihood for model <span class="math inline"><em>M</em><sub><em>q</em></sub></span> is, by the previous definition, <br /><span class="math display"><em>L</em>(<em>M</em><sub><em>q</em></sub>)=Pr(<em>D</em>|<em>M</em><sub><em>q</em></sub>)=<em>q</em><sup>30</sup>(1 − <em>q</em>)<sup>70</sup>.</span><br /> And the LR comparing models <span class="math inline"><em>M</em><sub><em>q</em><sub>1</sub></sub></span> and <span class="math inline"><em>M</em><sub><em>q</em><sub>2</sub></sub></span> is <br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub><em>q</em><sub>1</sub></sub>; <em>M</em><sub><em>q</em><sub>2</sub></sub>)) = [<em>q</em><sub>1</sub>/<em>q</em><sub>2</sub>]<sup>30</sup>[(1 − <em>q</em><sub>1</sub>)/(1 − <em>q</em><sub>2</sub>)]<sup>70</sup>.</span><br /></p>
+<p>This is an example of what is called a parametric model. A parametric model is collection of models indexed by a parameter vector, often denoted <span class="math inline"><em>θ</em></span>, whose values lie in some parameter space, usually denoted <span class="math inline"><em>Θ</em></span>. The number of parameters included in the vector <span class="math inline"><em>θ</em></span> is called the “dimensionality” of the model or parameter space, and often denoted <span class="math inline"><em>d</em><em>i</em><em>m</em>(<em>Θ</em>)</span>.</p>
+<p>Here the parameter is <span class="math inline"><em>q</em></span> and the parameter space is <span class="math inline">[0, 1]</span>. The dimensionality is 1.</p>
+<p>When computing likelihoods for parametric models, we usually dispense with the model notation and simply use the parameter value to denote the model. So instead of referring to the likelihood for <span class="math inline"><em>M</em><sub><em>q</em></sub></span> we just say the “likelihood for <span class="math inline"><em>q</em></span>”, and write <span class="math inline"><em>L</em>(<em>q</em>)</span>. So the likelihood for <span class="math inline"><em>q</em></span> is given by <br /><span class="math display"><em>L</em>(<em>q</em>)=<em>q</em><sup>30</sup>(1 − <em>q</em>)<sup>70</sup>.</span><br /> Correspondingly we can also refer to the “likelihood ratio for <span class="math inline"><em>q</em><sub>1</sub></span> vs <span class="math inline"><em>q</em><sub>2</sub></span>”.</p>
+<p>We could plot the likelihood function as follows:</p>
+<pre class="r"><code>q = seq(0,1,length=100)
+L= function(q){q^30 * (1-q)^70}
+plot(q,L(q),ylab=&quot;L(q)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
+<p><img src="figure/likelihood_function.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>The value of <span class="math inline"><em>θ</em></span> that maximizes the likelihood function is referred to as the “maximum likelihood estimate”, and usually denoted <span class="math inline">$\hat{\theta}$</span>. That is <br /><span class="math display">$$\hat{\theta}:= \arg \max L(\theta).$$</span><br /></p>
+<p>Provided the data are sufficiently informative, and the number of parameters is not too large, maximum likelihood estimates tend to be sensible. In this case we can see that the maximum likelihood estimate is <span class="math inline"><em>q</em> = 0.3</span>, which also corresponds to our intuition.</p>
+<p>Note that from the likelihood function we can easily compute the likelihood ratio for any pair of parameter values! And just as with comparing two models, it is not the likelihoods that matter, but the likelihood ratios. That is you can divide the likelihood function by any constant without affecting the likelihood ratios.</p>
+<p>One way to emphasise this is to standardize the likelihood function so that its maximum is at 1, by dividing <span class="math inline">$L(\theta)/L(\hat{\theta})$</span>.</p>
+<pre class="r"><code>q = seq(0,1,length=100)
+L= function(q){q^30 * (1-q)^70}
+plot(q,L(q)/L(0.3),ylab=&quot;L(q)/L(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
+<p><img src="figure/likelihood_function.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Note that for some values of <span class="math inline"><em>q</em></span> the likelihood ratio compared with <span class="math inline"><em>q</em> = 0.3</span> is very close to 0. These values of <span class="math inline"><em>q</em></span> are so much less consistent with the data that they are effectively excluded by the data. Just looking at the picture we might say that the values of <span class="math inline"><em>q</em></span> less than 0.15 or bigger than 0.5 are pretty much excluded by the data. We will see later how Bayesian analysis methods can be used to make this kind of argument more formal.</p>
+</div>
+<div id="the-log-likelihood" class="section level1">
+<h1>The log-likelihood</h1>
+<p>Just as it can often be convenient to work with the log-likelihood ratio, it can be convenient to work with the log-likelihood function, usually denoted <span class="math inline"><em>l</em>(<em>θ</em>)</span> [lower-case L]. As with log likelihood ratios, unless otherwise specified, we use log base e. Here is the log-likelihood function.</p>
+<pre class="r"><code>q = seq(0,1,length=100)
+l= function(q){30*log(q) + 70 * log(1-q)}
+plot(q,l(q)-l(0.3),ylab=&quot;l(q) - l(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
+<p><img src="figure/likelihood_function.Rmd/unnamed-chunk-3-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> Changes in the log-likelihood function are referred to as “log-likelihood units”. For example the difference in the support for <span class="math inline"><em>q</em> = 0.3</span> and <span class="math inline"><em>q</em> = 0.35</span> is <code>l(0.3)-l(0.35)</code> = <code>0.5630377</code> log-likelihood units. Again, remember that it is differences in <span class="math inline"><em>l</em></span> that matter, not the actual values.</p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.10.5
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2     tools_3.2.3     htmltools_0.2.6
+ [5] yaml_2.1.13     stringi_0.5-5   rmarkdown_0.7   stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.7   </code></pre>
 </div>
 
 
