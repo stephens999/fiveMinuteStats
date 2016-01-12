@@ -117,6 +117,21 @@ So $LR(M_S,M_F;x)$ is ``r LR``. This means that the data favor the tusk coming f
 
 Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another.  However, the meaning of the likelihood ratio is in some sense consistent across contexts: LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.
 
+# The inverse likelihood ratio, and the log-likelihood ratio
+
+Notice that, from the definition of the LR, the LR for $M_0$ vs $M_1$ is the just inverse of the LR for $M_1$ vs $M_0$. That is
+$$LR(M_0,M_1; x) = 1/LR(M_1,M_0; x).$$
+
+So, for example if $LR(M_1,M_0)=0.01$ then $LR(M_0,M_1)=100$ and the data favour $M_0$ vs $M_1$ by a factor of 100.
+
+For many reasons, it is common to work with the log likelihood ratio, $LLR := log(LR)$. Usually mathematicians work with base logarithms base e, and we will use that convention unless otherwise stated. So, for example, if the LR=1.8 then LLR=$\log_e$(1.8)=``r log(1.8)``.
+
+Although the usual convention is to use log base e, it can sometimes be useful to work with logarithms base 10 to make the inverse logarithm operation easier for human calculation. For example, 
+if I tell you that the LLR, base 10, is 3 then you can immediately tell me that the LR is 1000. 
+
+
+
+
 
 # Exercises
 

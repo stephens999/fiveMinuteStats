@@ -1,0 +1,84 @@
+---
+title: "Likelihood Ratios: examples and pitfalls"
+author: "Matthew Stephens"
+date: 2016-01-11
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+Be familiar with the [likelihood ratio for discrete data](likelihood_ratio_simple_models.html) and [continuous data](likelihood_ratio_simple_continuous_data.html).
+
+# Overview
+
+The aim here is to give some simple (somewhat artificial) examples to illustrate the idea of a likelihood ratio,
+and to mention some pitfalls to be avoided. 
+
+# Infinite and zero LRs
+
+Suppose you are throwing a six-sided die with sides marked 1,2,3,4,5 and 6. 
+Consider comparing the models $M_0$: the die is fair (ie each face has probability 1/6) vs
+$M_1$: the die is loaded, and will always land 6.
+
+If we observe a "6" then the likelihood ratio for $M_1$ is 1/(1/6)=6.
+
+If we observe any other number then the likelihood ratio for $M_1$ vs $M_0$ is $0/(1/6)$ = 0.
+
+Note that LR=0 in the latter case because the data are impossible under $M_1$.
+Indeed, $LR(M_1,M_0)=0$ if and only if the data are impossible under $M_1$,
+and so $LR=0$ means that the data exclude $M_1$.
+Note also that in this case the LR for $M_0$ vs $M_1$ is infinity. However, in general strong support
+for $M_0$ vs $M_1$ does not imply that $M_0$ is "true", or even a good model. It only implies
+that $M_0$ is favored over $M_1$. There could always be other models that explain the data much better than $M_0$!
+
+# Avoid focussing on the likelihood itself: only ratios matter
+
+Suppose we toss a coin 100 times, and get 50 Heads and 50 Tails (in some order). If the coin is fair,
+(ie 50% chance of landing heads independently for each toss) then
+the probability of any given sequence with 50 heads and 50 tails is $0.5^{100}$. That is, given these data, the likelihood for the model $M$ "the coin is fair" is $0.5^{100}$. 
+
+Is this a big likelihood or a small likelihood? The point here is that this is not really a meaningful question. Although the number $0.5^{100}$ is, in most contexts, "small", in this context it would be wrong to call this
+a "small" likelihood. Indeed, the data are entirely consistent with the model! 
+
+Don't focus on likelihoods: focus on likelihood ratios. 
+
+Similarly when looking at log-likelihoods, it is the difference between log-likelihoods (ie the log-likelihood ratio) that matters, not the actual log-likelihoods. For example, suppose the log-likelihood (all logs base e here) for model $M_0$ is  -33999445.1 and for model $M_1$ is -33998325.7. Because both these numbers are very big (in absolute terms) it is tempting the view the difference (``r -33998325.7 + 33999445.1``) as not very big relative to these big numbers. But remember that the actual log-likelihoods themselves are irrelevant! It is only the logLR, or the difference in the log-likelihoods, that matters. So here the logLR is ``r -33998325.7 + 33999445.1`` and the data support the model 1 by a factor of more than $exp(1000)$.
+
+# Only compare likelihoods for the same data!
+
+Remember that the likelihood ratio is computed for two different models on the *same data*.
+It must really be exactly the same data. In the continuous case
+this means it can't even be a 1-1 transform of the same data - it has to be the same data.
+
+For example, suppose you observe data $x_1,\dots,x_n$, and you
+want to compare the models $M_0: x_1,\dots,x_n$ are normally distributed vs $M_1: log(x_1),\dots,\log(x_n)$ are normally distributed. You have to rephrase $M_1$ in terms of the original $x_j$: that is $M_1: x_1,\dots,x_n$ are log-normally distributed. 
+
+
+# Dealing with missing data; and the missing at random assumption
+
+Consider the tusk example, and suppose now that at marker 1 the
+DNA assay failed, and so the data are "missing". How does this impact the LR?
+
+The trick here is to note that "the data are missing" is really an "observation". The likelihood ratio for an observation is the ratio of the probability of that observation under the two models, so the LR for this marker alone for $M_S$ vs $M_F$ is
+$$LR(M_S,M_F) = \Pr(\text{data missing} | M_S)/\Pr(\text{data missing} | M_F).$$
+
+If the probability of getting missing data is the same for both models then the LR is 1 (and we don't actually have to worry about what that probability of getting missing data is).
+
+On the other hand, it is conceivable that missing data occurs more commonly in one group than in another, for one reason or another. In this case the LR for a missing observation could be something other than 1.
+This is called "informative missingness", and to compute the LR our models would have to explicitly incorporate probabilities for observations to be missing.
+
+
+
+
+# Session information
+
+```{r info}
+sessionInfo()
+```

@@ -1,0 +1,125 @@
+---
+title: "Likelihood Ratio: how big is convincing?"
+author: "Matthew Stephens"
+date: 2016-01-07
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Summary
+
+This document introduces the idea that drawing conclusions from likelihood ratios (or Bayes Factors) from fully specified models 
+is context dependent. In particular, it involves weighing the information in the data against the relative (prior) plausibility of the models.
+
+# Pre-requisites
+
+You should understand the concept of using likelihood ratio for [discrete data](likelihood_ratio_simple_models.html) and [continuous data](likelihood_ratio_simple_continuous_data.html)
+to compare support for two fully specified models.
+
+# Overview
+
+Recall that a fully specified model is one with no free parameters.
+So a fully specified model for $X$ is simply a probability distribution $p(x|M)$. And, given observed data $X=x$ the Likelihood Ratio for comparing two fully specified models, $M_1$ vs $M_0$, is defined as the ratio of the probabilities of the observed data under each model:
+
+$$LR(M_1,M_0) := p(x | M_1) / p(x | M_0).$$
+
+For fully specified models, the likelihood ratio is also known
+as the "Bayes Factor" (BF), so we could also define the Bayes Factor for $M_1$ vs $M_0$ as 
+$$BF(M_1,M_0) :=   p(x | M_1) / p(x | M_0).$$
+When comparing fully specified models the LR and BF are just two different names for the same thing.
+
+In the example [here](likelihood_ratio_simple_models.html) we considered the problem of determining whether an elephant tusk came from a savanna elephant or a forest elephant, based on examining DNA data. Specifically we computed the LR (or BF) comparing two models, $M_S$ and $M_F$,
+where $M_S$ denotes the model that the tusk came from a savanna elephant and $M_F$ denotes the model that the tusk came from a forest elephant. In our example we found LR=1.8, so the data favor $M_S$ by a factor of 1.8. We commented that a factor of 1.8 is relatively modest, and not sufficient to convince that the tusk definitely came from a savanna elephant.
+
+In the example [here](likelihood_ratio_simple_continous_data.html) we considered the problem of testing a patient for a disease based on measuring the concentration of a particular diagnostic protein in the blood. Specifically we computed the LR (or BF) comparing two models, $M_n$ and $M_d$,
+where $M_S$ denotes the model that the patient is normal and $M_d$ denotes the model that the patient 
+has the disease. In our example we found LR for $M_n$ vs $M_d$ to be approximately 0.07, so the data favor $M_d$ by a factor of 14. This is a much larger LR than in the first case, but is it convincing? Can we confidently conclude that the patient has the disease?
+
+
+More generally, we would like to address the question: what value of the LR should we treat as  
+"convincing" evidence for one model vs another?
+
+It is crucial to recognize that the answer to this question has to be context dependent. In particular, the extent to which we should be "convinced" by a particular LR value has to depend on the relative plausibility of the models we are comparing. For example, in statistics there
+are many situations where we want to compare models that are not equally plausible. Suppose that model $M_1$ is much less plausible than $M_0$. Then we must surely demand stronger evidence from the data (larger LR) to be "convinced" that it arose from model $M_1$ rather than $M_0$, than in contexts where $M_1$ and $M_0$ are equally plausible. 
+
+In the disease screening example, the interpretation depends on the frequency of the disease in 
+the population being screened. For example, suppose that only 5\% of people screened actually have the disease.
+Then to outweigh that fact, we would have to demand a high  LR to "convince" us that a particular person has the disease. In contrast, if 50\% of people screened have the disease then we might be convinced by a much smaller LR.
+
+# Calculations using Bayes Theorem
+
+The following calculation formalizes this intuition.
+Suppose we are presented with a series of observations $x_1,\dots,x_n$, some of which are generated from model $M_0$ and the others of which are generated from model $M_1$. Let $Z_i\in {0,1}$ denote whether $x_i$ was generated from model $M_0$ or $M_1$, and let $\pi_j$ denote the proportion of the observations that came from model $M_j$ ($j=0,1$). So in the disease screening example, $\pi_1$ would be the proportion of screened individuals who have the disease. That is, $\pi_j = \Pr(Z_i=j)$.
+
+Bayes Theorem says that
+$$\Pr(Z_i = 1 | x_i) = \Pr(x_i | Z_i = 1) \Pr(Z_i=1)/ \Pr(x_i).$$
+Also, 
+$$\Pr(x_i) = \Pr(x_i | Z_i=0)\Pr(Z_i=0) + \Pr(x_i | Z_i=1)\Pr(Z_i=1).$$
+
+Putting these together, substituting $\pi_j$ for $\Pr(Z_i=j)$,
+and dividing numerator and denominator by $\Pr(x_i | Z_i=0)$ yields:
+
+$$\Pr(Z_i = 1 | x_i) = \pi_1 LR_i / (\pi_0 + \pi_1 LR_i)$$
+
+where $LR_i$ denotes the likelihood ratio for $M_1$ vs $M_0$ computed for observation $x_i$.
+
+# Example
+
+Suppose that only 5% of screened people have the disease. Then a LR of 14 in favor of disease yields:
+$$\Pr(Z_i=1 | x_i) = 0.05*14/(0.95 + 0.05* 14)$$ = ``r 0.05*14/(0.95 + 0.05* 14)``.
+
+In contrast, if 50% of screened people have the disease then the LR of 14 yields
+$$\Pr(Z_i=1 | x_i) = 0.5*14/(0.5 + 0.5* 14)$$ = ``r 0.5*14/(0.5 + 0.5* 14)``.
+
+Thus in the first case, of patients with $LR=14$, less than half would actually have the disease.
+In the second case, of patients with $LR=14$, more than 90% would have the disease!
+
+# A useful formula
+
+There is another way of laying out this kind of calculation, which may be slightly easier to interpret and remember, and also has the advantage of holding even when more than two models are under consideration.
+From Bayes theorem we have
+
+$$\Pr(Z_i = 1 | x_i) = \Pr(x_i | Z_i = 1) \Pr(Z_i=1)/ \Pr(x_i).$$
+
+and
+
+$$\Pr(Z_i = 0 | x_i) = \Pr(x_i | Z_i = 0) \Pr(Z_i=0)/ \Pr(x_i).$$
+
+Taking the ratio of these gives
+$$\Pr(Z_i = 1 | x_i)/\Pr(Z_i = 0 | x_i) = [\Pr(Z_i=1)/\Pr(Z_i=0)] \times [\Pr(x_i | Z_i = 1)/\Pr(x_i | Z_i = 1)].$$
+
+This formula can be conveniently stated in words, using the notion of ``odds", as follows:
+$$\text{Posterior Odds = Prior Odds x LR}$$
+or, recalling that the LR is sometimes referred to as the Bayes Factor (BF), we have
+$$\text{Posterior Odds = Prior Odds x BF}.$$
+
+Note that the "Odds" of an event $E_1$ vs an event $E_2$ means the ratio of their probabilities. So $\Pr(Z_i=1)/\Pr(Z_i=0)$ is the "Odds" of $Z_i=1$ vs $Z_i=0$. It is referred to as the "Prior Odds", because it is the odds prior to seeing the data $x$. Similarly the Posterior Odds refers to the Odds of $Z_i=1$ vs $Z_i=0$ "posterior to" (after) seeing the data $x$.
+
+# Example
+
+Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/20.
+And a LR of 14 in favor of disease yields a posterior odds of 14/20 (or "14 to 20", or "7 to 10").
+
+Suppose that 50% of screened people have the disease. Then the prior odds for disease is 1.
+And a LR of 14 in favor of disease yields a posterior odds of 14 (or "14 to 1").
+
+In cases where there are only two possibilities, as here, then the posterior odds determines the posterior probabilities. 
+
+# Exercise
+
+
+
+
+
+
+# Session information
+
+```{r info}
+sessionInfo()
+```
