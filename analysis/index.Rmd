@@ -16,3 +16,5 @@ title: "Home"
 
 *  [Likelihood Ratios: how big is convincing?](LR_and_BF.html)
 
+*  [The Likelihood Function](likelihood_function.html)
+
