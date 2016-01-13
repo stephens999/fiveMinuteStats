@@ -16,5 +16,8 @@ title: "Home"
 
 *  [Likelihood Ratios: how big is convincing?](LR_and_BF.html)
 
+*  [Likelihood Ratios: Wilks's Theorem](wilks.html)
+
 *  [The Likelihood Function](likelihood_function.html)
 
+*  [Asymptotic Normality of MLE](asymptotic_normality_mle.html)
