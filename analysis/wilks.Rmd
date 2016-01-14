@@ -4,6 +4,7 @@ author: "Matt Bonakdarpour"
 output: 
   html_document:
     mathjax: default
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
