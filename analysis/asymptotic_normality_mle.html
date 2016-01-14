@@ -160,7 +160,7 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=p.truth,sd=sqrt((p.truth*(1-p.truth)/num.samples.per.iter) )), .25, .55, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
+<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-1-1.png" /></p>
 </div>
 <div id="example-2-poisson-mean" class="section level2">
 <h2>Example 2: Poisson Mean</h2>
@@ -178,7 +178,7 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0.4, 1.2, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-2-1.png" /></p>
 </div>
 
 
