@@ -1,7 +1,9 @@
 ---
 title: "Likelihood Ratio: Wilks's Theorem"
 author: "Matt Bonakdarpour"
-output: html_document
+output: 
+  html_document:
+    mathjax: default
 ---
 
 ```{r setup, include=FALSE}
