@@ -3,7 +3,6 @@ html_document:
   self_contained: false
   theme: united
   highlight: textmate
-  mathjax: null
   toc_depth: 3
   lib_dir: libs
   includes:
