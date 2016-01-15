@@ -3,6 +3,7 @@
 .R*
 .Rhistory
 *pdf
+*.md
 data
 analysis/rda
 
