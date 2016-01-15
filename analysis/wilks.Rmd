@@ -1,20 +1,11 @@
 ---
 title: "Likelihood Ratio: Wilks's Theorem"
 author: "Matt Bonakdarpour"
-<<<<<<< HEAD
-output: 
-  html_document:
-    mathjax: default
-    keep_md: true
-||||||| merged common ancestors
-output: html_document
-=======
 date: 2016-01-14
 output: 
   html_document:
     mathjax: default
     keep_md: true
->>>>>>> master
 ---
 
 **Last updated:** `r Sys.Date()`

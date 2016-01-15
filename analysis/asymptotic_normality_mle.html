@@ -10,6 +10,7 @@
 
 <meta name="author" content="Matt Bonakdarpour" />
 
+<meta name="date" content="2016-01-14" />
 
 <title>Asymptotic Normality of MLE</title>
 
@@ -120,6 +121,7 @@ img {
 <div id="header">
 <h1 class="title">Asymptotic Normality of MLE</h1>
 <h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-14</em></h4>
 </div>
 
 <div id="TOC">
@@ -132,6 +134,10 @@ img {
 </ul>
 </div>
 
+<p><strong>Last updated:</strong> 2016-01-14</p>
+<hr />
+<p><strong>Last updated:</strong> 2016-01-14</p>
+<p><strong>Code version:</strong> 3bcbe0da832c8dcfbd6509c8151d02f4afcacf8b</p>
 <div id="main-result" class="section level2">
 <h2>Main Result</h2>
 <p>Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples <span class="math">\(X_1,\ldots,X_n\)</span> with probability distribution governed by the parameter <span class="math">\(\theta\)</span>. Let <span class="math">\(\theta_0\)</span> be the true value of <span class="math">\(\theta\)</span>, and <span class="math">\(\hat{\theta}\)</span> be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for <span class="math">\(\theta\)</span> is asympototically normal with mean <span class="math">\(\theta_0\)</span> and variance <span class="math">\(I^{-1}(\theta_0)\)</span>. <span class="math">\(I(\theta_0)\)</span> is called the <strong>Fisher information</strong> – we will describe it below. Precisely, this result states that: <span class="math">\[\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))\]</span></p>
@@ -160,7 +166,7 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=p.truth,sd=sqrt((p.truth*(1-p.truth)/num.samples.per.iter) )), .25, .55, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-1-1.png" /></p>
+<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-1-1.png" title="" alt="" style="display: block; margin: auto;" /></p>
 </div>
 <div id="example-2-poisson-mean" class="section level2">
 <h2>Example 2: Poisson Mean</h2>
@@ -178,7 +184,25 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0.4, 1.2, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-2-1.png" /></p>
+<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.11
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
 </div>
 
 
