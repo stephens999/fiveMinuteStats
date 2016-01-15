@@ -134,10 +134,10 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-14</p>
+<p><strong>Last updated:</strong> 2016-01-15</p>
 <hr />
-<p><strong>Last updated:</strong> 2016-01-14</p>
-<p><strong>Code version:</strong> 3bcbe0da832c8dcfbd6509c8151d02f4afcacf8b</p>
+<p><strong>Last updated:</strong> 2016-01-15</p>
+<p><strong>Code version:</strong> 4d8815066dea900e45f07d0413226e33452c7892</p>
 <div id="main-result" class="section level2">
 <h2>Main Result</h2>
 <p>Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples <span class="math">\(X_1,\ldots,X_n\)</span> with probability distribution governed by the parameter <span class="math">\(\theta\)</span>. Let <span class="math">\(\theta_0\)</span> be the true value of <span class="math">\(\theta\)</span>, and <span class="math">\(\hat{\theta}\)</span> be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for <span class="math">\(\theta\)</span> is asympototically normal with mean <span class="math">\(\theta_0\)</span> and variance <span class="math">\(I^{-1}(\theta_0)\)</span>. <span class="math">\(I(\theta_0)\)</span> is called the <strong>Fisher information</strong> – we will describe it below. Precisely, this result states that: <span class="math">\[\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))\]</span></p>
@@ -166,7 +166,7 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=p.truth,sd=sqrt((p.truth*(1-p.truth)/num.samples.per.iter) )), .25, .55, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-1-1.png" title="" alt="" style="display: block; margin: auto;" /></p>
+<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="example-2-poisson-mean" class="section level2">
 <h2>Example 2: Poisson Mean</h2>
@@ -184,7 +184,7 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0.4, 1.2, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" /></p>
+<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.2.2 (2015-08-14)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)

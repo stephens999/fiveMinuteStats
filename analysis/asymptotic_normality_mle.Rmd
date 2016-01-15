@@ -5,7 +5,6 @@ date: 2016-01-14
 output: 
   html_document:
     mathjax: default
-    keep_md: true
 ---
 
 **Last updated:** `r Sys.Date()`
