@@ -10,6 +10,7 @@
 
 <meta name="author" content="Matt Bonakdarpour" />
 
+<meta name="date" content="2016-01-14" />
 
 <title>Asymptotic Normality of MLE</title>
 
@@ -135,6 +136,7 @@ img {
 <div id="header">
 <h1 class="title">Asymptotic Normality of MLE</h1>
 <h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-14</em></h4>
 </div>
 
 <div id="TOC">
@@ -147,31 +149,33 @@ img {
 </ul>
 </div>
 
+<p><strong>Last updated:</strong> 2016-01-15</p>
+<p><strong>Code version:</strong> 5937976eb5e3825cfb8fc33418e5d323cb97ceb9</p>
 <div id="main-result" class="section level2">
 <h2>Main Result</h2>
-<p>Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples <span class="math inline"><em>X</em><sub>1</sub>, …, <em>X</em><sub><em>n</em></sub></span> with probability distribution governed by the parameter <span class="math inline"><em>θ</em></span>. Let <span class="math inline"><em>θ</em><sub>0</sub></span> be the true value of <span class="math inline"><em>θ</em></span>, and <span class="math inline">$\hat{\theta}$</span> be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for <span class="math inline"><em>θ</em></span> is asympototically normal with mean <span class="math inline"><em>θ</em><sub>0</sub></span> and variance <span class="math inline"><em>I</em><sup>−1</sup>(<em>θ</em><sub>0</sub>)</span>. <span class="math inline"><em>I</em>(<em>θ</em><sub>0</sub>)</span> is called the <strong>Fisher information</strong> – we will describe it below. Precisely, this result states that: <br /><span class="math display">$$\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))$$</span><br /></p>
-<p>If <span class="math inline">$\hat{\theta}$</span> is the MLE, then this says that <span class="math inline">$(\hat{\theta} - \theta_0)/I^{-1}(\theta_0)$</span> is nearly <span class="math inline"><em>N</em>(0, 1)</span> when the sample size <span class="math inline"><em>n</em></span> is large. This allows us to construct approximate confidence intervals for <span class="math inline"><em>θ</em></span> and perform hypothesis tests.</p>
+<p>Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples <span class="math inline">\(X_1,\ldots,X_n\)</span> with probability distribution governed by the parameter <span class="math inline">\(\theta\)</span>. Let <span class="math inline">\(\theta_0\)</span> be the true value of <span class="math inline">\(\theta\)</span>, and <span class="math inline">\(\hat{\theta}\)</span> be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for <span class="math inline">\(\theta\)</span> is asympototically normal with mean <span class="math inline">\(\theta_0\)</span> and variance <span class="math inline">\(I^{-1}(\theta_0)\)</span>. <span class="math inline">\(I(\theta_0)\)</span> is called the <strong>Fisher information</strong> – we will describe it below. Precisely, this result states that: <span class="math display">\[\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))\]</span></p>
+<p>If <span class="math inline">\(\hat{\theta}\)</span> is the MLE, then this says that <span class="math inline">\((\hat{\theta} - \theta_0)/I^{-1}(\theta_0)\)</span> is nearly <span class="math inline">\(N(0,1)\)</span> when the sample size <span class="math inline">\(n\)</span> is large. This allows us to construct approximate confidence intervals for <span class="math inline">\(\theta\)</span> and perform hypothesis tests.</p>
 <div id="fisher-information" class="section level3">
 <h3>Fisher Information</h3>
 <p>First, some notation:<br />
-* <strong>Likelihood</strong>: <span class="math inline"><em>L</em>(<em>θ</em>)=<em>p</em>(<em>X</em><sub>1</sub>, …, <em>X</em><sub><em>n</em></sub>; <em>θ</em>)</span><br />
-* <strong>Log-likelihood</strong>: <span class="math inline">ℓ(<em>θ</em>)=log<em>L</em>(<em>θ</em>)</span><br />
-* <strong>Score function</strong>: <span class="math inline">$s(\theta) = \frac{d}{d\theta}\ell(\theta)$</span></p>
-<p>The MLE <span class="math inline">$\hat{\theta}$</span> maximizes both <span class="math inline"><em>L</em>(<em>θ</em>)</span> and <span class="math inline">ℓ(<em>θ</em>)</span>. We typically find <span class="math inline">$\hat{\theta}$</span> by differentiation, solving the following equation for <span class="math inline"><em>θ</em></span>:<br />
-<br /><span class="math display"><em>s</em>(<em>θ</em>)=0</span><br /></p>
-<p>Under regularity conditions, the Fisher information, <span class="math inline"><em>I</em>(<em>θ</em>)</span>, is : <br /><span class="math display">$$I(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\ell(\theta)\right]$$</span><br /></p>
+* <strong>Likelihood</strong>: <span class="math inline">\(L(\theta) = p(X_1,\ldots,X_n;\theta)\)</span><br />
+* <strong>Log-likelihood</strong>: <span class="math inline">\(\ell(\theta) = \log{L(\theta)}\)</span><br />
+* <strong>Score function</strong>: <span class="math inline">\(s(\theta) = \frac{d}{d\theta}\ell(\theta)\)</span></p>
+<p>The MLE <span class="math inline">\(\hat{\theta}\)</span> maximizes both <span class="math inline">\(L(\theta)\)</span> and <span class="math inline">\(\ell(\theta)\)</span>. We typically find <span class="math inline">\(\hat{\theta}\)</span> by differentiation, solving the following equation for <span class="math inline">\(\theta\)</span>:<br />
+<span class="math display">\[s(\theta) = 0\]</span></p>
+<p>Under regularity conditions, the Fisher information, <span class="math inline">\(I(\theta)\)</span>, is : <span class="math display">\[I(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\ell(\theta)\right]\]</span></p>
 <p>Intuitively, this quantity tells us, on average, how peaked the likelihood function is. The more peaked the likelihood function, the “better” we know the true parameter. In this way, this quantity provides <em>information</em> about the true parameter.</p>
 </div>
 </div>
 <div id="example-1-bernoulli-proportion" class="section level2">
 <h2>Example 1: Bernoulli Proportion</h2>
-<p>Assume we observe i.i.d. samples <span class="math inline"><em>X</em><sub>1</sub>, …, <em>X</em><sub><em>n</em></sub></span> drawn from a Bernoulli distribution with true parameter <span class="math inline"><em>p</em><sub>0</sub></span>. Given, these observations, the log-likelihood is: <br /><span class="math display">ℓ(<em>p</em>)=∑<em>X</em><sub><em>i</em></sub>log<em>p</em> + (1 − <em>X</em><sub><em>i</em></sub>)log(1 − <em>p</em>)</span><br /> Setting the derivative equal to zero, we obtain:<br />
-<br /><span class="math display">$$\frac{d}{dp}\ell(p) = \sum \frac{X_i}{p} - \frac{(1-X_i)}{1-p} = 0$$</span><br /><br />
-Solving for <span class="math inline"><em>p</em></span>, we get that the MLE is the sample mean: <span class="math inline">$\hat{p} = \bar{X}$</span>.</p>
+<p>Assume we observe i.i.d. samples <span class="math inline">\(X_1,\ldots,X_n\)</span> drawn from a Bernoulli distribution with true parameter <span class="math inline">\(p_0\)</span>. Given, these observations, the log-likelihood is: <span class="math display">\[\ell(p) = \sum X_i\log{p} + (1-X_i)\log(1-p)\]</span> Setting the derivative equal to zero, we obtain:<br />
+<span class="math display">\[\frac{d}{dp}\ell(p) = \sum \frac{X_i}{p} - \frac{(1-X_i)}{1-p} = 0\]</span><br />
+Solving for <span class="math inline">\(p\)</span>, we get that the MLE is the sample mean: <span class="math inline">\(\hat{p} = \bar{X}\)</span>.</p>
 <p>The second derivative with respect to p is:<br />
-<br /><span class="math display">$$\frac{d^2}{dp^2} \ell(p) = \sum -\frac{X_i}{p^2} - \frac{(1-X_i)}{(1-p)^2}$$</span><br /></p>
-<p>The Fisher information is therefore: <br /><span class="math display">$$I(p) = E\left[-\frac{d^2}{dp^2}\ell(p)\right] = -\frac{E[X_i]}{p^2} - \frac{(1-E[X_i])}{(1-p)^2} = \frac{1}{p(1-p)}$$</span><br /></p>
-<p>From the result at the top of the page, we have that (for large n), <span class="math inline">$\hat{p}$</span> is approximately <span class="math inline">$N\left(p,\frac{p(1-p)}{n}\right)$</span>. We illustrate this approximation in the simulation below.</p>
+<span class="math display">\[\frac{d^2}{dp^2} \ell(p) = \sum -\frac{X_i}{p^2} - \frac{(1-X_i)}{(1-p)^2}\]</span></p>
+<p>The Fisher information is therefore: <span class="math display">\[I(p) = E\left[-\frac{d^2}{dp^2}\ell(p)\right] = -\frac{E[X_i]}{p^2} - \frac{(1-E[X_i])}{(1-p)^2} = \frac{1}{p(1-p)}\]</span></p>
+<p>From the result at the top of the page, we have that (for large n), <span class="math inline">\(\hat{p}\)</span> is approximately <span class="math inline">\(N\left(p,\frac{p(1-p)}{n}\right)\)</span>. We illustrate this approximation in the simulation below.</p>
 <p>The simulation creates 7000 different sets of samples. In each sample, we have 100 draws from a Bernoulli distribution with true parameter equal to 0.4. We compute the MLE separately for each sample and plot a histogram of these 7000 MLEs. On top of this histogram, we plot the density of the asymptotic distribution as a solid line.</p>
 <pre class="r"><code>num.iterations         &lt;- 7000
 p.truth                &lt;- 0.4
@@ -182,15 +186,15 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=p.truth,sd=sqrt((p.truth*(1-p.truth)/num.samples.per.iter) )), .25, .55, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
+<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="example-2-poisson-mean" class="section level2">
 <h2>Example 2: Poisson Mean</h2>
-<p>Assume we observe i.i.d. samples <span class="math inline"><em>X</em><sub>1</sub>, …, <em>X</em><sub><em>n</em></sub></span> drawn from a Poisson distribution with true parameter <span class="math inline"><em>λ</em></span>. The log-likelihood is:</p>
-<p><br /><span class="math display">$$ \ell(\lambda; X_1,\ldots,X_n) = \sum_{i=1}^n -\lambda + X_i\log(\lambda) + \log(X_i!)$$</span><br /></p>
-<p>Taking the derivative with respect to <span class="math inline"><em>λ</em></span>, setting it equal to zero, and solving for <span class="math inline"><em>λ</em></span> gives us the estimate <span class="math inline">$\hat{lambda} = \frac{1}{n}\sum_{i=1}^{n}X_i = \bar{X}$</span>. The Fisher information is:</p>
-<p><br /><span class="math display">$$ E_{\lambda}\left[-\frac{d^2}{d\lambda^2}\ell(\lambda)\right] = E[\frac{X}{\lambda^2}] = \frac{1}{\lambda}$$</span><br /></p>
-<p>So we have that, we have that (for large n), <span class="math inline">$\hat{\lambda}$</span> is approximately <span class="math inline">$N\left(\lambda,\frac{1}{n\lambda}\right)$</span>. We illustrate this in the same was as above:</p>
+<p>Assume we observe i.i.d. samples <span class="math inline">\(X_1,\ldots,X_n\)</span> drawn from a Poisson distribution with true parameter <span class="math inline">\(\lambda\)</span>. The log-likelihood is:</p>
+<p><span class="math display">\[ \ell(\lambda; X_1,\ldots,X_n) = \sum_{i=1}^n -\lambda + X_i\log(\lambda) + \log(X_i!)\]</span></p>
+<p>Taking the derivative with respect to <span class="math inline">\(\lambda\)</span>, setting it equal to zero, and solving for <span class="math inline">\(\lambda\)</span> gives us the estimate <span class="math inline">\(\hat{lambda} = \frac{1}{n}\sum_{i=1}^{n}X_i = \bar{X}\)</span>. The Fisher information is:</p>
+<p><span class="math display">\[ E_{\lambda}\left[-\frac{d^2}{d\lambda^2}\ell(\lambda)\right] = E[\frac{X}{\lambda^2}] = \frac{1}{\lambda}\]</span></p>
+<p>So we have that, we have that (for large n), <span class="math inline">\(\hat{\lambda}\)</span> is approximately <span class="math inline">\(N\left(\lambda,\frac{1}{n\lambda}\right)\)</span>. We illustrate this in the same was as above:</p>
 <pre class="r"><code>num.iterations         &lt;- 7000
 lambda.truth           &lt;- 0.8
 num.samples.per.iter   &lt;- 100
@@ -200,7 +204,25 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F)
 curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0.4, 1.2, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
-<p><img src="asymptotic_normality_mle_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<p><img src="figure/asymptotic_normality_mle.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.10.5
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2     tools_3.2.3     htmltools_0.2.6
+ [5] yaml_2.1.13     stringi_0.5-5   rmarkdown_0.7   stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.7   </code></pre>
 </div>
 
 
@@ -240,6 +262,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>
