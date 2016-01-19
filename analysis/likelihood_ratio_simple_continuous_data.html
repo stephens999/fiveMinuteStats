@@ -153,7 +153,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-19</p>
-<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
+<p><strong>Code version:</strong> b0339a9fb0be4ad8733524ac6aa608eedbd8d00e</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
 <p>This document introduces the likelihood ratio for continuous data and models, and explains its connection with discrete models.</p>
@@ -164,7 +164,7 @@ img {
 </div>
 <div id="definition" class="section level1">
 <h1>Definition</h1>
-<p>Recall that if models <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_1\)</span> are fully-specified model for discrete data <span class="math inline">\(X=x\)</span>, with probability mass functions <span class="math inline">\(p(\cdot | M_0)\)</span> and <span class="math inline">\(p(\cdot | M_1\)</span>, then the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is defined as</p>
+<p>Recall that if models <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_1\)</span> are fully-specified model for discrete data <span class="math inline">\(X=x\)</span>, with probability mass functions <span class="math inline">\(p(\cdot | M_0)\)</span> and <span class="math inline">\(p(\cdot | M_1)\)</span>, then the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is defined as</p>
 <p><span class="math display">\[LR(M_1,M_0) := p(x | M_1)/p(x | M_0).\]</span></p>
 <p>Now suppose that the data and models are continuous. So instead of a probability <em>mass</em> function, each model has a probability <em>density</em> function. Then the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is usually defined as the ratio of the probability density functions. That is, we have exactly the same expression for the LR,</p>
 <p><span class="math display">\[LR(M_1,M_0) := p(x | M_1)/p(x | M_0)\]</span></p>
@@ -190,7 +190,7 @@ lines(x, dgamma(x,scale = 1,shape = 2), type=&quot;l&quot;, col=&quot;red&quot;)
 </div>
 <div id="summary-1" class="section level1">
 <h1>Summary</h1>
-<p>In most cases, the Likelihood ratio for model <span class="math inline">\(M_1\)</span> vs model <span class="math inline">\(M_0\)</span> for a continuous random variable <span class="math inline">\(X\)</span>, given an observation <span class="math inline">\(X=x\)</span>, can we well approximated by the ratio of the model densities of <span class="math inline">\(X\)</span>, evaluated at <span class="math inline">\(x\)</span>. This approximation comes from assuming that measurement precision is high and that the model density functions are well behaved near <span class="math inline">\(x\)</span>.</p>
+<p>In most cases, the Likelihood ratio for model <span class="math inline">\(M_1\)</span> vs model <span class="math inline">\(M_0\)</span> for a continuous random variable <span class="math inline">\(X\)</span>, given an observation <span class="math inline">\(X=x\)</span>, can we well approximated by the ratio of the model densities of <span class="math inline">\(X\)</span>, evaluated at <span class="math inline">\(x\)</span>. This approximation comes from assuming that observation precision is high and that the model density functions are well behaved near <span class="math inline">\(x\)</span>.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
