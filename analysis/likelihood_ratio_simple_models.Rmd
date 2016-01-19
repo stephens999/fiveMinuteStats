@@ -46,7 +46,7 @@ marker | $f_S$ | $f_F$ |
 2 | 0.12 | 0.20 |
 3 | 0.21 | 0.11 |
 4 | 0.12 | 0.17 |
-5 | 0.02 | 0.03 |
+5 | 0.02 | 0.23 |
 6 | 0.32 | 0.25 |
 
 The question before us is: Which subspecies of elephant did the tusk come from, and how confident should we be in this conclusion?
