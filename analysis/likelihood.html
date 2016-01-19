@@ -158,8 +158,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-07</p>
-<p><strong>Code version:</strong> 2501cb8543ac6f32bc39b7758b18975dc7020598</p>
+<p><strong>Last updated:</strong> 2016-01-19</p>
+<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>Be familiar with the concept of a <a href="model.html">Statistical Model</a>.</p>
@@ -173,17 +173,17 @@ img {
 <h1>Definition</h1>
 <div id="likelihood-function" class="section level2">
 <h2>Likelihood Function</h2>
-<p>Let <span class="math inline"><em>M</em></span> be a parametric statistical model for a random variable <span class="math inline"><em>X</em></span>. Recall that this means that, for each value of a parameter <span class="math inline"><em>θ</em></span> in a parameter space <span class="math inline"><em>Θ</em></span>, <span class="math inline"><em>M</em></span> defines a distribution <span class="math inline"><em>p</em>(⋅; <em>θ</em>)</span> for <span class="math inline"><em>X</em></span>. Here <span class="math inline"><em>p</em>(⋅; <em>θ</em>)</span> is a probability mass function if <span class="math inline"><em>X</em></span> is discrete, and a probability density function if <span class="math inline"><em>X</em></span> is continuous.</p>
-<p>The likelihood function (or just “likelihood”) for <span class="math inline"><em>θ</em></span>, given observed data <span class="math inline"><em>X</em> = <em>x</em></span>, is defined by <br /><span class="math display"><em>L</em>(<em>θ</em>):=<em>p</em>(<em>x</em>; <em>θ</em>).</span><br /></p>
-<p>As should be clear from this definition, the likelihood depends on the observed data <span class="math inline"><em>x</em></span>, and it can be useful to make this dependence explicit. To do this it is common to use the notation <span class="math inline"><em>L</em>(<em>θ</em>; <em>x</em>)</span> for the likelihood: <span class="math inline"><em>L</em>(<em>θ</em>; <em>x</em>):=<em>p</em>(<em>x</em>; <em>θ</em>)</span>. [The alternative notation <span class="math inline"><em>L</em>(<em>θ</em>|<em>x</em>)</span> is also sometimes used, but best avoided in this author’s opinion because it invites misinterpreting <span class="math inline"><em>L</em></span> as a conditional distribution of <span class="math inline"><em>θ</em></span> given <span class="math inline"><em>x</em></span>, which it is not.]</p>
+<p>Let <span class="math inline">\(M\)</span> be a parametric statistical model for a random variable <span class="math inline">\(X\)</span>. Recall that this means that, for each value of a parameter <span class="math inline">\(\theta\)</span> in a parameter space <span class="math inline">\(\Theta\)</span>, <span class="math inline">\(M\)</span> defines a distribution <span class="math inline">\(p(\cdot; \theta)\)</span> for <span class="math inline">\(X\)</span>. Here <span class="math inline">\(p(\cdot ; \theta)\)</span> is a probability mass function if <span class="math inline">\(X\)</span> is discrete, and a probability density function if <span class="math inline">\(X\)</span> is continuous.</p>
+<p>The likelihood function (or just “likelihood”) for <span class="math inline">\(\theta\)</span>, given observed data <span class="math inline">\(X=x\)</span>, is defined by <span class="math display">\[L(\theta):=p(x; \theta).\]</span></p>
+<p>As should be clear from this definition, the likelihood depends on the observed data <span class="math inline">\(x\)</span>, and it can be useful to make this dependence explicit. To do this it is common to use the notation <span class="math inline">\(L(\theta; x)\)</span> for the likelihood: <span class="math inline">\(L(\theta;x):=p(x; \theta)\)</span>. [The alternative notation <span class="math inline">\(L(\theta | x)\)</span> is also sometimes used, but best avoided in this author’s opinion because it invites misinterpreting <span class="math inline">\(L\)</span> as a conditional distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span>, which it is not.]</p>
 </div>
 <div id="alternative-approach-for-continuous-random-variables" class="section level2">
 <h2>Alternative approach for continuous random variables</h2>
-<p>The definition above concerns the most common usage of likelihood: that is, the likelihood function for a parametric model. However, likelihood is also sometimes used for simple models. If <span class="math inline"><em>M</em></span> is a simple model, it defines a single distribution for <span class="math inline"><em>X</em></span>, <span class="math inline"><em>p</em>(<em>x</em>; <em>M</em>)</span> say. In this case we say that the likelihood for <span class="math inline"><em>M</em></span> is a single number, <br /><span class="math display"><em>L</em>(<em>M</em>; <em>x</em>):=<em>p</em>(<em>x</em>; <em>M</em>).</span><br /></p>
+<p>The definition above concerns the most common usage of likelihood: that is, the likelihood function for a parametric model. However, likelihood is also sometimes used for simple models. If <span class="math inline">\(M\)</span> is a simple model, it defines a single distribution for <span class="math inline">\(X\)</span>, <span class="math inline">\(p(x; M)\)</span> say. In this case we say that the likelihood for <span class="math inline">\(M\)</span> is a single number, <span class="math display">\[L(M; x):=p(x; M).\]</span></p>
 </div>
 <div id="likelihood-for-simple-models" class="section level2">
 <h2>Likelihood for simple models</h2>
-<p>The definition above concerns the likelihood function for a parametric model, which is the most common usage of likelihood. However, likelihood is also sometimes used for simple models. If <span class="math inline"><em>M</em></span> is a simple model, it defines a single distribution for <span class="math inline"><em>X</em></span>, <span class="math inline"><em>p</em>(<em>x</em>; <em>M</em>)</span> say. In this case the likelihood for <span class="math inline"><em>M</em></span> is a single number, given by <br /><span class="math display"><em>L</em>(<em>M</em>; <em>x</em>):=<em>p</em>(<em>x</em>; <em>M</em>).</span><br /></p>
+<p>The definition above concerns the likelihood function for a parametric model, which is the most common usage of likelihood. However, likelihood is also sometimes used for simple models. If <span class="math inline">\(M\)</span> is a simple model, it defines a single distribution for <span class="math inline">\(X\)</span>, <span class="math inline">\(p(x; M)\)</span> say. In this case the likelihood for <span class="math inline">\(M\)</span> is a single number, given by <span class="math display">\[L(M; x):=p(x; M).\]</span></p>
 </div>
 </div>
 <div id="examples" class="section level1">
@@ -191,7 +191,7 @@ img {
 <div id="coin-tossing" class="section level2">
 <h2>Coin Tossing</h2>
 <p>Suppose we obtain data by tossing a coin 3 times and recording the outcomes. The possible outcomes are S={HHH,HHT,HTH,HTT,THH,THT,TTH,TTT} where H denotes the coin landing heads and T denotes tails (so, for example, HTH denotes the outcome where the first toss lands heads, the second lands tails, and the third lands heads).</p>
-<p>Consider the parametric model which assumes that the tosses are independent, and that at each toss the probability of a head is <span class="math inline"><em>θ</em> ∈ [0, 1]</span>. Suppose that the outcome of the experiment is <span class="math inline"><em>x</em> = <em>H</em><em>T</em><em>H</em></span>. Then the likelihood for <span class="math inline"><em>θ</em></span> is given by <br /><span class="math display"><em>L</em>(<em>θ</em>)=<em>θ</em>(1 − <em>θ</em>)<em>θ</em> = <em>θ</em><sup>2</sup>(1 − <em>θ</em>).</span><br /></p>
+<p>Consider the parametric model which assumes that the tosses are independent, and that at each toss the probability of a head is <span class="math inline">\(\theta \in [0,1]\)</span>. Suppose that the outcome of the experiment is <span class="math inline">\(x=HTH\)</span>. Then the likelihood for <span class="math inline">\(\theta\)</span> is given by <span class="math display">\[L(\theta) = \theta(1-\theta)\theta = \theta^2 (1-\theta).\]</span></p>
 <p>We can plot the likelihood as a function of theta:</p>
 <pre class="r"><code>theta = seq(0,1,length=100)
 L =function(theta){theta^2 * (1-theta)}
@@ -202,15 +202,15 @@ plot(theta, L(theta), xlab=&quot;theta&quot;, ylab=&quot;L(theta)&quot;,type=&qu
 <div id="interpretation-and-importance-of-likelihood-ratio" class="section level1">
 <h1>Interpretation, and importance of likelihood ratio</h1>
 <p>There are two important things to note about the likelihood.</p>
-<p>First, for any given value of <span class="math inline"><em>θ</em></span>, <span class="math inline"><em>θ</em><sub>0</sub></span> say, <span class="math inline"><em>L</em>(<em>θ</em><sub>0</sub>)</span> is a measure of how consistent the observed data are with the parameter value <span class="math inline"><em>θ</em> = <em>θ</em><sub>0</sub></span>. That is, <span class="math inline"><em>L</em>(<em>θ</em><sub>0</sub>)</span> is a measure of support for <span class="math inline"><em>θ</em> = <em>θ</em><sub>0</sub></span>, with big values indicating stronger support.</p>
-<p>However, at the same time, what values of the likelihood correspond to “strong” support or “weak” support depends on the context. In this sense the likelihood is not an “absolute” measure of support. Instead, it turns out that the correct interpretation of the likelihood is as a <em>relative</em> measure of support. In other words, the likelihood ratio <span class="math inline"><em>L</em>(<em>θ</em><sub>1</sub>)/<em>L</em>(<em>θ</em><sub>0</sub>)</span> measures the relative support for <span class="math inline"><em>θ</em> = <em>θ</em><sub>1</sub></span> vs <span class="math inline"><em>θ</em> = <em>θ</em><sub>0</sub></span>, with large values indicating stronger relative support for <span class="math inline"><em>θ</em> = <em>θ</em><sub>1</sub></span>. For example, a likelihood ratio of 10 means that the data provide 10 times stronger support for <span class="math inline"><em>θ</em> = <em>θ</em><sub>1</sub></span> than for <span class="math inline"><em>θ</em> = <em>θ</em><sub>0</sub></span>.</p>
+<p>First, for any given value of <span class="math inline">\(\theta\)</span>, <span class="math inline">\(\theta_0\)</span> say, <span class="math inline">\(L(\theta_0)\)</span> is a measure of how consistent the observed data are with the parameter value <span class="math inline">\(\theta=\theta_0\)</span>. That is, <span class="math inline">\(L(\theta_0)\)</span> is a measure of support for <span class="math inline">\(\theta=\theta_0\)</span>, with big values indicating stronger support.</p>
+<p>However, at the same time, what values of the likelihood correspond to “strong” support or “weak” support depends on the context. In this sense the likelihood is not an “absolute” measure of support. Instead, it turns out that the correct interpretation of the likelihood is as a <em>relative</em> measure of support. In other words, the likelihood ratio <span class="math inline">\(L(\theta_1)/L(\theta_0)\)</span> measures the relative support for <span class="math inline">\(\theta=\theta_1\)</span> vs <span class="math inline">\(\theta=\theta_0\)</span>, with large values indicating stronger relative support for <span class="math inline">\(\theta=\theta_1\)</span>. For example, a likelihood ratio of 10 means that the data provide 10 times stronger support for <span class="math inline">\(\theta=\theta_1\)</span> than for <span class="math inline">\(\theta=\theta_0\)</span>.</p>
 <p>Because of this one should focus on likelihood ratios, rather than likelihoods. Indeed, many treatments of likelihood consider the likelihood function to be defined only up to some arbitrary multiplicative constant.</p>
 <div id="example-coin-tossing" class="section level2">
 <h2>Example: Coin-tossing</h2>
-<p>Returning now to the coin-tossing example, we realize that the likelihoods we plotted before could be more interpretable if they were plotted as likelihood ratios. A simple way to turn the likelihood into a ratio is to take the <span class="math inline"><em>L</em>(<em>θ</em>)/<em>L</em>(<em>θ</em><sub>0</sub>)</span> for some fixed <span class="math inline"><em>θ</em><sub>0</sub></span>. In this case we take <span class="math inline"><em>θ</em><sub>0</sub> = 0.5</span>, which corresponds to the case of a “fair coin”. Here is the plot:</p>
+<p>Returning now to the coin-tossing example, we realize that the likelihoods we plotted before could be more interpretable if they were plotted as likelihood ratios. A simple way to turn the likelihood into a ratio is to take the <span class="math inline">\(L(\theta)/L(\theta_0)\)</span> for some fixed <span class="math inline">\(\theta_0\)</span>. In this case we take <span class="math inline">\(\theta_0=0.5\)</span>, which corresponds to the case of a “fair coin”. Here is the plot:</p>
 <pre class="r"><code>plot(theta, L(theta)/L(0.5), xlab=&quot;theta&quot;, ylab=&quot;L(theta)/L(0.5)&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>Of course, dividing by a constant has not changed the shape of the likelihood, it has only changed the scale of the <span class="math inline"><em>y</em></span> axis. But the numbers themselves have become at least a little more intepretable. For example, we can see that the value of <span class="math inline"><em>θ</em></span> that has strongest support from the data (i.e. the one with the largest likelihood, which in this case is <span class="math inline"><em>θ</em> = 2/3</span>) has a likelihood that is roughly 1.2 times as big as the likelihood for <span class="math inline"><em>θ</em> = 0.5</span>.</p>
+<p>Of course, dividing by a constant has not changed the shape of the likelihood, it has only changed the scale of the <span class="math inline">\(y\)</span> axis. But the numbers themselves have become at least a little more intepretable. For example, we can see that the value of <span class="math inline">\(\theta\)</span> that has strongest support from the data (i.e. the one with the largest likelihood, which in this case is <span class="math inline">\(\theta=2/3\)</span>) has a likelihood that is roughly 1.2 times as big as the likelihood for <span class="math inline">\(\theta=0.5\)</span>.</p>
 <p>One might intuitively feel that a factor of 1.2 is not especially noteworthy, and this would be correct. Indeed, this accords with the intuition that if one tosses a coin 3 times, and sees two heads, then this is not strong evidence against the hypothesis that the coin is fair, with equal probability of landing heads and tails. This intuitive notion can be formalized in various ways, including by the use of <a href="wilks.html">Wilks’s Theorem</a> and <a href="bayes_lr.html">Bayesian analysis</a>.</p>
 </div>
 <div id="session-information" class="section level2">
@@ -273,6 +273,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>
