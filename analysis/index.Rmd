@@ -26,4 +26,5 @@ title: "Home"
 
 ### Simple Bayesian Inference
 
+*  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 
