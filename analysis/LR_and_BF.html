@@ -154,7 +154,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-19</p>
-<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
+<p><strong>Code version:</strong> a42433102e83b83119adcea2b1e633a50b5978b9</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
 <p>This document introduces the idea that drawing conclusions from likelihood ratios (or Bayes Factors) from fully specified models is context dependent. In particular, it involves weighing the information in the data against the relative (prior) plausibility of the models.</p>
@@ -207,6 +207,17 @@ img {
 </div>
 <div id="exercise" class="section level1">
 <h1>Exercise</h1>
+<ol style="list-style-type: decimal">
+<li><ol style="list-style-type: lower-alpha">
+<li>Write a function to simulate data for the medical screening example above. The function should take as input the proportion of individuals who have the disease, and the number of individuals to simulate. It should output a table, one row for each individual, with two columns: the first column (x) is the protein concentration for that individual, the second column (z) is an indicator of disease status (1=disease, 0=normal).</li>
+</ol></li>
+</ol>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><p>Write a function to compute the likelihood ratio in the medical screening example.</p></li>
+<li><p>Use the above functions to answer the following question <em>by simulation</em>. Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. Among individuals with an LR “near” c, what proportion are truly diseased? Denoting this proportion q(c), make a plot of <span class="math inline">\(\log_{10}(c)\)</span> [<span class="math inline">\(x\)</span> axis] vs <span class="math inline">\(q(c)\)</span> [<span class="math inline">\(y\)</span> axis], with <span class="math inline">\(c\)</span> varying from <span class="math inline">\(1/10\)</span> to <span class="math inline">\(10\)</span> say (<span class="math inline">\(log_{10}(c)\)</span> varies from -1 to 1.) Or maybe a wider range if you like (the wider the range, the larger the simulation study you will need to get reliable results).</p></li>
+<li><p>Use the computations introduced in this vignette to compute the theoretical value for q(c), and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.]</p></li>
+<li><p>Repeat the above, but in the case where only 2% of the screened population are diseased.</p></li>
+</ol>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
