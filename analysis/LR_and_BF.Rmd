@@ -118,9 +118,9 @@ The function should take as input the proportion of individuals who have the dis
 
 b) Write a function to compute the likelihood ratio in the medical screening example.
 
-c) Use the above functions to answer the following question *by simulation*. Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. Among individuals with an LR "near" c, what proportion are truly diseased? Denoting this proportion q(c), make a plot of $\log_{10}(c)$ [$x$ axis] vs $q(c)$ [$y$ axis], with $c$ varying from $1/10$ to $10$ say ($log_{10}(c)$ varies from -1 to 1.) Or maybe a wider range if you like (the wider the range, the larger the simulation study you will need to get reliable results).
+c) Use the above functions to answer the following question *by simulation*. Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. Among individuals with an LR "near" c, what proportion are truly diseased? Denoting this proportion $q_D(c)$, make a plot of $\log_{10}(c)$ [$x$ axis] vs $q_D(c)$ [$y$ axis], with $c$ varying from $1/10$ to $10$ say ($log_{10}(c)$ varies from -1 to 1.) Or maybe a wider range if you like (the wider the range, the larger the simulation study you will need to get reliable results).
 
-d) Use the computations introduced in this vignette to compute the theoretical value for q(c), and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.]
+d) Use the computations introduced in this vignette to compute the theoretical value for $q_D(c)$, and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.]
 
 e) Repeat the above, but in the case where only 2% of the screened population are diseased.
 
