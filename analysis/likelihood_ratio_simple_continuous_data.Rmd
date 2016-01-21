@@ -25,7 +25,7 @@ Be familiar with the [likelihood ratio for discrete data](likelihood_ratio_simpl
 
 Recall that if models $M_0$ and $M_1$ are fully-specified 
 model for discrete data $X=x$,
-with probability mass functions $p(\cdot | M_0)$ and $p(\cdot | M_1$, then
+with probability mass functions $p(\cdot | M_0)$ and $p(\cdot | M_1)$, then
 the likelihood ratio for $M_1$ vs $M_0$ is defined as
 
 $$LR(M_1,M_0) := p(x | M_1)/p(x | M_0).$$
@@ -86,7 +86,7 @@ In most cases, the Likelihood ratio for model $M_1$ vs model $M_0$ for a continu
 random variable $X$, given an observation 
 $X=x$, can we well approximated by
 the ratio of the model densities of $X$, evaluated at $x$.
-This approximation comes from assuming that measurement precision is high
+This approximation comes from assuming that observation precision is high
 and that the model density functions are well behaved near $x$.
 
  

@@ -122,14 +122,19 @@ img {
 
 <div id="TOC">
 <ul>
-<li><a href="#inference">Inference</a></li>
+<li><a href="#inference">Inference</a><ul>
+<li><a href="#likelihood-ratio-and-likelihood">Likelihood Ratio and Likelihood</a></li>
+<li><a href="#simple-bayesian-inference">Simple Bayesian Inference</a></li>
+</ul></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-14</p>
-<p><strong>Code version:</strong> 3bcbe0da832c8dcfbd6509c8151d02f4afcacf8b</p>
+<p><strong>Last updated:</strong> 2016-01-20</p>
+<p><strong>Code version:</strong> b20215f3e4166633354253da20cfc2359d4b325c</p>
 <div id="inference" class="section level2">
 <h2>Inference</h2>
+<div id="likelihood-ratio-and-likelihood" class="section level3">
+<h3>Likelihood Ratio and Likelihood</h3>
 <ul>
 <li><p><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></p></li>
 <li><p><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></p></li>
@@ -139,6 +144,13 @@ img {
 <li><p><a href="likelihood_function.html">The Likelihood Function</a></p></li>
 <li><p><a href="asymptotic_normality_mle.html">Asymptotic Normality of MLE</a></p></li>
 </ul>
+</div>
+<div id="simple-bayesian-inference" class="section level3">
+<h3>Simple Bayesian Inference</h3>
+<ul>
+<li><a href="bayes_multiclass.html">Posterior Distribution for multi-model comparisons</a></li>
+</ul>
+</div>
 </div>
 
 
@@ -178,6 +190,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

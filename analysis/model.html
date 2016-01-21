@@ -156,8 +156,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-07</p>
-<p><strong>Code version:</strong> 2501cb8543ac6f32bc39b7758b18975dc7020598</p>
+<p><strong>Last updated:</strong> 2016-01-19</p>
+<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>To understand this document you should be familiar with basic concepts from probability, including independence and the concept of a probability distribution.</p>
@@ -168,10 +168,10 @@ img {
 </div>
 <div id="definition" class="section level1">
 <h1>Definition</h1>
-<p>In the simplest case, a statistical model for a data set <span class="math inline"><em>X</em></span> is simply a <em>probability distribution on a set of possible values that could have been observed for X</em>. We might refer to such a model as a “simple model”.</p>
+<p>In the simplest case, a statistical model for a data set <span class="math inline">\(X\)</span> is simply a <em>probability distribution on a set of possible values that could have been observed for X</em>. We might refer to such a model as a “simple model”.</p>
 <p>More generally, the term model is also used to refer to a <em>collection</em> of such distributions, not just a single distribution. We might refer to such a model as a “compound model”, to distinguish it from a simple model, although it is common practice to just use the term “model” for both.</p>
-<p>Usually, in a compound model, the collection of distributions is naturally indexed by some “parameter”, often denoted <span class="math inline"><em>θ</em></span>, which lives in some “parameter space”, often denoted <span class="math inline"><em>Θ</em></span>. Such a model is referred to as a ``parametric model“. See examples below for illustration.</p>
-<p>The set of possible values that could have been observed for <span class="math inline"><em>X</em></span> is referred to as the <em>sample space</em> of the model, and here we will denote it <span class="math inline"><em>S</em></span>. Specifying an appropriate sample space for a given data set is often straightforward based on the nature of the data, and the way that they were generated or collected.</p>
+<p>Usually, in a compound model, the collection of distributions is naturally indexed by some “parameter”, often denoted <span class="math inline">\(\theta\)</span>, which lives in some “parameter space”, often denoted <span class="math inline">\(\Theta\)</span>. Such a model is referred to as a ``parametric model“. See examples below for illustration.</p>
+<p>The set of possible values that could have been observed for <span class="math inline">\(X\)</span> is referred to as the <em>sample space</em> of the model, and here we will denote it <span class="math inline">\(S\)</span>. Specifying an appropriate sample space for a given data set is often straightforward based on the nature of the data, and the way that they were generated or collected.</p>
 </div>
 <div id="examples" class="section level1">
 <h1>Examples</h1>
@@ -179,7 +179,7 @@ img {
 <h2>Toy Example: coin tossing</h2>
 <p>Suppose we obtain data by tossing a coin 3 times and recording the outcomes. The possible outcomes are S={HHH,HHT,HTH,HTT,THH,THT,TTH,TTT} where H denotes the coin landing heads and T denotes tails (so, for example, HTH denotes the outcome where the first toss lands heads, the second lands tails, and the third lands heads).</p>
 <p>One simple model would be that all 8 outcomes are equally likely. That is, each outcome has probability 1/8. This model corresponds to the assumption that the tosses are independent, and the coin has probability 0.5 of landing heads on each toss. The modelling assumptions that underlie this model might be described in words as “the coin is fair, and the tosses independent”.</p>
-<p>A compound model would arise if we assume that the tosses are independent, but allow that the coin may be “biased”, landing heads with some probability <span class="math inline"><em>θ</em></span>. Each value of <span class="math inline"><em>θ</em></span> determines a distribution <span class="math inline"><em>p</em><sub><em>θ</em></sub></span> on <span class="math inline"><em>S</em></span>, and so the set of distributions <span class="math inline"><em>f</em><sub><em>θ</em></sub> : <em>θ</em> ∈ [0, 1]</span> defines a parametric model, with parameter <span class="math inline"><em>θ</em> ∈ [0, 1]</span>. The modelling assumptions that underlie this model might be described in words as “the tosses are independent”.</p>
+<p>A compound model would arise if we assume that the tosses are independent, but allow that the coin may be “biased”, landing heads with some probability <span class="math inline">\(\theta\)</span>. Each value of <span class="math inline">\(\theta\)</span> determines a distribution <span class="math inline">\(p_\theta\)</span> on <span class="math inline">\(S\)</span>, and so the set of distributions <span class="math inline">\({f_\theta: \theta \in [0,1]}\)</span> defines a parametric model, with parameter <span class="math inline">\(\theta \in [0,1]\)</span>. The modelling assumptions that underlie this model might be described in words as “the tosses are independent”.</p>
 <p>A more complex compound model might include distributions that allow for dependence between tosses. In the context of tossing a coin allowing for such dependence might be unnecessary. However, if we replace the coin toss with some other binary phenomenon - for example, whether or not it rains in a particular location each day - and perhaps increase the number of observations to something more than three, then allowing for dependence could be crucial.</p>
 </div>
 <div id="more-interesting-examples" class="section level2">
@@ -270,6 +270,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

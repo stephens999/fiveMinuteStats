@@ -133,36 +133,96 @@ img {
 </ul>
 </div>
 
+<<<<<<< HEAD
 <p><strong>Last updated:</strong> 2016-01-14</p>
 <p><strong>Code version:</strong> 3bcbe0da832c8dcfbd6509c8151d02f4afcacf8b</p>
 <p>``` ## Pre-requisites</p>
 <p>This document assumes familiarity with the concepts of likelihoods, <a href="http://stephens999.github.io/fiveMinuteStats/analysis/likelihood_ratio_simple_models.html">likelihood ratios</a>, and hypothesis testing.</p>
+||||||| merged common ancestors
+<div id="pre-requisites" class="section level2">
+<h2>Pre-requisites</h2>
+<p>This document assumes familiarity with the concepts of likelihoods, <a href="http://stephens999.github.io/fiveMinuteStats/analysis/likelihood_ratio_simple_models.html">likelihood ratios</a>, and hypothesis testing.</p>
+</div>
+=======
+<p><strong>Last updated:</strong> 2016-01-19</p>
+<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
+<p>``` ## Pre-requisites</p>
+<p>This document assumes familiarity with the concepts of likelihoods, <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, and hypothesis testing.</p>
+>>>>>>> upstream/gh-pages
 <div id="background" class="section level2">
 <h2>Background</h2>
+<<<<<<< HEAD
 <p>When performing a statistical hypothesis test, like comparing two models, if the hypotheses completely specify the probability distributions, these hypotheses are called <strong>simple hypotheses</strong>. For example, suppose we observe <span class="math">\(X_1,\ldots,X_n\)</span> from a normal distribution with known variance and we want to test whether the true mean is equal to <span class="math">\(\mu_0\)</span> or <span class="math">\(\mu_1\)</span>. One hypothesis <span class="math">\(H_0\)</span> might be that the distribution has mean <span class="math">\(\mu_0\)</span>, and <span class="math">\(H_1\)</span> might be that the mean is <span class="math">\(\mu_1\)</span>. Since these hypotheses completely specify the distribution of the <span class="math">\(X_i\)</span>, they are called simple hypotheses.</p>
 <p>Now suppose <span class="math">\(H_0\)</span> is again that the true mean, <span class="math">\(\mu\)</span>, is equal to <span class="math">\(\mu_0\)</span>, but <span class="math">\(H_1\)</span> was that <span class="math">\(\mu &gt; \mu_0\)</span>. In this case, the <span class="math">\(H_0\)</span> is still simple, but <span class="math">\(H_1\)</span> does not completely specify a single probability distribution. It specifies a set of distributions, and is therefore an example of a <strong>composite hypothesis</strong>. In most practical scenarios, both hypotheses are rarely simple.</p>
 <p>As seen in the fiveMinuteStats on <a href="http://stephens999.github.io/fiveMinuteStats/analysis/likelihood_ratio_simple_models.html">likelihood ratios</a>, given the observed data <span class="math">\(X_1\ldots,X_n\)</span>, we can measure the relative plausibility of <span class="math">\(H_1\)</span> to <span class="math">\(H_0\)</span> by the log-likelihood ratio: <span class="math">\[\log\left(\frac{f(X_1,\ldots,X_n|H_1)}{f(X_1,\ldots,X_n|H_0)}\right)\]</span></p>
 <p>The log-likelihood ratio could help us choose which model (<span class="math">\(H_0\)</span> or <span class="math">\(H_1\)</span>) is a more likely explanation for the data. One common question is this: what constitues are <strong>large</strong> likelihood ratio? Wilks’s Theorem helps us answer this question – but first, we will define the notion of a <strong>generalized log-likelihood ratio</strong>.</p>
+||||||| merged common ancestors
+<p>When performing a statistical hypothesis test, like comparing two models, if the hypotheses completely specify the probability distributions, these hypotheses are called <strong>simple hypotheses</strong>. For example, suppose we observe <span class="math inline"><em>X</em><sub>1</sub>, …, <em>X</em><sub><em>n</em></sub></span> from a normal distribution with known variance and we want to test whether the true mean is equal to <span class="math inline"><em>μ</em><sub>0</sub></span> or <span class="math inline"><em>μ</em><sub>1</sub></span>. One hypothesis <span class="math inline"><em>H</em><sub>0</sub></span> might be that the distribution has mean <span class="math inline"><em>μ</em><sub>0</sub></span>, and <span class="math inline"><em>H</em><sub>1</sub></span> might be that the mean is <span class="math inline"><em>μ</em><sub>1</sub></span>. Since these hypotheses completely specify the distribution of the <span class="math inline"><em>X</em><sub><em>i</em></sub></span>, they are called simple hypotheses.</p>
+<p>Now suppose <span class="math inline"><em>H</em><sub>0</sub></span> is again that the true mean, <span class="math inline"><em>μ</em></span>, is equal to <span class="math inline"><em>μ</em><sub>0</sub></span>, but <span class="math inline"><em>H</em><sub>1</sub></span> was that <span class="math inline"><em>μ</em> &gt; <em>μ</em><sub>0</sub></span>. In this case, the <span class="math inline"><em>H</em><sub>0</sub></span> is still simple, but <span class="math inline"><em>H</em><sub>1</sub></span> does not completely specify a single probability distribution. It specifies a set of distributions, and is therefore an example of a <strong>composite hypothesis</strong>. In most practical scenarios, both hypotheses are rarely simple.</p>
+<p>As seen in the fiveMinuteStats on <a href="http://stephens999.github.io/fiveMinuteStats/analysis/likelihood_ratio_simple_models.html">likelihood ratios</a>, given the observed data <span class="math inline"><em>X</em><sub>1</sub>…,<em>X</em><sub><em>n</em></sub></span>, we can measure the relative plausibility of <span class="math inline"><em>H</em><sub>1</sub></span> to <span class="math inline"><em>H</em><sub>0</sub></span> by the log-likelihood ratio: <br /><span class="math display">$$\log\left(\frac{f(X_1,\ldots,X_n|H_1)}{f(X_1,\ldots,X_n|H_0)}\right)$$</span><br /></p>
+<p>The log-likelihood ratio could help us choose which model (<span class="math inline"><em>H</em><sub>0</sub></span> or <span class="math inline"><em>H</em><sub>1</sub></span>) is a more likely explanation for the data. One common question is this: what constitues are <strong>large</strong> likelihood ratio? Wilks’s Theorem helps us answer this question – but first, we will define the notion of a <strong>generalized log-likelihood ratio</strong>.</p>
+=======
+<p>When performing a statistical hypothesis test, like comparing two models, if the hypotheses completely specify the probability distributions, these hypotheses are called <strong>simple hypotheses</strong>. For example, suppose we observe <span class="math inline">\(X_1,\ldots,X_n\)</span> from a normal distribution with known variance and we want to test whether the true mean is equal to <span class="math inline">\(\mu_0\)</span> or <span class="math inline">\(\mu_1\)</span>. One hypothesis <span class="math inline">\(H_0\)</span> might be that the distribution has mean <span class="math inline">\(\mu_0\)</span>, and <span class="math inline">\(H_1\)</span> might be that the mean is <span class="math inline">\(\mu_1\)</span>. Since these hypotheses completely specify the distribution of the <span class="math inline">\(X_i\)</span>, they are called simple hypotheses.</p>
+<p>Now suppose <span class="math inline">\(H_0\)</span> is again that the true mean, <span class="math inline">\(\mu\)</span>, is equal to <span class="math inline">\(\mu_0\)</span>, but <span class="math inline">\(H_1\)</span> was that <span class="math inline">\(\mu &gt; \mu_0\)</span>. In this case, the <span class="math inline">\(H_0\)</span> is still simple, but <span class="math inline">\(H_1\)</span> does not completely specify a single probability distribution. It specifies a set of distributions, and is therefore an example of a <strong>composite hypothesis</strong>. In most practical scenarios, both hypotheses are rarely simple.</p>
+<p>As seen in the fiveMinuteStats on <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, given the observed data <span class="math inline">\(X_1\ldots,X_n\)</span>, we can measure the relative plausibility of <span class="math inline">\(H_1\)</span> to <span class="math inline">\(H_0\)</span> by the log-likelihood ratio: <span class="math display">\[\log\left(\frac{f(X_1,\ldots,X_n|H_1)}{f(X_1,\ldots,X_n|H_0)}\right)\]</span></p>
+<p>The log-likelihood ratio could help us choose which model (<span class="math inline">\(H_0\)</span> or <span class="math inline">\(H_1\)</span>) is a more likely explanation for the data. One common question is this: what constitues are <strong>large</strong> likelihood ratio? Wilks’s Theorem helps us answer this question – but first, we will define the notion of a <strong>generalized log-likelihood ratio</strong>.</p>
+>>>>>>> upstream/gh-pages
 </div>
 <div id="generalized-log-likelihood-ratios" class="section level2">
 <h2>Generalized Log-Likelihood Ratios</h2>
+<<<<<<< HEAD
 <p>Let’s assume we are dealing with distributions parameterized by <span class="math">\(\theta\)</span>. To generalize the case of simple hypotheses, let’s assume that <span class="math">\(H_0\)</span> specifies that <span class="math">\(\theta\)</span> lives in some set <span class="math">\(\Theta_0\)</span> and <span class="math">\(H_1\)</span> specifies that <span class="math">\(\theta \in \Theta_1\)</span>. Let <span class="math">\(\Omega = \Theta_0 \cup \Theta_1\)</span>. A somewhat natural extension to the likelihood ratio test statistic we discussed above is the generalized log-likehood ratio: <span class="math">\[\Lambda^* = \log{\frac{\max_{\theta \in \Theta_1}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
+||||||| merged common ancestors
+<p>Let’s assume we are dealing with distributions parameterized by <span class="math inline"><em>θ</em></span>. To generalize the case of simple hypotheses, let’s assume that <span class="math inline"><em>H</em><sub>0</sub></span> specifies that <span class="math inline"><em>θ</em></span> lives in some set <span class="math inline"><em>Θ</em><sub>0</sub></span> and <span class="math inline"><em>H</em><sub>1</sub></span> specifies that <span class="math inline"><em>θ</em> ∈ <em>Θ</em><sub>1</sub></span>. Let <span class="math inline"><em>Ω</em> = <em>Θ</em><sub>0</sub> ∪ <em>Θ</em><sub>1</sub></span>. A somewhat natural extension to the likelihood ratio test statistic we discussed above is the generalized log-likehood ratio: <br /><span class="math display">$$\Lambda^* = \log{\frac{\max_{\theta \in \Theta_1}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}$$</span><br /></p>
+=======
+<p>Let’s assume we are dealing with distributions parameterized by <span class="math inline">\(\theta\)</span>. To generalize the case of simple hypotheses, let’s assume that <span class="math inline">\(H_0\)</span> specifies that <span class="math inline">\(\theta\)</span> lives in some set <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(H_1\)</span> specifies that <span class="math inline">\(\theta \in \Theta_1\)</span>. Let <span class="math inline">\(\Omega = \Theta_0 \cup \Theta_1\)</span>. A somewhat natural extension to the likelihood ratio test statistic we discussed above is the generalized log-likehood ratio: <span class="math display">\[\Lambda^* = \log{\frac{\max_{\theta \in \Theta_1}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
+>>>>>>> upstream/gh-pages
 <p>For technical reasons, it is preferable to use the following related quantity:</p>
+<<<<<<< HEAD
 <p><span class="math">\[\Lambda_n = 2\log{\frac{\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
 <p>Just like before, larger values of <span class="math">\(\Lambda_n\)</span> provide stronger evidence against <span class="math">\(H_0\)</span>.</p>
+||||||| merged common ancestors
+<p><br /><span class="math display">$$\Lambda_n = 2\log{\frac{\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}$$</span><br /></p>
+<p>Just like before, larger values of <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span> provide stronger evidence against <span class="math inline"><em>H</em><sub>0</sub></span>.</p>
+=======
+<p><span class="math display">\[\Lambda_n = 2\log{\frac{\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
+<p>Just like before, larger values of <span class="math inline">\(\Lambda_n\)</span> provide stronger evidence against <span class="math inline">\(H_0\)</span>.</p>
+>>>>>>> upstream/gh-pages
 </div>
 <div id="wilkss-theorem" class="section level2">
 <h2>Wilks’s Theorem</h2>
+<<<<<<< HEAD
 <p>Suppose that the dimension of <span class="math">\(\Omega = v\)</span> and the dimension of <span class="math">\(\Theta_0 = r\)</span>. Under regularity conditions and assuming <span class="math">\(H_0\)</span> is true, the distribution of <span class="math">\(\Lambda_n\)</span> tends to a chi-squared distribution with degrees of freedom equal to <span class="math">\(v-r\)</span> as the sample size tends to infinity.</p>
 <p>With this theorem in hand (and for <span class="math">\(n\)</span> large), we can compare the value of our log-likehood ratio to the expected values from a <span class="math">\(\chi^2_{v-r}\)</span> distribution.</p>
+||||||| merged common ancestors
+<p>Suppose that the dimension of <span class="math inline"><em>Ω</em> = <em>v</em></span> and the dimension of <span class="math inline"><em>Θ</em><sub>0</sub> = <em>r</em></span>. Under regularity conditions and assuming <span class="math inline"><em>H</em><sub>0</sub></span> is true, the distribution of <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span> tends to a chi-squared distribution with degrees of freedom equal to <span class="math inline"><em>v</em> − <em>r</em></span> as the sample size tends to infinity.</p>
+<p>With this theorem in hand (and for <span class="math inline"><em>n</em></span> large), we can compare the value of our log-likehood ratio to the expected values from a <span class="math inline"><em>χ</em><sub><em>v</em> − <em>r</em></sub><sup>2</sup></span> distribution.</p>
+=======
+<p>Suppose that the dimension of <span class="math inline">\(\Omega = v\)</span> and the dimension of <span class="math inline">\(\Theta_0 = r\)</span>. Under regularity conditions and assuming <span class="math inline">\(H_0\)</span> is true, the distribution of <span class="math inline">\(\Lambda_n\)</span> tends to a chi-squared distribution with degrees of freedom equal to <span class="math inline">\(v-r\)</span> as the sample size tends to infinity.</p>
+<p>With this theorem in hand (and for <span class="math inline">\(n\)</span> large), we can compare the value of our log-likehood ratio to the expected values from a <span class="math inline">\(\chi^2_{v-r}\)</span> distribution.</p>
+>>>>>>> upstream/gh-pages
 </div>
 <div id="example-poisson-distribution" class="section level2">
 <h2>Example: Poisson Distribution</h2>
+<<<<<<< HEAD
 <p>Assume we observe data <span class="math">\(X_1,\ldots X_n\)</span> and consider the hypotheses <span class="math">\(H_0: \lambda = \lambda_0\)</span> and <span class="math">\(H_1: \lambda \neq \lambda_0\)</span>. The likelihood is: <span class="math">\[L(\lambda|X_1,\ldots,X_n) = \frac{\lambda^{\sum X_i}e^{-n\lambda}}{\prod_i^n X_i!}\]</span></p>
 <p>Note that <span class="math">\(\Theta_1\)</span> in this case is the set of all <span class="math">\(\lambda \neq \lambda_0\)</span>. In the numerator of the expression for <span class="math">\(\Lambda_n\)</span>, we seek <span class="math">\(\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)\)</span>. This is just the maximum likelihood estimate of <span class="math">\(\lambda\)</span> which we derived in <a href="http://mbonakda.github.io/fiveMinuteStats/analysis/asymptotic_normality_mle.html">this note</a>. The MLE is simply the sample average <span class="math">\(\bar{X}\)</span>. The likelihood ratio is therefore: <span class="math">\[\frac{L(\lambda=\bar{X}|X_1,\ldots,X_n)}{L(\lambda=\lambda_0|X_1,\ldots,X_n)} = \frac{\bar{X}^{\sum X_i}e^{-n\bar{X}}}{\prod_i^n X_i!}\frac{\prod_i^n X_i!}{\lambda_0^{\sum X_i}e^{-n\lambda_0}} = \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})}\]</span></p>
 <p>which means that <span class="math">\(\Lambda_n\)</span> is <span class="math">\[ \Lambda_n = 2\log{\left( \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})} \right )} = 2n \left ( \bar{X}\log{\left(\frac{\bar{X}}{\lambda_0}\right)} + \lambda_0 - \bar{X} \right )\]</span></p>
 <p>In this example we have that <span class="math">\(v\)</span>, the dimension of <span class="math">\(\Omega\)</span>, is 1 (any positive real number) and <span class="math">\(r\)</span>, the dimension of <span class="math">\(\Theta_0\)</span> is 0 (it’s just a single point). Hence, the degrees of freedom of the asymptotic <span class="math">\(\chi^2\)</span> distribution is <span class="math">\(v-r = 1\)</span>. Therefore, Wilk’s Theorem tells us that <span class="math">\(\Lambda_n\)</span> tends to a <span class="math">\(\chi^2_1\)</span> distribution as <span class="math">\(n\)</span> tends to infinity.</p>
 <p>Below we simulate computing <span class="math">\(\Lambda_n\)</span> over 5000 experiments. In each experiment, we observe 500 random variables distributed as Poisson(<span class="math">\(0.4\)</span>). We then plot the histogram of the <span class="math">\(\Lambda_n\)</span>s and overlay the <span class="math">\(\chi^2_1\)</span> density with a solid line.</p>
+||||||| merged common ancestors
+<p>Assume we observe data <span class="math inline"><em>X</em><sub>1</sub>, …<em>X</em><sub><em>n</em></sub></span> and consider the hypotheses <span class="math inline"><em>H</em><sub>0</sub> : <em>λ</em> = <em>λ</em><sub>0</sub></span> and <span class="math inline"><em>H</em><sub>1</sub> : <em>λ</em> ≠ <em>λ</em><sub>0</sub></span>. The likelihood is: <br /><span class="math display">$$L(\lambda|X_1,\ldots,X_n) = \frac{\lambda^{\sum X_i}e^{-n\lambda}}{\prod_i^n X_i!}$$</span><br /></p>
+<p>Note that <span class="math inline"><em>Θ</em><sub>1</sub></span> in this case is the set of all <span class="math inline"><em>λ</em> ≠ <em>λ</em><sub>0</sub></span>. In the numerator of the expression for <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span>, we seek <span class="math inline">max<sub><em>θ</em> ∈ <em>Ω</em></sub><em>f</em>(<em>X</em><sub>1</sub>, …, <em>X</em><sub><em>n</em></sub>|<em>θ</em>)</span>. This is just the maximum likelihood estimate of <span class="math inline"><em>λ</em></span> which we derived in <a href="http://mbonakda.github.io/fiveMinuteStats/analysis/asymptotic_normality_mle.html">this note</a>. The MLE is simply the sample average <span class="math inline">$\bar{X}$</span>. The likelihood ratio is therefore: <br /><span class="math display">$$\frac{L(\lambda=\bar{X}|X_1,\ldots,X_n)}{L(\lambda=\lambda_0|X_1,\ldots,X_n)} = \frac{\bar{X}^{\sum X_i}e^{-n\bar{X}}}{\prod_i^n X_i!}\frac{\prod_i^n X_i!}{\lambda_0^{\sum X_i}e^{-n\lambda_0}} = \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})}$$</span><br /></p>
+<p>which means that <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span> is <br /><span class="math display">$$ \Lambda_n = 2\log{\left( \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})} \right )} = 2n \left ( \bar{X}\log{\left(\frac{\bar{X}}{\lambda_0}\right)} + \lambda_0 - \bar{X} \right )$$</span><br /></p>
+<p>In this example we have that <span class="math inline"><em>v</em></span>, the dimension of <span class="math inline"><em>Ω</em></span>, is 1 (any positive real number) and <span class="math inline"><em>r</em></span>, the dimension of <span class="math inline"><em>Θ</em><sub>0</sub></span> is 0 (it’s just a single point). Hence, the degrees of freedom of the asymptotic <span class="math inline"><em>χ</em><sup>2</sup></span> distribution is <span class="math inline"><em>v</em> − <em>r</em> = 1</span>. Therefore, Wilk’s Theorem tells us that <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span> tends to a <span class="math inline"><em>χ</em><sub>1</sub><sup>2</sup></span> distribution as <span class="math inline"><em>n</em></span> tends to infinity.</p>
+<p>Below we simulate computing <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span> over 5000 experiments. In each experiment, we observe 500 random variables distributed as Poisson(<span class="math inline">0.4</span>). We then plot the histogram of the <span class="math inline"><em>Λ</em><sub><em>n</em></sub></span>s and overlay the <span class="math inline"><em>χ</em><sub>1</sub><sup>2</sup></span> density with a solid line.</p>
+=======
+<p>Assume we observe data <span class="math inline">\(X_1,\ldots X_n\)</span> and consider the hypotheses <span class="math inline">\(H_0: \lambda = \lambda_0\)</span> and <span class="math inline">\(H_1: \lambda \neq \lambda_0\)</span>. The likelihood is: <span class="math display">\[L(\lambda|X_1,\ldots,X_n) = \frac{\lambda^{\sum X_i}e^{-n\lambda}}{\prod_i^n X_i!}\]</span></p>
+<p>Note that <span class="math inline">\(\Theta_1\)</span> in this case is the set of all <span class="math inline">\(\lambda \neq \lambda_0\)</span>. In the numerator of the expression for <span class="math inline">\(\Lambda_n\)</span>, we seek <span class="math inline">\(\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)\)</span>. This is just the maximum likelihood estimate of <span class="math inline">\(\lambda\)</span> which we derived in <a href="asymptotic_normality_mle.html">this note</a>. The MLE is simply the sample average <span class="math inline">\(\bar{X}\)</span>. The likelihood ratio is therefore: <span class="math display">\[\frac{L(\lambda=\bar{X}|X_1,\ldots,X_n)}{L(\lambda=\lambda_0|X_1,\ldots,X_n)} = \frac{\bar{X}^{\sum X_i}e^{-n\bar{X}}}{\prod_i^n X_i!}\frac{\prod_i^n X_i!}{\lambda_0^{\sum X_i}e^{-n\lambda_0}} = \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})}\]</span></p>
+<p>which means that <span class="math inline">\(\Lambda_n\)</span> is <span class="math display">\[ \Lambda_n = 2\log{\left( \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})} \right )} = 2n \left ( \bar{X}\log{\left(\frac{\bar{X}}{\lambda_0}\right)} + \lambda_0 - \bar{X} \right )\]</span></p>
+<p>In this example we have that <span class="math inline">\(v\)</span>, the dimension of <span class="math inline">\(\Omega\)</span>, is 1 (any positive real number) and <span class="math inline">\(r\)</span>, the dimension of <span class="math inline">\(\Theta_0\)</span> is 0 (it’s just a single point). Hence, the degrees of freedom of the asymptotic <span class="math inline">\(\chi^2\)</span> distribution is <span class="math inline">\(v-r = 1\)</span>. Therefore, Wilk’s Theorem tells us that <span class="math inline">\(\Lambda_n\)</span> tends to a <span class="math inline">\(\chi^2_1\)</span> distribution as <span class="math inline">\(n\)</span> tends to infinity.</p>
+<p>Below we simulate computing <span class="math inline">\(\Lambda_n\)</span> over 5000 experiments. In each experiment, we observe 500 random variables distributed as Poisson(<span class="math inline">\(0.4\)</span>). We then plot the histogram of the <span class="math inline">\(\Lambda_n\)</span>s and overlay the <span class="math inline">\(\chi^2_1\)</span> density with a solid line.</p>
+>>>>>>> upstream/gh-pages
 <pre class="r"><code>num.iterations         &lt;- 5000
 lambda.truth           &lt;- 0.4
 num.samples.per.iter   &lt;- 500
@@ -173,6 +233,7 @@ for(iter in seq_len(num.iterations)) {
 }
 hist(samples, freq=F, main=&#39;Histogram of LLR&#39;, xlab=&#39;sampled values of LLR values&#39;)
 curve(dchisq(x, 1), 0, 20, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
+<<<<<<< HEAD
 <p><img src="figure/wilks.Rmd/unnamed-chunk-1-1.png" title="" alt="" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.2.2 (2015-08-14)
@@ -192,6 +253,29 @@ loaded via a namespace (and not attached):
  [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
  [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
  [9] digest_0.6.8    evaluate_0.8   </code></pre>
+||||||| merged common ancestors
+<p><img src="wilks_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
+=======
+<p><img src="figure/wilks.Rmd/unnamed-chunk-1-1.png" title="" alt="" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.10.5
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2     tools_3.2.3     htmltools_0.2.6
+ [5] yaml_2.1.13     stringi_0.5-5   rmarkdown_0.7   stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.7   </code></pre>
+>>>>>>> upstream/gh-pages
 </div>
 
 

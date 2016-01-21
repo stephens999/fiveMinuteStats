@@ -10,9 +10,9 @@
 
 <meta name="author" content="Matthew Stephens" />
 
-<meta name="date" content="2016-01-07" />
+<meta name="date" content="2016-01-19" />
 
-<title>Likelihood Ratio: how big is convincing?</title>
+<title>Bayesian calculation for comparing K models</title>
 
 <script src="libs/jquery-1.11.0/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -134,89 +134,68 @@ img {
 </div><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">Likelihood Ratio: how big is convincing?</h1>
+<h1 class="title">Bayesian calculation for comparing K models</h1>
 <h4 class="author"><em>Matthew Stephens</em></h4>
-<h4 class="date"><em>2016-01-07</em></h4>
+<h4 class="date"><em>2016-01-19</em></h4>
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#summary">Summary</a></li>
 <li><a href="#pre-requisites">Pre-requisites</a></li>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#calculations-using-bayes-theorem">Calculations using Bayes Theorem</a></li>
 <li><a href="#example">Example</a></li>
-<li><a href="#a-useful-formula">A useful formula</a></li>
-<li><a href="#example-1">Example</a></li>
-<li><a href="#exercise">Exercise</a></li>
+<li><a href="#notes">Notes</a></li>
 <li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-19</p>
-<p><strong>Code version:</strong> e5abac8fa5c4d627ee8d73e4d761211b2bc3ecc0</p>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
-<p>This document introduces the idea that drawing conclusions from likelihood ratios (or Bayes Factors) from fully specified models is context dependent. In particular, it involves weighing the information in the data against the relative (prior) plausibility of the models.</p>
-</div>
+<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
-<p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
+<p>Be familiar with the <a href="LR_and_BF.html">Computing the posterior probability on classes for 2 classes</a></p>
 </div>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>Recall that a fully specified model is one with no free parameters. So a fully specified model for <span class="math inline">\(X\)</span> is simply a probability distribution <span class="math inline">\(p(x|M)\)</span>. And, given observed data <span class="math inline">\(X=x\)</span> the Likelihood Ratio for comparing two fully specified models, <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span>, is defined as the ratio of the probabilities of the observed data under each model:</p>
-<p><span class="math display">\[LR(M_1,M_0) := p(x | M_1) / p(x | M_0).\]</span></p>
-<p>For fully specified models, the likelihood ratio is also known as the “Bayes Factor” (BF), so we could also define the Bayes Factor for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> as <span class="math display">\[BF(M_1,M_0) :=   p(x | M_1) / p(x | M_0).\]</span> When comparing fully specified models the LR and BF are just two different names for the same thing.</p>
-<p>In the example <a href="likelihood_ratio_simple_models.html">here</a> we considered the problem of determining whether an elephant tusk came from a savanna elephant or a forest elephant, based on examining DNA data. Specifically we computed the LR (or BF) comparing two models, <span class="math inline">\(M_S\)</span> and <span class="math inline">\(M_F\)</span>, where <span class="math inline">\(M_S\)</span> denotes the model that the tusk came from a savanna elephant and <span class="math inline">\(M_F\)</span> denotes the model that the tusk came from a forest elephant. In our example we found LR=1.8, so the data favor <span class="math inline">\(M_S\)</span> by a factor of 1.8. We commented that a factor of 1.8 is relatively modest, and not sufficient to convince that the tusk definitely came from a savanna elephant.</p>
-<p>In the example <a href="likelihood_ratio_simple_continous_data.html">here</a> we considered the problem of testing a patient for a disease based on measuring the concentration of a particular diagnostic protein in the blood. Specifically we computed the LR (or BF) comparing two models, <span class="math inline">\(M_n\)</span> and <span class="math inline">\(M_d\)</span>, where <span class="math inline">\(M_S\)</span> denotes the model that the patient is normal and <span class="math inline">\(M_d\)</span> denotes the model that the patient has the disease. In our example we found LR for <span class="math inline">\(M_n\)</span> vs <span class="math inline">\(M_d\)</span> to be approximately 0.07, so the data favor <span class="math inline">\(M_d\)</span> by a factor of 14. This is a much larger LR than in the first case, but is it convincing? Can we confidently conclude that the patient has the disease?</p>
-<p>More generally, we would like to address the question: what value of the LR should we treat as<br />
-“convincing” evidence for one model vs another?</p>
-<p>It is crucial to recognize that the answer to this question has to be context dependent. In particular, the extent to which we should be “convinced” by a particular LR value has to depend on the relative plausibility of the models we are comparing. For example, in statistics there are many situations where we want to compare models that are not equally plausible. Suppose that model <span class="math inline">\(M_1\)</span> is much less plausible than <span class="math inline">\(M_0\)</span>. Then we must surely demand stronger evidence from the data (larger LR) to be “convinced” that it arose from model <span class="math inline">\(M_1\)</span> rather than <span class="math inline">\(M_0\)</span>, than in contexts where <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_0\)</span> are equally plausible.</p>
-<p>In the disease screening example, the interpretation depends on the frequency of the disease in the population being screened. For example, suppose that only 5% of people screened actually have the disease. Then to outweigh that fact, we would have to demand a high LR to “convince” us that a particular person has the disease. In contrast, if 50% of people screened have the disease then we might be convinced by a much smaller LR.</p>
-</div>
-<div id="calculations-using-bayes-theorem" class="section level1">
-<h1>Calculations using Bayes Theorem</h1>
-<p>The following calculation formalizes this intuition. Suppose we are presented with a series of observations <span class="math inline">\(x_1,\dots,x_n\)</span>, some of which are generated from model <span class="math inline">\(M_0\)</span> and the others of which are generated from model <span class="math inline">\(M_1\)</span>. Let <span class="math inline">\(Z_i\in {0,1}\)</span> denote whether <span class="math inline">\(x_i\)</span> was generated from model <span class="math inline">\(M_0\)</span> or <span class="math inline">\(M_1\)</span>, and let <span class="math inline">\(\pi_j\)</span> denote the proportion of the observations that came from model <span class="math inline">\(M_j\)</span> (<span class="math inline">\(j=0,1\)</span>). So in the disease screening example, <span class="math inline">\(\pi_1\)</span> would be the proportion of screened individuals who have the disease. That is, <span class="math inline">\(\pi_j = \Pr(Z_i=j)\)</span>.</p>
-<p>Bayes Theorem says that <span class="math display">\[\Pr(Z_i = 1 | x_i) = \Pr(x_i | Z_i = 1) \Pr(Z_i=1)/ \Pr(x_i).\]</span> Also, <span class="math display">\[\Pr(x_i) = \Pr(x_i | Z_i=0)\Pr(Z_i=0) + \Pr(x_i | Z_i=1)\Pr(Z_i=1).\]</span></p>
-<p>Putting these together, substituting <span class="math inline">\(\pi_j\)</span> for <span class="math inline">\(\Pr(Z_i=j)\)</span>, and dividing numerator and denominator by <span class="math inline">\(\Pr(x_i | Z_i=0)\)</span> yields:</p>
-<p><span class="math display">\[\Pr(Z_i = 1 | x_i) = \pi_1 LR_i / (\pi_0 + \pi_1 LR_i)\]</span></p>
-<p>where <span class="math inline">\(LR_i\)</span> denotes the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> computed for observation <span class="math inline">\(x_i\)</span>.</p>
+<p>Suppose we have an observation <span class="math inline">\(X\)</span>, which we believe to have come from one of <span class="math inline">\(K\)</span> models, <span class="math inline">\(M_1 \dots, M_K\)</span>. Suppose we can compute the likelihood for any models. This document lays out the computation of the posterior probability that the model came from model <span class="math inline">\(K\)</span>, and emphasises that the result depends only on the likelihood ratios. This is a straightforward extension of the 2-class calculations.</p>
 </div>
 <div id="example" class="section level1">
 <h1>Example</h1>
-<p>Suppose that only 5% of screened people have the disease. Then a LR of 14 in favor of disease yields: <span class="math display">\[\Pr(Z_i=1 | x_i) = 0.05*14/(0.95 + 0.05* 14)\]</span> = <code>0.4242424</code>.</p>
-<p>In contrast, if 50% of screened people have the disease then the LR of 14 yields <span class="math display">\[\Pr(Z_i=1 | x_i) = 0.5*14/(0.5 + 0.5* 14)\]</span> = <code>0.9333333</code>.</p>
-<p>Thus in the first case, of patients with <span class="math inline">\(LR=14\)</span>, less than half would actually have the disease. In the second case, of patients with <span class="math inline">\(LR=14\)</span>, more than 90% would have the disease!</p>
+<p>In a previous example we considered the question of whether a tusk came from one of two classes: a savanna elephant or a forest elephant, based on its DNA. In practice we might be interested in finer-scale distinctions than this. For example, forest elephants from West Africa actually differ somewhat genetically from those in Central Africa. And Savanna elephants from North Africa differ from those in the East and the South. (Actually elephant genetics within each subspecies varies roughly continuously across the continent; and any division into discrete groups can be seen as a convenient approximation.)</p>
+<p>So what if now we have allele frequencies for “West Forest”, “Central Forest”, “North Savanna” and “S/E Savanna” groups. How do we decided which group a tusk likely came from? Now we have four models, but the calculation is the same for <span class="math inline">\(K\)</span> models, so we may as well do it for <span class="math inline">\(K\)</span>. Here is the general outline:</p>
+<p>Suppose we are presented with a series of observations <span class="math inline">\(x_1,\dots,x_n\)</span>, each of which are generated from a model <span class="math inline">\(M_k\)</span> for some <span class="math inline">\(k \in {1,\dots,K}\)</span>. Let <span class="math inline">\(Z_i\in {1,\dots,K}\)</span> indicate which model the <span class="math inline">\(i\)</span>th observation came from, and let <span class="math inline">\(\pi_k\)</span> denote the proportion of the observations that came from model <span class="math inline">\(M_k\)</span>. Bayes Theorem says that <span class="math display">\[\Pr(Z_i = k | x_i) = \Pr(x_i | Z_i = k) \Pr(Z_i=k)/ \Pr(x_i).\]</span></p>
+<p>Recall that, by the law of total probability, <span class="math inline">\(\Pr(x_i) = \sum_{k&#39;} \Pr(x_i, Z_i=k&#39;) = \sum_{k&#39;} \Pr(x_i | Z_i=k&#39;)\Pr(Z_i=k&#39;)\)</span>. Also note that <span class="math inline">\(\Pr(x_i | Z_i=k)\)</span> is the “likelihood” for model <span class="math inline">\(k\)</span> given data <span class="math inline">\(x_i\)</span>, so we can write that <span class="math inline">\(L_{ik}\)</span>, and we can write <span class="math inline">\(\pi_k\)</span> for <span class="math inline">\(\Pr(Z_i=k)\)</span>. Putting this together gives: <span class="math display">\[\Pr(Z_i = k | x_i) = L_{ik} \pi_k / \sum_{k&#39;} L_{ik&#39;} \pi_{k&#39;}.\]</span></p>
+<p>Note that the denominator <span class="math inline">\(\Pr(x_i)=\sum_{k&#39;} L_{ik&#39;} \pi_{k&#39;}\)</span> is the same for all <span class="math inline">\(k\)</span>. So an equivalent way of laying out this calculation is to write <span class="math display">\[\Pr(Z_i = k | x_i) \propto L_{ik} \pi_k\]</span> and to note that the constant of proportionality is determined by the fact that probabilities must sum to 1. This way of applying Bayes theorem is very common and convenient in practice, so you should get used to it. In words, this formula can be said <span class="math display">\[\text{Posterior} \propto \text{likelihood x prior}.\]</span></p>
+<p>Here is an example of the calculation in practice. The four rows of the matrix <code>ref_freqs</code> represent the allele frequencies in four groups: “North Savanna”, “South Savanna”, “East Savanna”, “West Forest”, “Central Forest”. The calculation presented here assumes that the population of tusks we are looking at is equally drawn from all four groups, so <span class="math inline">\(\pi=(0.2,0.2,0.2,0.2,0.2)\)</span>, but it would of course be easy to change to any other value of <span class="math inline">\(\pi\)</span>.</p>
+<pre class="r"><code>x = c(1,0,1,0,0,1)
+ref_freqs = rbind(
+  c(0.39, 0.14,0.22,0.12,0.03,0.38),
+  c(0.41, 0.10,0.18, 0.12,0.02,0.28),
+  c(0.40, 0.11,0.22, 0.11,0.01,0.3),
+  c(0.75,0.25,0.11,0.18,0.25,0.25),
+  c(0.85,0.15,0.11,0.16,0.21,0.26)
+)
+
+# define functions for computing posterior from Likelihood vector and pi vector
+normalize = function(x){return(x/sum(x))}
+posterior_prob = function(L_vec, pi_vec){ return(normalize(L_vec*pi_vec)) }
+
+# define likelihood function
+L = function(f,x){ prod(f^x*(1-f)^(1-x)) }
+
+# compute the likelihoods for each model by applying L to rows of ref_freqs
+L_vec=apply(ref_freqs,1,L,x=x)
+print(L_vec)</code></pre>
+<pre><code>[1] 0.023934466 0.016038570 0.020702326 0.009513281 0.013712299</code></pre>
+<pre class="r"><code>posterior_prob(L_vec, c(0.2,0.2,0.2,0.2,0.2))</code></pre>
+<pre><code>[1] 0.2852705 0.1911608 0.2467472 0.1133871 0.1634344</code></pre>
 </div>
-<div id="a-useful-formula" class="section level1">
-<h1>A useful formula</h1>
-<p>There is another way of laying out this kind of calculation, which may be slightly easier to interpret and remember, and also has the advantage of holding even when more than two models are under consideration. From Bayes theorem we have</p>
-<p><span class="math display">\[\Pr(Z_i = 1 | x_i) = \Pr(x_i | Z_i = 1) \Pr(Z_i=1)/ \Pr(x_i).\]</span></p>
-<p>and</p>
-<p><span class="math display">\[\Pr(Z_i = 0 | x_i) = \Pr(x_i | Z_i = 0) \Pr(Z_i=0)/ \Pr(x_i).\]</span></p>
-<p>Taking the ratio of these gives <span class="math display">\[\Pr(Z_i = 1 | x_i)/\Pr(Z_i = 0 | x_i) = [\Pr(Z_i=1)/\Pr(Z_i=0)] \times [\Pr(x_i | Z_i = 1)/\Pr(x_i | Z_i = 1)].\]</span></p>
-<p>This formula can be conveniently stated in words, using the notion of ``odds“, as follows: <span class="math display">\[\text{Posterior Odds = Prior Odds x LR}\]</span> or, recalling that the LR is sometimes referred to as the Bayes Factor (BF), we have <span class="math display">\[\text{Posterior Odds = Prior Odds x BF}.\]</span></p>
-<p>Note that the “Odds” of an event <span class="math inline">\(E_1\)</span> vs an event <span class="math inline">\(E_2\)</span> means the ratio of their probabilities. So <span class="math inline">\(\Pr(Z_i=1)/\Pr(Z_i=0)\)</span> is the “Odds” of <span class="math inline">\(Z_i=1\)</span> vs <span class="math inline">\(Z_i=0\)</span>. It is referred to as the “Prior Odds”, because it is the odds prior to seeing the data <span class="math inline">\(x\)</span>. Similarly the Posterior Odds refers to the Odds of <span class="math inline">\(Z_i=1\)</span> vs <span class="math inline">\(Z_i=0\)</span> “posterior to” (after) seeing the data <span class="math inline">\(x\)</span>.</p>
-</div>
-<div id="example-1" class="section level1">
-<h1>Example</h1>
-<p>Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/20. And a LR of 14 in favor of disease yields a posterior odds of 14/20 (or “14 to 20”, or “7 to 10”).</p>
-<p>Suppose that 50% of screened people have the disease. Then the prior odds for disease is 1. And a LR of 14 in favor of disease yields a posterior odds of 14 (or “14 to 1”).</p>
-<p>In cases where there are only two possibilities, as here, then the posterior odds determines the posterior probabilities.</p>
-</div>
-<div id="exercise" class="section level1">
-<h1>Exercise</h1>
+<div id="notes" class="section level1">
+<h1>Notes</h1>
 <ol style="list-style-type: decimal">
-<li><ol style="list-style-type: lower-alpha">
-<li>Write a function to simulate data for the medical screening example above. The function should take as input the proportion of individuals who have the disease, and the number of individuals to simulate. It should output a table, one row for each individual, with two columns: the first column (x) is the protein concentration for that individual, the second column (z) is an indicator of disease status (1=disease, 0=normal).</li>
-</ol></li>
-</ol>
-<ol start="2" style="list-style-type: lower-alpha">
-<li><p>Write a function to compute the likelihood ratio in the medical screening example.</p></li>
-<li><p>Use the above functions to answer the following question <em>by simulation</em>. Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. Among individuals with an LR “near” c, what proportion are truly diseased? Denoting this proportion <span class="math inline">\(q_D(c)\)</span>, make a plot of <span class="math inline">\(\log_{10}(c)\)</span> [<span class="math inline">\(x\)</span> axis] vs <span class="math inline">\(q_D(c)\)</span> [<span class="math inline">\(y\)</span> axis], with <span class="math inline">\(c\)</span> varying from <span class="math inline">\(1/10\)</span> to <span class="math inline">\(10\)</span> say (<span class="math inline">\(log_{10}(c)\)</span> varies from -1 to 1.) Or maybe a wider range if you like (the wider the range, the larger the simulation study you will need to get reliable results).</p></li>
-<li><p>Use the computations introduced in this vignette to compute the theoretical value for <span class="math inline">\(q_D(c)\)</span>, and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.]</p></li>
-<li><p>Repeat the above, but in the case where only 2% of the screened population are diseased.</p></li>
+<li><p>Remember that when comparing two models, only the likelihood ratios matter, not the actual likelihoods. In fact the same is true when comparing <span class="math inline">\(K\)</span> models, as we can see by examining the calculation above. Specifically, imagine multiplying all the likelihoods by some positive constant c, and notice that this would not change the final answer, because of the normalization step.</p></li>
+<li><p>Notice that, just as with the 2-model case, the calculation involves weighing the relative support from the data for each model (from the likelihood function) against the “prior” plausibility of each model (from the vector <span class="math inline">\(\pi\)</span>).</p></li>
+<li><p>In practice we might not know <span class="math inline">\(\pi\)</span>. And although in such a case it might seem natural to assume that all the values of <span class="math inline">\(\pi\)</span> are equal, one has to be careful to note that this is still an assumption, and such assumptions may have unforeseen implications. For example, in this case, this assumption implies that 60% of the tusks are from savanna elephants and 40% from forest elephants, not 50%-50% (because three of our five groups are savanna). The difference between 60-40 and 50-50 is probably not a big deal in most applications, but imagine that we had 20 different savanna groups and 2 forest groups. Would we still be happy to assume that every group was equally common (and so savanna tusks are 10 times as common as forest tusks)? The answer would depend on the context, but quite possibly not.</p></li>
 </ol>
 </div>
 <div id="session-information" class="section level1">

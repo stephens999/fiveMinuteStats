@@ -149,8 +149,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-12</p>
-<p><strong>Code version:</strong> 1c7e05711819b1e147769ef43fe9cfefcedc27c4</p>
+<p><strong>Last updated:</strong> 2016-01-19</p>
+<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
@@ -164,32 +164,32 @@ img {
 <p>In our example <a href="likelihood_ratio_simple_models.html">here</a> we assumed that the frequencies of different alleles (genetic types) in forest and savanna elephants were given to us. In practice these frequencies themselves would have to be estimated from data.</p>
 <p>For example, suppose we collect data on 100 savanna elephants, and see that 30 of them carry allele 1 at marker 1, while 70 carry the allele 0 (again we are treating elephants as haploid to simplify things). Intuitively we might estimate that the frequency of the 1 allele at that marker is 30/100, or 0.3. But we might think that the data are also consistent with other frequencies near 0.3. For example maybe the data are consistent with a frequency of 0.29 also. Or 0.28? Or …</p>
 <p>In this case we have many more than just two models to compare. Indeed, if we allow that the frequency could, in principle lie anywhere in the interval [0,1], then we have a continuum of models to compare.</p>
-<p>Specifically, for each <span class="math inline"><em>q</em> ∈ [0, 1]</span> let <span class="math inline"><em>M</em><sub><em>q</em></sub></span> denote the model that the true frequency of the 1 allele is <span class="math inline"><em>q</em></span>. Then, given our observation that 30 of 100 elephants carried allele 1 at marker 1, the likelihood for model <span class="math inline"><em>M</em><sub><em>q</em></sub></span> is, by the previous definition, <br /><span class="math display"><em>L</em>(<em>M</em><sub><em>q</em></sub>)=Pr(<em>D</em>|<em>M</em><sub><em>q</em></sub>)=<em>q</em><sup>30</sup>(1 − <em>q</em>)<sup>70</sup>.</span><br /> And the LR comparing models <span class="math inline"><em>M</em><sub><em>q</em><sub>1</sub></sub></span> and <span class="math inline"><em>M</em><sub><em>q</em><sub>2</sub></sub></span> is <br /><span class="math display"><em>L</em><em>R</em>(<em>M</em><sub><em>q</em><sub>1</sub></sub>; <em>M</em><sub><em>q</em><sub>2</sub></sub>)) = [<em>q</em><sub>1</sub>/<em>q</em><sub>2</sub>]<sup>30</sup>[(1 − <em>q</em><sub>1</sub>)/(1 − <em>q</em><sub>2</sub>)]<sup>70</sup>.</span><br /></p>
-<p>This is an example of what is called a parametric model. A parametric model is collection of models indexed by a parameter vector, often denoted <span class="math inline"><em>θ</em></span>, whose values lie in some parameter space, usually denoted <span class="math inline"><em>Θ</em></span>. The number of parameters included in the vector <span class="math inline"><em>θ</em></span> is called the “dimensionality” of the model or parameter space, and often denoted <span class="math inline"><em>d</em><em>i</em><em>m</em>(<em>Θ</em>)</span>.</p>
-<p>Here the parameter is <span class="math inline"><em>q</em></span> and the parameter space is <span class="math inline">[0, 1]</span>. The dimensionality is 1.</p>
-<p>When computing likelihoods for parametric models, we usually dispense with the model notation and simply use the parameter value to denote the model. So instead of referring to the likelihood for <span class="math inline"><em>M</em><sub><em>q</em></sub></span> we just say the “likelihood for <span class="math inline"><em>q</em></span>”, and write <span class="math inline"><em>L</em>(<em>q</em>)</span>. So the likelihood for <span class="math inline"><em>q</em></span> is given by <br /><span class="math display"><em>L</em>(<em>q</em>)=<em>q</em><sup>30</sup>(1 − <em>q</em>)<sup>70</sup>.</span><br /> Correspondingly we can also refer to the “likelihood ratio for <span class="math inline"><em>q</em><sub>1</sub></span> vs <span class="math inline"><em>q</em><sub>2</sub></span>”.</p>
+<p>Specifically, for each <span class="math inline">\(q\in [0,1]\)</span> let <span class="math inline">\(M_q\)</span> denote the model that the true frequency of the 1 allele is <span class="math inline">\(q\)</span>. Then, given our observation that 30 of 100 elephants carried allele 1 at marker 1, the likelihood for model <span class="math inline">\(M_q\)</span> is, by the previous definition, <span class="math display">\[L(M_q) = \Pr(D | M_q) = q^30 (1-q)^70.\]</span> And the LR comparing models <span class="math inline">\(M_{q_1}\)</span> and <span class="math inline">\(M_{q_2}\)</span> is <span class="math display">\[LR(M_{q_1};M_{q_2})) = [q_1/q_2]^30 [(1-q_1)/(1-q_2)]^70.\]</span></p>
+<p>This is an example of what is called a parametric model. A parametric model is collection of models indexed by a parameter vector, often denoted <span class="math inline">\(\theta\)</span>, whose values lie in some parameter space, usually denoted <span class="math inline">\(\Theta\)</span>. The number of parameters included in the vector <span class="math inline">\(\theta\)</span> is called the “dimensionality” of the model or parameter space, and often denoted <span class="math inline">\(dim(\Theta)\)</span>.</p>
+<p>Here the parameter is <span class="math inline">\(q\)</span> and the parameter space is <span class="math inline">\([0,1]\)</span>. The dimensionality is 1.</p>
+<p>When computing likelihoods for parametric models, we usually dispense with the model notation and simply use the parameter value to denote the model. So instead of referring to the likelihood for <span class="math inline">\(M_q\)</span> we just say the “likelihood for <span class="math inline">\(q\)</span>”, and write <span class="math inline">\(L(q)\)</span>. So the likelihood for <span class="math inline">\(q\)</span> is given by <span class="math display">\[L(q) = q^30 (1-q)^70.\]</span> Correspondingly we can also refer to the “likelihood ratio for <span class="math inline">\(q_1\)</span> vs <span class="math inline">\(q_2\)</span>”.</p>
 <p>We could plot the likelihood function as follows:</p>
 <pre class="r"><code>q = seq(0,1,length=100)
 L= function(q){q^30 * (1-q)^70}
 plot(q,L(q),ylab=&quot;L(q)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>The value of <span class="math inline"><em>θ</em></span> that maximizes the likelihood function is referred to as the “maximum likelihood estimate”, and usually denoted <span class="math inline">$\hat{\theta}$</span>. That is <br /><span class="math display">$$\hat{\theta}:= \arg \max L(\theta).$$</span><br /></p>
-<p>Provided the data are sufficiently informative, and the number of parameters is not too large, maximum likelihood estimates tend to be sensible. In this case we can see that the maximum likelihood estimate is <span class="math inline"><em>q</em> = 0.3</span>, which also corresponds to our intuition.</p>
+<p>The value of <span class="math inline">\(\theta\)</span> that maximizes the likelihood function is referred to as the “maximum likelihood estimate”, and usually denoted <span class="math inline">\(\hat{\theta}\)</span>. That is <span class="math display">\[\hat{\theta}:= \arg \max L(\theta).\]</span></p>
+<p>Provided the data are sufficiently informative, and the number of parameters is not too large, maximum likelihood estimates tend to be sensible. In this case we can see that the maximum likelihood estimate is <span class="math inline">\(q=0.3\)</span>, which also corresponds to our intuition.</p>
 <p>Note that from the likelihood function we can easily compute the likelihood ratio for any pair of parameter values! And just as with comparing two models, it is not the likelihoods that matter, but the likelihood ratios. That is you can divide the likelihood function by any constant without affecting the likelihood ratios.</p>
-<p>One way to emphasise this is to standardize the likelihood function so that its maximum is at 1, by dividing <span class="math inline">$L(\theta)/L(\hat{\theta})$</span>.</p>
+<p>One way to emphasise this is to standardize the likelihood function so that its maximum is at 1, by dividing <span class="math inline">\(L(\theta)/L(\hat{\theta})\)</span>.</p>
 <pre class="r"><code>q = seq(0,1,length=100)
 L= function(q){q^30 * (1-q)^70}
 plot(q,L(q)/L(0.3),ylab=&quot;L(q)/L(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>Note that for some values of <span class="math inline"><em>q</em></span> the likelihood ratio compared with <span class="math inline"><em>q</em> = 0.3</span> is very close to 0. These values of <span class="math inline"><em>q</em></span> are so much less consistent with the data that they are effectively excluded by the data. Just looking at the picture we might say that the values of <span class="math inline"><em>q</em></span> less than 0.15 or bigger than 0.5 are pretty much excluded by the data. We will see later how Bayesian analysis methods can be used to make this kind of argument more formal.</p>
+<p>Note that for some values of <span class="math inline">\(q\)</span> the likelihood ratio compared with <span class="math inline">\(q=0.3\)</span> is very close to 0. These values of <span class="math inline">\(q\)</span> are so much less consistent with the data that they are effectively excluded by the data. Just looking at the picture we might say that the values of <span class="math inline">\(q\)</span> less than 0.15 or bigger than 0.5 are pretty much excluded by the data. We will see later how Bayesian analysis methods can be used to make this kind of argument more formal.</p>
 </div>
 <div id="the-log-likelihood" class="section level1">
 <h1>The log-likelihood</h1>
-<p>Just as it can often be convenient to work with the log-likelihood ratio, it can be convenient to work with the log-likelihood function, usually denoted <span class="math inline"><em>l</em>(<em>θ</em>)</span> [lower-case L]. As with log likelihood ratios, unless otherwise specified, we use log base e. Here is the log-likelihood function.</p>
+<p>Just as it can often be convenient to work with the log-likelihood ratio, it can be convenient to work with the log-likelihood function, usually denoted <span class="math inline">\(l(\theta)\)</span> [lower-case L]. As with log likelihood ratios, unless otherwise specified, we use log base e. Here is the log-likelihood function.</p>
 <pre class="r"><code>q = seq(0,1,length=100)
 l= function(q){30*log(q) + 70 * log(1-q)}
 plot(q,l(q)-l(0.3),ylab=&quot;l(q) - l(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
-<p><img src="figure/likelihood_function.Rmd/unnamed-chunk-3-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> Changes in the log-likelihood function are referred to as “log-likelihood units”. For example the difference in the support for <span class="math inline"><em>q</em> = 0.3</span> and <span class="math inline"><em>q</em> = 0.35</span> is <code>l(0.3)-l(0.35)</code> = <code>0.5630377</code> log-likelihood units. Again, remember that it is differences in <span class="math inline"><em>l</em></span> that matter, not the actual values.</p>
+<p><img src="figure/likelihood_function.Rmd/unnamed-chunk-3-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> Changes in the log-likelihood function are referred to as “log-likelihood units”. For example the difference in the support for <span class="math inline">\(q=0.3\)</span> and <span class="math inline">\(q=0.35\)</span> is <code>l(0.3)-l(0.35)</code> = <code>0.5630377</code> log-likelihood units. Again, remember that it is differences in <span class="math inline">\(l\)</span> that matter, not the actual values.</p>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
@@ -250,6 +250,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

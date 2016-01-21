@@ -149,8 +149,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-07</p>
-<p><strong>Code version:</strong> 2501cb8543ac6f32bc39b7758b18975dc7020598</p>
+<p><strong>Last updated:</strong> 2016-01-19</p>
+<p><strong>Code version:</strong> eff1009a93d9442a852a8fa6039a582524522f8e</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should have come across the concept of <a href="likelihood.html">likelihood</a>, and be aware that likelihood provides a measure of the <em>relative</em> support in the data for different values of a parameter.</p>
@@ -158,9 +158,9 @@ img {
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>Our purpose here is simply to define and motivate the use of the log-likelihood and the log-likelihood ratio.</p>
-<p>For many reasons it is often convenient to work with the logarithm of the likelihood function rather that the likelihood function itself. This is referred to as the log-likelihood function, and usually denoted with <span class="math inline"><em>l</em></span> (a lower-case <span class="math inline"><em>L</em></span>): <br /><span class="math display"><em>l</em>(<em>θ</em>):=log<sub><em>e</em></sub><em>L</em>(<em>θ</em>).</span><br /></p>
-<p>Similarly, it is often convenient to work with the log-likelihood-ratio, rather than the likelihood ratio. Recall that the likelihood ratio (LR) for <span class="math inline"><em>θ</em> = <em>θ</em><sub>1</sub></span> vs <span class="math inline"><em>θ</em> = <em>θ</em><sub>0</sub></span> is given by <br /><span class="math display"><em>L</em><em>R</em>(<em>θ</em><sub>1</sub>, <em>θ</em><sub>0</sub>)=<em>L</em>(<em>θ</em><sub>1</sub>)/<em>L</em>(<em>θ</em><sub>0</sub>).</span><br /> Therefore the logarithm of this, known as the log-likelihood-ratio, is <br /><span class="math display">log<sub><em>e</em></sub>(<em>L</em><em>R</em>(<em>θ</em><sub>1</sub>, <em>θ</em><sub>0</sub>)) = <em>l</em>(<em>θ</em><sub>1</sub>)−<em>l</em>(<em>θ</em><sub>0</sub>).</span><br /></p>
-<p>Recall that the likelihood function <span class="math inline"><em>L</em>(<em>θ</em>)</span> provides a measure of the <em>relative</em> support in the data for different values of the parameter <span class="math inline"><em>θ</em></span>. In particular, when comparing the likelihood for two different values of <span class="math inline"><em>θ</em></span>, what matters is the likelihood ratio. Similarly, when comparing the log-likelihood for different values of <span class="math inline"><em>θ</em></span>, what matters is the difference <span class="math inline"><em>l</em>(<em>θ</em><sub>1</sub>)−<em>l</em>(<em>θ</em><sub>0</sub>)</span> (the log-likelihood ratio).</p>
+<p>For many reasons it is often convenient to work with the logarithm of the likelihood function rather that the likelihood function itself. This is referred to as the log-likelihood function, and usually denoted with <span class="math inline">\(l\)</span> (a lower-case <span class="math inline">\(L\)</span>): <span class="math display">\[l(\theta):=\log_e L(\theta).\]</span></p>
+<p>Similarly, it is often convenient to work with the log-likelihood-ratio, rather than the likelihood ratio. Recall that the likelihood ratio (LR) for <span class="math inline">\(\theta=\theta_1\)</span> vs <span class="math inline">\(\theta=\theta_0\)</span> is given by <span class="math display">\[LR(\theta_1,\theta_0) = L(\theta_1)/L(\theta_0).\]</span> Therefore the logarithm of this, known as the log-likelihood-ratio, is <span class="math display">\[\log_e(LR(\theta_1,\theta_0)) = l(\theta_1)-l(\theta_0).\]</span></p>
+<p>Recall that the likelihood function <span class="math inline">\(L(\theta)\)</span> provides a measure of the <em>relative</em> support in the data for different values of the parameter <span class="math inline">\(\theta\)</span>. In particular, when comparing the likelihood for two different values of <span class="math inline">\(\theta\)</span>, what matters is the likelihood ratio. Similarly, when comparing the log-likelihood for different values of <span class="math inline">\(\theta\)</span>, what matters is the difference <span class="math inline">\(l(\theta_1)-l(\theta_0)\)</span> (the log-likelihood ratio).</p>
 </div>
 <div id="examples" class="section level1">
 <h1>Examples</h1>
@@ -229,6 +229,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>
