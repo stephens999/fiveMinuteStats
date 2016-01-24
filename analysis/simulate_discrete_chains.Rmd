@@ -32,12 +32,12 @@ With the facts above, we can simulate a Markov chain as follows:
 2. Set $P_n = P$  
 3. For t = 1...T:   
       1. Set $\pi^{(t)} = \pi^{(0)}P_n$  
-      2. Let $X_t$ be a random draw from a Multinomial distribution with probability vector $\pi^{(t)}$. This assigns a random state to $X_t$ according to our probability vector $\pi^{(t)}$.  
-      3. Set $P_n = P_nP$.  
+      2. Let $X_t$ be a random draw from a Multinomial distribution with probability vector $\pi^{(t)}$. This assigns a random state to $X_t$ according to our probability vector $\pi^{(t)}$  
+      3. Set $P_n = P_nP$  
 
 We implement this algorithm in the function below. Note that this function lets us run multiple Markov chains at once, and that we initialize $\pi^{(0)}$ so that the chain is forced to start in state 1 (i.e $\pi^{(0)} = (1,0,0,\ldots,0)$).
 ```{r}
-# simulate a Markov chain
+# simulate discrete Markov chains
 run.mc.sim <- function( P,   # probability transition matrix
                         num.iters=50, 
                         num.chains=150 )
@@ -91,8 +91,8 @@ We initialize this matrix in R below:
 ```{r}
 # setup transition matrix 
 P <- t(matrix(c( 0.7, 0.2, 0.1, 
-                0.4, 0.6,   0, 
-                  0,   1,   0  ), nrow=3, ncol=3))
+                 0.4, 0.6,   0, 
+                   0,   1,   0  ), nrow=3, ncol=3))
 ```
 Recall that the stationary distribution $\pi$ is the vector such that 
 $$\pi = \pi P$$
@@ -129,7 +129,7 @@ $$\underbrace{\begin{bmatrix}
 \end{bmatrix}}_b \\
 A\pi = b$$
 
-Since this linear system has more equations than unknowns, it is called an *overdeterminted system*. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for $\pi$ exactly) when $b$ is in the column space of $A$. We can check this numerically by obtaining the rank of $A$, then obtaining the rank of an augmented matrix with $b$ appended as a column of $A$.
+Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for $\pi$ exactly) when $b$ is in the column space of $A$. We can check this numerically by obtaining the rank of $A$, then obtaining the rank of an augmented matrix with $b$ appended as a column of $A$.
 
 ```{r}
 library(Matrix)
@@ -170,7 +170,7 @@ abline(h=1, lty=3)
 abline(h=3, lty=3)
 ```
 
-Using the notation from the first section, the first matrix we get from our function, "all_probs, contains $\pi^{(n)}$ through time. We can see how $\pi^{(n)}$ evolves as $n$ grows, and we can check if it converges to the stationary distribution we found above. 
+The first matrix we get from our function contains $\pi^{(n)}$ through time. We can see how $\pi^{(n)}$ evolves as $n$ grows, and we can check if it converges to the stationary distribution we found above. 
 
 First we plot the time evolution of the probability of being in each state:
 ```{r}
@@ -212,7 +212,7 @@ $$P = \begin{bmatrix}
     0    & 0    & 0    & 0    & 0    & 0     & 0.66 & 0.33 \\
 \end{bmatrix}$$
 
-We next initialize our transition matrix in R:
+We first initialize our transition matrix in R:
 
 ```{r}
 P <- t(matrix(c( 1/3, 2/3,   0,   0,  0,   0,   0,   0,
@@ -232,7 +232,7 @@ Now we run our simulations with the transition matrix above:
 sim2a <- run.mc.sim(P)
 ```
 
-First we plot 5 of the chains through time below:
+and now plot 5 of the chains through time below:
 ```{r}
 states <- sim2a[[2]]
 matplot(states[,1:5], type='l', lty=1, col=1:5, ylim=c(0,9), ylab='state', xlab='time')
@@ -286,7 +286,7 @@ matplot(all.probs, type='l', col=1:8, lty=1, ylab='probability',
 legend('topright', paste('state.', 1:8, sep=''), lty=1, col=1:8)
 ```
 
-Finally we confirm that our empirical probability also exhibit similar behavior:
+Finally we confirm that our empirical probabilities also exhibit similar behavior:
 ```{r}
 state.probs <- t(apply(apply(sim2b[[2]], 1, function(x) table(factor(x, levels=1:8))), 2, function(x) x/sum(x)))
 matplot(state.probs[1:50,], col=1:8, lty=1, type='l', ylab='empirical probability', xlab='time', ylim=c(0,1.2))

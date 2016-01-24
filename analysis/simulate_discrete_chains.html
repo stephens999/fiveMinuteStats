@@ -137,7 +137,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-23</p>
-<p><strong>Code version:</strong> 1277966399366dd01b01a880d9352c360e10a3f5</p>
+<p><strong>Code version:</strong> c4b541d3ddbb9c7bb928932328cb7b0ff0d88249</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
@@ -154,12 +154,12 @@ img {
 <li>For t = 1…T:
 <ol style="list-style-type: decimal">
 <li>Set <span class="math">\(\pi^{(t)} = \pi^{(0)}P_n\)</span><br /></li>
-<li>Let <span class="math">\(X_t\)</span> be a random draw from a Multinomial distribution with probability vector <span class="math">\(\pi^{(t)}\)</span>. This assigns a random state to <span class="math">\(X_t\)</span> according to our probability vector <span class="math">\(\pi^{(t)}\)</span>.<br /></li>
-<li>Set <span class="math">\(P_n = P_nP\)</span>.</li>
+<li>Let <span class="math">\(X_t\)</span> be a random draw from a Multinomial distribution with probability vector <span class="math">\(\pi^{(t)}\)</span>. This assigns a random state to <span class="math">\(X_t\)</span> according to our probability vector <span class="math">\(\pi^{(t)}\)</span><br /></li>
+<li>Set <span class="math">\(P_n = P_nP\)</span></li>
 </ol></li>
 </ol>
 <p>We implement this algorithm in the function below. Note that this function lets us run multiple Markov chains at once, and that we initialize <span class="math">\(\pi^{(0)}\)</span> so that the chain is forced to start in state 1 (i.e <span class="math">\(\pi^{(0)} = (1,0,0,\ldots,0)\)</span>).</p>
-<pre class="r"><code># simulate a Markov chain
+<pre class="r"><code># simulate discrete Markov chains
 run.mc.sim &lt;- function( P,   # probability transition matrix
                         num.iters=50, 
                         num.chains=150 )
@@ -209,8 +209,8 @@ run.mc.sim &lt;- function( P,   # probability transition matrix
 <p>We initialize this matrix in R below:</p>
 <pre class="r"><code># setup transition matrix 
 P &lt;- t(matrix(c( 0.7, 0.2, 0.1, 
-                0.4, 0.6,   0, 
-                  0,   1,   0  ), nrow=3, ncol=3))</code></pre>
+                 0.4, 0.6,   0, 
+                   0,   1,   0  ), nrow=3, ncol=3))</code></pre>
 <p>Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span></p>
 <p>We can find our stationary distribution by solving the following linear system: <span class="math">\[\begin{align*}
 0.7\pi_1 + 0.4\pi_2  &amp;= \pi_1 \\
@@ -238,7 +238,7 @@ P &lt;- t(matrix(c( 0.7, 0.2, 0.1,
 1
 \end{bmatrix}}_b \\
 A\pi = b\]</span></p>
-<p>Since this linear system has more equations than unknowns, it is called an <em>overdeterminted system</em>. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math">\(\pi\)</span> exactly) when <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math">\(b\)</span> appended as a column of <span class="math">\(A\)</span>.</p>
+<p>Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math">\(\pi\)</span> exactly) when <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math">\(b\)</span> appended as a column of <span class="math">\(A\)</span>.</p>
 <pre class="r"><code>library(Matrix)
 A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b        &lt;- c(0,0,0, 1)
@@ -265,7 +265,7 @@ matplot(states[,1:5], type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;s
 abline(h=1, lty=3)
 abline(h=3, lty=3)</code></pre>
 <p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-6-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>Using the notation from the first section, the first matrix we get from our function, “all_probs, contains <span class="math">\(\pi^{(n)}\)</span> through time. We can see how <span class="math">\(\pi^{(n)}\)</span> evolves as <span class="math">\(n\)</span> grows, and we can check if it converges to the stationary distribution we found above.</p>
+<p>The first matrix we get from our function contains <span class="math">\(\pi^{(n)}\)</span> through time. We can see how <span class="math">\(\pi^{(n)}\)</span> evolves as <span class="math">\(n\)</span> grows, and we can check if it converges to the stationary distribution we found above.</p>
 <p>First we plot the time evolution of the probability of being in each state:</p>
 <pre class="r"><code>all.probs &lt;- sim1[[1]]
 matplot(all.probs, type=&#39;l&#39;, col=1:3, lty=1, ylab=&#39;probability&#39;, xlab=&#39;time&#39;)
@@ -299,7 +299,7 @@ legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&
     0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.33  &amp; 0.33 &amp; 0.33 \\
     0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0     &amp; 0.66 &amp; 0.33 \\
 \end{bmatrix}\]</span></p>
-<p>We next initialize our transition matrix in R:</p>
+<p>We first initialize our transition matrix in R:</p>
 <pre class="r"><code>P &lt;- t(matrix(c( 1/3, 2/3,   0,   0,  0,   0,   0,   0,
                  1/3, 1/3, 1/3,   0,  0,   0,   0,   0,
                    0, 1/3, 1/3, 1/3,  0,   0,   0,   0,
@@ -311,7 +311,7 @@ legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&
 <p>After briefly studying this matrix, we can see that for states 2 through 7, this transition matrix forces the chain to either stay in the current state or move one state up or down, all with equal probability. For the edge cases, states 1 and 8, the chain can either stay or reflect towards the middle states. Since it’s “easier” to get to one of the middle states (either from above or below), we should see that the probabilities for these states converge to a higher number than the states on the boundaries.</p>
 <p>Now we run our simulations with the transition matrix above:</p>
 <pre class="r"><code>sim2a &lt;- run.mc.sim(P)</code></pre>
-<p>First we plot 5 of the chains through time below:</p>
+<p>and now plot 5 of the chains through time below:</p>
 <pre class="r"><code>states &lt;- sim2a[[2]]
 matplot(states[,1:5], type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,9), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
 abline(h=1, lty=3)
@@ -352,7 +352,7 @@ matplot(all.probs, type=&#39;l&#39;, col=1:8, lty=1, ylab=&#39;probability&#39;,
         xlab=&#39;time&#39;, ylim=c(0,1.2))
 legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
 <p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-16-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>Finally we confirm that our empirical probability also exhibit similar behavior:</p>
+<p>Finally we confirm that our empirical probabilities also exhibit similar behavior:</p>
 <pre class="r"><code>state.probs &lt;- t(apply(apply(sim2b[[2]], 1, function(x) table(factor(x, levels=1:8))), 2, function(x) x/sum(x)))
 matplot(state.probs[1:50,], col=1:8, lty=1, type=&#39;l&#39;, ylab=&#39;empirical probability&#39;, xlab=&#39;time&#39;, ylim=c(0,1.2))
 legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
