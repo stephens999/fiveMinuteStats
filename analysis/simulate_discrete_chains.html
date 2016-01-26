@@ -127,38 +127,69 @@ img {
 <div id="TOC">
 <ul>
 <li><a href="#pre-requisites">Pre-requisites</a></li>
-<li><a href="#overview">Overview</a></li>
-<li><a href="#example-1">Example 1</a></li>
-<li><a href="#example-2">Example 2</a><ul>
-<li><a href="#a">2a</a></li>
-<li><a href="#b">2b</a></li>
+<li><a href="#illustrative-example">Illustrative Example</a><ul>
+<li><a href="#general-algorithm">General Algorithm</a></li>
 </ul></li>
+<li><a href="#limiting-probabilities">Limiting Probabilities</a></li>
+<li><a href="#simulation-1-3x3-example">Simulation 1: 3x3 example</a><ul>
+<li><a href="#finding-the-stationary-distribution">Finding the stationary distribution</a></li>
+<li><a href="#the-limiting-distribution">The limiting distribution</a></li>
+</ul></li>
+<li><a href="#simulation-2-8x8-example">Simulation 2: 8x8 example</a></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-23</p>
-<p><strong>Code version:</strong> c4b541d3ddbb9c7bb928932328cb7b0ff0d88249</p>
+<p><strong>Last updated:</strong> 2016-01-26</p>
+<p><strong>Code version:</strong> 433524719f63545fceb08b17f207f2771591c62c</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
 </div>
-<div id="overview" class="section level1">
-<h1>Overview</h1>
-<p>In this note, we will simulate a few Markov chains to gain some intuition about their behavior and how they evolve. Before moving on to concrete examples, we first settle on notation and implement an R function which will facilitates the simulations.</p>
-<p>Let <span class="math">\(\pi^{(0)}\)</span> be our initial probability vector. For example, if we had a 3 state Markov chain with <span class="math">\(\pi^{(0)} = (0.5, 0.1, 0.4)\)</span>, this would tell us that our Markov chain has a 50% probability of starting in state 1, a 10% probability of starting in state 2, and a 40% probability of starting in state 3.</p>
+<div id="illustrative-example" class="section level1">
+<h1>Illustrative Example</h1>
+<p>In this note, we will simulate Markov chains to gain some intuition about their behavior and how they evolve. Before moving on to concrete examples, we first settle on notation and implement an R function which will facilitate the simulations.</p>
+<p>Let <span class="math">\(P_{ij}\)</span> denote the one-step transition probability. That is, <span class="math">\[ P_{ij} = P(X_{n+1} = j | X_{n} = i)\]</span></p>
+<p>In what follows, we will assume that the transition probabilities do not depend on the time <span class="math">\(n\)</span>. These are called <em>time homogenous</em> Markov chains.</p>
+<p>The general idea of simulating discrete Markov chains can be illustrated through a simple example with 2 states. Assume our state space is <span class="math">\(\{1,2\}\)</span> and the transition matrix is:</p>
+<p><span class="math">\[P = \begin{bmatrix}
+    0.7 &amp; 0.3 \\
+    0.4 &amp; 0.6
+\end{bmatrix}\]</span></p>
+<p>Further assume that our Markov chain starts in state 1 so that <span class="math">\(X_0 = 1\)</span>. Since we are starting in state 1, our chain can either remain in state <span class="math">\(1\)</span> with probability <span class="math">\(P_{11}\)</span> or transition to state <span class="math">\(2\)</span> with probability <span class="math">\(P_{12}\)</span>. Therefore, to simulate <span class="math">\(X_1\)</span>, we need to generate a random variable according to the first row of <span class="math">\(P\)</span> so that <span class="math">\(P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7\)</span> and <span class="math">\(P_{12} = P(X_1 = 2 | X_0 = 0) = 0.7\)</span>.</p>
+<p>To simulate <span class="math">\(X_1\)</span> with these known probabilities, we could use inverse transform sampling by first generating a uniform random variable <span class="math">\(U\)</span> between <span class="math">\(0\)</span> and <span class="math">\(1\)</span>. Then, we set <span class="math">\(X_1=1\)</span> if <span class="math">\(U \leq 0.7\)</span> and <span class="math">\(X_1=2\)</span> if <span class="math">\(U &gt; 0.7\)</span>. If it happens that <span class="math">\(X_1 = 2\)</span>, we would then generate <span class="math">\(X_2\)</span> according to the second row of <span class="math">\(P\)</span> in a similar fashion.</p>
+<p>For larger state spaces, if <span class="math">\(X_n = i\)</span>, we would simulate <span class="math">\(X_{n+1}\)</span> according to the <span class="math">\(i\)</span>-th row of the probability transition matrix. Using the inverse transform method, we first sample a uniform random variable <span class="math">\(U\)</span> between <span class="math">\(0\)</span> and <span class="math">\(1\)</span>, then set <span class="math">\(X_{n+1} = 0\)</span> if <span class="math">\(U \leq P_{i0}\)</span>, <span class="math">\(X_{n+1} = 1\)</span> if <span class="math">\(P_{i0} &lt; U \leq P_{i1}\)</span>. In general, we would set <span class="math">\(X_{n+1} = j\)</span> if <span class="math">\(\sum_{k=0}^{j-1}P_{ik} \leq U &lt; \sum_{k=0}^{j}P_{ik}\)</span>.</p>
+<p>When <span class="math">\(X_n=i\)</span> and there are <span class="math">\(S\)</span> possible states, instead of inverse transform sampling, we could also think of <span class="math">\(X_{n+1}\)</span> as a single draw from a multinomial distribution with probabilities equal to the <span class="math">\(i\)</span>-th row of <span class="math">\(P = (P_{i0},\ldots,P_{iS})\)</span>. This is how we will simulate our Markov chains below.</p>
+<div id="general-algorithm" class="section level2">
+<h2>General Algorithm</h2>
+<p>Here we present a general algorithm for simulating a discrete Markov chain assuming we have <span class="math">\(S\)</span> possible states.</p>
+<ol style="list-style-type: decimal">
+<li>Obtain the <span class="math">\(S\times S\)</span> probability transition matrix <span class="math">\(P\)</span></li>
+<li>Set <span class="math">\(t = 0\)</span></li>
+<li>Pick an initial state <span class="math">\(X_t=i\)</span>. We can represent this as a vector of length <span class="math">\(S\)</span> with a <span class="math">\(1\)</span> in the <span class="math">\(i\)</span>-th component, and zeros elsewhere. Let this state vector be <span class="math">\(s_t = [0, 0,\ldots 1,\ldots, 0, 0]\)</span></li>
+<li>For t = 1…T:
+<ol style="list-style-type: decimal">
+<li>Obtain the row of <span class="math">\(P\)</span> corresponding to the current state: <span class="math">\(p = sP\)</span></li>
+<li>Let <span class="math">\(X_t\)</span> be a random draw from a multinomial distribution with probability vector <span class="math">\(p\)</span>. Assume this next state is <span class="math">\(j\)</span></li>
+<li>Set the state vector <span class="math">\(s_t\)</span> to a vector whose <span class="math">\(j\)</span>-th component is 1, and zero otherwise</li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div id="limiting-probabilities" class="section level1">
+<h1>Limiting Probabilities</h1>
+<p>Let <span class="math">\(\pi^{(0)}\)</span> be our initial probability vector. For example, if we had a 3 state Markov chain with <span class="math">\(\pi^{(0)} = [0.5, 0.1, 0.4]\)</span>, this would tell us that our chain has a 50% probability of starting in state 1, a 10% probability of starting in state 2, and a 40% probability of starting in state 3. If we wanted to set our initial state to 1, we would have <span class="math">\(\pi^{(0)} = [1, 0, 0]\)</span>.</p>
 <p>Let <span class="math">\(P\)</span> be our probability transition matrix. Recall from the note on discrete Markov chains that the probability vector after <span class="math">\(n\)</span> steps is equal to: <span class="math">\[\pi^{(n)} = \pi^{(0)}P^n\]</span> where <span class="math">\(P^n\)</span> is the matrix <span class="math">\(P\)</span> raised to the <span class="math">\(n\)</span>-th power.</p>
-<p>With the facts above, we can simulate a Markov chain as follows:</p>
+<p>With the facts above, we could keep track of our probability vector <span class="math">\(\pi^{(n)}\)</span> as we simulate the Markov chain as follows:</p>
 <ol style="list-style-type: decimal">
 <li>Obtain probability transition matrix <span class="math">\(P\)</span><br /></li>
 <li>Set <span class="math">\(P_n = P\)</span><br /></li>
 <li>For t = 1…T:
 <ol style="list-style-type: decimal">
-<li>Set <span class="math">\(\pi^{(t)} = \pi^{(0)}P_n\)</span><br /></li>
-<li>Let <span class="math">\(X_t\)</span> be a random draw from a Multinomial distribution with probability vector <span class="math">\(\pi^{(t)}\)</span>. This assigns a random state to <span class="math">\(X_t\)</span> according to our probability vector <span class="math">\(\pi^{(t)}\)</span><br /></li>
+<li>Set <span class="math">\(\pi^{(n)} = \pi^{(0)}P_n\)</span><br /></li>
 <li>Set <span class="math">\(P_n = P_nP\)</span></li>
 </ol></li>
 </ol>
-<p>We implement this algorithm in the function below. Note that this function lets us run multiple Markov chains at once, and that we initialize <span class="math">\(\pi^{(0)}\)</span> so that the chain is forced to start in state 1 (i.e <span class="math">\(\pi^{(0)} = (1,0,0,\ldots,0)\)</span>).</p>
+<p>We implement an R function to simulate discrete Markov chains below. Here are two details about the implementation that will help you read the code: * This function lets us run multiple Markov chains at once. Many of the vectors we talked about above are therefore represented as matrices, one vector for each chain.<br />* We initialize <span class="math">\(\pi^{(0)}\)</span> and <span class="math">\(s_0\)</span> so that the chain is forced to start in state 1 (i.e <span class="math">\(s_0 = \pi^{(0)} = (1,0,0,\ldots,0)\)</span>).</p>
 <pre class="r"><code># simulate discrete Markov chains
 run.mc.sim &lt;- function( P,   # probability transition matrix
                         num.iters=50, 
@@ -174,23 +205,31 @@ run.mc.sim &lt;- function( P,   # probability transition matrix
   # probability vectors pi^n through time
   all_probs  &lt;- matrix(NA, nrow=num.iters, ncol=num.states)
   
-  # initial probability vector forces chain to start in state 1
-  pi_0       &lt;- c(1, rep(0,num.states-1))
+  # intial state matrix for all chains (row k is s_t for chain k)
+  # forces chains to start in state 1
+  s_0       &lt;- matrix(0, nrow=num.chains, ncol=num.states)
+  s_0[,1]   &lt;- 1
+  pi_0      &lt;- s_0[1,]
 
   # initialize variables for first state 
   P_n           &lt;- P
   all_probs[1,] &lt;- pi_0
   states[1,]    &lt;- 1
+  s_t           &lt;- s_0
   
   for(t in 2:num.iters) {
     
-    # probability vector for this iteration
+    # pi^n for this iteration
     pi_n           &lt;- pi_0 %*% P_n
     all_probs[t,]  &lt;- pi_n
     
+    # probability vector to simulating next state X_{n+1}
+    p              &lt;- s_t %*% P
+    
     # sample states for each chain
-    for(p in seq_len(num.chains)) {
-      states[t,p]   &lt;- which(rmultinom(1, 1, pi_n) == 1)
+    for(chain_num in seq_len(num.chains)) {
+      s_t[chain_num,]       &lt;- t(rmultinom(1, 1, p[chain_num,]))
+      states[t,chain_num]   &lt;- which(s_t[chain_num,] == 1)
     }
     
     # update probability transition matrix
@@ -199,8 +238,8 @@ run.mc.sim &lt;- function( P,   # probability transition matrix
   return(list(all.probs=all_probs, states=states))
 }</code></pre>
 </div>
-<div id="example-1" class="section level1">
-<h1>Example 1</h1>
+<div id="simulation-1-3x3-example" class="section level1">
+<h1>Simulation 1: 3x3 example</h1>
 <p>Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
     0.7 &amp; 0.2 &amp; 0.1 \\
     0.4 &amp; 0.6 &amp; 0 \\
@@ -211,7 +250,9 @@ run.mc.sim &lt;- function( P,   # probability transition matrix
 P &lt;- t(matrix(c( 0.7, 0.2, 0.1, 
                  0.4, 0.6,   0, 
                    0,   1,   0  ), nrow=3, ncol=3))</code></pre>
-<p>Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span></p>
+<div id="finding-the-stationary-distribution" class="section level2">
+<h2>Finding the stationary distribution</h2>
+<p>Every irreducible finite state space Markov chain has a unique stationary distribution. All of the examples we consider in this note are irreducible. Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span>.</p>
 <p>We can find our stationary distribution by solving the following linear system: <span class="math">\[\begin{align*}
 0.7\pi_1 + 0.4\pi_2  &amp;= \pi_1 \\
 0.2\pi_1 + 0.6\pi_2 + \pi_3 &amp;= \pi_2 \\
@@ -256,7 +297,7 @@ pi </code></pre>
 <p>We find that: <span class="math">\[\begin{align*}
 \pi_1 \approx 0.54, \pi_2 \approx 0.41, \pi_3 \approx 0.05
 \end{align*}\]</span></p>
-<p>Therefore, we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.</p>
+<p>Therefore, with proper conditions (see below), we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.</p>
 <p>Now we will use the function we wrote in the previous section to check this result numerically.</p>
 <pre class="r"><code>sim1 &lt;- run.mc.sim(P)</code></pre>
 <p>Our function returns a list containing two matrices. The second matrix called “states”&quot; contains the states of each of our simulated chains through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we first visualize how 5 of these chains evolve through time:</p>
@@ -265,13 +306,16 @@ matplot(states[,1:5], type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;s
 abline(h=1, lty=3)
 abline(h=3, lty=3)</code></pre>
 <p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-6-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>The first matrix we get from our function contains <span class="math">\(\pi^{(n)}\)</span> through time. We can see how <span class="math">\(\pi^{(n)}\)</span> evolves as <span class="math">\(n\)</span> grows, and we can check if it converges to the stationary distribution we found above.</p>
-<p>First we plot the time evolution of the probability of being in each state:</p>
+</div>
+<div id="the-limiting-distribution" class="section level2">
+<h2>The limiting distribution</h2>
+<p>The first matrix we get from our function contains <span class="math">\(\pi^{(n)}\)</span> through time. We can see how <span class="math">\(\pi^{(n)}\)</span> evolves as <span class="math">\(n\)</span> grows, and we can check if it converges to the stationary distribution we found above. For irreducible finite state Markov chains, note that <span class="math">\(\pi^{(n)}\)</span> converges if and only if the Markov chain is aperiodic. In this note, we only consider finite, irreducible, and aperiodic Markov chains.</p>
+<p>From <span class="math">\(\pi^{(n)}\)</span>, we plot the time evolution of the probability of being in each state:</p>
 <pre class="r"><code>all.probs &lt;- sim1[[1]]
 matplot(all.probs, type=&#39;l&#39;, col=1:3, lty=1, ylab=&#39;probability&#39;, xlab=&#39;time&#39;)
 legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;), lty=1, col=1:3)</code></pre>
 <p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-7-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>Indeed, we see that these probabilities quickly converge. Just by eye-balling the plot, we can see that the final probabilities are about equal to the vector <span class="math">\(\pi\)</span> we found above.</p>
+<p>Indeed, we see that these probabilities quickly converge. Just by eye-balling the plot, we can see that the final probabilities are about equal to the stationary distribution <span class="math">\(\pi\)</span> we found above.</p>
 <p>By inspecting the actual values, we can confirm that the values of <span class="math">\(\pi^{(n)}\)</span> converge to the vector <span class="math">\(\pi\)</span> exactly. The first row in the matrix below is from the simulation, and the second row is the quantity we obtained by solving the normal equations:</p>
 <pre class="r"><code>results1           &lt;- t(data.frame(pi_n = all.probs[50,], pi = pi))
 colnames(results1) &lt;- c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;)
@@ -285,10 +329,9 @@ matplot(state.probs[1:50,], col=1:3, lty=1, type=&#39;l&#39;, ylab=&#39;empirica
 legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;), lty=1, col=1:3)</code></pre>
 <p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-9-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="example-2" class="section level1">
-<h1>Example 2</h1>
-<div id="a" class="section level2">
-<h2>2a</h2>
+</div>
+<div id="simulation-2-8x8-example" class="section level1">
+<h1>Simulation 2: 8x8 example</h1>
 <p>Next we will quickly do two similar, but larger, experiments with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
     0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
     0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
@@ -323,9 +366,6 @@ matplot(all.probs, type=&#39;l&#39;, col=1:8, lty=1, ylab=&#39;probability&#39;,
         xlab=&#39;time&#39;, ylim=c(0, 0.5))
 legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
 <p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-13-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> These results match our intuition above. The probability of being in states 1 and 8 converge to smaller values than the others.</p>
-</div>
-<div id="b" class="section level2">
-<h2>2b</h2>
 <p>Now we alter the transition matrix above to encourage the chain to stay in states 4 and 5: <span class="math">\[P = \begin{bmatrix}
     0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
     0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
@@ -375,7 +415,6 @@ loaded via a namespace (and not attached):
  [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
  [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 grid_3.2.2     
  [9] stringr_1.0.0   digest_0.6.8    lattice_0.20-33 evaluate_0.8   </code></pre>
-</div>
 </div>
 
 
