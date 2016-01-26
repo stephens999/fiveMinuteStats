@@ -136,11 +136,12 @@ img {
 <li><a href="#the-limiting-distribution">The limiting distribution</a></li>
 </ul></li>
 <li><a href="#simulation-2-8x8-example">Simulation 2: 8x8 example</a></li>
+<li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-26</p>
-<p><strong>Code version:</strong> 433524719f63545fceb08b17f207f2771591c62c</p>
+<p><strong>Code version:</strong> 3bac3541da05052467c27071c378b0682f779d03</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
@@ -396,7 +397,10 @@ legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, 
 <pre class="r"><code>state.probs &lt;- t(apply(apply(sim2b[[2]], 1, function(x) table(factor(x, levels=1:8))), 2, function(x) x/sum(x)))
 matplot(state.probs[1:50,], col=1:8, lty=1, type=&#39;l&#39;, ylab=&#39;empirical probability&#39;, xlab=&#39;time&#39;, ylim=c(0,1.2))
 legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
-<p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-17-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> # Session information</p>
+<p><img src="figure/simulate_discrete_chains.Rmd/unnamed-chunk-17-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.2.2 (2015-08-14)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)

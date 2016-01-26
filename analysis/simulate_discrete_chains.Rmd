@@ -335,6 +335,7 @@ state.probs <- t(apply(apply(sim2b[[2]], 1, function(x) table(factor(x, levels=1
 matplot(state.probs[1:50,], col=1:8, lty=1, type='l', ylab='empirical probability', xlab='time', ylim=c(0,1.2))
 legend('topright', paste('state.', 1:8, sep=''), lty=1, col=1:8)
 ```
+
 # Session information
 
 ```{r info}
