@@ -141,7 +141,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-26</p>
-<p><strong>Code version:</strong> 3bac3541da05052467c27071c378b0682f779d03</p>
+<p><strong>Code version:</strong> 0af3bd3542e3289a32c8722edfe68298c1c1f1dc</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
@@ -190,7 +190,7 @@ img {
 <li>Set <span class="math">\(P_n = P_nP\)</span></li>
 </ol></li>
 </ol>
-<p>We implement an R function to simulate discrete Markov chains below. Here are two details about the implementation that will help you read the code: * This function lets us run multiple Markov chains at once. Many of the vectors we talked about above are therefore represented as matrices, one vector for each chain.<br />* We initialize <span class="math">\(\pi^{(0)}\)</span> and <span class="math">\(s_0\)</span> so that the chain is forced to start in state 1 (i.e <span class="math">\(s_0 = \pi^{(0)} = (1,0,0,\ldots,0)\)</span>).</p>
+<p>We implement an R function to simulate discrete Markov chains below. Here are two details about the implementation that will help you read the code:<br />* This function lets us run multiple Markov chains at once. Many of the vectors we talked about above are therefore represented as matrices, one vector for each chain.<br />* We initialize <span class="math">\(\pi^{(0)}\)</span> and <span class="math">\(s_0\)</span> so that the chain is forced to start in state 1 (i.e <span class="math">\(s_0 = \pi^{(0)} = (1,0,0,\ldots,0)\)</span>).</p>
 <pre class="r"><code># simulate discrete Markov chains
 run.mc.sim &lt;- function( P,   # probability transition matrix
                         num.iters=50, 

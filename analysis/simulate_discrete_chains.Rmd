@@ -67,7 +67,7 @@ With the facts above, we could keep track of our probability vector $\pi^{(n)}$ 
       1. Set $\pi^{(n)} = \pi^{(0)}P_n$  
       3. Set $P_n = P_nP$  
 
-We implement an R function to simulate discrete Markov chains below. Here are two details about the implementation that will help you read the code: 
+We implement an R function to simulate discrete Markov chains below. Here are two details about the implementation that will help you read the code:   
 * This function lets us run multiple Markov chains at once. Many of the vectors we talked about above are therefore represented as matrices, one vector for each chain.  
 * We initialize $\pi^{(0)}$ and $s_0$ so that the chain is forced to start in state 1 (i.e $s_0 = \pi^{(0)} = (1,0,0,\ldots,0)$).  
 ```{r}
