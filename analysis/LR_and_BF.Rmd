@@ -37,7 +37,7 @@ When comparing fully specified models the LR and BF are just two different names
 In the example [here](likelihood_ratio_simple_models.html) we considered the problem of determining whether an elephant tusk came from a savanna elephant or a forest elephant, based on examining DNA data. Specifically we computed the LR (or BF) comparing two models, $M_S$ and $M_F$,
 where $M_S$ denotes the model that the tusk came from a savanna elephant and $M_F$ denotes the model that the tusk came from a forest elephant. In our example we found LR=1.8, so the data favor $M_S$ by a factor of 1.8. We commented that a factor of 1.8 is relatively modest, and not sufficient to convince that the tusk definitely came from a savanna elephant.
 
-In the example [here](likelihood_ratio_simple_continous_data.html) we considered the problem of testing a patient for a disease based on measuring the concentration of a particular diagnostic protein in the blood. Specifically we computed the LR (or BF) comparing two models, $M_n$ and $M_d$,
+In the example [here](likelihood_ratio_simple_continuous_data.html) we considered the problem of testing a patient for a disease based on measuring the concentration of a particular diagnostic protein in the blood. Specifically we computed the LR (or BF) comparing two models, $M_n$ and $M_d$,
 where $M_S$ denotes the model that the patient is normal and $M_d$ denotes the model that the patient 
 has the disease. In our example we found LR for $M_n$ vs $M_d$ to be approximately 0.07, so the data favor $M_d$ by a factor of 14. This is a much larger LR than in the first case, but is it convincing? Can we confidently conclude that the patient has the disease?
 
