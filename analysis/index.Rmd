@@ -28,3 +28,6 @@ title: "Home"
 
 *  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 
+### Stochastic Processes
+
+*  [Simulating Discrete Markov Chains](simulate_discrete_chains.html)
