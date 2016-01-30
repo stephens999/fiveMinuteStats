@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-01-21" />
+
+<title>Simulating Discrete Markov Chains: Limiting Disributions</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Simulating Discrete Markov Chains: Limiting Disributions</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-21</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#limiting-probabilities">Limiting Probabilities</a></li>
+<li><a href="#simulation-1-3x3-example">Simulation 1: 3x3 example</a></li>
+<li><a href="#simulation-2-8x8-example">Simulation 2: 8x8 example</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-01-30</p>
+<p><strong>Code version:</strong> 361c6cbb86fa9eda564624903437aa10cfc04082</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This document assumes basic familiarity with simulating Markov chains, as seen in this <a href="simulating_discrete_chains_1.html">note</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>In this note, we show the empirical relationship between the stationary distribution, limiting probabilities, and empirical probabilities for discrete Markov chains.</p>
+</div>
+<div id="limiting-probabilities" class="section level1">
+<h1>Limiting Probabilities</h1>
+<p>Let <span class="math">\(\pi^{(0)}\)</span> be our initial probability vector. For example, if we had a 3 state Markov chain with <span class="math">\(\pi^{(0)} = [0.5, 0.1, 0.4]\)</span>, this would tell us that our chain has a 50% probability of starting in state 1, a 10% probability of starting in state 2, and a 40% probability of starting in state 3. If we wanted to have our initial state equal to 1, we would set <span class="math">\(\pi^{(0)} = [1, 0, 0]\)</span>.</p>
+<p>Let <span class="math">\(P\)</span> be our probability transition matrix. Recall that the probability vector after <span class="math">\(n\)</span> steps is equal to: <span class="math">\[\pi^{(n)} = \pi^{(0)}P^n\]</span> where <span class="math">\(P^n\)</span> is the matrix <span class="math">\(P\)</span> raised to the <span class="math">\(n\)</span>-th power.</p>
+<p>With the facts above, we could keep track of our probability vector <span class="math">\(\pi^{(n)}\)</span> as we simulate the Markov chain as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Obtain probability transition matrix <span class="math">\(P\)</span><br /></li>
+<li>Set <span class="math">\(P_n = P\)</span><br /></li>
+<li>For t = 1…T:
+<ol style="list-style-type: decimal">
+<li>Simulate next step of Markov chain.</li>
+<li>Set <span class="math">\(\pi^{(n)} = \pi^{(0)}P_n\)</span><br /></li>
+<li>Set <span class="math">\(P_n = P_nP\)</span></li>
+</ol></li>
+</ol>
+<p>We augment our function for simulating Markov chains from <a href="simulating_discrete_chains_1.html">this note</a> with the following changes:<br />1. We keep track of <span class="math">\(p^{(n)}\)</span>.<br />2. We add the functionality of simulating multiple chains at once – as a result, the vectors we dealt with in the previous note have turned into matrices.<br />3. We use the rmultinom() function instead of our inv.transform.sample() method.</p>
+<pre class="r"><code># simulate discrete Markov chains
+run.mc.sim &lt;- function( P,   # probability transition matrix
+                        num.iters=50, 
+                        num.chains=150 )
+  {
+  
+  # number of possible states
+  num.states &lt;- nrow(P)
+  
+  # states X_t for all chains
+  states     &lt;- matrix(NA, ncol=num.chains, nrow=num.iters)
+  
+  # probability vectors pi^n through time
+  all_probs  &lt;- matrix(NA, nrow=num.iters, ncol=num.states)
+  
+  # forces chains to start in state 1
+  pi_0      &lt;- c(1, rep(0, num.states-1))
+
+  # initialize variables for first state 
+  P_n           &lt;- P
+  all_probs[1,] &lt;- pi_0
+  states[1,]    &lt;- 1
+
+  for(t in 2:num.iters) {
+    
+    # pi^n for this iteration
+    pi_n           &lt;- pi_0 %*% P_n
+    all_probs[t,]  &lt;- pi_n
+    
+    for(chain_num in seq_len(num.chains)) {
+      # probability vector to simulating next state 
+      p                     &lt;- P[ states[t-1,chain_num], ]
+      states[t,chain_num]   &lt;- which(rmultinom(1, 1, p) == 1)
+    }
+    
+    # update probability transition matrix
+    P_n           &lt;- P_n %*% P
+  }
+  return(list(all.probs=all_probs, states=states))
+}</code></pre>
+</div>
+<div id="simulation-1-3x3-example" class="section level1">
+<h1>Simulation 1: 3x3 example</h1>
+<p>Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+    0.7 &amp; 0.2 &amp; 0.1 \\
+    0.4 &amp; 0.6 &amp; 0 \\
+    0   &amp; 1   &amp; 0 
+\end{bmatrix}\]</span></p>
+<p>We initialize this matrix in R below:</p>
+<pre class="r"><code># setup transition matrix 
+P &lt;- t(matrix(c( 0.7, 0.2, 0.1, 
+                 0.4, 0.6,   0, 
+                   0,   1,   0  ), nrow=3, ncol=3))</code></pre>
+<p>We will inspect the limiting probabilities and compare them to the stationary distribution. In <a href="stationary_distribution.html">this note</a>, we derived the stationary distribution for this example. Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span></p>
+<p>We found that: <span class="math">\[\begin{align*}
+\pi_1 \approx 0.54, \pi_2 \approx 0.41, \pi_3 \approx 0.05
+\end{align*}\]</span></p>
+<p>Therefore, with proper conditions (see below), we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.</p>
+<p>Now we will use the function we wrote in the previous section to check this result numerically.</p>
+<pre class="r"><code>sim1 &lt;- run.mc.sim(P)</code></pre>
+<p>Our function returns a list containing two matrices. The second matrix called “states” contains the states of each of our simulated chains through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we first visualize how 5 of these chains evolve through time:</p>
+<pre class="r"><code>states &lt;- sim1[[2]]
+matplot(states[,1:5], type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
+abline(h=1, lty=3)
+abline(h=3, lty=3)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-4-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>The first matrix we get from our function contains <span class="math">\(\pi^{(n)}\)</span> through time. We can see how <span class="math">\(\pi^{(n)}\)</span> evolves as <span class="math">\(n\)</span> grows, and we can check if it converges to the stationary distribution we found above. For irreducible finite state Markov chains, note that <span class="math">\(\pi^{(n)}\)</span> converges if and only if the Markov chain is aperiodic. In this note, we only consider finite, irreducible, and aperiodic Markov chains.</p>
+<p>Using <span class="math">\(\pi^{(n)}\)</span>, we plot the time evolution of the probability of being in each state:</p>
+<pre class="r"><code>all.probs &lt;- sim1[[1]]
+matplot(all.probs, type=&#39;l&#39;, col=1:3, lty=1, ylab=&#39;probability&#39;, xlab=&#39;time&#39;)
+legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;), lty=1, col=1:3)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-5-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Indeed, we see that these probabilities quickly converge. Just by looking at the plot, we can see that the final probabilities are about equal to the stationary distribution <span class="math">\(\pi\)</span> we found above.</p>
+<p>By inspecting the actual values, we confirm that the values of <span class="math">\(\pi^{(n)}\)</span> converge to the vector <span class="math">\(\pi\)</span> exactly. The first row in the matrix below is from the simulation, and the second row is the quantity we obtained by solving for the stationary distribution:</p>
+<pre class="r"><code># solve for stationary
+A         &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
+b         &lt;- c(0,0,0, 1)
+pi        &lt;- drop(solve(t(A) %*% A, t(A) %*% b))
+
+# show comparison
+results1           &lt;- t(data.frame(pi_n = all.probs[50,], pi = pi))
+colnames(results1) &lt;- c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;)
+results1</code></pre>
+<pre><code>       state.1   state.2    state.3
+pi_n 0.5405405 0.4054054 0.05405405
+pi   0.5405405 0.4054054 0.05405405</code></pre>
+<p>Finally, we can also plot the proportion of chains that are in each state through time. These should roughly equal the probability vectors above, with some noise due to random chance:</p>
+<pre class="r"><code>state.probs &lt;- t(apply(apply(sim1[[2]], 1, function(x) table(factor(x, levels=1:3))), 2, function(x) x/sum(x)))
+matplot(state.probs[1:50,], col=1:3, lty=1, type=&#39;l&#39;, ylab=&#39;empirical probability&#39;, xlab=&#39;time&#39;)
+legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;), lty=1, col=1:3)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-7-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="simulation-2-8x8-example" class="section level1">
+<h1>Simulation 2: 8x8 example</h1>
+<p>Next we will quickly do two larger experiments with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+    0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0.33 &amp; 0.33 &amp; 0.33 &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0    &amp; 0.33 &amp; 0.33 &amp; 0.33 &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0    &amp; 0    &amp; 0.33 &amp; 0.33 &amp; 0.33  &amp; 0    &amp; 0   \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.33 &amp; 0.33  &amp; 0.33 &amp; 0   \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.33  &amp; 0.33 &amp; 0.33 \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0     &amp; 0.66 &amp; 0.33 \\
+\end{bmatrix}\]</span></p>
+<p>We first initialize our transition matrix in R:</p>
+<pre class="r"><code>P &lt;- t(matrix(c( 1/3, 2/3,   0,   0,  0,   0,   0,   0,
+                 1/3, 1/3, 1/3,   0,  0,   0,   0,   0,
+                   0, 1/3, 1/3, 1/3,  0,   0,   0,   0,
+                   0,   0, 1/3, 1/3, 1/3,  0,   0,   0,
+                   0,   0,   0, 1/3, 1/3, 1/3,  0,   0,
+                   0,   0,   0,   0, 1/3, 1/3, 1/3,  0,
+                   0,   0,   0,   0,   0, 1/3, 1/3, 1/3,
+                   0,   0,   0,   0,   0,   0, 2/3, 1/3), nrow=8, ncol=8))</code></pre>
+<p>After briefly studying this matrix, we can see that for states 2 through 7, this transition matrix forces the chain to either stay in the current state or move one state up or down, all with equal probability. For the edge cases, states 1 and 8, the chain can either stay or reflect towards the middle states. Since it’s “easier” to get to one of the middle states (either from above or below), we should see that the probabilities for these states converge to a higher number than the states on the boundaries.</p>
+<p>Now we run our simulation with the transition matrix above:</p>
+<pre class="r"><code>sim2a &lt;- run.mc.sim(P)</code></pre>
+<p>and now plot 5 of the chains through time below:</p>
+<pre class="r"><code>states &lt;- sim2a[[2]]
+matplot(states[,1:5], type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,9), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
+abline(h=1, lty=3)
+abline(h=8, lty=3)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-10-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Next we inpsect <span class="math">\(\pi^{(n)}\)</span> through time:</p>
+<pre class="r"><code>all.probs &lt;- sim2a[[1]]
+matplot(all.probs, type=&#39;l&#39;, col=1:8, lty=1, ylab=&#39;probability&#39;,
+        xlab=&#39;time&#39;, ylim=c(0, 0.5))
+legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-11-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> These results match our intuition above. The probability of being in states 1 and 8 converge to smaller values than the others.</p>
+<p>Now we alter the transition matrix above to encourage the chain to stay in states 4 and 5: <span class="math">\[P = \begin{bmatrix}
+    0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0.08 &amp; 0.08 &amp; 0.84 &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0    &amp; 0.08 &amp; 0.84 &amp; 0.08 &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0    &amp; 0    &amp; 0.08 &amp; 0.84 &amp; 0.08  &amp; 0    &amp; 0   \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.84 &amp; 0.08  &amp; 0.08 &amp; 0   \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.33  &amp; 0.33 &amp; 0.33 \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0     &amp; 0.66 &amp; 0.33 \\
+\end{bmatrix}\]</span></p>
+<p>and initialize the transition matrix in R:</p>
+<pre class="r"><code>P &lt;- t(matrix(c( 1/3,   2/3,    0,    0,    0,    0,    0,   0,
+                 1/3,   1/3,  1/3,    0,    0,    0,    0,   0,
+                   0,  .5/6, .5/6,  5/6,    0,    0,    0,   0,
+                   0,     0, .5/6,  5/6, .5/6,    0,    0,   0,
+                   0,     0,    0, .5/6,  5/6, .5/6,    0,   0,
+                   0,     0,    0,    0,  5/6, .5/6, .5/6,   0,
+                   0,     0,    0,    0,    0,  1/3,  1/3, 1/3,
+                   0,     0,    0,    0,    0,    0,  2/3, 1/3 ), nrow=8, ncol=8))</code></pre>
+<pre class="r"><code>sim2b &lt;- run.mc.sim(P)</code></pre>
+<p>Below we inspect <span class="math">\(\pi^{(n)}\)</span> through time and see that the probability vector converges to a vector placing most of the probability mass on states 4 and 5.</p>
+<pre class="r"><code>all.probs &lt;- sim2b[[1]]
+matplot(all.probs, type=&#39;l&#39;, col=1:8, lty=1, ylab=&#39;probability&#39;,
+        xlab=&#39;time&#39;, ylim=c(0,1.2))
+legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-14-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Finally we confirm that our empirical probabilities also exhibit similar behavior:</p>
+<pre class="r"><code>state.probs &lt;- t(apply(apply(sim2b[[2]], 1, function(x) table(factor(x, levels=1:8))), 2, function(x) x/sum(x)))
+matplot(state.probs[1:50,], col=1:8, lty=1, type=&#39;l&#39;, ylab=&#39;empirical probability&#39;, xlab=&#39;time&#39;, ylim=c(0,1.2))
+legend(&#39;topright&#39;, paste(&#39;state.&#39;, 1:8, sep=&#39;&#39;), lty=1, col=1:8)</code></pre>
+<p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-15-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.11
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

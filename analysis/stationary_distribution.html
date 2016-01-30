@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-01-21" />
+
+<title>Discrete Markov Chains: Finding the Stationary Distribution</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Discrete Markov Chains: Finding the Stationary Distribution</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-21</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#x3-example">3x3 example</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-01-30</p>
+<p><strong>Code version:</strong> 361c6cbb86fa9eda564624903437aa10cfc04082</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>In this note, we illustrate one way of analytically obtaining the stationary distribution for a finite discrete markov chain.</p>
+</div>
+<div id="x3-example" class="section level1">
+<h1>3x3 example</h1>
+<p>Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+    0.7 &amp; 0.2 &amp; 0.1 \\
+    0.4 &amp; 0.6 &amp; 0 \\
+    0   &amp; 1   &amp; 0 
+\end{bmatrix}\]</span></p>
+<p>Since every state is <em>accessible</em> from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span>.</p>
+<p>Therefore, we can find our stationary distribution by solving the following linear system: <span class="math">\[\begin{align*}
+0.7\pi_1 + 0.4\pi_2  &amp;= \pi_1 \\
+0.2\pi_1 + 0.6\pi_2 + \pi_3 &amp;= \pi_2 \\
+0.1\pi_1 &amp;= \pi_3
+\end{align*}\]</span> subject to <span class="math">\(\pi_1 + \pi_2 + \pi_3 = 1\)</span>. Putting these four equations together and moving all of the variables to the left hand side, we get the following linear system: <span class="math">\[\begin{align*}
+-0.3\pi_1 + 0.4\pi_2  &amp;= 0 \\
+0.2\pi_1 + -0.4\pi_2 + \pi_3 &amp;= 0 \\
+0.1\pi_1 - \pi_3 &amp;= 0 \\
+\pi_1 + \pi_2 + \pi_3 &amp;= 1
+\end{align*}\]</span></p>
+<p>We will define the linear system in matrix notation: <span class="math">\[\underbrace{\begin{bmatrix}
+    -0.3 &amp;  0.4 &amp; 0  \\
+     0.2 &amp; -0.4 &amp; 1  \\
+     0.1 &amp;    0 &amp; 1  \\
+     1   &amp;  1   &amp; 1 
+\end{bmatrix}}_A \begin{bmatrix}
+\pi_1 \\
+\pi_2 \\
+\pi_3 
+\end{bmatrix} = \underbrace{\begin{bmatrix}
+0 \\
+0 \\ 
+0 \\
+1
+\end{bmatrix}}_b \\
+A\pi = b\]</span></p>
+<p>Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math">\(\pi\)</span> exactly) when <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math">\(b\)</span> appended as a column of <span class="math">\(A\)</span>. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our example, we are safe)</p>
+<pre class="r"><code>library(Matrix)
+A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
+b        &lt;- c(0,0,0, 1)
+rank.A   &lt;- as.numeric(rankMatrix(A))
+rank.Ab  &lt;- as.numeric(rankMatrix(cbind(A,b)))
+print(paste(&quot;The rank of A =&quot;, rank.A, &quot;and the rank of the augmented matrix =&quot;, rank.Ab))</code></pre>
+<pre><code>[1] &quot;The rank of A = 3 and the rank of the augmented matrix = 3&quot;</code></pre>
+<p>We see that <span class="math">\(A\)</span> has full column rank, and that the rank is unchanged when we add <span class="math">\(b\)</span> as a column. Therefore, <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>, and this system is consistent. We can find <span class="math">\(\pi\)</span> by solving the normal equations: <span class="math">\[A^TA\pi = A^Tb\]</span></p>
+<p>We use the solve function in R to solve for the stationary distribution <span class="math">\(\pi\)</span>:</p>
+<pre class="r"><code>pi        &lt;- drop(solve(t(A) %*% A, t(A) %*% b))
+names(pi) &lt;- c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;)
+pi </code></pre>
+<pre><code>   state.1    state.2    state.3 
+0.54054054 0.40540541 0.05405405 </code></pre>
+<p>We find that: <span class="math">\[\begin{align*}
+\pi_1 \approx 0.54, \pi_2 \approx 0.41, \pi_3 \approx 0.05
+\end{align*}\]</span></p>
+<p>Therefore, under proper conditions, we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.</p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Matrix_1.2-3 knitr_1.11  
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 grid_3.2.2     
+ [9] stringr_1.0.0   digest_0.6.8    lattice_0.20-33 evaluate_0.8   </code></pre>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
