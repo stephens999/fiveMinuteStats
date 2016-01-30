@@ -1,0 +1,98 @@
+---
+title: "Discrete Markov Chains: Finding the Stationary Distribution"
+author: "Matt Bonakdarpour"
+date: 2016-01-21
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+This document assumes basic familiarity with Markov chains and linear algebra.
+
+# Overview
+
+In this note, we illustrate one way of analytically obtaining the stationary distribution for a finite discrete Markov chain. 
+
+# 3x3 example
+
+Assume our probability transition matrix is:
+$$P = \begin{bmatrix}
+    0.7 & 0.2 & 0.1 \\
+    0.4 & 0.6 & 0 \\
+    0   & 1   & 0 
+\end{bmatrix}$$
+
+Since every state is *accessible* from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution $\pi$ is the vector such that 
+$$\pi = \pi P$$. 
+
+Therefore, we can find our stationary distribution by solving the following linear system:
+$$\begin{align*}
+0.7\pi_1 + 0.4\pi_2  &= \pi_1 \\
+0.2\pi_1 + 0.6\pi_2 + \pi_3 &= \pi_2 \\
+0.1\pi_1 &= \pi_3
+\end{align*}$$
+subject to $\pi_1 + \pi_2 + \pi_3 = 1$. Putting these four equations together and moving all of the variables to the left hand side, we get the following linear system:
+$$\begin{align*}
+-0.3\pi_1 + 0.4\pi_2  &= 0 \\
+0.2\pi_1 + -0.4\pi_2 + \pi_3 &= 0 \\
+0.1\pi_1 - \pi_3 &= 0 \\
+\pi_1 + \pi_2 + \pi_3 &= 1
+\end{align*}$$
+
+We will define the linear system in matrix notation:
+$$\underbrace{\begin{bmatrix}
+    -0.3 &  0.4 & 0  \\
+     0.2 & -0.4 & 1  \\
+     0.1 &    0 & 1  \\
+     1   &  1   & 1 
+\end{bmatrix}}_A \begin{bmatrix}
+\pi_1 \\
+\pi_2 \\
+\pi_3 
+\end{bmatrix} = \underbrace{\begin{bmatrix}
+0 \\
+0 \\ 
+0 \\
+1
+\end{bmatrix}}_b \\
+A\pi = b$$
+
+Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for $\pi$ exactly) when $b$ is in the column space of $A$. We can check this numerically by obtaining the rank of $A$, then obtaining the rank of an augmented matrix with $b$ appended as a column of $A$. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our small example, we are safe.)
+
+```{r}
+library(Matrix)
+A        <- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
+b        <- c(0,0,0, 1)
+rank.A   <- as.numeric(rankMatrix(A))
+rank.Ab  <- as.numeric(rankMatrix(cbind(A,b)))
+print(paste("The rank of A =", rank.A, "and the rank of the augmented matrix =", rank.Ab))
+```
+We see that $A$ has full column rank, and that the rank is unchanged when we add $b$ as a column. Therefore, $b$ is in the column space of $A$, and this system is consistent. We can find $\pi$ by solving the normal equations:
+$$A^TA\pi = A^Tb$$
+
+We use the solve function in R to solve for the stationary distribution $\pi$:
+```{r}
+pi        <- drop(solve(t(A) %*% A, t(A) %*% b))
+names(pi) <- c('state.1', 'state.2', 'state.3')
+pi 
+```
+
+We find that:
+$$\begin{align*}
+\pi_1 \approx 0.54, \pi_2 \approx 0.41, \pi_3 \approx 0.05
+\end{align*}$$
+
+Therefore, under proper conditions, we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.
+
+# Session information
+
+```{r info}
+sessionInfo()
+```

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-01-21" />
+
+<title>Simulating Discrete Markov Chains: An Introduction</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Simulating Discrete Markov Chains: An Introduction</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-21</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#illustrative-example">Illustrative Example</a><ul>
+<li><a href="#inverse-transform-sampling">Inverse Transform Sampling</a></li>
+</ul></li>
+<li><a href="#general-algorithm">General Algorithm</a></li>
+<li><a href="#simulation-1-3x3-example">Simulation 1: 3x3 example</a></li>
+<li><a href="#simulation-2-8x8-example">Simulation 2: 8x8 example</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-01-30</p>
+<p><strong>Code version:</strong> ad8b7b5dc9e50f154bc7b06e41b527569c3c510a</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This document assumes basic familiarity with Markov chains.</p>
+</div>
+<div id="illustrative-example" class="section level1">
+<h1>Illustrative Example</h1>
+<p>In this note, we will describe a simple algorithm for simulating Markov chains. We first settle on notation and describe the algorithm in words.</p>
+<p>Let <span class="math">\(P_{ij}\)</span> denote the one-step transition probability. That is, <span class="math">\[ P_{ij} = P(X_{t+1} = j | X_{t} = i)\]</span></p>
+<p>In what follows, we will assume that the transition probabilities do not depend on time <span class="math">\(t\)</span>. These are called <em>time homogenous</em> Markov chains.</p>
+<p>The general idea of simulating discrete Markov chains can be illustrated through a simple example with 2 states. Assume our state space is <span class="math">\(\{1,2\}\)</span> and the transition matrix is:</p>
+<p><span class="math">\[P = \begin{bmatrix}
+    0.7 &amp; 0.3 \\
+    0.4 &amp; 0.6
+\end{bmatrix}\]</span></p>
+<p>We denote the <span class="math">\((i,j)\)</span>-th entry of the matrix <span class="math">\(P\)</span> as <span class="math">\(P_{ij}\)</span>.</p>
+<p>Now assume that our Markov chain starts in state 1 so that <span class="math">\(X_0 = 1\)</span>. Since we are starting in state 1, our transition probabilities are defined by the first row of <span class="math">\(P\)</span>. Our chain can either remain in state <span class="math">\(1\)</span> with probability <span class="math">\(P_{11}\)</span> or transition to state <span class="math">\(2\)</span> with probability <span class="math">\(P_{12}\)</span>. Therefore, to simulate <span class="math">\(X_1\)</span>, we must generate a random variable according to the probabilities <span class="math">\(P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7\)</span> and <span class="math">\(P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3\)</span>. We can generate any discrete random variable according to a set of probabilities using the <strong>inverse transform method</strong>.</p>
+<div id="inverse-transform-sampling" class="section level2">
+<h2>Inverse Transform Sampling</h2>
+<p>Recall that for a uniform random variable <span class="math">\(U\)</span> between <span class="math">\(0\)</span> and <span class="math">\(1\)</span>, the probability <span class="math">\(P(U \leq a) = a\)</span> for <span class="math">\(a \in [0,1]\)</span>. And, for <span class="math">\(a\)</span> and <span class="math">\(b\)</span> such that <span class="math">\(0 \leq a &lt; b \leq 1\)</span>, we have that <span class="math">\(P(a \leq U \leq b) = b - a\)</span>.</p>
+<p>If we set <span class="math">\(a = P_{11} = 0.7\)</span>, <span class="math">\(b = P_{11} + P_{22} = 1\)</span>, and generate a random variable <span class="math">\(U \sim \text{Unif}(0,1)\)</span>, then we have that <span class="math">\[\begin{align*}
+P(U \leq 0.7) &amp;= 0.7 \\
+P(0.7 &lt; U \leq 1) &amp;= 1 - 0.7 = 0.3
+\end{align*}\]</span></p>
+<p>Therefore, to generate <span class="math">\(X_1\)</span> according to these probabilities, perform the following steps:<br />1. Generate <span class="math">\(U \sim \text{Unif}(0,1)\)</span><br />2. If <span class="math">\(U \leq P_{11}\)</span>, set <span class="math">\(X_1 = 1\)</span>, and if <span class="math">\(P_{11} &lt; U \leq P_{11} + P_{22}\)</span>, set <span class="math">\(X_1 = 2\)</span>.</p>
+<p>If it happens that <span class="math">\(X_1 = 2\)</span>, we would then generate <span class="math">\(X_2\)</span> according to the second row of <span class="math">\(P\)</span> in a similar fashion. If <span class="math">\(X_1 = 1\)</span>, we would use the first row again.</p>
+<p>For larger state spaces, if <span class="math">\(X_t = i\)</span>, we would simulate <span class="math">\(X_{t+1}\)</span> according to the <span class="math">\(i\)</span>-th row of the probability transition matrix. Using the inverse transform method, we first sample a uniform random variable <span class="math">\(U\)</span> between <span class="math">\(0\)</span> and <span class="math">\(1\)</span>, then set <span class="math">\(X_{t+1} = 1\)</span> if <span class="math">\(U \leq P_{i1}\)</span>, <span class="math">\(X_{t+1} = 2\)</span> if <span class="math">\(P_{i1} &lt; U \leq P_{i1} + P_{i2}\)</span>. In general, we would set <span class="math">\(X_{t+1} = j\)</span> if <span class="math">\(\sum_{k=1}^{j-1}P_{ik} &lt; U \leq \sum_{k=1}^{j}P_{ik}\)</span>. We implement this algorithm in the function below:</p>
+<pre class="r"><code># note: this inefficient implementation is for pedagogical purposes
+# in general, considering using the rmultinom() function
+inv.transform.sample &lt;- function( p.vec ) {
+  U  &lt;- runif(1)
+  if(U &lt;= p.vec[1]){
+    return(1)
+  }
+  for(state in 2:length(p.vec)) {
+    if(sum(p.vec[1:(state-1)]) &lt; U &amp;&amp; U &lt;= sum(p.vec[1:state]) ) {
+      return(state)
+    }
+  }
+}</code></pre>
+<p>This is all we need to simulate discrete markov chains.</p>
+</div>
+</div>
+<div id="general-algorithm" class="section level1">
+<h1>General Algorithm</h1>
+<p>Here we present a general algorithm for simulating a discrete Markov chain assuming we have <span class="math">\(S\)</span> possible states.</p>
+<ol style="list-style-type: decimal">
+<li>Obtain the <span class="math">\(S\times S\)</span> probability transition matrix <span class="math">\(P\)</span></li>
+<li>Set <span class="math">\(t = 0\)</span></li>
+<li>Pick an initial state <span class="math">\(X_t=i\)</span>.</li>
+<li>For t = 1…T:
+<ol style="list-style-type: decimal">
+<li>Obtain the row of <span class="math">\(P\)</span> corresponding to the current state <span class="math">\(X_t\)</span>.</li>
+<li>Generate <span class="math">\(X_{t+1}\)</span> using the inverse transform method according to the row obtained above.</li>
+</ol></li>
+</ol>
+<p>We implement this in the following function, initializing the first state to <span class="math">\(1\)</span>:</p>
+<pre class="r"><code># simulate discrete Markov chains according to transition matrix P
+run.mc.sim &lt;- function( P, num.iters = 50 ) {
+  
+  # number of possible states
+  num.states &lt;- nrow(P)
+  
+  # stores the states X_t through time
+  states     &lt;- numeric(num.iters)
+
+  # initialize variable for first state 
+  states[1]    &lt;- 1
+
+  for(t in 2:num.iters) {
+    
+    # probability vector to simulate next state X_{t+1}
+    p  &lt;- P[states[t-1], ]
+    
+    ## inverse transform sampling according to p
+    states[t] &lt;- inv.transform.sample(p)
+  }
+  return(states)
+}</code></pre>
+</div>
+<div id="simulation-1-3x3-example" class="section level1">
+<h1>Simulation 1: 3x3 example</h1>
+<p>Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+    0.7 &amp; 0.2 &amp; 0.1 \\
+    0.4 &amp; 0.6 &amp; 0 \\
+    0   &amp; 1   &amp; 0 
+\end{bmatrix}\]</span></p>
+<p>We initialize this matrix in R below:</p>
+<pre class="r"><code># setup transition matrix 
+P &lt;- t(matrix(c( 0.7, 0.2, 0.1, 
+                 0.4, 0.6,   0, 
+                   0,   1,   0  ), nrow=3, ncol=3))</code></pre>
+<p>Now we will use the function we wrote in the previous section to run several chains and plot the results:</p>
+<pre class="r"><code>num.chains     &lt;- 5
+num.iterations &lt;- 50
+
+# each column stores the sequence of states for a single chains
+chain.states  &lt;- matrix(NA, ncol=num.chains, nrow=num.iterations)
+
+# simulate chains
+for(c in seq_len(num.chains)){
+  chain.states[,c] &lt;- run.mc.sim(P)
+}</code></pre>
+<p>Our function returns a vector that contains the states of our simulated chain through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we visualize how these chains evolve through time:</p>
+<pre class="r"><code>matplot(chain.states, type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
+abline(h=1, lty=3)
+abline(h=3, lty=3)</code></pre>
+<p><img src="figure/simulating_discrete_chains_1.Rmd/unnamed-chunk-5-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="simulation-2-8x8-example" class="section level1">
+<h1>Simulation 2: 8x8 example</h1>
+<p>Next we will do a larger experiment with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+    0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0.33 &amp; 0.33 &amp; 0.33 &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0    &amp; 0.33 &amp; 0.33 &amp; 0.33 &amp; 0     &amp; 0    &amp; 0 \\
+    0    &amp; 0    &amp; 0    &amp; 0.33 &amp; 0.33 &amp; 0.33  &amp; 0    &amp; 0   \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.33 &amp; 0.33  &amp; 0.33 &amp; 0   \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0.33  &amp; 0.33 &amp; 0.33 \\
+    0    &amp; 0    &amp; 0    &amp; 0    &amp; 0    &amp; 0     &amp; 0.66 &amp; 0.33 \\
+\end{bmatrix}\]</span></p>
+<p>We first initialize our transition matrix in R:</p>
+<pre class="r"><code>P &lt;- t(matrix(c( 1/3, 2/3,   0,   0,  0,   0,   0,   0,
+                 1/3, 1/3, 1/3,   0,  0,   0,   0,   0,
+                   0, 1/3, 1/3, 1/3,  0,   0,   0,   0,
+                   0,   0, 1/3, 1/3, 1/3,  0,   0,   0,
+                   0,   0,   0, 1/3, 1/3, 1/3,  0,   0,
+                   0,   0,   0,   0, 1/3, 1/3, 1/3,  0,
+                   0,   0,   0,   0,   0, 1/3, 1/3, 1/3,
+                   0,   0,   0,   0,   0,   0, 2/3, 1/3), nrow=8, ncol=8))</code></pre>
+<p>After briefly studying this matrix, we can see that for states 2 through 7, this transition matrix forces the chain to either stay in the current state or move one state up or down, all with equal probability. For the edge cases, states 1 and 8, the chain can either stay or reflect towards the middle states.</p>
+<p>Now we run our simulations with the transition matrix above:</p>
+<pre class="r"><code>num.chains     &lt;- 5
+num.iterations &lt;- 50
+chain.states &lt;- matrix(NA, ncol=num.chains, nrow=num.iterations)
+for(c in seq_len(num.chains)){
+  chain.states[,c] &lt;- run.mc.sim(P)
+}</code></pre>
+<p>And finally we plot the chains through time below:</p>
+<pre class="r"><code>matplot(chain.states, type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,9), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
+abline(h=1, lty=3)
+abline(h=8, lty=3)</code></pre>
+<p><img src="figure/simulating_discrete_chains_1.Rmd/unnamed-chunk-8-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.11
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

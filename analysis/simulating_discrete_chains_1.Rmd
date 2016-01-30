@@ -1,0 +1,202 @@
+---
+title: "Simulating Discrete Markov Chains: An Introduction"
+author: "Matt Bonakdarpour"
+date: 2016-01-21
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+This document assumes basic familiarity with Markov chains.
+
+# Illustrative Example
+
+In this note, we will describe a simple algorithm for simulating Markov chains.  We first settle on notation and describe the algorithm in words. 
+
+Let $P_{ij}$ denote the one-step transition probability. That is,
+$$ P_{ij} = P(X_{t+1} = j | X_{t} = i)$$
+
+In what follows, we will assume that the transition probabilities do not depend on time $t$. These are called *time homogenous* Markov chains. 
+
+The general idea of simulating discrete Markov chains can be illustrated through a simple example with 2 states. Assume our state space is $\{1,2\}$ and the transition matrix is:
+
+$$P = \begin{bmatrix}
+    0.7 & 0.3 \\
+    0.4 & 0.6
+\end{bmatrix}$$
+
+We denote the $(i,j)$-th entry of the matrix $P$ as $P_{ij}$. 
+
+Now assume that our Markov chain starts in state 1 so that $X_0 = 1$. Since we are starting in state 1, our transition probabilities are defined by the first row of $P$. Our chain can either remain in state $1$ with probability $P_{11}$ or transition to state $2$ with probability $P_{12}$. Therefore, to simulate $X_1$, we must generate a random variable according to the probabilities $P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7$ and $P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3$. We can generate any discrete random variable according to a set of probabilities using the **inverse transform method**.
+
+## Inverse Transform Sampling
+
+Recall that for a uniform random variable $U$ between $0$ and $1$, the probability $P(U \leq a) = a$ for $a \in [0,1]$. And, for $a$ and $b$ such that $0 \leq a < b \leq 1$, we have that $P(a \leq U \leq b) = b - a$. 
+
+If we set $a = P_{11} = 0.7$, $b = P_{11} + P_{22} = 1$, and generate a random variable $U \sim \text{Unif}(0,1)$, then we have that
+$$\begin{align*}
+P(U \leq 0.7) &= 0.7 \\
+P(0.7 < U \leq 1) &= 1 - 0.7 = 0.3
+\end{align*}$$
+
+Therefore, to generate $X_1$ according to these probabilities, perform the following steps:  
+1. Generate $U \sim \text{Unif}(0,1)$  
+2. If $U \leq P_{11}$, set $X_1 = 1$, and if $P_{11} < U \leq P_{11} + P_{22}$, set $X_1 = 2$.  
+
+If it happens that $X_1 = 2$, we would then generate $X_2$ according to the second row of $P$ in a similar fashion. If $X_1 = 1$, we would use the first row again. 
+
+For larger state spaces, if $X_t = i$, we would simulate $X_{t+1}$ according to the $i$-th row of the probability transition matrix. Using the inverse transform method, we first sample a uniform random variable $U$ between $0$ and $1$, then set $X_{t+1} = 1$ if $U \leq P_{i1}$, $X_{t+1} = 2$ if $P_{i1} < U \leq P_{i1} + P_{i2}$. In general, we would set $X_{t+1} = j$ if $\sum_{k=1}^{j-1}P_{ik} < U \leq \sum_{k=1}^{j}P_{ik}$. We implement this algorithm in the function below:
+
+```{r}
+# note: this inefficient implementation is for pedagogical purposes
+# in general, considering using the rmultinom() function
+inv.transform.sample <- function( p.vec ) {
+  U  <- runif(1)
+  if(U <= p.vec[1]){
+    return(1)
+  }
+  for(state in 2:length(p.vec)) {
+    if(sum(p.vec[1:(state-1)]) < U && U <= sum(p.vec[1:state]) ) {
+      return(state)
+    }
+  }
+}
+```
+
+This is all we need to simulate discrete markov chains. 
+
+# General Algorithm
+Here we present a general algorithm for simulating a discrete Markov chain assuming we have $S$ possible states. 
+
+1. Obtain the $S\times S$ probability transition matrix $P$
+2. Set $t = 0$
+2. Pick an initial state $X_t=i$. 
+3. For t = 1...T:   
+      1. Obtain the row of $P$ corresponding to the current state $X_t$.
+      2. Generate $X_{t+1}$ using the inverse transform method according to the row obtained above.
+
+We implement this in the following function, initializing the first state to $1$:
+```{r}
+# simulate discrete Markov chains according to transition matrix P
+run.mc.sim <- function( P, num.iters = 50 ) {
+  
+  # number of possible states
+  num.states <- nrow(P)
+  
+  # stores the states X_t through time
+  states     <- numeric(num.iters)
+
+  # initialize variable for first state 
+  states[1]    <- 1
+
+  for(t in 2:num.iters) {
+    
+    # probability vector to simulate next state X_{t+1}
+    p  <- P[states[t-1], ]
+    
+    ## inverse transform sampling according to p
+    states[t] <- inv.transform.sample(p)
+  }
+  return(states)
+}
+```
+
+# Simulation 1: 3x3 example
+
+Assume our probability transition matrix is:
+$$P = \begin{bmatrix}
+    0.7 & 0.2 & 0.1 \\
+    0.4 & 0.6 & 0 \\
+    0   & 1   & 0 
+\end{bmatrix}$$
+
+We initialize this matrix in R below:
+```{r}
+# setup transition matrix 
+P <- t(matrix(c( 0.7, 0.2, 0.1, 
+                 0.4, 0.6,   0, 
+                   0,   1,   0  ), nrow=3, ncol=3))
+```
+
+
+Now we will use the function we wrote in the previous section to run several chains and plot the results:
+
+```{r}
+num.chains     <- 5
+num.iterations <- 50
+
+# each column stores the sequence of states for a single chains
+chain.states  <- matrix(NA, ncol=num.chains, nrow=num.iterations)
+
+# simulate chains
+for(c in seq_len(num.chains)){
+  chain.states[,c] <- run.mc.sim(P)
+}
+```
+
+Our function returns a vector that contains the states of our simulated chain through time. Recall that our state space is $\{1,2,3\}$. Below, we  visualize how these chains evolve through time:
+```{r}
+matplot(chain.states, type='l', lty=1, col=1:5, ylim=c(0,4), ylab='state', xlab='time')
+abline(h=1, lty=3)
+abline(h=3, lty=3)
+```
+
+
+# Simulation 2: 8x8 example
+
+Next we will do a larger experiment with the size of our state space equal to 8.  Assume our probability transition matrix is:
+$$P = \begin{bmatrix}
+    0.33 & 0.66 & 0     & 0   & 0    & 0     & 0    & 0 \\
+    0.33 & 0.33 & 0.33  & 0   & 0    & 0     & 0    & 0 \\
+    0    & 0.33 & 0.33 & 0.33 & 0    & 0     & 0    & 0 \\
+    0    & 0    & 0.33 & 0.33 & 0.33 & 0     & 0    & 0 \\
+    0    & 0    & 0    & 0.33 & 0.33 & 0.33  & 0    & 0   \\
+    0    & 0    & 0    & 0    & 0.33 & 0.33  & 0.33 & 0   \\
+    0    & 0    & 0    & 0    & 0    & 0.33  & 0.33 & 0.33 \\
+    0    & 0    & 0    & 0    & 0    & 0     & 0.66 & 0.33 \\
+\end{bmatrix}$$
+
+We first initialize our transition matrix in R:
+
+```{r}
+P <- t(matrix(c( 1/3, 2/3,   0,   0,  0,   0,   0,   0,
+                 1/3, 1/3, 1/3,   0,  0,   0,   0,   0,
+                   0, 1/3, 1/3, 1/3,  0,   0,   0,   0,
+                   0,   0, 1/3, 1/3, 1/3,  0,   0,   0,
+                   0,   0,   0, 1/3, 1/3, 1/3,  0,   0,
+                   0,   0,   0,   0, 1/3, 1/3, 1/3,  0,
+                   0,   0,   0,   0,   0, 1/3, 1/3, 1/3,
+                   0,   0,   0,   0,   0,   0, 2/3, 1/3), nrow=8, ncol=8))
+```
+
+After briefly studying this matrix, we can see that for states 2 through 7, this transition matrix forces the chain to either stay in the current state or move one state up or down, all with equal probability. For the edge cases, states 1 and 8, the chain can either stay or reflect towards the middle states.
+
+Now we run our simulations with the transition matrix above:
+```{r}
+num.chains     <- 5
+num.iterations <- 50
+chain.states <- matrix(NA, ncol=num.chains, nrow=num.iterations)
+for(c in seq_len(num.chains)){
+  chain.states[,c] <- run.mc.sim(P)
+}
+```
+
+And finally we plot the chains through time below:
+```{r}
+matplot(chain.states, type='l', lty=1, col=1:5, ylim=c(0,9), ylab='state', xlab='time')
+abline(h=1, lty=3)
+abline(h=8, lty=3)
+```
+
+# Session information
+
+```{r info}
+sessionInfo()
+```
