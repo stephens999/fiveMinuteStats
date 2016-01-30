@@ -136,10 +136,10 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-30</p>
-<p><strong>Code version:</strong> 361c6cbb86fa9eda564624903437aa10cfc04082</p>
+<p><strong>Code version:</strong> ad8b7b5dc9e50f154bc7b06e41b527569c3c510a</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
-<p>This document assumes basic familiarity with simulating Markov chains, as seen in this <a href="simulating_discrete_chains_1.html">note</a>.</p>
+<p>This document assumes basic familiarity with simulating Markov chains, as seen here: <a href="simulating_discrete_chains_1.html">Simulating Discrete Markov Chains: An Introduction</a>.</p>
 </div>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
@@ -160,7 +160,7 @@ img {
 <li>Set <span class="math">\(P_n = P_nP\)</span></li>
 </ol></li>
 </ol>
-<p>We augment our function for simulating Markov chains from <a href="simulating_discrete_chains_1.html">this note</a> with the following changes:<br />1. We keep track of <span class="math">\(p^{(n)}\)</span>.<br />2. We add the functionality of simulating multiple chains at once – as a result, the vectors we dealt with in the previous note have turned into matrices.<br />3. We use the rmultinom() function instead of our inv.transform.sample() method.</p>
+<p>We augment our function for simulating Markov chains from <a href="simulating_discrete_chains_1.html">this note</a> with the following changes:<br />1. We keep track of <span class="math">\(\pi^{(n)}\)</span>.<br />2. We add the functionality of simulating multiple chains at once – as a result, the vectors we dealt with in the previous note have turned into matrices.<br />3. We use the rmultinom() function instead of our inv.transform.sample() method.</p>
 <pre class="r"><code># simulate discrete Markov chains
 run.mc.sim &lt;- function( P,   # probability transition matrix
                         num.iters=50, 
@@ -214,14 +214,14 @@ run.mc.sim &lt;- function( P,   # probability transition matrix
 P &lt;- t(matrix(c( 0.7, 0.2, 0.1, 
                  0.4, 0.6,   0, 
                    0,   1,   0  ), nrow=3, ncol=3))</code></pre>
-<p>We will inspect the limiting probabilities and compare them to the stationary distribution. In <a href="stationary_distribution.html">this note</a>, we derived the stationary distribution for this example. Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span></p>
+<p>We will inspect the limiting probabilities and compare them to the stationary distribution. In <a href="stationary_distribution.html">this note</a>, we derived the stationary distribution for this transition matrix. Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span></p>
 <p>We found that: <span class="math">\[\begin{align*}
 \pi_1 \approx 0.54, \pi_2 \approx 0.41, \pi_3 \approx 0.05
 \end{align*}\]</span></p>
 <p>Therefore, with proper conditions (see below), we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.</p>
 <p>Now we will use the function we wrote in the previous section to check this result numerically.</p>
 <pre class="r"><code>sim1 &lt;- run.mc.sim(P)</code></pre>
-<p>Our function returns a list containing two matrices. The second matrix called “states” contains the states of each of our simulated chains through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we first visualize how 5 of these chains evolve through time:</p>
+<p>Our function returns a list containing two matrices. The second matrix called “states” contains the states of each of our simulated chains through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we first visualize how 5 of these chains evolve:</p>
 <pre class="r"><code>states &lt;- sim1[[2]]
 matplot(states[,1:5], type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
 abline(h=1, lty=3)
@@ -235,7 +235,7 @@ legend(&#39;topright&#39;, c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&
 <p><img src="figure/simulating_discrete_chains_2.Rmd/unnamed-chunk-5-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>Indeed, we see that these probabilities quickly converge. Just by looking at the plot, we can see that the final probabilities are about equal to the stationary distribution <span class="math">\(\pi\)</span> we found above.</p>
 <p>By inspecting the actual values, we confirm that the values of <span class="math">\(\pi^{(n)}\)</span> converge to the vector <span class="math">\(\pi\)</span> exactly. The first row in the matrix below is from the simulation, and the second row is the quantity we obtained by solving for the stationary distribution:</p>
-<pre class="r"><code># solve for stationary
+<pre class="r"><code># solve for stationary distribution
 A         &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b         &lt;- c(0,0,0, 1)
 pi        &lt;- drop(solve(t(A) %*% A, t(A) %*% b))

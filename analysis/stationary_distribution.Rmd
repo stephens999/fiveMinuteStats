@@ -18,7 +18,7 @@ This document assumes basic familiarity with Markov chains and linear algebra.
 
 # Overview
 
-In this note, we illustrate one way of analytically obtaining the stationary distribution for a finite discrete markov chain. 
+In this note, we illustrate one way of analytically obtaining the stationary distribution for a finite discrete Markov chain. 
 
 # 3x3 example
 

@@ -138,7 +138,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-30</p>
-<p><strong>Code version:</strong> 4e0c4fd08bc82ec646c5ce145c78fa019af5314d</p>
+<p><strong>Code version:</strong> ad8b7b5dc9e50f154bc7b06e41b527569c3c510a</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains.</p>
@@ -191,7 +191,7 @@ inv.transform.sample &lt;- function( p.vec ) {
 <li>For t = 1…T:
 <ol style="list-style-type: decimal">
 <li>Obtain the row of <span class="math">\(P\)</span> corresponding to the current state <span class="math">\(X_t\)</span>.</li>
-<li>Generate <span class="math">\(X_{t+1}\)</span> using the inverse transform method according to the row obtained in step (1).</li>
+<li>Generate <span class="math">\(X_{t+1}\)</span> using the inverse transform method according to the row obtained above.</li>
 </ol></li>
 </ol>
 <p>We implement this in the following function, initializing the first state to <span class="math">\(1\)</span>:</p>
@@ -204,12 +204,12 @@ run.mc.sim &lt;- function( P, num.iters = 50 ) {
   # stores the states X_t through time
   states     &lt;- numeric(num.iters)
 
-  # initialize variables for first state 
+  # initialize variable for first state 
   states[1]    &lt;- 1
 
   for(t in 2:num.iters) {
     
-    # probability vector to simulate next state X_{n+1}
+    # probability vector to simulate next state X_{t+1}
     p  &lt;- P[states[t-1], ]
     
     ## inverse transform sampling according to p
@@ -236,10 +236,12 @@ num.iterations &lt;- 50
 
 # each column stores the sequence of states for a single chains
 chain.states  &lt;- matrix(NA, ncol=num.chains, nrow=num.iterations)
+
+# simulate chains
 for(c in seq_len(num.chains)){
   chain.states[,c] &lt;- run.mc.sim(P)
 }</code></pre>
-<p>Our function returns a vector that contains the states of each of our simulated chains through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we visualize how these chains evolve through time:</p>
+<p>Our function returns a vector that contains the states of our simulated chain through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we visualize how these chains evolve through time:</p>
 <pre class="r"><code>matplot(chain.states, type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
 abline(h=1, lty=3)
 abline(h=3, lty=3)</code></pre>
@@ -247,7 +249,7 @@ abline(h=3, lty=3)</code></pre>
 </div>
 <div id="simulation-2-8x8-example" class="section level1">
 <h1>Simulation 2: 8x8 example</h1>
-<p>Next we will do a similar, but larger, experiment with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+<p>Next we will do a larger experiment with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
     0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
     0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
     0    &amp; 0.33 &amp; 0.33 &amp; 0.33 &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\

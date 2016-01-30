@@ -14,7 +14,7 @@ source("chunk-options.R")
 
 # Pre-requisites
 
-This document assumes basic familiarity with simulating Markov chains, as seen in this [note](simulating_discrete_chains_1.html).
+This document assumes basic familiarity with simulating Markov chains, as seen here: [Simulating Discrete Markov Chains: An Introduction](simulating_discrete_chains_1.html).
 
 # Overview
 In this note, we show the empirical relationship between the stationary distribution, limiting probabilities, and empirical probabilities for discrete Markov chains. 
@@ -37,7 +37,7 @@ With the facts above, we could keep track of our probability vector $\pi^{(n)}$ 
       3. Set $P_n = P_nP$  
 
 We augment our function for simulating Markov chains from [this note](simulating_discrete_chains_1.html) with the following changes:  
-1. We keep track of $p^{(n)}$.  
+1. We keep track of $\pi^{(n)}$.  
 2. We add the functionality of simulating multiple chains at once -- as a result, the vectors we dealt with in the previous note have turned into matrices.  
 3. We use the rmultinom() function instead of our inv.transform.sample() method.  
 
@@ -101,7 +101,7 @@ P <- t(matrix(c( 0.7, 0.2, 0.1,
                  0.4, 0.6,   0, 
                    0,   1,   0  ), nrow=3, ncol=3))
 ```
-We will inspect the limiting probabilities and compare them to the stationary distribution. In [this note](stationary_distribution.html), we derived the stationary distribution for this example. Recall that the stationary distribution $\pi$ is the vector such that 
+We will inspect the limiting probabilities and compare them to the stationary distribution. In [this note](stationary_distribution.html), we derived the stationary distribution for this transition matrix. Recall that the stationary distribution $\pi$ is the vector such that 
 $$\pi = \pi P$$
 
 We found that:
@@ -117,7 +117,7 @@ Now we will use the function we wrote in the previous section to check this resu
 sim1 <- run.mc.sim(P)
 ```
 
-Our function returns a list containing two matrices. The second matrix called "states" contains the states of each of our simulated chains through time. Recall that our state space is $\{1,2,3\}$. Below, we first visualize how 5 of these chains evolve through time:
+Our function returns a list containing two matrices. The second matrix called "states" contains the states of each of our simulated chains through time. Recall that our state space is $\{1,2,3\}$. Below, we first visualize how 5 of these chains evolve:
 ```{r}
 states <- sim1[[2]]
 matplot(states[,1:5], type='l', lty=1, col=1:5, ylim=c(0,4), ylab='state', xlab='time')
@@ -139,7 +139,7 @@ Indeed, we see that these probabilities quickly converge. Just by looking at the
 By inspecting the actual values, we  confirm that the values of $\pi^{(n)}$ converge to the vector $\pi$ exactly. The first row in the matrix below is from the simulation, and the second row is the quantity we obtained by solving for the stationary distribution:
 
 ```{r}
-# solve for stationary
+# solve for stationary distribution
 A         <- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b         <- c(0,0,0, 1)
 pi        <- drop(solve(t(A) %*% A, t(A) %*% b))

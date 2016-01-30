@@ -80,7 +80,7 @@ Here we present a general algorithm for simulating a discrete Markov chain assum
 2. Pick an initial state $X_t=i$. 
 3. For t = 1...T:   
       1. Obtain the row of $P$ corresponding to the current state $X_t$.
-      2. Generate $X_{t+1}$ using the inverse transform method according to the row obtained in step (1).
+      2. Generate $X_{t+1}$ using the inverse transform method according to the row obtained above.
 
 We implement this in the following function, initializing the first state to $1$:
 ```{r}
@@ -93,12 +93,12 @@ run.mc.sim <- function( P, num.iters = 50 ) {
   # stores the states X_t through time
   states     <- numeric(num.iters)
 
-  # initialize variables for first state 
+  # initialize variable for first state 
   states[1]    <- 1
 
   for(t in 2:num.iters) {
     
-    # probability vector to simulate next state X_{n+1}
+    # probability vector to simulate next state X_{t+1}
     p  <- P[states[t-1], ]
     
     ## inverse transform sampling according to p
@@ -134,12 +134,14 @@ num.iterations <- 50
 
 # each column stores the sequence of states for a single chains
 chain.states  <- matrix(NA, ncol=num.chains, nrow=num.iterations)
+
+# simulate chains
 for(c in seq_len(num.chains)){
   chain.states[,c] <- run.mc.sim(P)
 }
 ```
 
-Our function returns a vector that contains the states of each of our simulated chains through time. Recall that our state space is $\{1,2,3\}$. Below, we  visualize how these chains evolve through time:
+Our function returns a vector that contains the states of our simulated chain through time. Recall that our state space is $\{1,2,3\}$. Below, we  visualize how these chains evolve through time:
 ```{r}
 matplot(chain.states, type='l', lty=1, col=1:5, ylim=c(0,4), ylab='state', xlab='time')
 abline(h=1, lty=3)
@@ -149,7 +151,7 @@ abline(h=3, lty=3)
 
 # Simulation 2: 8x8 example
 
-Next we will do a similar, but larger, experiment with the size of our state space equal to 8.  Assume our probability transition matrix is:
+Next we will do a larger experiment with the size of our state space equal to 8.  Assume our probability transition matrix is:
 $$P = \begin{bmatrix}
     0.33 & 0.66 & 0     & 0   & 0    & 0     & 0    & 0 \\
     0.33 & 0.33 & 0.33  & 0   & 0    & 0     & 0    & 0 \\
