@@ -134,7 +134,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-01-30</p>
-<p><strong>Code version:</strong> 361c6cbb86fa9eda564624903437aa10cfc04082</p>
+<p><strong>Code version:</strong> 0f93e3cab261ee6e2ff19059a53c73cb2a623159</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
@@ -177,7 +177,7 @@ img {
 1
 \end{bmatrix}}_b \\
 A\pi = b\]</span></p>
-<p>Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math">\(\pi\)</span> exactly) when <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math">\(b\)</span> appended as a column of <span class="math">\(A\)</span>. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our example, we are safe)</p>
+<p>Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math">\(\pi\)</span> exactly) when <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math">\(b\)</span> appended as a column of <span class="math">\(A\)</span>. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our small example, we are safe.)</p>
 <pre class="r"><code>library(Matrix)
 A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b        &lt;- c(0,0,0, 1)

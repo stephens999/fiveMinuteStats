@@ -30,4 +30,6 @@ title: "Home"
 
 ### Stochastic Processes
 
-*  [Simulating Discrete Markov Chains](simulate_discrete_chains.html)
+*  [Simulating Discrete Markov Chains](simulating_discrete_chains_1.html)
+*  [Simulating Discrete Markov Chains: Limiting Distributions](simulating_discrete_chains_2.html)
+*  [Discrete Markov Chains: Finding the Stationary Distribution](stationary_distribution.html)
