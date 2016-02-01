@@ -92,7 +92,7 @@ and
 $$\Pr(Z_i = 0 | x_i) = \Pr(x_i | Z_i = 0) \Pr(Z_i=0)/ \Pr(x_i).$$
 
 Taking the ratio of these gives
-$$\Pr(Z_i = 1 | x_i)/\Pr(Z_i = 0 | x_i) = [\Pr(Z_i=1)/\Pr(Z_i=0)] \times [\Pr(x_i | Z_i = 1)/\Pr(x_i | Z_i = 1)].$$
+$$\Pr(Z_i = 1 | x_i)/\Pr(Z_i = 0 | x_i) = [\Pr(Z_i=1)/\Pr(Z_i=0)] \times [\Pr(x_i | Z_i = 1)/\Pr(x_i | Z_i = 0)].$$
 
 This formula can be conveniently stated in words, using the notion of ``odds", as follows:
 $$\text{Posterior Odds = Prior Odds x LR}$$
