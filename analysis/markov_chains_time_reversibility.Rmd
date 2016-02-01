@@ -1,0 +1,70 @@
+---
+title: "Time reversibility of a Markov Chain"
+author: "John Novembre"
+date: 2016-01-31
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+TBD
+
+# Overview
+
+TBD
+
+# Time reversibility of a Markov Chain
+
+TBD
+
+# Example: Gary's mood
+
+In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an abitrary initial probability matrix. 
+
+```{r}
+# Define prob transition matrix 
+# (note matrix() takes vectors in column form so there is a transpose here to switch col's to row's)
+P=t(matrix(c(c(0.5,0.4,0.1),c(0.3,0.4,0.3),c(0.2,0.3,0.5)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  
+
+# Definte initial probability vector
+x0=c(0.1,0.2,0.7)
+# Check sums to 1
+sum(x0)
+```
+
+
+
+#### Time-reversibility
+
+The reverse chain transition prob's are: $$\frac{\pi_j P_{ji}}{\pi_i}$$
+```{r}
+diag(1/pivec)%*%(t(P)%*%diag(pivec))
+```
+So for our example we see it's not time reversible...
+
+Let's make a time-reversible example...
+```{r}
+P=t(matrix(c(c(0.5,0.25,0.25),c(0.25,0.45,0.3),c(0.25,0.3,0.45)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  
+
+# And the stationary distribution would be
+pi0=(P%^%100)[1,]
+# Now we check time reversibility
+diag(1/pi0)%*%t(P)%*%diag(pi0)
+```
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

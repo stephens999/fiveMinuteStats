@@ -1,0 +1,85 @@
+---
+title: "Introduction to Discrete Markov Chains"
+author: "John Novembre"
+date: 2016-01-31
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+An understanding of matrix multiplication and matrix powers.  
+
+# Overview
+
+Here we provide a quick introduction to discrete Markov Chains.
+
+# Definition of a Markov Chain
+
+A Markov Chain is a discrete stochastic process with the *Markov property* : $P(X_t|X_{t-1},\ldots,X_1)= P(X_t|X_{t-1})$.  It is fully determined by a probability transition matrix $P$ which defines the transition probabilities ($P_ij=P(X_t=j|X_{t-1}=i)$ and an initial probability distribution specficied by the vector $x$ where $x_i=P(X_0=i)$.  The time-dependent random variable $X_t$ is describing the state of our probabilistic system at time-step $t$.  
+
+# Example: Gary's mood
+
+In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an abitrary initial probability matrix. 
+
+```{r}
+# Define prob transition matrix 
+# (note matrix() takes vectors in column form so there is a transpose here to switch col's to row's)
+P=t(matrix(c(c(0.5,0.4,0.1),c(0.3,0.4,0.3),c(0.2,0.3,0.5)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  
+
+# Definte initial probability vector
+x0=c(0.1,0.2,0.7)
+# Check sums to 1
+sum(x0)
+```
+
+# What are the expected probability states after one or two steps?
+
+If initial prob distribution $x_0$ is $3 \times 1$ column vector, then $x_0^T P= x_1^T$. In R, the %*% operator automatically promotes a vector to the appropriate matrix to make the arguments conformable.  In the case of multiplying a length 3 vector by a $3\time 3$ matrix, it takes the vector to be a row-vector. This means our math can look simply:
+```{r}
+# After one step
+x0%*%P
+```
+And after two time-steps:
+```{r}
+## The two-step prob trans matrix
+P%*%P
+## Multiplied by the initial state probability
+x0%*%P%*%P
+```
+
+# What about an abitrary number of time steps? 
+To generalize to an abitrary number of time steps into the future, we can compute a the matrix power.  In R, this can be done easily with the package expm.  Let's load the library and verify the second power is the same as we saw for P%*%P above. 
+```{r}
+# Load library 
+library(expm)
+# Verify the second power is P%*%P
+P%^%2
+```
+
+And now let's push this : Looking at the state of the chain after many steps, say 100.  First let's look at the probability transition matrix...
+```{r}
+P%^%100
+```
+What do you notice about the rows?   And let's see what this does for various starting distrbutions:
+```{r}
+c(1,0,0) %*%(P%^%100)
+c(0.2,0.5,0.3) %*%(P%^%100)
+```
+Note that after a large number of steps the initial state does not matter any more, the probability of the chain being in any state $j$ is independent of where we started.  This is our first view of the *equilibrium distribuion* of a Markov Chain.  These are also known as the *limiting probabilities of a Markov chain* or *stationary distribution*.  
+
+
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

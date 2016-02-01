@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="John Novembre" />
+
+<meta name="date" content="2016-01-31" />
+
+<title>Computing Stationary Distributions of a Discrete Markov Chain</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Computing Stationary Distributions of a Discrete Markov Chain</h1>
+<h4 class="author"><em>John Novembre</em></h4>
+<h4 class="date"><em>2016-01-31</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#stationary-distribution-of-a-markov-chain">Stationary distribution of a Markov Chain</a></li>
+<li><a href="#example-garys-mood">Example: Gary’s mood</a></li>
+<li><a href="#solving-for-stationary-distributions">Solving for stationary distributions</a><ul>
+<li><a href="#brute-force-solution">Brute-force solution</a></li>
+<li><a href="#solving-a-system-of-linear-equations-solution">Solving a system of linear equations solution</a></li>
+<li><a href="#solving-via-eigendecomposition">Solving via eigendecomposition</a></li>
+<li><a href="#rate-of-approach-to-the-stationary-distribution">Rate of approach to the stationary distribution</a></li>
+<li><a href="#a-side-note-computational-advantage-of-using-an-eigendecomposition-for-matrix-powers">A side-note: Computational advantage of using an eigendecomposition for matrix powers</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-01-31</p>
+<p><strong>Code version:</strong> c8c677bb060d7b9183bbe7a9080b9bbf72d23df8</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This vignette builds on the Introduction to Discrete Markov chains vignette. It assumes an understanding of matrix multiplication, matrix powers, and eigendecomposition. We also do not explain the notion of an ergodic Markov chain (but we hope to add a vignette on this soon!).</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The stationary distribution of a Markov chain is an important feature of the chain. One of the ways is using an eigendecomposition. The eigendecomposition is also useful because it suggests how we can quickly compute matrix powers like <span class="math">\(P^n\)</span> and how we can assess the rate of convergence to a stationary distribution.</p>
+</div>
+<div id="stationary-distribution-of-a-markov-chain" class="section level1">
+<h1>Stationary distribution of a Markov Chain</h1>
+<p>As part of the definition of a Markov chain, there is some probability distribution on the states at time <span class="math">\(0\)</span>. Each time step the distribution on states evolves - some states may become more likely and others less likely and this is dictated by <span class="math">\(P\)</span>. The <em>stationary distribution</em> of a Markov chain describes the distribution of <span class="math">\(X_t\)</span> after a sufficiently long time that the distribution of <span class="math">\(X_t\)</span> does not change any longer. To put this notion in equation form, let <span class="math">\(\pi\)</span> be a column vector of probabilities on the states that a Markov chain can visit. Then, <span class="math">\(\pi\)</span> is the stationary distribution if it has the property <span class="math">\[\pi^T= \pi^T P.\]</span></p>
+<p>Not all Morkov chains have a stationary disribution but for some classes of probability transition matrix (those defining <em>ergodic</em> Markov chains), a stationary distribution is guaranteed to exist.</p>
+</div>
+<div id="example-garys-mood" class="section level1">
+<h1>Example: Gary’s mood</h1>
+<p>In Sheldon Ross’s Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary’s mood. Gary alternates between 3 state: Cheery (<span class="math">\(X=1\)</span>), So-So (<span class="math">\(X=2\)</span>), or Glum (<span class="math">\(X=3\)</span>). Here we input the <span class="math">\(P\)</span> matrix given by Ross and we input an abitrary initial probability matrix.</p>
+<pre class="r"><code># Define prob transition matrix 
+# (note matrix() takes vectors in column form so there is a transpose here to switch col&#39;s to row&#39;s)
+P=t(matrix(c(c(0.5,0.4,0.1),c(0.3,0.4,0.3),c(0.2,0.3,0.5)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  </code></pre>
+<pre><code>[1] 1 1 1</code></pre>
+<pre class="r"><code># Definte initial probability vector
+x0=c(0.1,0.2,0.7)
+# Check sums to 1
+sum(x0)</code></pre>
+<pre><code>[1] 1</code></pre>
+</div>
+<div id="solving-for-stationary-distributions" class="section level1">
+<h1>Solving for stationary distributions</h1>
+<p>The stationary distribution has the property <span class="math">\(\pi^T= \pi^T P\)</span></p>
+<div id="brute-force-solution" class="section level2">
+<h2>Brute-force solution</h2>
+<p>A brute-force hack to finding the stationary distribution is simply to take the transition matrix to a high power and then extract out any row.</p>
+<pre class="r"><code>pi_bru &lt;- (P%^%100)[1,]
+pi_bru</code></pre>
+<pre><code>[1] 0.3387097 0.3709677 0.2903226</code></pre>
+<p>We can test if the resulting vector is a stationary distribution by assessing if the resulting vector statisfies <span class="math">\(\pi^{T}=pi^{T}P\)</span> (i.e. <span class="math">\(pi^{T}-pi^{T}P - = 0\)</span>).</p>
+<pre class="r"><code>pi_bru - pi_bru%*%P</code></pre>
+<pre><code>             [,1]          [,2] [,3]
+[1,] 5.551115e-17 -5.551115e-17    0</code></pre>
+<p>As we can see up to some very small errors, for this example, our numerical solution checks out.</p>
+</div>
+<div id="solving-a-system-of-linear-equations-solution" class="section level2">
+<h2>Solving a system of linear equations solution</h2>
+<p>Another approach is to solve the system of linear equations <span class="math">\(\pi^{T}=\pi^{T}P\)</span>. Most generic solvers need to have the equations expressed as <span class="math">\(Ax=b\)</span>. We can re-arrange to get <span class="math">\((I-P)^T \pi =0_{K\times 1}\)</span> where <span class="math">\(K\)</span> is the number of possible states taken by <span class="math">\(X_{\cdot}\)</span>. So <span class="math">\(A=(I-P)^T\)</span> and <span class="math">\(b=0_{K\times 1}\)</span>. One challenge though is that we need the constrained solution which respects that <span class="math">\(\pi\)</span> describes a probability disribution (i.e. <span class="math">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row all 1’s to our <span class="math">\(A\)</span> and a 1 to <span class="math">\(b\)</span>. We will have a non-square matrix <span class="math">\(A\)</span> as a result, and we will need to use the =limSolve= library in place of R’s generic solve function.</p>
+<pre class="r"><code>K&lt;-3
+A_basic &lt;- t(diag(rep(1,K))-P)
+b_basic &lt;- rep(0,K)
+# Now add the constraint 
+A_constr &lt;- rbind(A_basic,rep(1,K))
+b_constr &lt;- c(b_basic,1)
+# And since we now have a non-square matrix we need a more generic solver library
+library(limSolve)
+pi_lineq &lt;- Solve(A_constr,b_constr)
+pi_lineq</code></pre>
+<pre><code>[1] 0.3387097 0.3709677 0.2903226</code></pre>
+<pre class="r"><code>sum(pi_lineq)</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>pi_lineq%*%P</code></pre>
+<pre><code>          [,1]      [,2]      [,3]
+[1,] 0.3387097 0.3709677 0.2903226</code></pre>
+<p>And the solution checks out!</p>
+</div>
+<div id="solving-via-eigendecomposition" class="section level2">
+<h2>Solving via eigendecomposition</h2>
+<p>Note that the equation <span class="math">\(\pi^T P=\pi^T\)</span> implies that the vector <span class="math">\(\pi\)</span> is a left eigenvector of P with eigenvalue equal to 1 (Recall <span class="math">\(xA=\lambda x\)</span> where <span class="math">\(x\)</span> is a row vector is definition of a left eigenvector, as opposed to the more standard right eigenvector <span class="math">\(Ax=\lambda x\)</span>). In what follows, we use eigenvector functions in R to extract out the solution.</p>
+<pre class="r"><code>library(MASS)
+# Get the eigenvectors of P, note: R returns right eigenvectors
+r=eigen(P)
+rvec=r$vectors
+# left eigenvectors are the inverse of the right eigenvectors
+lvec=ginv(r$vectors)
+# The eigenvalues
+lam&lt;-r$values
+# Two ways of checking the spectral decomposition:
+## Standard definition
+rvec%*%diag(lam)%*%ginv(rvec)</code></pre>
+<pre><code>     [,1] [,2] [,3]
+[1,]  0.5  0.4  0.1
+[2,]  0.3  0.4  0.3
+[3,]  0.2  0.3  0.5</code></pre>
+<pre class="r"><code>## With left eigenvectors (trivial chang)
+rvec%*%diag(lam)%*%lvec</code></pre>
+<pre><code>     [,1] [,2] [,3]
+[1,]  0.5  0.4  0.1
+[2,]  0.3  0.4  0.3
+[3,]  0.2  0.3  0.5</code></pre>
+<pre class="r"><code>lam </code></pre>
+<pre><code>[1] 1.00000000 0.34142136 0.05857864</code></pre>
+<p>We see the first eigenvalue is <span class="math">\(1\)</span> and so the first left eigenvector, suitably normalized, should contain the stationary distribution:</p>
+<pre class="r"><code>pi_eig&lt;-lvec[1,]/sum(lvec[1,])
+pi_eig</code></pre>
+<pre><code>[1] 0.3387097 0.3709677 0.2903226</code></pre>
+<pre class="r"><code>sum(pi_eig)</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>pi_eig %*% P</code></pre>
+<pre><code>          [,1]      [,2]      [,3]
+[1,] 0.3387097 0.3709677 0.2903226</code></pre>
+<p>And we see the procedure checks out.</p>
+<p>As a side-note: We can also obtain the left eigenvectors as the transposes of the right eigenvectors of t(P)</p>
+<pre class="r"><code>r&lt;-eigen(t(P))
+V&lt;-r$vectors
+lam&lt;-r$values
+V%*%diag(lam)%*%ginv(V)</code></pre>
+<pre><code>     [,1] [,2] [,3]
+[1,]  0.5  0.3  0.2
+[2,]  0.4  0.4  0.3
+[3,]  0.1  0.3  0.5</code></pre>
+<pre class="r"><code># Note how we are pulling columns here. 
+pi_eig2 &lt;- V[,1]/sum(V[,1])</code></pre>
+</div>
+<div id="rate-of-approach-to-the-stationary-distribution" class="section level2">
+<h2>Rate of approach to the stationary distribution</h2>
+<p>The size of the first non-unit eigenvalue (<span class="math">\(\lambda_2\)</span>) indicates the rate of approach to equilibrium because it describes how quickly the largest of the vanishing terms (i.e. those with <span class="math">\(\lambda_i&lt;1\)</span>) will approach zero.</p>
+<p>This is easiest seen by recalling the eigendecomposition of <span class="math">\(P^n\)</span> can be written as <span class="math">\[P^n\sum_i  \lambda_i^n r_i l_i^T\]</span>, where <span class="math">\(r_i\)</span>, <span class="math">\(l_i\)</span>, and <span class="math">\(\lambda_i\)</span> are right eigenvectors, left eigenvectors, and eigenvalues of the matrix <span class="math">\(P\)</span>, respectively. So, when <span class="math">\(\lambda_2^n\)</span> approaches 0, the only terms left in the eigendecomposition will be the terms corresponding to the first eigenvalue - i.e. the stationary distribution! As a rough rule of thumb for approximation, taking a number <span class="math">\(x\)</span> less than 1 to the <span class="math">\(n\)</span>’th power will approach 0 if <span class="math">\(n\)</span> is larger than some small multiple of <span class="math">\(1/x\)</span> time-steps (e.g if n &gt; 4/x).</p>
+<p>For our example, <span class="math">\(1/\lambda_2\)</span> is approximately 3 generations.</p>
+<pre class="r"><code>1/lam[2]</code></pre>
+<pre><code>[1] 2.928932</code></pre>
+<p>Which implies we will reach equilibrium fairly quickly - much more quickly than the 100 generations we were using for our brute-force soluton to the stationary distribution. As a test, let’s see how <span class="math">\(P^12\)</span> (i.e approx <span class="math">\(4/\lambda_2\)</span>) looks:</p>
+<pre class="r"><code>P%^%12</code></pre>
+<pre><code>          [,1]      [,2]      [,3]
+[1,] 0.3387108 0.3709682 0.2903210
+[2,] 0.3387095 0.3709677 0.2903228
+[3,] 0.3387086 0.3709673 0.2903241</code></pre>
+<p>Indeed - Gary’s mood will return to its stationary distribution relatively quickly after any perturbation!</p>
+</div>
+<div id="a-side-note-computational-advantage-of-using-an-eigendecomposition-for-matrix-powers" class="section level2">
+<h2>A side-note: Computational advantage of using an eigendecomposition for matrix powers</h2>
+<p>Thanks to the eigenvector decomposition, to obtain the matrix power <span class="math">\(P^n\)</span> we just need to take the powers of the eigenvalues. Compare the following lines of code to <span class="math">\(P\)</span>,<span class="math">\(P^2\)</span>, <span class="math">\(P^100\)</span> computed above. And note - this is much faster than naively doing the matrix multipliation over and over to obtain the powers.</p>
+<pre class="r"><code>rvec%*%diag(lam)%*%lvec</code></pre>
+<pre><code>     [,1] [,2] [,3]
+[1,]  0.5  0.4  0.1
+[2,]  0.3  0.4  0.3
+[3,]  0.2  0.3  0.5</code></pre>
+<pre class="r"><code>rvec%*%diag(lam^2)%*%lvec</code></pre>
+<pre><code>     [,1] [,2] [,3]
+[1,] 0.39 0.39 0.22
+[2,] 0.33 0.37 0.30
+[3,] 0.29 0.35 0.36</code></pre>
+<pre class="r"><code>rvec%*%diag(lam^100)%*%lvec</code></pre>
+<pre><code>          [,1]      [,2]      [,3]
+[1,] 0.3387097 0.3709677 0.2903226
+[2,] 0.3387097 0.3709677 0.2903226
+[3,] 0.3387097 0.3709677 0.2903226</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.0 (2015-04-16)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (unknown)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] MASS_7.3-40      limSolve_1.5.5.1 expm_0.999-0     Matrix_1.2-1    
+[5] knitr_1.10.5    
+
+loaded via a namespace (and not attached):
+ [1] quadprog_1.5-5  lattice_0.20-31 digest_0.6.8    grid_3.2.0     
+ [5] formatR_1.2     magrittr_1.5    evaluate_0.7    stringi_0.4-1  
+ [9] rmarkdown_0.7   tools_3.2.0     stringr_1.0.0   yaml_2.1.13    
+[13] htmltools_0.2.6 lpSolve_5.6.13 </code></pre>
+</div>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
