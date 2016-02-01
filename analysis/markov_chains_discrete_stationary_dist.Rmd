@@ -1,0 +1,154 @@
+---
+title: "Computing Stationary Distributions of a Discrete Markov Chain"
+author: "John Novembre"
+date: 2016-01-31
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+This vignette builds on the Introduction to Discrete Markov chains vignette.  It assumes an understanding of matrix multiplication, matrix powers, and eigendecomposition.  We also do not explain the notion of an ergodic Markov chain (but we hope to add a vignette on this soon!). 
+
+# Overview
+
+The stationary distribution of a Markov chain is an important feature of the chain.  Here we explore several ways to compute the stationary distribution for a simple example of a Markov chain.  One of the ways is using an eigendecomposition.  The eigendecomposition is also useful because it suggests how we can quickly compute matrix powers like $P^n$ and how we can assess the rate of convergence to a stationary distribution.
+
+# Stationary distribution of a Markov Chain
+
+As part of the definition of a Markov chain, there is some probability distribution on the states at time $0$.  Each time step the distribution on states evolves - some states may become more likely and others less likely and this is dictated by $P$.  The *stationary distribution* of a Markov chain describes the distribution of $X_t$ after a sufficiently long time that the distribution of $X_t$ does not change any longer.  To put this notion in equation form, let $\pi$ be a column vector of probabilities on the states that a Markov chain can visit.  Then, $\pi$ is the stationary distribution if it has the property $$\pi^T= \pi^T P.$$  
+
+Not all Morkov chains have a stationary disribution but for some classes of probability transition matrix (those defining *ergodic* Markov chains), a stationary distribution is guaranteed to exist.  Here we will explore several approaches for calculating the stationary distribuiton of a simple, ergodic Markov chain. 
+
+# Example: Gary's mood
+
+In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an abitrary initial probability matrix. 
+
+```{r}
+# Define prob transition matrix 
+# (note matrix() takes vectors in column form so there is a transpose here to switch col's to row's)
+P=t(matrix(c(c(0.5,0.4,0.1),c(0.3,0.4,0.3),c(0.2,0.3,0.5)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  
+
+# Definte initial probability vector
+x0=c(0.1,0.2,0.7)
+# Check sums to 1
+sum(x0)
+```
+
+
+## Solving for stationary distributions 
+The stationary distribution has the property $\pi^T= \pi^T P$
+
+### Brute-force solution
+
+A brute-force hack to finding the stationary distribution is simply to take the transition matrix to a high power and then extract out any row. 
+
+```{r}
+pi_bru=(P%^%100)[1,]
+```
+
+We can test if the resulting vector is a stationary distribution by assessing if the resulting vector statisfies $\pi^{T}=pi^{T}P$ (i.e. $pi^{T}-pi^{T}P -  = 0$).
+```{r}
+pi_bru - pi_bru%*%P
+```
+As we can see up to some very small errors, for this example, our numerical solution checks out.
+
+### Solving a system of linear equations solution
+Another approach is to solve the system of linear equations $\pi^{T}=\pi^{T}P$.  Most generic solvers need to have the equations expressed as $Ax=b$.  We can re-arrange to get $(I-P)^T \pi =0_{K\times 1}$ where $K$ is the number of possible states taken by $X_{\cdot}$.  So $A=(I-P)^T$ and $b=0_{K\times 1}$.  One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability disribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row all 1's to our $A$ and a 1 to $b$.  We will have a non-square matrix $A$ as a result, and we will need to use the =limSolve= library in place of R's generic solve function.
+
+```{R}
+K<-3
+A_basic <- t(diag(rep(1,K))-P)
+b_basic <- rep(0,K)
+# Now add the constraint 
+A_constr <- rbind(A,rep(1,K))
+b_constr <- c(b,1)
+# And since we now have a non-square matrix we need a more generic solver library
+library(limSolve)
+pi_lineq <- Solve(A_constr,b_constr)
+pi_lineq
+sum(pi_lineq)
+pi_lineq%*%P
+```
+And the solution checks out!
+
+### Solving via eigendecomposition
+
+Note that the equation $\pi^T P=\pi^T$ implies that the vector $\pi$ is a left eigenvector of P with eigenvalue equal to 1 (Recall $xA=\lambda x$ where $x$ is a row vector is definition of a left eigenvector, as opposed to the more standard right eigenvector $Ax=\lambda x$). In what follows, we use eigenvector functions in R to extract out the solution. 
+
+```{r}
+library(MASS)
+# Get the eigenvectors of P, note: R returns right eigenvectors
+r=eigen(P)
+rvec=r$vectors
+# left eigenvectors are the inverse of the right eigenvectors
+lvec=ginv(r$vectors)
+# The eigenvalues
+lam<-r$values
+# Two ways of checking the spectral decomposition:
+## Standard definition
+rvec%*%diag(lam)%*%ginv(rvec)
+## With left eigenvectors (trivial chang)
+rvec%*%diag(lam)%*%lvec
+
+lam 
+```
+We see the first eigenvalue is $1$ and so the first left eigenvector, suitably normalized, should contain the stationary distribution:
+```{r}
+pi_eig<-lvec[1,]/sum(lvec[1,])
+pi_eig
+sum(pi_eig)
+pi_eig %*% P
+```
+And we see the procedure checks out.  
+
+As a side-note: We can also obtain the left eigenvectors as the transposes of the right eigenvectors of t(P) 
+```{r}
+r<-eigen(t(P))
+V<-r$vectors
+lam<-r$values
+V%*%diag(lam)%*%ginv(V)
+# Note how we are pulling columns here. 
+pi_eig2 <- V[,1]/sum(V[,1])
+```
+
+
+#### Numerical advantages of using an eigendecomposition for matrix powers
+
+Thanks to the eigenvector decomposition, to obtain the matrix power $P^n$ we just need to take the powers of the eigenvalues.  Compare the following lines of code to $P$,$P^2$, $P^100$ computed above.  And note - this is much faster than naively doing the matrix multipliation over and over to obtain the powers.
+```{r}
+rvec%*%diag(lam)%*%lvec
+
+rvec%*%diag(lam^2)%*%lvec
+
+rvec%*%diag(lam^100)%*%lvec
+
+```
+
+#### A side-note on the eigendecomposition: Rate of approach to equilbirium
+
+The size of the first non-unit eigenvalue ($\lambda_2$) indicates the rate of approach to equilibrium (because it describes how quickly the largest of the vanishing terms (i.e. those with $\lambda_i<1$) will approach zero.  The times-scale of decay is $1/\lambda_2$ time-steps.  So after some small multiple of $1/\lambda_2$ generations, we will expect to be at equilibrium.  
+
+For our example, $1/\lambda_2$ is approximately 3 generations.
+```{r}
+# 1/lam[2] is rather small
+1/lam[2]
+```
+Which implies we will reach equilibrium fairly quickly - much more quickly than the 100 generations we were using for our brute-force hack.   As a test, let's see how $P^9$ looks: 
+P%^%9
+```
+Indeed - Gary's mood will have return to it's stationary distribution relatively quickly after any perturbation! 
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
