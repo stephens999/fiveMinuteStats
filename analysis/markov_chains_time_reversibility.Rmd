@@ -10,6 +10,7 @@ date: 2016-01-31
 
 ```{r chunk-options, include=FALSE}
 source("chunk-options.R")
+library(expm)
 ```
 
 # Pre-requisites
@@ -47,7 +48,7 @@ sum(x0)
 
 The reverse chain transition prob's are: $$\frac{\pi_j P_{ji}}{\pi_i}$$
 ```{r}
-diag(1/pivec)%*%(t(P)%*%diag(pivec))
+diag(1/x0)%*%(t(P)%*%diag(x0))
 ```
 So for our example we see it's not time reversible...
 
