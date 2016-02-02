@@ -30,11 +30,13 @@ title: "Home"
 
 ### Stochastic Processes
 
-*  [Discrete Markov Chains: Introduction](markov_chains_discrete_introduction.html)
+*  [Discrete Markov Chains: Introduction](markov_chains_discrete_intro.html)
 
 *  [Discrete Markov Chains: Finding the Stationary Distribution via solution of the global balance equations](stationary_distribution.html)
 
 *  [Discrete Markov Chains: Finding the Stationary Distribution via eigendecomposition](markov_chains_discrete_stationary_dist.html)
+
+*  [Inverse Tranform Sampling](inverse_transform_sampling.html)
 
 *  [Simulating Discrete Markov Chains: An Introduction](simulating_discrete_chains_1.html)
 
