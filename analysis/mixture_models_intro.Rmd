@@ -1,0 +1,75 @@
+---
+title: "Introduction to Mixture Models"
+author: "Arjun Biddanda"
+date: 2016-01-22
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Summary
+
+This document introduces data coming from a mixture of two or more different distributions.  
+
+# Pre-Requisites
+
+You should be comfortable with distributions and [likelihood functions](http://stephens999.github.io/fiveMinuteStats/analysis/likelihood_function.html) 
+
+# Overview
+
+Often times in statistics we make the assumption that a random variable is drawn from an underlying distribution (i.e. Normal, Poisson, Exponential, etc). In practice, it may that our data comes from a combination or "mixture" of some of these pre-defined distributions. The principles shown here use pre-defined distributions, but they extend more generally to using arbitrary distributions.  
+
+# Definition
+
+Suppose that we have a set of density functions $f_1,...,f_k$ and that a random variable $X$ is drawn from $f_1$ with probability $\pi_1$, from $f_2$ with probability $pi_2$, and so on. We can then consider $X$ to be from the following distribution: 
+
+$$ X \sim \pi_1f_1(x) + \pi_2f_2(x) + ... + \pi_nf_k(x)$$
+$$ \sum^k_{i = 1} \pi_{i} = 1 $$ 
+
+The constraint that all of the mixture proportions ($\pi_i$) must sum to 1 is to ensure that this mixture distribution still retains the properties of being a valid probability distribution. We can also characterize this distribution by the number of terms in the sum, which are called components. The density functions that are defined for each component are called component densities. So for the second component in our model above, the mixture proportion would be $\pi_2$ and the component density would be $f_2$. 
+
+# Example : Z-Scores from a Mixture of Two Normals
+
+For this example, let us assume that we are drawing z-scores for a one-sided test. These are generated as a function of our randomly generated data. We know that the null distribution of z-scores is $N(0,1)$ and that the proportion of nulls within the data is 90% ($\pi_0 = 0.8$). The signals for our particular test are very strong and drawn from the $N(3,1)$ distribution. The propotion of signals within our data is 10% ($\pi_1 = 0.2$). Thus our full model for the $i^{th}$ Z-score can be defined as:
+
+$$ Z_i \sim \pi_0 N(0,1) + \pi_1 N(3,1) $$
+$$ Z_i \sim (0.90) N(0,1) + (0.1) N(3,1) $$
+
+
+```{r}
+num.iterations <- 10000
+z.scores <- c()
+for (i in 1:num.iterations){
+  z.scores[i] <- ifelse(rbinom(1,1,p=0.2), rnorm(1,3,1), rnorm(1,0,1)) 
+}
+
+hist(z.scores, breaks=100, main="Mixture Distribution of Z-scores")
+```
+
+It is important to note here that the distribution is not normal! It is tempting to think that the resulting distribution may look like the sum of two Normal distributions (which is also Normal). We can clearly visualize the larger density in the right tail due to the proportion of z-scores that are signals. 
+
+# Likelihood of Mixture Components
+
+Following the example above, suppose that we have been given a 
+
+$$
+  \begin{aligned}
+    L(\pi) &= \prod^n_{i=1} P(x_i | \pi)\\
+    l(\pi) &= \sum^n_{i=1} log\left(P(x_i | \pi)\right)\\
+    &= \sum^n_{i=1} log\big[\pi_1 P(x_i | \pi_1) + ... + \pi_k P(x_i | \pi_k) \big]\\
+    &= \sum^n_{i=1} log\Big[\sum^k_{j=1} \pi_j P(x_i | \pi_j)  \Big]
+  \end{aligned}
+$$
+
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
+
