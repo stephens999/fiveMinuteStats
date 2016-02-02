@@ -34,43 +34,10 @@ $$P = \begin{bmatrix}
 
 We denote the $(i,j)$-th entry of the matrix $P$ as $P_{ij}$. 
 
-Now assume that our Markov chain starts in state 1 so that $X_0 = 1$. Since we are starting in state 1, our transition probabilities are defined by the first row of $P$. Our chain can either remain in state $1$ with probability $P_{11}$ or transition to state $2$ with probability $P_{12}$. Therefore, to simulate $X_1$, we must generate a random variable according to the probabilities $P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7$ and $P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3$. We can generate any discrete random variable according to a set of probabilities using the **inverse transform method**.
+Now assume that our Markov chain starts in state 1 so that $X_0 = 1$. Since we are starting in state 1, our transition probabilities are defined by the first row of $P$. Our chain can either remain in state $1$ with probability $P_{11}$ or transition to state $2$ with probability $P_{12}$. Therefore, to simulate $X_1$, we must generate a random variable according to the probabilities $P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7$ and $P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3$.
 
-## Inverse Transform Sampling
+In general, we can generate any discrete random variable according to a set of probabilities $p = \{p_1, \ldots, p_K\}$ with [Inverse Transform Sampling](inverse_transform_sampling.html). Also note that this is equivalent to taking a single draw from a multinomial distribution with probability vector $p$ -- we use this method in the algorithm below. 
 
-Recall that for a uniform random variable $U$ between $0$ and $1$, the probability $P(U \leq a) = a$ for $a \in [0,1]$. And, for $a$ and $b$ such that $0 \leq a < b \leq 1$, we have that $P(a \leq U \leq b) = b - a$. 
-
-If we set $a = P_{11} = 0.7$, $b = P_{11} + P_{22} = 1$, and generate a random variable $U \sim \text{Unif}(0,1)$, then we have that
-$$\begin{align*}
-P(U \leq 0.7) &= 0.7 \\
-P(0.7 < U \leq 1) &= 1 - 0.7 = 0.3
-\end{align*}$$
-
-Therefore, to generate $X_1$ according to these probabilities, perform the following steps:  
-1. Generate $U \sim \text{Unif}(0,1)$  
-2. If $U \leq P_{11}$, set $X_1 = 1$, and if $P_{11} < U \leq P_{11} + P_{22}$, set $X_1 = 2$.  
-
-If it happens that $X_1 = 2$, we would then generate $X_2$ according to the second row of $P$ in a similar fashion. If $X_1 = 1$, we would use the first row again. 
-
-For larger state spaces, if $X_t = i$, we would simulate $X_{t+1}$ according to the $i$-th row of the probability transition matrix. Using the inverse transform method, we first sample a uniform random variable $U$ between $0$ and $1$, then set $X_{t+1} = 1$ if $U \leq P_{i1}$, $X_{t+1} = 2$ if $P_{i1} < U \leq P_{i1} + P_{i2}$. In general, we would set $X_{t+1} = j$ if $\sum_{k=1}^{j-1}P_{ik} < U \leq \sum_{k=1}^{j}P_{ik}$. We implement this algorithm in the function below:
-
-```{r}
-# note: this inefficient implementation is for pedagogical purposes
-# in general, considering using the rmultinom() function
-inv.transform.sample <- function( p.vec ) {
-  U  <- runif(1)
-  if(U <= p.vec[1]){
-    return(1)
-  }
-  for(state in 2:length(p.vec)) {
-    if(sum(p.vec[1:(state-1)]) < U && U <= sum(p.vec[1:state]) ) {
-      return(state)
-    }
-  }
-}
-```
-
-This is all we need to simulate discrete markov chains. 
 
 # General Algorithm
 Here we present a general algorithm for simulating a discrete Markov chain assuming we have $S$ possible states. 
@@ -80,7 +47,7 @@ Here we present a general algorithm for simulating a discrete Markov chain assum
 2. Pick an initial state $X_t=i$. 
 3. For t = 1...T:   
       1. Obtain the row of $P$ corresponding to the current state $X_t$.
-      2. Generate $X_{t+1}$ using the inverse transform method according to the row obtained above.
+      2. Generate $X_{t+1}$ from a multinomial distribution with probability vector equal to the row we obtained above. 
 
 We implement this in the following function, initializing the first state to $1$:
 ```{r}
@@ -101,8 +68,8 @@ run.mc.sim <- function( P, num.iters = 50 ) {
     # probability vector to simulate next state X_{t+1}
     p  <- P[states[t-1], ]
     
-    ## inverse transform sampling according to p
-    states[t] <- inv.transform.sample(p)
+    ## draw from multinomial and determine state
+    states[t] <-  which(rmultinom(1, 1, p) == 1)
   }
   return(states)
 }
