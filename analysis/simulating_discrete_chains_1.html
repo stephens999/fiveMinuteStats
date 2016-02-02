@@ -136,7 +136,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-02-02</p>
-<p><strong>Code version:</strong> feafde067eb560f604c2fed62bb8ff00f02f27be</p>
+<p><strong>Code version:</strong> dfaabc4a3c276abc6bcd5d061b3f4951f907d5ef</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains.</p>
@@ -144,31 +144,31 @@ img {
 <div id="illustrative-example" class="section level1">
 <h1>Illustrative Example</h1>
 <p>In this note, we will describe a simple algorithm for simulating Markov chains. We first settle on notation and describe the algorithm in words.</p>
-<p>Let <span class="math inline">\(P_{ij}\)</span> denote the one-step transition probability. That is, <span class="math display">\[ P_{ij} = P(X_{t+1} = j | X_{t} = i)\]</span></p>
-<p>In what follows, we will assume that the transition probabilities do not depend on time <span class="math inline">\(t\)</span>. These are called <em>time homogenous</em> Markov chains.</p>
-<p>The general idea of simulating discrete Markov chains can be illustrated through a simple example with 2 states. Assume our state space is <span class="math inline">\(\{1,2\}\)</span> and the transition matrix is:</p>
-<p><span class="math display">\[P = \begin{bmatrix}
+<p>Let <span class="math">\(P_{ij}\)</span> denote the one-step transition probability. That is, <span class="math">\[ P_{ij} = P(X_{t+1} = j | X_{t} = i)\]</span></p>
+<p>In what follows, we will assume that the transition probabilities do not depend on time <span class="math">\(t\)</span>. These are called <em>time homogenous</em> Markov chains.</p>
+<p>The general idea of simulating discrete Markov chains can be illustrated through a simple example with 2 states. Assume our state space is <span class="math">\(\{1,2\}\)</span> and the transition matrix is:</p>
+<p><span class="math">\[P = \begin{bmatrix}
     0.7 &amp; 0.3 \\
     0.4 &amp; 0.6
 \end{bmatrix}\]</span></p>
-<p>We denote the <span class="math inline">\((i,j)\)</span>-th entry of the matrix <span class="math inline">\(P\)</span> as <span class="math inline">\(P_{ij}\)</span>.</p>
-<p>Now assume that our Markov chain starts in state 1 so that <span class="math inline">\(X_0 = 1\)</span>. Since we are starting in state 1, our transition probabilities are defined by the first row of <span class="math inline">\(P\)</span>. Our chain can either remain in state <span class="math inline">\(1\)</span> with probability <span class="math inline">\(P_{11}\)</span> or transition to state <span class="math inline">\(2\)</span> with probability <span class="math inline">\(P_{12}\)</span>. Therefore, to simulate <span class="math inline">\(X_1\)</span>, we must generate a random variable according to the probabilities <span class="math inline">\(P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7\)</span> and <span class="math inline">\(P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3\)</span>.</p>
-<p>In general, we can generate any discrete random variable according to a set of probabilities <span class="math inline">\(p = \{p_1, \ldots, p_K\}\)</span> with <a href="inverse_transform_sampling.html">Inverse Transfrom Sampling</a>. Also note that this is equivalent to taking a single draw from a multinomial distribution with probability vector <span class="math inline">\(p\)</span> – we use this method in the algorithm below.</p>
+<p>We denote the <span class="math">\((i,j)\)</span>-th entry of the matrix <span class="math">\(P\)</span> as <span class="math">\(P_{ij}\)</span>.</p>
+<p>Now assume that our Markov chain starts in state 1 so that <span class="math">\(X_0 = 1\)</span>. Since we are starting in state 1, our transition probabilities are defined by the first row of <span class="math">\(P\)</span>. Our chain can either remain in state <span class="math">\(1\)</span> with probability <span class="math">\(P_{11}\)</span> or transition to state <span class="math">\(2\)</span> with probability <span class="math">\(P_{12}\)</span>. Therefore, to simulate <span class="math">\(X_1\)</span>, we must generate a random variable according to the probabilities <span class="math">\(P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7\)</span> and <span class="math">\(P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3\)</span>.</p>
+<p>In general, we can generate any discrete random variable according to a set of probabilities <span class="math">\(p = \{p_1, \ldots, p_K\}\)</span> with <a href="inverse_transform_sampling.html">Inverse Transform Sampling</a>. Also note that this is equivalent to taking a single draw from a multinomial distribution with probability vector <span class="math">\(p\)</span> – we use this method in the algorithm below.</p>
 </div>
 <div id="general-algorithm" class="section level1">
 <h1>General Algorithm</h1>
-<p>Here we present a general algorithm for simulating a discrete Markov chain assuming we have <span class="math inline">\(S\)</span> possible states.</p>
+<p>Here we present a general algorithm for simulating a discrete Markov chain assuming we have <span class="math">\(S\)</span> possible states.</p>
 <ol style="list-style-type: decimal">
-<li>Obtain the <span class="math inline">\(S\times S\)</span> probability transition matrix <span class="math inline">\(P\)</span></li>
-<li>Set <span class="math inline">\(t = 0\)</span></li>
-<li>Pick an initial state <span class="math inline">\(X_t=i\)</span>.</li>
+<li>Obtain the <span class="math">\(S\times S\)</span> probability transition matrix <span class="math">\(P\)</span></li>
+<li>Set <span class="math">\(t = 0\)</span></li>
+<li>Pick an initial state <span class="math">\(X_t=i\)</span>.</li>
 <li>For t = 1…T:
 <ol style="list-style-type: decimal">
-<li>Obtain the row of <span class="math inline">\(P\)</span> corresponding to the current state <span class="math inline">\(X_t\)</span>.</li>
-<li>Generate <span class="math inline">\(X_{t+1}\)</span> from a multinomial distribution with probability vector equal to the row we obtained above.</li>
+<li>Obtain the row of <span class="math">\(P\)</span> corresponding to the current state <span class="math">\(X_t\)</span>.</li>
+<li>Generate <span class="math">\(X_{t+1}\)</span> from a multinomial distribution with probability vector equal to the row we obtained above.</li>
 </ol></li>
 </ol>
-<p>We implement this in the following function, initializing the first state to <span class="math inline">\(1\)</span>:</p>
+<p>We implement this in the following function, initializing the first state to <span class="math">\(1\)</span>:</p>
 <pre class="r"><code># simulate discrete Markov chains according to transition matrix P
 run.mc.sim &lt;- function( P, num.iters = 50 ) {
   
@@ -194,7 +194,7 @@ run.mc.sim &lt;- function( P, num.iters = 50 ) {
 </div>
 <div id="simulation-1-3x3-example" class="section level1">
 <h1>Simulation 1: 3x3 example</h1>
-<p>Assume our probability transition matrix is: <span class="math display">\[P = \begin{bmatrix}
+<p>Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
     0.7 &amp; 0.2 &amp; 0.1 \\
     0.4 &amp; 0.6 &amp; 0 \\
     0   &amp; 1   &amp; 0 
@@ -215,7 +215,7 @@ chain.states  &lt;- matrix(NA, ncol=num.chains, nrow=num.iterations)
 for(c in seq_len(num.chains)){
   chain.states[,c] &lt;- run.mc.sim(P)
 }</code></pre>
-<p>Our function returns a vector that contains the states of our simulated chain through time. Recall that our state space is <span class="math inline">\(\{1,2,3\}\)</span>. Below, we visualize how these chains evolve through time:</p>
+<p>Our function returns a vector that contains the states of our simulated chain through time. Recall that our state space is <span class="math">\(\{1,2,3\}\)</span>. Below, we visualize how these chains evolve through time:</p>
 <pre class="r"><code>matplot(chain.states, type=&#39;l&#39;, lty=1, col=1:5, ylim=c(0,4), ylab=&#39;state&#39;, xlab=&#39;time&#39;)
 abline(h=1, lty=3)
 abline(h=3, lty=3)</code></pre>
@@ -223,7 +223,7 @@ abline(h=3, lty=3)</code></pre>
 </div>
 <div id="simulation-2-8x8-example" class="section level1">
 <h1>Simulation 2: 8x8 example</h1>
-<p>Next we will do a larger experiment with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math display">\[P = \begin{bmatrix}
+<p>Next we will do a larger experiment with the size of our state space equal to 8. Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
     0.33 &amp; 0.66 &amp; 0     &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
     0.33 &amp; 0.33 &amp; 0.33  &amp; 0   &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\
     0    &amp; 0.33 &amp; 0.33 &amp; 0.33 &amp; 0    &amp; 0     &amp; 0    &amp; 0 \\

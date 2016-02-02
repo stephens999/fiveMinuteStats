@@ -36,6 +36,8 @@ title: "Home"
 
 *  [Discrete Markov Chains: Finding the Stationary Distribution via eigendecomposition](markov_chains_discrete_stationary_dist.html)
 
+*  [Inverse Tranform Sampling](inverse_transform_sampling.html)
+
 *  [Simulating Discrete Markov Chains: An Introduction](simulating_discrete_chains_1.html)
 
 *  [Simulating Discrete Markov Chains: Limiting Distributions](simulating_discrete_chains_2.html)
