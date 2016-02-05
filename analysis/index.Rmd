@@ -36,7 +36,9 @@ title: "Home"
 
 *  [Discrete Markov Chains: Finding the Stationary Distribution via eigendecomposition](markov_chains_discrete_stationary_dist.html)
 
-*  [Inverse Tranform Sampling](inverse_transform_sampling.html)
+*  [Poisson Processes: Thinning with time-dependent probabilities](poisson_process_time_dependent_thinning.html)
+
+*  [Inverse Transform Sampling](inverse_transform_sampling.html)
 
 *  [Simulating Discrete Markov Chains: An Introduction](simulating_discrete_chains_1.html)
 
