@@ -28,16 +28,23 @@ title: "Home"
 
 *  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 
-### Stochastic Processes
+## Stochastic Processes
 
-*  [Discrete Markov Chains: Introduction](markov_chains_discrete_intro.html)
+### Discrete-Time Markov Chains
+*  [Discrete-Time Markov Chains: Introduction](markov_chains_discrete_intro.html)
 
-*  [Discrete Markov Chains: Finding the Stationary Distribution via solution of the global balance equations](stationary_distribution.html)
+*  [Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations](stationary_distribution.html)
 
-*  [Discrete Markov Chains: Finding the Stationary Distribution via eigendecomposition](markov_chains_discrete_stationary_dist.html)
+*  [Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition](markov_chains_discrete_stationary_dist.html)
 
-*  [Inverse Tranform Sampling](inverse_transform_sampling.html)
+*  [Simulating Discrete-Time Markov Chains: An Introduction](simulating_discrete_chains_1.html)
 
-*  [Simulating Discrete Markov Chains: An Introduction](simulating_discrete_chains_1.html)
+*  [Simulating Discrete-Time Markov Chains: Limiting Distributions](simulating_discrete_chains_2.html)
 
-*  [Simulating Discrete Markov Chains: Limiting Distributions](simulating_discrete_chains_2.html)
+### Poisson Processes
+
+*  [Poisson Processes: Thinning with time-dependent probabilities](poisson_process_time_dependent_thinning.html)
+
+### Methods for sampling non-standard distributions
+
+*  [Inverse Transform Sampling](inverse_transform_sampling.html)
