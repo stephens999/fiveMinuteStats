@@ -114,7 +114,7 @@ compare.density <- function(b.process, delta, inspect.at=10) {
   pois.density <- dpois(0:80, inspect.at*lambda)
   
   # plot
-  plot(tt/sum(tt), main=paste("trial every", delta, "seconds"), xlab='number of arrivals after 10 seconds', ylab='density', xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
+  plot(tt/sum(tt), main=paste("trial every", round(delta,4), "seconds"), xlab='number of arrivals after 10 seconds', ylab='density', xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
   lines(0:80,pois.density, 'b')
 }
 

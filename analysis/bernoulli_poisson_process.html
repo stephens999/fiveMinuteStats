@@ -136,7 +136,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-02-06</p>
-<p><strong>Code version:</strong> 16dfe6685c64f0b22708752da0d6c860cd4e3e19</p>
+<p><strong>Code version:</strong> 9ea41c31290ede8ef1165d0941675fbd17784e30</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with the Poisson process.</p>
@@ -209,7 +209,7 @@ compare.density &lt;- function(b.process, delta, inspect.at=10) {
   pois.density &lt;- dpois(0:80, inspect.at*lambda)
   
   # plot
-  plot(tt/sum(tt), main=paste(&quot;trial every&quot;, delta, &quot;seconds&quot;), xlab=&#39;number of arrivals after 10 seconds&#39;, ylab=&#39;density&#39;, xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
+  plot(tt/sum(tt), main=paste(&quot;trial every&quot;, round(delta,4), &quot;seconds&quot;), xlab=&#39;number of arrivals after 10 seconds&#39;, ylab=&#39;density&#39;, xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
   lines(0:80,pois.density, &#39;b&#39;)
 }
 
