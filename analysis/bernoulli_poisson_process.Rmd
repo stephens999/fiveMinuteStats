@@ -80,7 +80,7 @@ abline(v=7.5, col='red')
 
 ```
 
-## Discrete to Continuous
+# Discrete to Continuous
 
 In the previous section we saw that as we perform more Bernoulli trials in the same $10$ seconds (i.e. a trial every $\delta = 0.5$ seconds), we had to decrease the success probability $p$ to maintain $E[S_t] = E[N_t]$, where $N_t$ was the number of arrivals from the Poisson process from the first section of this note. 
 

@@ -128,15 +128,14 @@ img {
 <ul>
 <li><a href="#pre-requisites">Pre-requisites</a></li>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#bernoulli-process">Bernoulli Process</a><ul>
+<li><a href="#bernoulli-process">Bernoulli Process</a></li>
 <li><a href="#discrete-to-continuous">Discrete to Continuous</a></li>
-</ul></li>
 <li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
 <p><strong>Last updated:</strong> 2016-02-06</p>
-<p><strong>Code version:</strong> 9ea41c31290ede8ef1165d0941675fbd17784e30</p>
+<p><strong>Code version:</strong> c2c298c61aa9eb20f7c7f660964c342016d44740</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with the Poisson process.</p>
@@ -180,8 +179,9 @@ axis(1, at = 0:20, labels=as.character(seq(0, 10, by=0.5)), cex.axis=0.5)</code>
 <pre class="r"><code>hist(sapply(1:1000, function(x) sum(rbinom(20,1,0.375))), xlab=&#39;number of arrivals&#39;, main=&#39;Number of Arrivals in Bernoulli Process after 10 seconds&#39;)
 abline(v=7.5, col=&#39;red&#39;)</code></pre>
 <p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-4-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
-<div id="discrete-to-continuous" class="section level2">
-<h2>Discrete to Continuous</h2>
+</div>
+<div id="discrete-to-continuous" class="section level1">
+<h1>Discrete to Continuous</h1>
 <p>In the previous section we saw that as we perform more Bernoulli trials in the same <span class="math">\(10\)</span> seconds (i.e. a trial every <span class="math">\(\delta = 0.5\)</span> seconds), we had to decrease the success probability <span class="math">\(p\)</span> to maintain <span class="math">\(E[S_t] = E[N_t]\)</span>, where <span class="math">\(N_t\)</span> was the number of arrivals from the Poisson process from the first section of this note.</p>
 <p>The key result is this: as <span class="math">\(\delta \rightarrow 0\)</span>, we have that the <span class="math">\(P(S_t = k) = P(N_t = k)\)</span> and, in this sense, the Bernoulli process converges to the Poisson process. We illustrate this in the plots below. Recall that <span class="math">\(N_t \sim \text{Poisson}(\lambda t)\)</span>.</p>
 <p>As we set <span class="math">\(\delta\)</span> to smaller and smaller values, in each plot we show a histogram of 5000 simulated <span class="math">\(S_{10}\)</span>’s along with the Poisson density of <span class="math">\(N_{10}\)</span>. We see that as <span class="math">\(\delta\)</span> gets smaller, the histogram converges to the Poisson density.</p>
@@ -220,7 +220,6 @@ compare.density(bern.process[[3]], 2^(-shrink.vec[3]))
 compare.density(bern.process[[11]], 2^(-shrink.vec[11]))</code></pre>
 <p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-5-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
-</div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -238,9 +237,9 @@ other attached packages:
 [1] knitr_1.11
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5     formatR_1.2.1    tools_3.2.2      htmltools_0.3   
- [5] yaml_2.1.13      codetools_0.2-14 stringi_1.0-1    rmarkdown_0.9.2 
- [9] stringr_1.0.0    digest_0.6.8     evaluate_0.8    </code></pre>
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
 </div>
 
 
