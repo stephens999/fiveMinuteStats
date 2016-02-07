@@ -136,7 +136,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-02-06</p>
-<p><strong>Code version:</strong> 0ba385e88621df96b05d76c86831601f0fc71921</p>
+<p><strong>Code version:</strong> 16dfe6685c64f0b22708752da0d6c860cd4e3e19</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with the Poisson process.</p>
@@ -209,7 +209,7 @@ compare.density &lt;- function(b.process, delta, inspect.at=10) {
   pois.density &lt;- dpois(0:80, inspect.at*lambda)
   
   # plot
-  plot(tt/sum(tt), main=paste(&quot;delta = &quot;,round(delta,4), &quot;trials per second&quot;), xlab=&#39;number of arrivals after 10 seconds&#39;, ylab=&#39;density&#39;, xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
+  plot(tt/sum(tt), main=paste(&quot;trial every&quot;, delta, &quot;seconds&quot;), xlab=&#39;number of arrivals after 10 seconds&#39;, ylab=&#39;density&#39;, xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
   lines(0:80,pois.density, &#39;b&#39;)
 }
 
@@ -238,9 +238,9 @@ other attached packages:
 [1] knitr_1.11
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
- [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
- [9] digest_0.6.8    evaluate_0.8   </code></pre>
+ [1] magrittr_1.5     formatR_1.2.1    tools_3.2.2      htmltools_0.3   
+ [5] yaml_2.1.13      codetools_0.2-14 stringi_1.0-1    rmarkdown_0.9.2 
+ [9] stringr_1.0.0    digest_0.6.8     evaluate_0.8    </code></pre>
 </div>
 
 
