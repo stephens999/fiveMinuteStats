@@ -25,7 +25,7 @@ The stationary distribution of a Markov chain is an important feature of the cha
 
 As part of the definition of a Markov chain, there is some probability distribution on the states at time $0$.  Each time step the distribution on states evolves - some states may become more likely and others less likely and this is dictated by $P$.  The *stationary distribution* of a Markov chain describes the distribution of $X_t$ after a sufficiently long time that the distribution of $X_t$ does not change any longer.  To put this notion in equation form, let $\pi$ be a column vector of probabilities on the states that a Markov chain can visit.  Then, $\pi$ is the stationary distribution if it has the property $$\pi^T= \pi^T P.$$  
 
-Not all Morkov chains have a stationary disribution but for some classes of probability transition matrix (those defining *ergodic* Markov chains), a stationary distribution is guaranteed to exist. 
+Not all Morkov chains have a stationary distribution but for some classes of probability transition matrix (those defining *ergodic* Markov chains), a stationary distribution is guaranteed to exist. 
 
 # Example: Gary's mood
 
@@ -136,7 +136,7 @@ rvec%*%diag(lam^100)%*%lvec
 
 Another approach is to solve the system of linear equations $\pi^{T}=\pi^{T}P$.  These equations are known as the global balance equations, and this approach is introduced in [Discrete Markov Chains: Finding the Stationary Distribution via solution of the global balance equations](stationary_distribution.html).  We include it here for comparison to the eigendecomposition approach on the same example. 
 
-To obtian the solution, we first note the generic R solver needs to have the equations expressed as $Ax=b$ where $A$ is square martrix.  We can re-arrange to get $(I-P)^T \pi =0_{K\times 1}$ where $K$ is the number of possible states taken by $X_{\cdot}$.  So $A=(I-P)^T$ and $b=0_{K\times 1}$.  One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability disribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row all 1's to our $A$ and a 1 to $b$.  This creates a non-square matrix $A$ as a result, and so we instead use R's built-in solve function to solve $A^T A x = A^T b$.
+To obtian the solution, we first note the generic R solver needs to have the equations expressed as $Ax=b$ where $A$ is square martrix.  We can re-arrange to get $(I-P)^T \pi =0_{K\times 1}$ where $K$ is the number of possible states taken by $X_{\cdot}$.  So $A=(I-P)^T$ and $b=0_{K\times 1}$.  One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row all 1's to our $A$ and a 1 to $b$.  This creates a non-square matrix $A$ as a result, and so we instead use R's built-in solve function to solve $A^T A x = A^T b$.
 
 ```{R}
 K<-3
@@ -147,11 +147,11 @@ A_constr <- rbind(A_basic,rep(1,K))
 b_constr <- c(b_basic,1)
 
 # Check ranks 
-rank.A   <- as.numeric(rankMatrix(A))
-rank.Ab  <- as.numeric(rankMatrix(cbind(A,b)))
+rank.A   <- as.numeric(rankMatrix(A_constr))
+rank.Ab  <- as.numeric(rankMatrix(cbind(A_constr,b_constr)))
 print(paste("The rank of A =", rank.A, "and the rank of the augmented matrix =", rank.Ab))
 
-pi_lineq <- solve(t(A_constr)%*%A_constr,t(A_constr)%*%b_constr)
+pi_lineq <- t(solve(t(A_constr)%*%A_constr,t(A_constr)%*%b_constr))
 sum(pi_lineq)
 pi_lineq%*%P
 ```

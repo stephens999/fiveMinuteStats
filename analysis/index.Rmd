@@ -44,6 +44,7 @@ title: "Home"
 ### Poisson Processes
 
 *  [Poisson Processes: Thinning with time-dependent probabilities](poisson_process_time_dependent_thinning.html)
+*  [Poisson Process: The Limiting Case of the Bernoulli Process](bernoulli_poisson_process.html)
 
 ### Methods for sampling non-standard distributions
 
