@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-02-15" />
+
+<title>Normal Markov Chain</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Normal Markov Chain</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-02-15</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#a-normal-markov-chain">A normal markov chain</a></li>
+<li><a href="#a-normal-markov-chain-as-a-multivariate-normal">A normal markov chain as a multivariate normal</a><ul>
+<li><a href="#session-information">Session information</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-02-16</p>
+<p><strong>Code version:</strong> 2267e95836dbbfc86708f7a3948abbc22daa3c87</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>You should be familiar with the idea of a Markov chain, and with the <a href="mvnorm.html">multivariate normal distribution</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This vignette introduces the idea that in a multivariate normal, conditional independences correspond to the zeros of the precision matrix (inverse covariance matrix). It also prepares you for the idea of Brownian motion.</p>
+</div>
+<div id="a-normal-markov-chain" class="section level1">
+<h1>A normal markov chain</h1>
+<p>Consider a Markov chain <span class="math inline">\(X_1,X_2,X_3,\dots\)</span> where the transitions are given by <span class="math inline">\(X_{t+1} | X_{t} \sim N(X_{t},1)\)</span>. You might think of this Markov chain as corresponding to a type of “random walk”: given the current state, the next state is obtained by adding a random normal with mean 0 and variance 1.</p>
+<p>The following code simulates a realization of this Markov chain, starting from an initial state <span class="math inline">\(X_1 \sim N(0,1)\)</span>, and plots it.</p>
+<pre class="r"><code>set.seed(100)
+sim_normal_MC=function(length=1000){
+  X = rep(0,length)
+  X[1] = rnorm(1)
+  for(t in 2:length){
+    X[t]= X[t-1] + rnorm(1)  
+  }
+  return(X)
+}
+plot(sim_normal_MC())</code></pre>
+<p><img src="figure/normal_markov_chain.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="a-normal-markov-chain-as-a-multivariate-normal" class="section level1">
+<h1>A normal markov chain as a multivariate normal</h1>
+<p>If you think a little you should be able to see that the above random walk simulation is actually simulating from a 1000-dimensional multivariate normal distribution!</p>
+<p>Why?</p>
+<p>Well, let’s write each of the <span class="math inline">\(N(0,1)\)</span> variables we generate using ‘’rnorm’’ in that code as <span class="math inline">\(Z_1,Z_2,\dots\)</span>. Then: <span class="math display">\[X_1 = Z_1\]</span> <span class="math display">\[X_2 = X_1 + Z_2 = Z_1 + Z_2\]</span> <span class="math display">\[X_3 = X_2 + Z_3 = Z_1 + Z_2 + Z_3\]</span> etc.</p>
+<p>So we can write <span class="math inline">\(X = AZ\)</span> where <span class="math inline">\(A\)</span> is the 1000 by 1000 matrix <span class="math display">\[A = \begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 &amp; \dots \\
+1 &amp; 1 &amp; 0 &amp; 0 &amp; \dots \\
+1 &amp; 1 &amp; 1 &amp; 0 &amp; \dots \\
+\dots
+\end{pmatrix}.\]</span></p>
+<p>Let’s take a look at what the covariance matrix Sigma looks like. (We get a good idea from just looking at the top left corner of the matrix what the pattern is)</p>
+<pre class="r"><code>A = matrix(0,nrow=1000,ncol=1000)
+for(i in 1:1000){
+    A[i,]=c(rep(1,i),rep(0,1000-i))
+}
+Sigma = A %*% t(A)
+Sigma[1:10,1:10]</code></pre>
+<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+ [1,]    1    1    1    1    1    1    1    1    1     1
+ [2,]    1    2    2    2    2    2    2    2    2     2
+ [3,]    1    2    3    3    3    3    3    3    3     3
+ [4,]    1    2    3    4    4    4    4    4    4     4
+ [5,]    1    2    3    4    5    5    5    5    5     5
+ [6,]    1    2    3    4    5    6    6    6    6     6
+ [7,]    1    2    3    4    5    6    7    7    7     7
+ [8,]    1    2    3    4    5    6    7    8    8     8
+ [9,]    1    2    3    4    5    6    7    8    9     9
+[10,]    1    2    3    4    5    6    7    8    9    10</code></pre>
+<p>Something interesting happens when we look at the inverse of this covariance matrix, which is referred to as the <em>precision</em> matrix, and often denoted <span class="math inline">\(\Omega\)</span>. Again we just show the top left corner of the precision matrix here.</p>
+<pre class="r"><code>Omega = chol2inv(chol(Sigma))
+Omega[1:10,1:10]</code></pre>
+<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+ [1,]    2   -1    0    0    0    0    0    0    0     0
+ [2,]   -1    2   -1    0    0    0    0    0    0     0
+ [3,]    0   -1    2   -1    0    0    0    0    0     0
+ [4,]    0    0   -1    2   -1    0    0    0    0     0
+ [5,]    0    0    0   -1    2   -1    0    0    0     0
+ [6,]    0    0    0    0   -1    2   -1    0    0     0
+ [7,]    0    0    0    0    0   -1    2   -1    0     0
+ [8,]    0    0    0    0    0    0   -1    2   -1     0
+ [9,]    0    0    0    0    0    0    0   -1    2    -1
+[10,]    0    0    0    0    0    0    0    0   -1     2</code></pre>
+<p>Notice all the 0s in the precision matrix. This is important! It is an example of the following much more general idea:</p>
+<p>Let <span class="math inline">\(X\)</span> be multivariate normal with covariance matrix <span class="math inline">\(\Sigma\)</span> and precision matrix <span class="math inline">\(\Omega = \Sigma^{-1}\)</span>. Then <span class="math display">\[\Omega_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are conditionally independent given all other coordinates of } X.\]</span></p>
+<p>Also, <span class="math display">\[\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.\]</span></p>
+<p>That is, the zeros of the covariance matrix tell us about independencies among coordinates of <span class="math inline">\(X\)</span>, and zeros of the precision matrix tell us about <em>conditional</em> independencies.</p>
+<p>In a Markov chain (any Markov chain) the conditional distribution of <span class="math inline">\(X_t\)</span> given the other <span class="math inline">\(X_s\)</span> (<span class="math inline">\(s \neq t\)</span>) depends only on its neighbors <span class="math inline">\(X_{t-1}\)</span> and <span class="math inline">\(X_{t+1}\)</span>. That is, <span class="math inline">\(X_{t}\)</span> is conditionally independent of all other <span class="math inline">\(X_s\)</span> given <span class="math inline">\(X_{t-1}\)</span> and <span class="math inline">\(X_{t+1}\)</span>. This is exactly what we are seeing in the precision matrix above: the non-zero elements of the <span class="math inline">\(t\)</span>th row are at coordinates <span class="math inline">\(t-1,t\)</span> and <span class="math inline">\(t+1\)</span>.</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.2 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.12.3
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.3     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.9    evaluate_0.8   </code></pre>
+</div>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

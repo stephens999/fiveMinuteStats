@@ -54,3 +54,4 @@ title: "Home"
 ### Multivariate Normal
 
 * [Multivariate Normal](mvnorm.html)
+* [Normal Markov Chain](normal_markov_chain.html)
