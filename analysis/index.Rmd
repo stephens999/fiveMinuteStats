@@ -49,3 +49,8 @@ title: "Home"
 ### Methods for sampling non-standard distributions
 
 *  [Inverse Transform Sampling](inverse_transform_sampling.html)
+
+
+### Multivariate Normal
+
+* [Multivariate Normal](mvnorm.html)
