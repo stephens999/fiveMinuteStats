@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-01-22" />
+
+<title>Introduction to Mixture Models</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Introduction to Mixture Models</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-22</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#definition">Definition</a></li>
+<li><a href="#session-information">Session information</a></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-02-24</p>
+<p><strong>Code version:</strong> 294d219966965c87029f40e4f246daf7bed77513</p>
+<div id="prerequisites" class="section level1">
+<h1>Prerequisites</h1>
+<p>This document assumes basic familiarity with probability theory.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>We often make simplifying modeling assumptions when analyzing a data set such as assuming each observation comes from one specific distribution (say, a Gaussian distribution). Then we proceed to estimate parameters of this distribution, like the mean and variance, using maximum likelihood estimation.</p>
+<p>However, in many cases, assuming each sample comes from a single distribution is too restrictive and may not make intuitive sense. Often the data we are trying to model are more complex. For example, they might be <strong>multimodal</strong> – containing multiple regions with high probability mass. In this note, we describe one way of modeling such a scenario using <strong>mixture models</strong>.</p>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<p>Suppose the price of a paperback book is normally distributed with mean $9 and standard deviation $1 and the price of a hardback is normally distributed with a mean $20 and a standard deviation of $2. One natural question to ask is this: is the price of a randomly chosen book normally distributed? The answer is no. Assuming it’s equally likely to choose a paperback or a hardback, we illustrate the densities below: <img src="figure/intro_to_mixture_models.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> We see that the resulting probability density for all books is bimodal, and is therefore not normally distributed. In this example, we modeled the price of a book as a <strong>mixture</strong> of two <strong>components</strong> where each component was modeled as a Gaussian distribution. This is called a <strong>Gaussian mixture model</strong> (GMM).</p>
+<p>Now assume our data are the heights of students at the University of Chicago. Assume the height of a randomly chosen male is normally distributed with a mean equal to <span class="math inline">\(5&#39;9\)</span> and a standard deviation of <span class="math inline">\(2.5\)</span> inches and the height of a randomly chosen female is <span class="math inline">\(N(5&#39;4, 2.5)\)</span>. We plot the corresponding densities below:</p>
+<p><img src="figure/intro_to_mixture_models.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Here we see that the Gaussian mixture model is unimodal because there is so much overlap between the two densities. However, it is still not normally distributed since the mode is too wide/flat.</p>
+<p>These two illustrative examples above give rise to the general notion of a <strong>mixture model</strong> which assumes each observation is generated from one of <span class="math inline">\(K\)</span> mixture components. We formalize this notion in the next section.</p>
+<p>Before moving on, we make one small pedagogical note that sometimes confuses students new to mixture models. You might recall that if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <em>independent</em> normal random variables, then <span class="math inline">\(Z=X+Y\)</span> is also a normally distributed random variable. From this, you might wonder why the mixture models above aren’t normal. The reason is that <span class="math inline">\(X+Y\)</span> is <em>not</em> a mixture of normals. It is a linear combination of normals. A random variable sampled from a simple Gaussian mixture model can be thought of as a two stage process. First, we randomly sample a component (e.g. male or female), then we sample our observation from the normal distribution corresponding to that component. This is clearly different than sampling <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> from different normal distributions, then adding them together.</p>
+</div>
+<div id="definition" class="section level1">
+<h1>Definition</h1>
+<p>Assume we observe <span class="math inline">\(X_1,\ldots,X_n\)</span> and that each <span class="math inline">\(X_i\)</span> is sampled from one of <span class="math inline">\(K\)</span> <strong>mixture components</strong>. In the second example above, the mixture components were <span class="math inline">\(\{\text{male,female}\}\)</span>. Associated with each random variable <span class="math inline">\(X_i\)</span> is a label <span class="math inline">\(Z_i \in \{1,\ldots,K\}\)</span> which indicates which component <span class="math inline">\(X_i\)</span> came from. In our height example, <span class="math inline">\(Z_i\)</span> would be either <span class="math inline">\(1\)</span> or <span class="math inline">\(2\)</span> depending on whether <span class="math inline">\(X_i\)</span> was a male or female height. Often times we don’t observe <span class="math inline">\(Z_i\)</span> (e.g. we might just obtain a list of heights with no gender information), so the <span class="math inline">\(Z_i\)</span>’s are sometimes called <strong>latent variables</strong>.</p>
+<p>From the law of total probability, we know that the marginal probability of <span class="math inline">\(X_i\)</span> is: <span class="math display">\[P(X_i = x) = \sum_{k=1}^K P(X_i=x|Z_i=k)\underbrace{P(Z_i=k)}_{\pi_k} = \sum_{k=1}^K P(X_i=x|Z_i=k)\pi_k\]</span></p>
+<p>Here, the <span class="math inline">\(\pi_k\)</span> are called <strong>mixture proportions</strong> or <strong>mixture weights</strong> and they represent the probability that <span class="math inline">\(X_i\)</span> belongs to the <span class="math inline">\(k\)</span>-th mixture component. The mixture proportions are nonneggative and they sum to one, <span class="math inline">\(\sum_{k=1}^K \pi_k = 1\)</span>. We call <span class="math inline">\(P(X_i|Z_i=k)\)</span> the <strong>mixture component</strong>, and it represents the distribution of <span class="math inline">\(X_i\)</span> assuming it came from component <span class="math inline">\(k\)</span>. The mixture components in our examples above were normal distributions.</p>
+<p>For discrete random variables these mixture components can be any probability mass function <span class="math inline">\(p(. \mid Z_{k})\)</span> and for continuous random variables they can be any probability density function <span class="math inline">\(f(. \mid Z_{k})\)</span>. The corresponding pmf and pdf for the mixture model is therefore:</p>
+<p><span class="math display">\[p(x) =  \sum_{k=1}^{K}\pi_k p(x \mid Z_{k})\]</span> <span class="math display">\[f_{x}(x) = \sum_{k=1}^{K}\pi_k f_{x \mid Z_{k}}(x \mid Z_{k}) \]</span></p>
+<p>The likelihood of observing independent samples <span class="math inline">\(X_1,\ldots,X_n\)</span> with mixture proportion vector <span class="math inline">\(\pi=(\pi_1, \pi_2,\ldots,\pi_K)\)</span> is therefore: <span class="math display">\[L(\pi) = \prod_{i=1}^n P(X_i|\pi) = \prod_{i=1}^n\sum_{k=1}^K P(X_i|Z_i=k)\pi_k\]</span></p>
+<p>Now assume we are in the Gaussian mixture model setting where the <span class="math inline">\(k\)</span>-th component is <span class="math inline">\(N(\mu_k, \sigma_k)\)</span> and the mixture proportions are <span class="math inline">\(\pi_k\)</span>. A natural next question to ask is how to estimate the parameters <span class="math inline">\(\{\mu_k,\sigma_k,\pi_k\}\)</span> from our observations <span class="math inline">\(X_1,\ldots,X_n\)</span>. We illustrate one approach in the <a href="intro_to_em.html">introduction to EM</a> vignette.</p>
+<p><strong>Acknowledgement:</strong> The “Examples” section above was taken from lecture notes written by Ramesh Sridharan.</p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.11
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.8    evaluate_0.8   </code></pre>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

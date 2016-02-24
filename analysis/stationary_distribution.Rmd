@@ -91,6 +91,18 @@ $$\begin{align*}
 
 Therefore, under proper conditions, we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.
 
+
+## The General Approach
+Recall that we are attempting to find a solution to 
+$$\pi = \pi P$$
+such that $\sum_i \pi_i =1$. First we rearrange the expression above to get:
+$$\begin{align}
+\pi - \pi P &= 0 \\
+(I - P)\pi &= 0
+\end{align}$$
+
+One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row of all 1's to our $(I-P)$ (call this new matrix $A$) and a 1 to the last element of the zero vector on the right hand side (call this new vector $b$). Now we want to solve $A\pi = b$ which is overdetermined, so we solve the normal equations $A^TA\pi = A^Tb$. 
+
 # Session information
 
 ```{r info}

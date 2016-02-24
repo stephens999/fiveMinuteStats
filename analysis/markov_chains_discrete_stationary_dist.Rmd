@@ -136,29 +136,22 @@ rvec%*%diag(lam^100)%*%lvec
 
 Another approach is to solve the system of linear equations $\pi^{T}=\pi^{T}P$.  These equations are known as the global balance equations, and this approach is introduced in [Discrete Markov Chains: Finding the Stationary Distribution via solution of the global balance equations](stationary_distribution.html).  We include it here for comparison to the eigendecomposition approach on the same example. 
 
-To obtian the solution, we first note the generic R solver needs to have the equations expressed as $Ax=b$ where $A$ is square martrix.  We can re-arrange to get $(I-P)^T \pi =0_{K\times 1}$ where $K$ is the number of possible states taken by $X_{\cdot}$.  So $A=(I-P)^T$ and $b=0_{K\times 1}$.  One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row all 1's to our $A$ and a 1 to $b$.  This creates a non-square matrix $A$ as a result, and so we instead use R's built-in solve function to solve $A^T A x = A^T b$.
-
 ```{R}
 K<-3
 A_basic <- t(diag(rep(1,K))-P)
 b_basic <- rep(0,K)
+
 # Now add the constraint 
 A_constr <- rbind(A_basic,rep(1,K))
 b_constr <- c(b_basic,1)
 
-# Check ranks 
-rank.A   <- as.numeric(rankMatrix(A_constr))
-rank.Ab  <- as.numeric(rankMatrix(cbind(A_constr,b_constr)))
-print(paste("The rank of A =", rank.A, "and the rank of the augmented matrix =", rank.Ab))
-
 pi_lineq <- t(solve(t(A_constr)%*%A_constr,t(A_constr)%*%b_constr))
-sum(pi_lineq)
 pi_lineq%*%P
 ```
 And the solution checks out!
 
 
-## Session information
+# Session information
 
 ```{r info}
 sessionInfo()
