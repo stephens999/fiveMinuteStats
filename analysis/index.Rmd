@@ -28,6 +28,13 @@ title: "Home"
 
 *  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 
+### Mixture Models
+
+*  [Introduction to Mixture Models](intro_to_mixture_models.html)
+*  [Introduction to EM: Gaussian Mixture Models](intro_to_em.html)
+
+
+
 ## Stochastic Processes
 
 ### Discrete-Time Markov Chains

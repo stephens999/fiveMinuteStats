@@ -136,13 +136,13 @@ img {
 <li><a href="#rate-of-approach-to-the-stationary-distribution">Rate of approach to the stationary distribution</a></li>
 <li><a href="#a-side-note-computational-advantage-of-using-an-eigendecomposition-for-matrix-powers">A side-note: Computational advantage of using an eigendecomposition for matrix powers</a></li>
 <li><a href="#miscellaneous-solving-a-system-of-linear-equations-solution">Miscellaneous : Solving a system of linear equations solution</a></li>
-<li><a href="#session-information">Session information</a></li>
 </ul></li>
+<li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-02-06</p>
-<p><strong>Code version:</strong> 22b554063800596a0abc6c3a0aa31342d813343e</p>
+<p><strong>Last updated:</strong> 2016-02-24</p>
+<p><strong>Code version:</strong> 294d219966965c87029f40e4f246daf7bed77513</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This vignette builds on the Introduction to Discrete Markov chains vignette. It assumes an understanding of matrix multiplication, matrix powers, and eigendecomposition. We also do not explain the notion of an ergodic Markov chain (but we hope to add a vignette on this soon!).</p>
@@ -271,29 +271,23 @@ pi_eig2 &lt;- V[,1]/sum(V[,1])</code></pre>
 <div id="miscellaneous-solving-a-system-of-linear-equations-solution" class="section level2">
 <h2>Miscellaneous : Solving a system of linear equations solution</h2>
 <p>Another approach is to solve the system of linear equations <span class="math inline">\(\pi^{T}=\pi^{T}P\)</span>. These equations are known as the global balance equations, and this approach is introduced in <a href="stationary_distribution.html">Discrete Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a>. We include it here for comparison to the eigendecomposition approach on the same example.</p>
-<p>To obtian the solution, we first note the generic R solver needs to have the equations expressed as <span class="math inline">\(Ax=b\)</span> where <span class="math inline">\(A\)</span> is square martrix. We can re-arrange to get <span class="math inline">\((I-P)^T \pi =0_{K\times 1}\)</span> where <span class="math inline">\(K\)</span> is the number of possible states taken by <span class="math inline">\(X_{\cdot}\)</span>. So <span class="math inline">\(A=(I-P)^T\)</span> and <span class="math inline">\(b=0_{K\times 1}\)</span>. One challenge though is that we need the constrained solution which respects that <span class="math inline">\(\pi\)</span> describes a probability distribution (i.e. <span class="math inline">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row all 1’s to our <span class="math inline">\(A\)</span> and a 1 to <span class="math inline">\(b\)</span>. This creates a non-square matrix <span class="math inline">\(A\)</span> as a result, and so we instead use R’s built-in solve function to solve <span class="math inline">\(A^T A x = A^T b\)</span>.</p>
 <pre class="r"><code>K&lt;-3
 A_basic &lt;- t(diag(rep(1,K))-P)
 b_basic &lt;- rep(0,K)
+
 # Now add the constraint 
 A_constr &lt;- rbind(A_basic,rep(1,K))
 b_constr &lt;- c(b_basic,1)
 
-# Check ranks 
-rank.A   &lt;- as.numeric(rankMatrix(A_constr))
-rank.Ab  &lt;- as.numeric(rankMatrix(cbind(A_constr,b_constr)))
-print(paste(&quot;The rank of A =&quot;, rank.A, &quot;and the rank of the augmented matrix =&quot;, rank.Ab))</code></pre>
-<pre><code>[1] &quot;The rank of A = 3 and the rank of the augmented matrix = 3&quot;</code></pre>
-<pre class="r"><code>pi_lineq &lt;- t(solve(t(A_constr)%*%A_constr,t(A_constr)%*%b_constr))
-sum(pi_lineq)</code></pre>
-<pre><code>[1] 1</code></pre>
-<pre class="r"><code>pi_lineq%*%P</code></pre>
+pi_lineq &lt;- t(solve(t(A_constr)%*%A_constr,t(A_constr)%*%b_constr))
+pi_lineq%*%P</code></pre>
 <pre><code>          [,1]      [,2]      [,3]
 [1,] 0.3387097 0.3709677 0.2903226</code></pre>
 <p>And the solution checks out!</p>
 </div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.2.2 (2015-08-14)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
@@ -312,7 +306,6 @@ loaded via a namespace (and not attached):
  [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
  [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 grid_3.2.2     
  [9] stringr_1.0.0   digest_0.6.8    lattice_0.20-33 evaluate_0.8   </code></pre>
-</div>
 </div>
 
 

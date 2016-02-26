@@ -128,13 +128,15 @@ img {
 <ul>
 <li><a href="#pre-requisites">Pre-requisites</a></li>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#x3-example">3x3 example</a></li>
+<li><a href="#x3-example">3x3 example</a><ul>
+<li><a href="#the-general-approach">The General Approach</a></li>
+</ul></li>
 <li><a href="#session-information">Session information</a></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-02-06</p>
-<p><strong>Code version:</strong> d7cd2317ff921eb3dd787f5fc6e1f6071badd7f0</p>
+<p><strong>Last updated:</strong> 2016-02-24</p>
+<p><strong>Code version:</strong> 294d219966965c87029f40e4f246daf7bed77513</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with Markov chains and linear algebra.</p>
@@ -145,23 +147,23 @@ img {
 </div>
 <div id="x3-example" class="section level1">
 <h1>3x3 example</h1>
-<p>Assume our probability transition matrix is: <span class="math">\[P = \begin{bmatrix}
+<p>Assume our probability transition matrix is: <span class="math display">\[P = \begin{bmatrix}
     0.7 &amp; 0.2 &amp; 0.1 \\
     0.4 &amp; 0.6 &amp; 0 \\
     0   &amp; 1   &amp; 0 
 \end{bmatrix}\]</span></p>
-<p>Since every state is <em>accessible</em> from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution <span class="math">\(\pi\)</span> is the vector such that <span class="math">\[\pi = \pi P\]</span>.</p>
-<p>Therefore, we can find our stationary distribution by solving the following linear system: <span class="math">\[\begin{align*}
+<p>Since every state is <em>accessible</em> from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution <span class="math inline">\(\pi\)</span> is the vector such that <span class="math display">\[\pi = \pi P\]</span>.</p>
+<p>Therefore, we can find our stationary distribution by solving the following linear system: <span class="math display">\[\begin{align*}
 0.7\pi_1 + 0.4\pi_2  &amp;= \pi_1 \\
 0.2\pi_1 + 0.6\pi_2 + \pi_3 &amp;= \pi_2 \\
 0.1\pi_1 &amp;= \pi_3
-\end{align*}\]</span> subject to <span class="math">\(\pi_1 + \pi_2 + \pi_3 = 1\)</span>. Putting these four equations together and moving all of the variables to the left hand side, we get the following linear system: <span class="math">\[\begin{align*}
+\end{align*}\]</span> subject to <span class="math inline">\(\pi_1 + \pi_2 + \pi_3 = 1\)</span>. Putting these four equations together and moving all of the variables to the left hand side, we get the following linear system: <span class="math display">\[\begin{align*}
 -0.3\pi_1 + 0.4\pi_2  &amp;= 0 \\
 0.2\pi_1 + -0.4\pi_2 + \pi_3 &amp;= 0 \\
 0.1\pi_1 - \pi_3 &amp;= 0 \\
 \pi_1 + \pi_2 + \pi_3 &amp;= 1
 \end{align*}\]</span></p>
-<p>We will define the linear system in matrix notation: <span class="math">\[\underbrace{\begin{bmatrix}
+<p>We will define the linear system in matrix notation: <span class="math display">\[\underbrace{\begin{bmatrix}
     -0.3 &amp;  0.4 &amp; 0  \\
      0.2 &amp; -0.4 &amp; 1  \\
      0.1 &amp;    0 &amp; 1  \\
@@ -177,7 +179,7 @@ img {
 1
 \end{bmatrix}}_b \\
 A\pi = b\]</span></p>
-<p>Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math">\(\pi\)</span> exactly) when <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math">\(b\)</span> appended as a column of <span class="math">\(A\)</span>. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our small example, we are safe.)</p>
+<p>Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math inline">\(\pi\)</span> exactly) when <span class="math inline">\(b\)</span> is in the column space of <span class="math inline">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math inline">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math inline">\(b\)</span> appended as a column of <span class="math inline">\(A\)</span>. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our small example, we are safe.)</p>
 <pre class="r"><code>library(Matrix)
 A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b        &lt;- c(0,0,0, 1)
@@ -185,17 +187,25 @@ rank.A   &lt;- as.numeric(rankMatrix(A))
 rank.Ab  &lt;- as.numeric(rankMatrix(cbind(A,b)))
 print(paste(&quot;The rank of A =&quot;, rank.A, &quot;and the rank of the augmented matrix =&quot;, rank.Ab))</code></pre>
 <pre><code>[1] &quot;The rank of A = 3 and the rank of the augmented matrix = 3&quot;</code></pre>
-<p>We see that <span class="math">\(A\)</span> has full column rank, and that the rank is unchanged when we add <span class="math">\(b\)</span> as a column. Therefore, <span class="math">\(b\)</span> is in the column space of <span class="math">\(A\)</span>, and this system is consistent. We can find <span class="math">\(\pi\)</span> by solving the normal equations: <span class="math">\[A^TA\pi = A^Tb\]</span></p>
-<p>We use the solve function in R to solve for the stationary distribution <span class="math">\(\pi\)</span>:</p>
+<p>We see that <span class="math inline">\(A\)</span> has full column rank, and that the rank is unchanged when we add <span class="math inline">\(b\)</span> as a column. Therefore, <span class="math inline">\(b\)</span> is in the column space of <span class="math inline">\(A\)</span>, and this system is consistent. We can find <span class="math inline">\(\pi\)</span> by solving the normal equations: <span class="math display">\[A^TA\pi = A^Tb\]</span></p>
+<p>We use the solve function in R to solve for the stationary distribution <span class="math inline">\(\pi\)</span>:</p>
 <pre class="r"><code>pi        &lt;- drop(solve(t(A) %*% A, t(A) %*% b))
 names(pi) &lt;- c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;)
 pi </code></pre>
 <pre><code>   state.1    state.2    state.3 
 0.54054054 0.40540541 0.05405405 </code></pre>
-<p>We find that: <span class="math">\[\begin{align*}
+<p>We find that: <span class="math display">\[\begin{align*}
 \pi_1 \approx 0.54, \pi_2 \approx 0.41, \pi_3 \approx 0.05
 \end{align*}\]</span></p>
 <p>Therefore, under proper conditions, we expect the Markov chain to spend more time in states 1 and 2 as the chain evolves.</p>
+<div id="the-general-approach" class="section level2">
+<h2>The General Approach</h2>
+<p>Recall that we are attempting to find a solution to <span class="math display">\[\pi = \pi P\]</span> such that <span class="math inline">\(\sum_i \pi_i =1\)</span>. First we rearrange the expression above to get: <span class="math display">\[\begin{align}
+\pi - \pi P &amp;= 0 \\
+(I - P)\pi &amp;= 0
+\end{align}\]</span></p>
+<p>One challenge though is that we need the constrained solution which respects that <span class="math inline">\(\pi\)</span> describes a probability distribution (i.e. <span class="math inline">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row all 1’s to our <span class="math inline">\((I-P)\)</span> (call this new matrix <span class="math inline">\(A\)</span>) and a 1 to the last element of the zero vector on the right hand side (call this new vector <span class="math inline">\(b\)</span>). Now we want to solve <span class="math inline">\(A\pi = b\)</span> which is overdetermined, so we solve the normal equations <span class="math inline">\(A^TA\pi = A^Tb\)</span>.</p>
+</div>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
