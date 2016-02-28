@@ -20,11 +20,29 @@ This document assumes basic familiarity with probability theory.
 
 We often make simplifying modeling assumptions when analyzing a data set such as assuming each observation comes from one specific distribution (say, a Gaussian distribution). Then we proceed to estimate parameters of this distribution, like the mean and variance, using maximum likelihood estimation.
 
-However, in many cases, assuming each sample comes from a single distribution is too restrictive and may not make intuitive sense. Often the data we are trying to model are more complex. For example, they might be **multimodal** -- containing multiple regions with high probability mass. In this note, we describe one way of modeling such a scenario using **mixture models**.
+However, in many cases, assuming each sample comes from the same unimodal distribution is too restrictive and may not make intuitive sense. Often the data we are trying to model are more complex. For example, they might be **multimodal** -- containing multiple regions with high probability mass. In this note, we describe **mixture models** which provide a principled approach to modeling such complex data.
 
-# Examples
+# Example 1
 
-Suppose the price of a paperback book is normally distributed with mean $9 and standard deviation $1 and the price of a hardback is normally distributed with a mean $20 and a standard deviation of $2. One natural question to ask is this: is the price of a randomly chosen book normally distributed? The answer is no. Assuming it's equally likely to choose a paperback or a hardback, we illustrate the densities below:
+Suppose we are interested in simulating the price of a randomly chosen book. Since paperback books are typically cheaper than hardbacks, it might make sense to model the price of paperback books separately from hardback books. In this example, we will model the price of a book as a **mixture model**. We will have two **mixture components** in our model -- one for paperback books, and one for hardbacks. 
+
+Let's say that if we choose a book at random, there is a 50% chance of choosing a paperback and 50%  of choosing hardback. These proportions are called **mixture proportions**. Assume the price of a paperback book is normally distributed with mean $9 and standard deviation $1 and the price of a hardback is normally distributed with a mean $20 and a standard deviation of $2. We could simulate book prices $P_i$ in the following way:  
+
+1. Sample $Z_i \sim \text{Bernoulli}(0.5)$  
+2. If $Z_i = 0$ draw $P_i$ from the paperback distribution $N(9,1)$. If $Z_i = 1$, draw $P_i$ from the hardback distribution $N(20,2)$. 
+
+We implement this simulation in the code below:
+```{r}
+NUM.SAMPLES <- 5000
+prices      <- numeric(NUM.SAMPLES)
+for(i in seq_len(NUM.SAMPLES)) {
+  z.i <- rbinom(1,1,0.5)
+  if(z.i == 0) prices[i] <- rnorm(1, mean = 9, sd = 1)
+  else prices[i] <- rnorm(1, mean = 20, sd = 1)
+}
+hist(prices)
+```
+We see that our histogram is bimodal. Indeed, even though the **mixture components** are each normal distributions, the distribution of a randomly chosen book is not. We illustrate the true densities below:
 ```{r, echo=FALSE}
 mu.pb   <- 9
 sd.pb   <- 1
@@ -43,7 +61,22 @@ legend('topright', c('paperback', 'hardback', 'all books'), col=c('red', 'blue',
 ```
 We see that the resulting probability density for all books is bimodal, and is therefore not normally distributed. In this example, we modeled the price of a book as a **mixture** of two **components** where each component was modeled as a Gaussian distribution. This is called a **Gaussian mixture model** (GMM).
 
-Now assume our data are the heights of students at the University of Chicago. Assume the height of a randomly chosen male is normally distributed with a mean equal to $5'9$ and a standard deviation of $2.5$ inches and the height of a randomly chosen female is $N(5'4, 2.5)$. We plot the corresponding densities below:
+# Example 2
+
+Now assume our data are the heights of students at the University of Chicago. Assume the height of a randomly chosen male is normally distributed with a mean equal to $5'9$ and a standard deviation of $2.5$ inches and the height of a randomly chosen female is $N(5'4, 2.5)$. However, instead of 50/50 mixture proportions, assume that 75% of the population is female, and 25% is male. We simulate heights in a similar fashion as above, with the corresponding changes to the parameters:
+
+```{r}
+NUM.SAMPLES <- 5000
+heights      <- numeric(NUM.SAMPLES)
+for(i in seq_len(NUM.SAMPLES)) {
+  z.i <- rbinom(1,1,0.75)
+  if(z.i == 0) heights[i] <- rnorm(1, mean = 69, sd = 2.5)
+  else heights[i] <- rnorm(1, mean = 64, sd = 2.5)
+}
+hist(heights)
+```
+
+Now we see that histogram is unimodal. Are heights normally distributed under this model? We plot the corresponding densities below:
 
 ```{r, echo=FALSE}
 mu.male   <- 69
@@ -57,12 +90,12 @@ density_female <- dnorm(sample.pts, mean=mu.female, sd=sd.female)
 
 plot(sample.pts, density_male, col='red', type='l', xlab="Height (inches)", ylab="Density", lty=2)
 lines(sample.pts, density_female, col='blue', type='l', lty=2)
-lines(sample.pts, .5*density_female + .5*density_male, col='black', type='l', lwd=2)
+lines(sample.pts, .75*density_female + .25*density_male, col='black', type='l', lwd=2)
 
 legend('topright', c('male', 'female', 'population'), col=c('red', 'blue', 'black'), lty=c(2,2,1), lwd=c(1,1,2), cex=0.7)
 ```
 
-Here we see that the Gaussian mixture model is unimodal because there is so much overlap between the two densities. However,  it is still not normally distributed since the mode is too wide/flat. 
+Here we see that the Gaussian mixture model is unimodal because there is so much overlap between the two densities. In this example, you can see that the population density is not symmetric, and therefore not normally distributed. 
 
 These two illustrative examples above give rise to the general notion of a **mixture model** which assumes each observation is generated from one of $K$ mixture components. We formalize this notion in the next section. 
 
