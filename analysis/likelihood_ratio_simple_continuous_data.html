@@ -131,6 +131,7 @@ img {
 <li><a href="#definition">Definition</a></li>
 <li><a href="#example">Example</a></li>
 <li><a href="#connection-with-discrete-models">Connection with Discrete Models</a></li>
+<li><a href="#an-example-where-the-approximation-breaks-down">An example where the approximation breaks down</a></li>
 <li><a href="#summary-1">Summary</a><ul>
 <li><a href="#session-information">Session information</a></li>
 </ul></li>
@@ -138,7 +139,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-03-28</p>
-<p><strong>Code version:</strong> 294d219966965c87029f40e4f246daf7bed77513</p>
+<p><strong>Code version:</strong> 28fcc7c38dcac7ddea0f3070c685f036e1f8a131</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
 <p>This document introduces the likelihood ratio for continuous data and models, and explains its connection with discrete models.</p>
@@ -169,13 +170,29 @@ lines(x, dgamma(x,scale = 1,shape = 2), type=&quot;l&quot;, col=&quot;red&quot;)
 <p>Often the likelihood ratio for continuous models is simply <em>defined</em> as the ratio of the densities, as above. However, an alternative approach, which can yield greater insight, is instead to <em>derive</em> this result as an approximation, from the definition of likelihood ratio for discrete models, as follows.</p>
 <p>The first step is to recognize that in practice all observations are actually discrete, because of finite precision. Sometimes the measurement precision is made explicit, but often it is implicit in the number of decimal places used to report an observation. For example, in the example above, where we were told that we observed a protein concentration of <span class="math inline">\(X=4.02\)</span>, it would be reasonable to think that the measurement precision is 2 decimal places, and that this observation actually corresponds to “<span class="math inline">\(X\)</span> lies in the interval <span class="math inline">\([4.015,4.025)\)</span>”. The probability of this observation, under a continuous model for <span class="math inline">\(X\)</span>, is the integral of the probability density function from <span class="math inline">\(4.015\)</span> to <span class="math inline">\(4.025\)</span>. In other words, it is<span class="math inline">\(F_X(4.025)-F_X(4.015)\)</span> where <span class="math inline">\(F_X\)</span> denotes the cumulative distribution function for <span class="math inline">\(X\)</span>.</p>
 <p>With this view, the likelihood for the “observation” <span class="math inline">\(X=4.02\)</span> under <span class="math inline">\(M_n\)</span> is actually <code>pgamma(4.025,scale=0.5,shape=2)-pgamma(4.015,scale=0.5,shape=2)</code> = <code>5.1827928\times 10^{-5}</code>. Similarly, the likelihood under <span class="math inline">\(M_d\)</span> is <code>7.217107\times 10^{-4}</code>, and the likelihood ratio is <code>0.0718126</code>.</p>
-<p>As you can see, this approach yields a LR that is numerically very close to that obtained using the ratio of the densities, as above. This is not a coincidence! Here is why we should expect this to happen more generally. Suppose we assume that measurement precision is <span class="math inline">\(\epsilon\)</span>. So the “observation” <span class="math inline">\(X=x\)</span> really means <span class="math inline">\(X \in [x-\epsilon,x+\epsilon]\)</span>. Then the likelihood for a model <span class="math inline">\(M\)</span>, given this observation, is <span class="math inline">\(\Pr(X \in [x-\epsilon,x+\epsilon] | M)\)</span>. Provided <span class="math inline">\(\epsilon\)</span> is small, and assuming that the density <span class="math inline">\(p(x|M)\)</span> is well-behaved (e.g. continuous, and not infinite) in the region around <span class="math inline">\(x\)</span>, then this probability is approximately <span class="math inline">\(2\epsilon p(x | M)\)</span>. Thus the LR for two models <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span>, is given by</p>
+<p>As you can see, this approach yields a LR that is numerically very close to that obtained using the ratio of the densities, as above. This is not a coincidence! Here is why we should expect this to happen more generally. Suppose we assume that measurement precision is <span class="math inline">\(\epsilon\)</span>. So the “observation” <span class="math inline">\(X=x\)</span> really means <span class="math inline">\(X \in [x-\epsilon,x+\epsilon]\)</span>. Then the likelihood for a model <span class="math inline">\(M\)</span>, given this observation, is <span class="math inline">\(\Pr(X \in [x-\epsilon,x+\epsilon] | M)\)</span>. Provided that the density <span class="math inline">\(p(x|M)\)</span> is approximately constant in the region within radius <span class="math inline">\(\epsilon\)</span> around <span class="math inline">\(x\)</span>, then this probability is approximately <span class="math inline">\(2\epsilon p(x | M)\)</span>. Thus the LR for two models <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span>, is given by</p>
 <p><span class="math display">\[LR = \Pr(X \in [x-\epsilon,x+\epsilon] | M_1)/ \Pr(X \in [x-\epsilon,x+\epsilon] | M_0) 
 \approx 2\epsilon p(x | M_1)/2\epsilon p(x|M_0) = p(x|M_1)/p(x|M_0).\]</span></p>
 </div>
+<div id="an-example-where-the-approximation-breaks-down" class="section level1">
+<h1>An example where the approximation breaks down</h1>
+<p>The approximation usually works well, but here is a simple example to illustrate how the approximation could break down in principle.</p>
+<p>Consider observing a single datapoint <span class="math inline">\(X\)</span> and we compare the models that <span class="math inline">\(M_0: X \sim N(0,\sigma_0)\)</span> vs <span class="math inline">\(M_1: X \sim N(0,\sigma_1)\)</span>. Suppose that we observe <span class="math inline">\(X=0.00\)</span>, assumed to be correct to the nearest 0.01. So the ``true&quot; LR is given by</p>
+<pre class="r"><code>trueLR = function(s0,s1){
+  L0= pnorm(0.005,sd=s0)-pnorm(-0.005,sd=s0)
+  L1= pnorm(0.005,sd=s1)-pnorm(-0.005,sd=s1)
+  return(L0/L1)
+}</code></pre>
+<p>and the approximation is given by</p>
+<pre class="r"><code>approxLR = function(s0,s1){
+  return(dnorm(0,sd=s0)/dnorm(0,sd=s1))
+}</code></pre>
+<p>Now, if <span class="math inline">\(\sigma_0\)</span> and <span class="math inline">\(\sigma_1\)</span> are both not too small the the approximation works fine. For example, for <span class="math inline">\(\sigma_0,\sigma_1 = 0.5,1\)</span> we have the truth and approximation as 1.999975 and 2.</p>
+<p>But if one of the <span class="math inline">\(\sigma_j\)</span> is small, we have the problem that the density is not approximately constant within the region <span class="math inline">\([-0.005,0.005]\)</span>. For example, at <span class="math inline">\(\sigma_0,\sigma_1 = 0.001,1\)</span> we have the truth and approximation as 250.6637282 and 1000.</p>
+</div>
 <div id="summary-1" class="section level1">
 <h1>Summary</h1>
-<p>In most cases, the Likelihood ratio for model <span class="math inline">\(M_1\)</span> vs model <span class="math inline">\(M_0\)</span> for a continuous random variable <span class="math inline">\(X\)</span>, given an observation <span class="math inline">\(X=x\)</span>, can we well approximated by the ratio of the model densities of <span class="math inline">\(X\)</span>, evaluated at <span class="math inline">\(x\)</span>. This approximation comes from assuming that observation precision is high and that the model density functions are well behaved near <span class="math inline">\(x\)</span>.</p>
+<p>In most cases, the Likelihood ratio for model <span class="math inline">\(M_1\)</span> vs model <span class="math inline">\(M_0\)</span> for a continuous random variable <span class="math inline">\(X\)</span>, given an observation <span class="math inline">\(X=x\)</span>, can we well approximated by the ratio of the model densities of <span class="math inline">\(X\)</span>, evaluated at <span class="math inline">\(x\)</span>. This approximation comes from assuming that the model density functions are approximately constant within the neighborhood of <span class="math inline">\(x\)</span> that has radius equal to the measurement precision.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>

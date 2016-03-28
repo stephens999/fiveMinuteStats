@@ -74,10 +74,40 @@ Similarly, the likelihood under $M_d$ is ``r pgamma(4.025,scale=1,shape=2)-pgamm
 As you can see, this approach yields a LR that is numerically very close to that obtained using the ratio of the densities, as above. This is not a coincidence! Here is why we should expect this to happen more generally. Suppose we assume that measurement precision is $\epsilon$. So the "observation" $X=x$ really means $X \in [x-\epsilon,x+\epsilon]$.
 Then the likelihood for a model $M$, given this observation,
 is $\Pr(X \in [x-\epsilon,x+\epsilon] | M)$.
-Provided $\epsilon$ is small, and assuming that the density $p(x|M)$ is well-behaved (e.g. continuous, and not infinite) in the region around $x$, then this probability is approximately $2\epsilon p(x | M)$. Thus the LR for two models $M_1$ vs $M_0$, is given by
+Provided that the density $p(x|M)$ is approximately constant in the region within radius $\epsilon$ around $x$, then this probability is approximately $2\epsilon p(x | M)$. Thus the LR for two models $M_1$ vs $M_0$, is given by
 
 $$LR = \Pr(X \in [x-\epsilon,x+\epsilon] | M_1)/ \Pr(X \in [x-\epsilon,x+\epsilon] | M_0) 
 \approx 2\epsilon p(x | M_1)/2\epsilon p(x|M_0) = p(x|M_1)/p(x|M_0).$$
+
+
+# An example where the approximation breaks down
+
+The approximation usually works well, but 
+here is a simple example to illustrate how the approximation could break down in principle.
+
+Consider observing a single datapoint $X$ and we compare the models that
+$M_0: X \sim N(0,\sigma_0)$ vs $M_1: X \sim N(0,\sigma_1)$. Suppose that we observe $X=0.00$, assumed to be correct to the nearest 0.01. So the ``true" LR is
+given by
+```{r}
+trueLR = function(s0,s1){
+  L0= pnorm(0.005,sd=s0)-pnorm(-0.005,sd=s0)
+  L1= pnorm(0.005,sd=s1)-pnorm(-0.005,sd=s1)
+  return(L0/L1)
+}
+```
+
+and the approximation is given by
+```{r}
+approxLR = function(s0,s1){
+  return(dnorm(0,sd=s0)/dnorm(0,sd=s1))
+}
+```
+
+Now, if $\sigma_0$ and $\sigma_1$ are both not too small the the approximation works fine. For example, for $\sigma_0,\sigma_1 = 0.5,1$ we have the truth and approximation as `r trueLR(0.5,1)` and `r approxLR(0.5,1)`.
+
+But if one of the $\sigma_j$ is small, we have the problem that the density is not approximately constant within the region $[-0.005,0.005]$. For example,
+at $\sigma_0,\sigma_1 = 0.001,1$ we have the 
+truth and approximation as `r trueLR(0.001,1)` and `r approxLR(0.001,1)`.
 
 
 # Summary
@@ -86,10 +116,9 @@ In most cases, the Likelihood ratio for model $M_1$ vs model $M_0$ for a continu
 random variable $X$, given an observation 
 $X=x$, can we well approximated by
 the ratio of the model densities of $X$, evaluated at $x$.
-This approximation comes from assuming that observation precision is high
-and that the model density functions are well behaved near $x$.
+This approximation comes from assuming that the model density functions are 
+approximately constant within the neighborhood of $x$ that has radius equal to the measurement precision.
 
- 
 
 ## Session information
 
