@@ -24,9 +24,8 @@ Suppose we have an observation $X$, which we believe to have come from one of $K
 
 In a previous example we considered the question of whether a tusk came from one of two classes: a savanna elephant or a forest elephant, based on its DNA. In practice we might be interested in finer-scale distinctions than this. For example, forest elephants from West Africa actually differ somewhat genetically from those in Central Africa. And Savanna elephants from North Africa differ from those in the East and the South. (Actually elephant genetics within each subspecies varies roughly continuously across the continent; and any division into discrete groups can be seen as a convenient approximation.)
 
-So what if now we have allele frequencies for "West Forest", "Central Forest", "North Savanna" and "S/E Savanna" groups. How do we decided which group a tusk likely came from?
-Now we have four models, but the calculation is the same for $K$ models, so we may as well do
-it for $K$. Here is the general outline:
+So what if now we have allele frequencies for "North Savanna", "South Savanna", "East Savanna", "West Forest", and "Central Forest" groups. How do we decided which group a tusk likely came from?
+Now we have five models, but the calculation is the same for $K$ models, so we may as well do it for $K$. Here is the general outline:
 
 Suppose we are presented with a series of observations $x_1,\dots,x_n$, each of which are generated from a model $M_k$ for some $k \in {1,\dots,K}$. Let $Z_i\in {1,\dots,K}$ indicate which model the $i$th observation came from, and let $\pi_k$ denote the proportion of the observations that came from model $M_k$. Bayes Theorem says that
 $$\Pr(Z_i = k | x_i) = \Pr(x_i | Z_i = k) \Pr(Z_i=k)/ \Pr(x_i).$$
@@ -41,7 +40,7 @@ and to note that the constant of proportionality is determined by the fact that
 probabilities must sum to 1. This way of applying Bayes theorem is very common and convenient in practice, so you should get used to it. In words, this formula can be said
 $$\text{Posterior} \propto \text{likelihood x prior}.$$
 
-Here is an example of the calculation in practice. The four rows of the matrix ``ref_freqs`` represent the allele frequencies in four groups: "North Savanna", "South Savanna", "East Savanna", "West Forest", "Central Forest". The calculation presented here assumes that the population of tusks we are looking at is equally drawn from all four groups, so $\pi=(0.2,0.2,0.2,0.2,0.2)$, but it would of course be easy to change to any other value of $\pi$.
+Here is an example of the calculation in practice. The five rows of the matrix ``ref_freqs`` represent the allele frequencies in five groups: "North Savanna", "South Savanna", "East Savanna", "West Forest", and "Central Forest". The calculation presented here assumes that the population of tusks we are looking at is equally drawn from all four groups, so $\pi=(0.2,0.2,0.2,0.2,0.2)$, but it would of course be easy to change to any other value of $\pi$.
 ```{r}
 x = c(1,0,1,0,0,1)
 ref_freqs = rbind(
