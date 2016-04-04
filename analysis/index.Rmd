@@ -28,6 +28,10 @@ title: "Home"
 
 *  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 
+### Decision Theory
+
+*  [Making a decision under uncertainty: the two class problem](decisions_costs_intro.html)
+
 ### Mixture Models
 
 *  [Introduction to Mixture Models](intro_to_mixture_models.html)
