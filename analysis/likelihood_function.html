@@ -135,7 +135,7 @@ img {
 </div>
 
 <p><strong>Last updated:</strong> 2016-04-06</p>
-<p><strong>Code version:</strong> f1dd5fc854711e60f44d9bc3ac6a85c21bbf8d68</p>
+<p><strong>Code version:</strong> 976547dd5da60eb69143c01bfbc902f92838e68d</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
@@ -155,7 +155,7 @@ img {
 <p>When computing likelihoods for parametric models, we usually dispense with the model notation and simply use the parameter value to denote the model. So instead of referring to the likelihood for <span class="math inline">\(M_q\)</span> we just say the “likelihood for <span class="math inline">\(q\)</span>”, and write <span class="math inline">\(L(q)\)</span>. So the likelihood for <span class="math inline">\(q\)</span> is given by <span class="math display">\[L(q) = q^{30} (1-q)^{70}.\]</span> Correspondingly we can also refer to the “likelihood ratio for <span class="math inline">\(q_1\)</span> vs <span class="math inline">\(q_2\)</span>”.</p>
 <p>We could plot the likelihood function as follows:</p>
 <pre class="r"><code>q = seq(0,1,length=100)
-L= function(q){q^{30} * (1-q)^{70}}
+L= function(q){q^30 * (1-q)^70}
 plot(q,L(q),ylab=&quot;L(q)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-1-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>The value of <span class="math inline">\(\theta\)</span> that maximizes the likelihood function is referred to as the “maximum likelihood estimate”, and usually denoted <span class="math inline">\(\hat{\theta}\)</span>. That is <span class="math display">\[\hat{\theta}:= \arg \max L(\theta).\]</span></p>
@@ -163,7 +163,7 @@ plot(q,L(q),ylab=&quot;L(q)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code><
 <p>Note that from the likelihood function we can easily compute the likelihood ratio for any pair of parameter values! And just as with comparing two models, it is not the likelihoods that matter, but the likelihood ratios. That is you can divide the likelihood function by any constant without affecting the likelihood ratios.</p>
 <p>One way to emphasise this is to standardize the likelihood function so that its maximum is at 1, by dividing <span class="math inline">\(L(\theta)/L(\hat{\theta})\)</span>.</p>
 <pre class="r"><code>q = seq(0,1,length=100)
-L= function(q){q^{30} * (1-q)^{70}}
+L= function(q){q^30 * (1-q)^70}
 plot(q,L(q)/L(0.3),ylab=&quot;L(q)/L(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>Note that for some values of <span class="math inline">\(q\)</span> the likelihood ratio compared with <span class="math inline">\(q=0.3\)</span> is very close to 0. These values of <span class="math inline">\(q\)</span> are so much less consistent with the data that they are effectively excluded by the data. Just looking at the picture we might say that the values of <span class="math inline">\(q\)</span> less than 0.15 or bigger than 0.5 are pretty much excluded by the data. We will see later how Bayesian analysis methods can be used to make this kind of argument more formal.</p>
@@ -172,7 +172,7 @@ plot(q,L(q)/L(0.3),ylab=&quot;L(q)/L(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l
 <h1>The log-likelihood</h1>
 <p>Just as it can often be convenient to work with the log-likelihood ratio, it can be convenient to work with the log-likelihood function, usually denoted <span class="math inline">\(l(\theta)\)</span> [lower-case L]. As with log likelihood ratios, unless otherwise specified, we use log base e. Here is the log-likelihood function.</p>
 <pre class="r"><code>q = seq(0,1,length=100)
-l= function(q){{30}*log(q) + {70} * log(1-q)}
+l= function(q){30*log(q) + 70 * log(1-q)}
 plot(q,l(q)-l(0.3),ylab=&quot;l(q) - l(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-3-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /> Changes in the log-likelihood function are referred to as “log-likelihood units”. For example the difference in the support for <span class="math inline">\(q=0.3\)</span> and <span class="math inline">\(q=0.35\)</span> is <code>l(0.3)-l(0.35)</code> = <code>0.5630377</code> log-likelihood units. Again, remember that it is differences in <span class="math inline">\(l\)</span> that matter, not the actual values.</p>
 </div>

@@ -55,7 +55,7 @@ Correspondingly we can also refer to the "likelihood ratio for $q_1$ vs $q_2$".
 We could plot the likelihood function as follows:
 ```{r}
 q = seq(0,1,length=100)
-L= function(q){q^{30} * (1-q)^{70}}
+L= function(q){q^30 * (1-q)^70}
 plot(q,L(q),ylab="L(q)",xlab="q",type="l")
 ```
 
@@ -71,7 +71,7 @@ One way to emphasise this is to standardize the likelihood function so that its 
 
 ```{r}
 q = seq(0,1,length=100)
-L= function(q){q^{30} * (1-q)^{70}}
+L= function(q){q^30 * (1-q)^70}
 plot(q,L(q)/L(0.3),ylab="L(q)/L(qhat)",xlab="q",type="l")
 ```
 
@@ -84,7 +84,7 @@ We will see later how Bayesian analysis methods can be used to make this kind of
 Just as it can often be convenient to work with the log-likelihood ratio, it can be convenient to work with the log-likelihood function, usually denoted $l(\theta)$ [lower-case L]. As with log likelihood ratios, unless otherwise specified, we use log base e. Here is the log-likelihood function.
 ```{r}
 q = seq(0,1,length=100)
-l= function(q){{30}*log(q) + {70} * log(1-q)}
+l= function(q){30*log(q) + 70 * log(1-q)}
 plot(q,l(q)-l(0.3),ylab="l(q) - l(qhat)",xlab="q",type="l")
 ```
 Changes in the log-likelihood function are referred to as "log-likelihood units". For example the difference in the support for $q=0.3$ and $q=0.35$ is ``l(0.3)-l(0.35)`` = ``r l(0.3)-l(0.35)`` log-likelihood units. Again, remember that it is differences in $l$ that matter, not the actual values.
