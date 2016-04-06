@@ -129,14 +129,15 @@ img {
 <li><a href="#overview">Overview</a></li>
 <li><a href="#example">Example</a></li>
 <li><a href="#the-decision-depends-only-on-the-ratio-of-losses-for-errors">The decision depends only on the ratio of losses for “errors”</a></li>
+<li><a href="#the-general-calculation">The general calculation</a></li>
 <li><a href="#utility-vs-loss">Utility vs Loss</a><ul>
 <li><a href="#session-information">Session information</a></li>
 </ul></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-04-04</p>
-<p><strong>Code version:</strong> 7559bca45fdc542eb56a4713accec0936fea10e0</p>
+<p><strong>Last updated:</strong> 2016-04-06</p>
+<p><strong>Code version:</strong> e140df9c3156bd472295f9aed936c9e8401b34cc</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>Understand the <a href="LR_and_BF.html">calculation of posterior probabilities for a simple two-class problem</a>.</p>
@@ -167,6 +168,15 @@ img {
 <p>Furthermore it is clear that if we multiply all the losses by a (positive) constant then this does not change the optimal action: because it just multiplies all the expected losses by the same constant. Using this fact we can arbitrarily set one of the non-zero losses to 1. For example, we would get exactly the same decision rule with losses: <span class="math display">\[L(D,T) = 0\]</span> <span class="math display">\[L(\neg D,T) = 2/9\]</span> <span class="math display">\[L(D,\neg T) = 1\]</span> <span class="math display">\[L(\neg D,\neg T) = 0.\]</span></p>
 <p>So now it suffices to specify just one number. This number is the ratio of the losses <span class="math inline">\(L(\neg D,T)/L(D,\neg T)\)</span>. The argument above shows that the optimal action will depend on the losses only through this number!</p>
 <p>This example is an example of a 2-class decision rule: there are two possible underlying classes (diseased, and normal), and two possible actions, which here are “treat” and “don’t treat”, which can be thought of as corresponding to “classify as diseased” and “classify as normal”.</p>
+</div>
+<div id="the-general-calculation" class="section level1">
+<h1>The general calculation</h1>
+<p>Consider selecting between two models/classes. We can call them <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span> if you like. Suppose that one of them is “true”, but we don’t know which one. Let <span class="math inline">\(c_{i|j}\)</span> denote the loss for choosing <span class="math inline">\(H_i\)</span> if <span class="math inline">\(H_j\)</span> is true. So, for example, <span class="math inline">\(c_{1|0}\)</span> is the cost of selecting <span class="math inline">\(H_1\)</span> if <span class="math inline">\(H_0\)</span> is true, which in traditional hypothesis testing terminology might be called the cost of a “type I error.” Similarly <span class="math inline">\(c_{0|1}\)</span> is the cost of a type II error. Assume that if you make the right choice then you lose zero: <span class="math inline">\(c_{0|0}=c_{1|1}=0\)</span>.</p>
+<p>If we select <span class="math inline">\(H_0\)</span> the posterior expected loss is: Posterior expected loss(<span class="math inline">\(H_0\)</span>) = <span class="math inline">\(p(H_1 | x) c_{0|1}\)</span></p>
+<p>If we select <span class="math inline">\(H_1\)</span> the posterior expected loss is: Posterior expected loss(<span class="math inline">\(H_1\)</span>) = <span class="math inline">\(p(H_0 | x) c_{1|0}\)</span></p>
+<p>So we choose <span class="math inline">\(H_1\)</span> if <span class="math inline">\(p(H_1 | x) c_{0|1} &gt; p(H_0 | x) c_{1|0}\)</span>. That is if the posterior odds <span class="math inline">\(p(H_1 | x)/p(H_0 | x) &gt; c_{1|0}/c_{0|1}\)</span>.</p>
+<p>Remember that the posterior odds is the LR times the Prior Odds. So the quantities that go into the calculation are i) the LR, ii) the prior odds, iii) the cost ratio.</p>
+<p>If costs are equal, then threshold for posterior odds is 1. If cost of type I error is higher than cost of type II error then threshold is higher.</p>
 </div>
 <div id="utility-vs-loss" class="section level1">
 <h1>Utility vs Loss</h1>

@@ -141,6 +141,31 @@ of the losses $L(\neg D,T)/L(D,\neg T)$. The argument above shows that the optim
 This example is an example of a 2-class decision rule: there are two possible underlying classes (diseased, and normal), and two possible actions, which here 
 are "treat" and "don't treat", which can be thought of as corresponding to "classify as diseased" and "classify as normal".
 
+# The general calculation
+
+Consider selecting between two models/classes. We can call them $H_0$ and $H_1$ if you like. Suppose that one of them is "true", but we don't know which one.
+Let $c_{i|j}$ denote the loss for choosing $H_i$ if $H_j$ is true.
+So, for example, $c_{1|0}$ is the cost of selecting $H_1$ if $H_0$ is true,
+which in traditional hypothesis testing terminology might be called
+the cost of a "type I error."  Similarly $c_{0|1}$ is the cost of a type II error. Assume that if you make the right choice then you lose zero:
+$c_{0|0}=c_{1|1}=0$.
+
+If we select $H_0$ the posterior expected loss is:
+Posterior expected loss($H_0$) = $p(H_1 | x) c_{0|1}$
+
+If we select $H_1$ the posterior expected loss is:
+Posterior expected loss($H_1$) = $p(H_0 | x) c_{1|0}$
+
+So we choose $H_1$ if $p(H_1 | x) c_{0|1} > p(H_0 | x) c_{1|0}$.
+That is if the posterior odds $p(H_1 | x)/p(H_0 | x) > c_{1|0}/c_{0|1}$.
+
+Remember that the posterior odds is the LR times the Prior Odds. So 
+the quantities that go into the calculation are i) the LR, ii) the prior odds,
+iii) the cost ratio.
+
+If costs are equal, then threshold for posterior odds is 1.
+If cost of type I error is higher than cost of type II error
+then threshold is higher.
 
 # Utility vs Loss
 
