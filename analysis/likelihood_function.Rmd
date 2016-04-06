@@ -29,17 +29,17 @@ in forest and savanna elephants were given to us. In practice these
 frequencies themselves would have to be estimated from data.
 
 For example, suppose we collect data on 100 savanna elephants, and see
-that 30 of them carry allele 1 at marker 1, while 70 carry the allele 0
-(again we are treating elephants as haploid to simplify things). Intuitively we might estimate that the frequency of the 1 allele at that marker is 30/100, or 0.3. 
+that {30} of them carry allele 1 at marker 1, while {70} carry the allele 0
+(again we are treating elephants as haploid to simplify things). Intuitively we might estimate that the frequency of the 1 allele at that marker is {30}/100, or 0.3. 
 But we might think that the data are also consistent with other frequencies near 0.3. For example maybe the data are consistent with a frequency of 0.29 also. Or 0.28? Or ...
 
 In this case we have many more than just two models to compare. Indeed, if we allow that the frequency could, in principle lie anywhere in the interval [0,1], then we have a continuum of models to compare.
 
 Specifically, for each $q\in [0,1]$ let $M_q$ denote the model that
-the true frequency of the 1 allele is $q$. Then, given our observation that 30 of 100 elephants carried allele 1 at marker 1, the likelihood for model $M_q$ is, by the previous definition,
-$$L(M_q) = \Pr(D | M_q) = q^30 (1-q)^70.$$
+the true frequency of the 1 allele is $q$. Then, given our observation that {30} of 100 elephants carried allele 1 at marker 1, the likelihood for model $M_q$ is, by the previous definition,
+$$L(M_q) = \Pr(D | M_q) = q^{30} (1-q)^{70}.$$
 And the LR comparing models $M_{q_1}$ and $M_{q_2}$ is
-$$LR(M_{q_1};M_{q_2})) = [q_1/q_2]^30 [(1-q_1)/(1-q_2)]^70.$$
+$$LR(M_{q_1};M_{q_2})) = [q_1/q_2]^{30} [(1-q_1)/(1-q_2)]^{70}.$$
 
 This is an example of what is called a parametric model. A parametric model is collection of models indexed by a parameter vector, often denoted $\theta$, whose values lie in some parameter space, usually denoted $\Theta$. The number of parameters included in the vector $\theta$ is called the "dimensionality" of the model or parameter space,
 and often denoted $dim(\Theta)$.
@@ -49,13 +49,13 @@ Here the parameter is $q$ and the parameter space is $[0,1]$. The dimensionality
 When computing likelihoods for parametric models, we usually dispense
 with the model notation and simply use the parameter value to denote the model. So instead of referring to the likelihood for $M_q$ we just say the "likelihood for $q$", and write $L(q)$. So the likelihood for $q$ is
 given by
-$$L(q) = q^30 (1-q)^70.$$
+$$L(q) = q^{30} (1-q)^{70}.$$
 Correspondingly we can also refer to the "likelihood ratio for $q_1$ vs $q_2$".
 
 We could plot the likelihood function as follows:
 ```{r}
 q = seq(0,1,length=100)
-L= function(q){q^30 * (1-q)^70}
+L= function(q){q^{30} * (1-q)^{70}}
 plot(q,L(q),ylab="L(q)",xlab="q",type="l")
 ```
 
@@ -71,7 +71,7 @@ One way to emphasise this is to standardize the likelihood function so that its 
 
 ```{r}
 q = seq(0,1,length=100)
-L= function(q){q^30 * (1-q)^70}
+L= function(q){q^{30} * (1-q)^{70}}
 plot(q,L(q)/L(0.3),ylab="L(q)/L(qhat)",xlab="q",type="l")
 ```
 
@@ -84,7 +84,7 @@ We will see later how Bayesian analysis methods can be used to make this kind of
 Just as it can often be convenient to work with the log-likelihood ratio, it can be convenient to work with the log-likelihood function, usually denoted $l(\theta)$ [lower-case L]. As with log likelihood ratios, unless otherwise specified, we use log base e. Here is the log-likelihood function.
 ```{r}
 q = seq(0,1,length=100)
-l= function(q){30*log(q) + 70 * log(1-q)}
+l= function(q){{30}*log(q) + {70} * log(1-q)}
 plot(q,l(q)-l(0.3),ylab="l(q) - l(qhat)",xlab="q",type="l")
 ```
 Changes in the log-likelihood function are referred to as "log-likelihood units". For example the difference in the support for $q=0.3$ and $q=0.35$ is ``l(0.3)-l(0.35)`` = ``r l(0.3)-l(0.35)`` log-likelihood units. Again, remember that it is differences in $l$ that matter, not the actual values.
