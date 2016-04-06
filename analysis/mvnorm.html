@@ -135,8 +135,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-02-15</p>
-<p><strong>Code version:</strong> 01b376bdda3d62f53d333bd4ab6f8dbe2efc18b0</p>
+<p><strong>Last updated:</strong> 2016-02-18</p>
+<p><strong>Code version:</strong> 294d219966965c87029f40e4f246daf7bed77513</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You need to know what a univariate normal distribution is, and basic properties such as the fact that linear combinations of normals are also normal. You also need to know the basics of matrix algebra (eg matrix multiplication, matrix transpose).</p>
@@ -170,9 +170,9 @@ plot(X[1,],X[2,],main=&quot;bivariate normal with variance 2, covariance 1&quot;
 <p><img src="figure/mvnorm.Rmd/unnamed-chunk-2-1.png" title="" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>And we can check the sample covariances are close to the theoretical values:</p>
 <pre class="r"><code>cov(t(X))</code></pre>
-<pre><code>         [,1]     [,2]
-[1,] 2.050361 1.006676
-[2,] 1.006676 2.130650</code></pre>
+<pre><code>          [,1]      [,2]
+[1,] 2.0607663 0.9468532
+[2,] 0.9468532 1.9582506</code></pre>
 </div>
 <div id="general-algorithm" class="section level1">
 <h1>General algorithm</h1>
