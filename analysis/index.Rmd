@@ -66,3 +66,8 @@ title: "Home"
 
 * [Multivariate Normal](mvnorm.html)
 * [Normal Markov Chain](normal_markov_chain.html)
+
+## Population Genetics
+
+* [Wright-Fisher Model](wright_fisher_model.html)
+* [Wright-Fisher Model Approximations](approx_wright_fisher_model.html)
