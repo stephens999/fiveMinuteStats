@@ -10,14 +10,15 @@
 
 
 
+
 <title>Home</title>
 
-<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
-<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
-<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
-<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 
 <style type="text/css">
 
@@ -74,6 +75,31 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+</style>
+
+
 </head>
 
 <body>
@@ -88,12 +114,34 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img { 
-  max-width:100%; 
-  height: auto; 
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
 }
 </style>
+
+
 <div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
 
 
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -116,8 +164,12 @@ img {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
+
+
+
 <h1 class="title">Home</h1>
+
 </div>
 
 <div id="TOC">
@@ -137,8 +189,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-04-04</p>
-<p><strong>Code version:</strong> 7559bca45fdc542eb56a4713accec0936fea10e0</p>
+<p><strong>Last updated:</strong> 2016-04-13</p>
+<p><strong>Code version:</strong> cb0ec97820f76123519c25b43470f49d92a3ceed</p>
 <div id="inference" class="section level2">
 <h2>Inference</h2>
 <div id="likelihood-ratio-and-likelihood" class="section level3">
@@ -157,6 +209,7 @@ img {
 <h3>Simple Bayesian Inference</h3>
 <ul>
 <li><a href="bayes_multiclass.html">Posterior Distribution for multi-model comparisons</a></li>
+<li><a href="shiny_normal_example.html">Simple example: Bayesian inference for normal mean (known variance)</a></li>
 </ul>
 </div>
 <div id="decision-theory" class="section level3">
@@ -232,6 +285,8 @@ $(document).ready(function () {
 });
 
 </script>
+
+
 
 </div>
 
