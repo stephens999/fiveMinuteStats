@@ -10,6 +10,7 @@ date: 2016-01-31
 
 ```{r chunk-options, include=FALSE}
 source("chunk-options.R")
+opts_chunk$set(eval = FALSE)  # have to do this to pass make
 ```
 
 # Pre-requisites

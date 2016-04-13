@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="John Novembre" />
+
+<meta name="date" content="2016-01-31" />
+
+<title>Time reversibility of a Markov Chain</title>
+
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title">Time reversibility of a Markov Chain</h1>
+<h4 class="author"><em>John Novembre</em></h4>
+<h4 class="date"><em>2016-01-31</em></h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#time-reversibility-of-a-markov-chain">Time reversibility of a Markov Chain</a></li>
+<li><a href="#example-garys-mood">Example: Gary’s mood</a><ul>
+<li><a href="#session-information">Session information</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-04-13</p>
+<p><strong>Code version:</strong> cb0ec97820f76123519c25b43470f49d92a3ceed</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>TBD</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>TBD</p>
+</div>
+<div id="time-reversibility-of-a-markov-chain" class="section level1">
+<h1>Time reversibility of a Markov Chain</h1>
+<p>TBD</p>
+</div>
+<div id="example-garys-mood" class="section level1">
+<h1>Example: Gary’s mood</h1>
+<p>In Sheldon Ross’s Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary’s mood. Gary alternates between 3 state: Cheery (<span class="math inline">\(X=1\)</span>), So-So (<span class="math inline">\(X=2\)</span>), or Glum (<span class="math inline">\(X=3\)</span>). Here we input the <span class="math inline">\(P\)</span> matrix given by Ross and we input an abitrary initial probability matrix.</p>
+<pre class="r"><code># Define prob transition matrix 
+# (note matrix() takes vectors in column form so there is a transpose here to switch col&#39;s to row&#39;s)
+P=t(matrix(c(c(0.5,0.4,0.1),c(0.3,0.4,0.3),c(0.2,0.3,0.5)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  
+
+# Definte initial probability vector
+x0=c(0.1,0.2,0.7)
+# Check sums to 1
+sum(x0)</code></pre>
+<div id="time-reversibility" class="section level4">
+<h4>Time-reversibility</h4>
+<p>The reverse chain transition prob’s are: <span class="math display">\[\frac{\pi_j P_{ji}}{\pi_i}\]</span></p>
+<pre class="r"><code>diag(1/pivec)%*%(t(P)%*%diag(pivec))</code></pre>
+<p>So for our example we see it’s not time reversible…</p>
+<p>Let’s make a time-reversible example…</p>
+<pre class="r"><code>P=t(matrix(c(c(0.5,0.25,0.25),c(0.25,0.45,0.3),c(0.25,0.3,0.45)),nrow=3))
+# Check sum across = 1
+apply(P,1,sum)  
+
+# And the stationary distribution would be
+pi0=(P%^%100)[1,]
+# Now we check time reversibility
+diag(1/pi0)%*%t(P)%*%diag(pi0)</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+</div>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
