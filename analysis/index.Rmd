@@ -27,6 +27,7 @@ title: "Home"
 ### Simple Bayesian Inference
 
 *  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
+*  [Simple example: Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
 
 ### Decision Theory
 
