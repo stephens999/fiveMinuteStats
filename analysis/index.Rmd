@@ -28,6 +28,7 @@ title: "Home"
 
 *  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 *  [Simple example: Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
+*  [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
 
 ### Decision Theory
 
