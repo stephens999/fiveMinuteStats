@@ -39,6 +39,9 @@ title: "Home"
 *  [Introduction to Mixture Models](intro_to_mixture_models.html)
 *  [Introduction to EM: Gaussian Mixture Models](intro_to_em.html)
 
+### Markov Chain Monte Carlo
+
+* [Introduction to Gibbs Sampling](gibbs1.html)
 
 
 ## Stochastic Processes
