@@ -33,8 +33,9 @@ title: "Home"
 *  [Introduction to Mixture Models](intro_to_mixture_models.html)
 *  [Introduction to EM: Gaussian Mixture Models](intro_to_em.html)
 
-### Simple Computation
+### Bayesian Computation
 
+* [Every Bayesian computation is an integral (or a sum)](integral.html)
 * [Importance sampling](Importance_sampling.html)
 
 ### Markov Chain Monte Carlo

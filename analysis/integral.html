@@ -9,9 +9,11 @@
 <meta name="generator" content="pandoc" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<meta name="author" content="Matthew Stephens" />
 
+<meta name="date" content="2016-05-02" />
 
-<title>Home</title>
+<title>Every Bayesian computation is an integral (or a sum)</title>
 
 <script src="libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -164,111 +166,74 @@ $(document).ready(function () {
 <div class="fluid-row" id="header">
 
 
-<h1 class="title">Home</h1>
+<h1 class="title">Every Bayesian computation is an integral (or a sum)</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-05-02</em></h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#inference">Inference</a><ul>
-<li><a href="#likelihood-ratio-and-likelihood">Likelihood Ratio and Likelihood</a></li>
-<li><a href="#simple-bayesian-inference">Simple Bayesian Inference</a></li>
-<li><a href="#decision-theory">Decision Theory</a></li>
-<li><a href="#mixture-models">Mixture Models</a></li>
-<li><a href="#bayesian-computation">Bayesian Computation</a></li>
-<li><a href="#markov-chain-monte-carlo">Markov Chain Monte Carlo</a></li>
-</ul></li>
-<li><a href="#stochastic-processes">Stochastic Processes</a><ul>
-<li><a href="#discrete-time-markov-chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#poisson-processes">Poisson Processes</a></li>
-<li><a href="#methods-for-sampling-non-standard-distributions">Methods for sampling non-standard distributions</a></li>
-<li><a href="#multivariate-normal">Multivariate Normal</a></li>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#examples-discrete">Examples: discrete</a></li>
+<li><a href="#summary">Summary</a><ul>
+<li><a href="#session-information">Session information</a></li>
 </ul></li>
 </ul>
 </div>
 
 <p><strong>Last updated:</strong> 2016-05-02</p>
 <p><strong>Code version:</strong> 153e684d4d7ac3b81079783f8b89cedc1afb88eb</p>
-<div id="inference" class="section level2">
-<h2>Inference</h2>
-<div id="likelihood-ratio-and-likelihood" class="section level3">
-<h3>Likelihood Ratio and Likelihood</h3>
-<ul>
-<li><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></li>
-<li><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></li>
-<li><a href="likelihood_do_dont.html">Likelihood Ratios: Examples and Pitfalls</a></li>
-<li><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></li>
-<li><a href="wilks.html">Likelihood Ratios: Wilks’s Theorem</a></li>
-<li><a href="likelihood_function.html">The Likelihood Function</a></li>
-<li><a href="asymptotic_normality_mle.html">Asymptotic Normality of MLE</a></li>
-</ul>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Be familiar with basic probability and Bayesian calculations.</p>
 </div>
-<div id="simple-bayesian-inference" class="section level3">
-<h3>Simple Bayesian Inference</h3>
-<ul>
-<li><a href="bayes_multiclass.html">Posterior Distribution for multi-model comparisons</a></li>
-<li><a href="shiny_normal_example.html">Simple example: Bayesian inference for normal mean (known variance)</a></li>
-<li><a href="BF_and_pvalue.html">Relationship between Bayes Factor and p value</a></li>
-</ul>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The goal here is simply to point out that everything you want to compute in Bayesian calculations is an integral.</p>
 </div>
-<div id="decision-theory" class="section level3">
-<h3>Decision Theory</h3>
-<ul>
-<li><a href="decisions_costs_intro.html">Making a decision under uncertainty: the two class problem</a></li>
-</ul>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<p>Consider inference for a parameter <span class="math inline">\(\theta\)</span> from data <span class="math inline">\(D\)</span>.</p>
+<p>The posterior distribution of <span class="math inline">\(\theta\)</span> is given by Bayes Theorem</p>
+<p><span class="math display">\[p(\theta | D) = p(\theta) p(D | \theta)/ p(D)\]</span></p>
+<p>First note that the denominator <span class="math inline">\(p(D)\)</span> is an integral: <span class="math display">\[p(D) = \int p(D | \theta) p(\theta) d\theta\]</span>.</p>
+<p>Now suppose we want to estimate <span class="math inline">\(\theta\)</span> by its posterior mean. This is <span class="math display">\[E(\theta | D) = \int \theta p(\theta |D ) d\theta.\]</span></p>
+<p>And if we want to find a 90% posterior credible interval for <span class="math inline">\(\theta\)</span> then we want to find <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> such that <span class="math inline">\(\Pr(\theta \in [A,B] | D) = 0.9\)</span>. Note that the LHS of this is <span class="math display">\[\Pr(\theta \in [A,B]|D) = \int I(\theta \in [A,B]) p(\theta | D) d\theta,\]</span> where <span class="math inline">\(I(E)\)</span> denotes the indicator function for the event <span class="math inline">\(E\)</span>, which takes the value 1 if <span class="math inline">\(E\)</span> is true and <span class="math inline">\(0\)</span> otherwise.</p>
 </div>
-<div id="mixture-models" class="section level3">
-<h3>Mixture Models</h3>
-<ul>
-<li><a href="intro_to_mixture_models.html">Introduction to Mixture Models</a></li>
-<li><a href="intro_to_em.html">Introduction to EM: Gaussian Mixture Models</a></li>
-</ul>
+<div id="examples-discrete" class="section level1">
+<h1>Examples: discrete</h1>
+<p>Of course, if <span class="math inline">\(\theta\)</span> is discrete then the integrals above all become sums.</p>
+<p>For example <span class="math display">\[E(\theta | D) = \sum_n \theta_n \Pr(\theta=\theta_n | D)\]</span> where <span class="math inline">\(\theta_1,\theta_2,\dots\)</span> are the possible values for <span class="math inline">\(\theta\)</span>.</p>
 </div>
-<div id="bayesian-computation" class="section level3">
-<h3>Bayesian Computation</h3>
-<ul>
-<li><a href="integral.html">Every Bayesian computation is an integral (or a sum)</a></li>
-<li><a href="Importance_sampling.html">Importance sampling</a></li>
-</ul>
-</div>
-<div id="markov-chain-monte-carlo" class="section level3">
-<h3>Markov Chain Monte Carlo</h3>
-<ul>
-<li><a href="gibbs1.html">Introduction to Gibbs Sampling</a></li>
-</ul>
-</div>
-</div>
-<div id="stochastic-processes" class="section level2">
-<h2>Stochastic Processes</h2>
-<div id="discrete-time-markov-chains" class="section level3">
-<h3>Discrete-Time Markov Chains</h3>
-<ul>
-<li><p><a href="markov_chains_discrete_intro.html">Discrete-Time Markov Chains: Introduction</a></p></li>
-<li><p><a href="stationary_distribution.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></p></li>
-<li><p><a href="markov_chains_discrete_stationary_dist.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></p></li>
-<li><p><a href="simulating_discrete_chains_1.html">Simulating Discrete-Time Markov Chains: An Introduction</a></p></li>
-<li><p><a href="simulating_discrete_chains_2.html">Simulating Discrete-Time Markov Chains: Limiting Distributions</a></p></li>
-</ul>
-</div>
-<div id="poisson-processes" class="section level3">
-<h3>Poisson Processes</h3>
-<ul>
-<li><a href="poisson_process_time_dependent_thinning.html">Poisson Processes: Thinning with time-dependent probabilities</a></li>
-<li><a href="bernoulli_poisson_process.html">Poisson Process: The Limiting Case of the Bernoulli Process</a></li>
-</ul>
-</div>
-<div id="methods-for-sampling-non-standard-distributions" class="section level3">
-<h3>Methods for sampling non-standard distributions</h3>
-<ul>
-<li><a href="inverse_transform_sampling.html">Inverse Transform Sampling</a></li>
-</ul>
-</div>
-<div id="multivariate-normal" class="section level3">
-<h3>Multivariate Normal</h3>
-<ul>
-<li><a href="mvnorm.html">Multivariate Normal</a></li>
-<li><a href="normal_markov_chain.html">Normal Markov Chain</a></li>
-</ul>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Pretty much all the things you want to compute when doing Bayesian inference are integrals (or sums) of one kind or another…</p>
+<p>If you are computing 1-dimensional integrals then numerical methods are often useful. For example, Simpsons Rule, Gaussian Quadrature. These can also work in 2-dimensions, and maybe even 3 or 4.</p>
+<p>Other simple methods that can work for low dimensions: naive Monte Carlo, and Importance Sampling. Also Laplace approximation.</p>
+<p>For higher dimensions we usually resort to Markov Chain Monte Carlo.</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.4 (2016-03-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.3 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.12.3
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.3     tools_3.2.4     htmltools_0.3.5
+ [5] yaml_2.1.13     Rcpp_0.12.4     stringi_1.0-1   rmarkdown_0.9.5
+ [9] stringr_1.0.0   digest_0.6.9    evaluate_0.8.3 </code></pre>
 </div>
 </div>
 
