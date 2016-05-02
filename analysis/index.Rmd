@@ -11,17 +11,11 @@ title: "Home"
 ### Likelihood Ratio and Likelihood
 
 *  [Likelihood Ratio for fully specified models, discrete data](likelihood_ratio_simple_models.html)
-
 *  [Likelihood Ratio for fully specified models, continuous data](likelihood_ratio_simple_continuous_data.html)
-
 *  [Likelihood Ratios: Examples and Pitfalls](likelihood_do_dont.html)
-
 *  [Likelihood Ratios: how big is convincing?](LR_and_BF.html)
-
 *  [Likelihood Ratios: Wilks's Theorem](wilks.html)
-
 *  [The Likelihood Function](likelihood_function.html)
-
 *  [Asymptotic Normality of MLE](asymptotic_normality_mle.html)
 
 ### Simple Bayesian Inference
@@ -38,6 +32,10 @@ title: "Home"
 
 *  [Introduction to Mixture Models](intro_to_mixture_models.html)
 *  [Introduction to EM: Gaussian Mixture Models](intro_to_em.html)
+
+### Simple Computation
+
+* [Importance sampling](Importance_sampling.html)
 
 ### Markov Chain Monte Carlo
 
