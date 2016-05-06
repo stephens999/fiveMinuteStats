@@ -7,6 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Matt Bonakdarpour" />
 
@@ -14,12 +15,12 @@
 
 <title>Introduction to Mixture Models</title>
 
-<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
-<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
-<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
-<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 
 <style type="text/css">
 
@@ -76,6 +77,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 
+
 </head>
 
 <body>
@@ -90,12 +92,55 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img { 
-  max-width:100%; 
-  height: auto; 
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
 }
 </style>
+
+
 <div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
 
 
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -118,10 +163,13 @@ img {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
+
+
 <h1 class="title">Introduction to Mixture Models</h1>
 <h4 class="author"><em>Matt Bonakdarpour</em></h4>
 <h4 class="date"><em>2016-01-22</em></h4>
+
 </div>
 
 <div id="TOC">
@@ -135,8 +183,8 @@ img {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-02-27</p>
-<p><strong>Code version:</strong> 15662644f9d03dc2850c6947904a6fab85ec693a</p>
+<p><strong>Last updated:</strong> 2016-05-06</p>
+<p><strong>Code version:</strong> a72861e10b21c202e05983d3175e1e9a87868c34</p>
 <div id="prerequisites" class="section level1">
 <h1>Prerequisites</h1>
 <p>This document assumes basic familiarity with probability theory.</p>
@@ -191,16 +239,16 @@ hist(heights)</code></pre>
 <p>Here, the <span class="math inline">\(\pi_k\)</span> are called <strong>mixture proportions</strong> or <strong>mixture weights</strong> and they represent the probability that <span class="math inline">\(X_i\)</span> belongs to the <span class="math inline">\(k\)</span>-th mixture component. The mixture proportions are nonneggative and they sum to one, <span class="math inline">\(\sum_{k=1}^K \pi_k = 1\)</span>. We call <span class="math inline">\(P(X_i|Z_i=k)\)</span> the <strong>mixture component</strong>, and it represents the distribution of <span class="math inline">\(X_i\)</span> assuming it came from component <span class="math inline">\(k\)</span>. The mixture components in our examples above were normal distributions.</p>
 <p>For discrete random variables these mixture components can be any probability mass function <span class="math inline">\(p(. \mid Z_{k})\)</span> and for continuous random variables they can be any probability density function <span class="math inline">\(f(. \mid Z_{k})\)</span>. The corresponding pmf and pdf for the mixture model is therefore:</p>
 <p><span class="math display">\[p(x) =  \sum_{k=1}^{K}\pi_k p(x \mid Z_{k})\]</span> <span class="math display">\[f_{x}(x) = \sum_{k=1}^{K}\pi_k f_{x \mid Z_{k}}(x \mid Z_{k}) \]</span></p>
-<p>The likelihood of observing independent samples <span class="math inline">\(X_1,\ldots,X_n\)</span> with mixture proportion vector <span class="math inline">\(\pi=(\pi_1, \pi_2,\ldots,\pi_K)\)</span> is therefore: <span class="math display">\[L(\pi) = \prod_{i=1}^n P(X_i|\pi) = \prod_{i=1}^n\sum_{k=1}^K P(X_i|Z_i=k)\pi_k\]</span></p>
+<p>If we observe independent samples <span class="math inline">\(X_1,\ldots,X_n\)</span> from this mixture, with mixture proportion vector <span class="math inline">\(\pi=(\pi_1, \pi_2,\ldots,\pi_K)\)</span>, then the likelihood function is: <span class="math display">\[L(\pi) = \prod_{i=1}^n P(X_i|\pi) = \prod_{i=1}^n\sum_{k=1}^K P(X_i|Z_i=k)\pi_k\]</span></p>
 <p>Now assume we are in the Gaussian mixture model setting where the <span class="math inline">\(k\)</span>-th component is <span class="math inline">\(N(\mu_k, \sigma_k)\)</span> and the mixture proportions are <span class="math inline">\(\pi_k\)</span>. A natural next question to ask is how to estimate the parameters <span class="math inline">\(\{\mu_k,\sigma_k,\pi_k\}\)</span> from our observations <span class="math inline">\(X_1,\ldots,X_n\)</span>. We illustrate one approach in the <a href="intro_to_em.html">introduction to EM</a> vignette.</p>
 <p><strong>Acknowledgement:</strong> The “Examples” section above was taken from lecture notes written by Ramesh Sridharan.</p>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.2.2 (2015-08-14)
+<pre><code>R version 3.2.4 (2016-03-10)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X 10.10.5 (Yosemite)
+Running under: OS X 10.11.3 (El Capitan)
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -209,12 +257,12 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] knitr_1.11
+[1] knitr_1.12.3
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.3  
- [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
- [9] digest_0.6.8    evaluate_0.8   </code></pre>
+ [1] magrittr_1.5    formatR_1.3     tools_3.2.4     htmltools_0.3.5
+ [5] yaml_2.1.13     Rcpp_0.12.4     stringi_1.0-1   rmarkdown_0.9.5
+ [9] stringr_1.0.0   digest_0.6.9    evaluate_0.8.3 </code></pre>
 </div>
 
 
@@ -242,6 +290,8 @@ $(document).ready(function () {
 });
 
 </script>
+
+
 
 </div>
 

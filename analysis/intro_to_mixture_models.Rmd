@@ -115,7 +115,7 @@ For discrete random variables these mixture components can be any probability ma
 $$p(x) =  \sum_{k=1}^{K}\pi_k p(x \mid Z_{k})$$
 $$f_{x}(x) = \sum_{k=1}^{K}\pi_k f_{x \mid Z_{k}}(x \mid Z_{k}) $$
 
-The likelihood of observing independent samples $X_1,\ldots,X_n$ with mixture proportion vector $\pi=(\pi_1, \pi_2,\ldots,\pi_K)$ is therefore:
+If we observe independent samples $X_1,\ldots,X_n$ from this mixture, with mixture proportion vector $\pi=(\pi_1, \pi_2,\ldots,\pi_K)$, then the likelihood function is:
 $$L(\pi) = \prod_{i=1}^n P(X_i|\pi) = \prod_{i=1}^n\sum_{k=1}^K P(X_i|Z_i=k)\pi_k$$
 
 Now assume we are in the Gaussian mixture model setting where the $k$-th component is $N(\mu_k, \sigma_k)$ and the mixture proportions are $\pi_k$. A natural next question to ask is how to estimate the parameters $\{\mu_k,\sigma_k,\pi_k\}$ from our observations $X_1,\ldots,X_n$. We illustrate one approach in the [introduction to EM](intro_to_em.html) vignette.
