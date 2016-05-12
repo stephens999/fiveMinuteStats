@@ -41,6 +41,7 @@ title: "Home"
 ### Markov Chain Monte Carlo
 
 * [Introduction to Gibbs Sampling](gibbs1.html)
+* [Gibbs Sampling for a simple normal mixture](gibbs2.html)
 
 
 ## Stochastic Processes
