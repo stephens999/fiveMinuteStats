@@ -1,0 +1,10 @@
+is = function(sd,nsamp){
+x=rnorm(nsamp,0,sd)
+w= function(x){x*dnorm(x)/dnorm(x,0,sd)}
+return(w(x))
+}
+
+w1=is(1,10000)
+w2=is(2,10000)
+w3 =is(0.1,10000)
+w3 =is(20,10000)

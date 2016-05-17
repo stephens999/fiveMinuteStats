@@ -1,0 +1,103 @@
+---
+title: "Approximating the Wright-Fisher Model"
+author: "Joe Marcus"
+date: 2016-03-29
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+A basic knowledge of:
+
+* introductory probability
+* genetics terminology  
+* the Wright-Fisher model 
+
+# Overview
+
+Recall that the Wright-Fisher model is a discrete-time Markov chain with a state space of the set of possible counts of a given allele in a population. If we are modelling $N$ individuals in a population there are then $2N + 1$ possible states (we must include an allele count of $0$) thus our transition probability matrix has dimension $(2N + 1) \times (2N + 1)$. The size of the probability transition matrix grows quadratically as $N$ grows and thus computations for large $N$ become intractable. For instance, the effective population size of humans in the past has roughly been estimated to be around $10000$ therefore our state space would be of size $20001$ and our probability transition matrix would have dimension $20001 \times 20001$. Many organisms have even larger effective population sizes, thus the Wright-Fisher model becomes challenging if not impossibly slow to directly perform inference under. This problem has motivated the development of a diverse set of approximations to the Wright-Fisher model, each with their own advantages and disadvantages. Here I will outline two general approaches, the beta and normal approximations, which have both been widely used in multiple contexts. I will not cover the diffusion approximation, largely developed by Motoo Kimura in the late 1960s, but it is a worthwhile topic with many important contributions to population genetic theory, much of which the below distributional approximations are inspired by and can be derived from.
+
+# Definition
+
+Recall that the expected value and variance of the frequency of the $A$ allele in the Wright Fisher model is:
+
+$$E(Y_t) = Y_0$$
+$$Var(Y_{t}) =  Y_0 (1 - Y_0) (1 - (1 - \frac{1}{2N})^t)$$
+
+One approach to approximating the Wright-Fisher model is to use a distribution of allele frequencies that has the same first two moments as shown above. By matching to the first two moments we hope to capture a reasonable amount information contained in the full distribution of allele frequencies under the Wright-Fisher model.
+
+## The Normal Approximation
+
+Consider a locus with two alleles $A$ and $a$ in an ancestral population existing $\tau$ generations ago. The current frequency of the $A$ allele is distributed:
+
+$$Y_t \mid Y_{\tau} = y_{\tau} \sim Normal(\mu = y_{\tau}, \sigma^2 = y_\tau(1 - y_{\tau}) \frac{t - \tau}{2N})$$
+
+where $Y_{\tau}$ is the frequency of the $A$ allele in the ancestral population and $N$ again is the effective population size of the current population. The approximation is motivated by matching the first two moments of the normal distribution to the Wright-Fisher model (as derived in the first tutorial and discussed above). Note here the variance here is approximately matching the variance derived under the Wright-Fisher model (this makes the math a bit a simpler for various applications of the normal approximation). The normal approximation works well for many applications when modelling allele frequencies with intermediate values, but as soon as allele frequencies get close to the boundaries of the distribution, the variance of the Wright-Fisher is poorly approximated. Thus the normal approximation has appropriate use when the amount of drift that has occurred over the time since the split from the ancestral population is small and at intermediate allele frequency values. One major issue with this approximation is that the normal distribution is defined for *all* real numbers, therefore we place some of the probability density on values that should not be supported ($0.0 \leq Y_t \leq 1.0$). One solution to this problem is to simply truncate the distribution:
+
+$$
+Y_t = Y_t \mid Y_{\tau} = Y_{\tau} \sim 
+\begin{cases}
+  TruncatedNormal(\mu = y_{\tau}, \sigma^2 = y_\tau(1 - y_{\tau}) & 0.0 \leq  y_t \leq 1.0\\
+  0 & otherwise \\
+\end{cases}
+$$
+
+Another way to narrow the support of the normal approximation is to apply a transformation such that the transformed frequency has values between 0 and 1. One commonly used transformation is the logit function:
+
+$$logit(x) = log(\frac{x}{1-x})$$
+
+If $X$ is a normally distributed random variable and $Y = \frac{1}{1 + e^{-X}}$ then:
+
+$$Y \sim LogitNormal(\mu_y, \sigma^2_y)$$
+$$f_y(y) = \frac{1}{\sigma_y \sqrt{2\pi}} \frac{1}{y(1-y)} exp(-\frac{(logit(y) - \mu_y)^2}{2\sigma^2_y})$$
+
+Unfortunately there is no analytical solution for the mean and variance for this distribution but we can use the univariate delta method to get approximate moments of $Y$ as a function of the first two moments of $X$. If $Y = g(X)$ and $g(.)$ is some non-linear function then we can approximate the moments of $Y$ using a taylor series expansion which ultimately results in:
+
+$$E(Y) \approx g(\mu_X) + \frac{1}{2}\sigma^2_X g''(\mu_X)$$
+$$Var(Y) \approx Var(X)(g'(\mu_X))^2$$
+
+Specifically we would like to find the mean and variance of $X$ such that when we perform the transformation the mean and variance of $Y$ is matched to the Wright-Fisher model. Let $Y^{*}_t$ be the inverse logit transform of $Y_t$. I wont work out the math here but it can be shown that we can match moments of the logit-normal distribution with the delta method using:
+
+$$Y^{*}_t \mid Y_{\tau} = y_{\tau} \sim LogitNormal(\mu = log(\frac{y_{\tau}}{1-y_{\tau}}),\sigma^2 = c \cdot y_\tau(1 - y_{\tau}) \frac{t - \tau}{2N})$$
+
+where $c = \frac{(1-y_{\tau})(\frac{y_{\tau}}{1-y_{\tau}} + 1)^4}{2y_{\tau}}$.
+
+## The Beta Approximation 
+
+Akin to the normal approximation, we can match the first two moments of the beta distribution to those of the Wright-Fisher model. Again, "unsurprisingly", Sewall Wright actually first showed that the stationary distribution of the Wright-Fisher model is a beta distribution, thus the beta approximation has some nice relationships to the Wright-Fisher beyond the moment matching approaches described here. If $\mu_X$ and $\sigma^2_X$ are the mean and variance we derived for the Wright-Fisher model then:
+
+$$ Y_t \mid Y_{\tau} = y_\tau \sim Beta(\alpha = (\frac{\mu_X (1 - \mu_X)}{\sigma^2_X} - 1) \mu_X, \beta = (\frac{\mu_X (1 - \mu_X)}{\sigma^2_X} - 1) (1 - \mu_X) )$$
+
+where
+
+$$\mu_X = y_{\tau}$$
+$$\sigma^2_X = y_{\tau} (1 - y_{\tau}) (1 - (1 - \frac{1}{2N})^{t - \tau})$$
+
+The beta approximation has many useful properties but it is not defined at 0.0 and 1.0. Similar to the problem with the normal distribution we had above, this makes the approximation poor at the boundaries of the Wright-Fisher distribution of allele frequencies because it cannot model fixation or loss of alleles which can occur with when drift is strong or relatively long time scales.
+
+### Beta with Spikes
+
+A recent publication described a modification of the beta approximation that helps to solve the problem described above. The essential idea of the publication is to use the same beta distribution as above to approximate the distribution of allele frequencies under the Wright-Fisher as well as additionally adding spikes to the boundries of the distribution, allowing for probability mass at both 0.0 and 1.0. This addition of spikes drastically increases the accuracy of the approximation for a pure drift model but also holds promising applications for modeling allele frequency trajectories with selection. See the paper [here](http://www.genetics.org/content/early/2015/08/26/genetics.115.179606).
+
+# Examples
+
+see shiny app [here!](https://jhmarcus.shinyapps.io/daf_approximation/) Note that:
+
+* wf - Wright-Fisher
+* norm - Normal approximation
+* trunc_norm - Truncated normal approximation
+* logit_norm - Logit transformed normal approximation
+* beta - Beta approximation 
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
