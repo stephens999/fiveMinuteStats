@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Joe Marcus" />
+
+<meta name="date" content="2016-03-29" />
+
+<title>Approximating the Wright-Fisher Model</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">
+
+/* padding for bootstrap navbar */
+body {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h2 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+.section h3 {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+
+
+
+/* don't use link color in navbar */
+.dropdown-menu>li>a {
+  color: black;
+}
+
+/* some padding for disqus */
+#disqus_thread {
+  margin-top: 45px;
+}
+
+</style>
+
+<link rel="stylesheet" href="libs/font-awesome-4.1.0/css/font-awesome.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/textmate.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="license.html">License</a></li>
+        <li><a href="https://github.com/stephens999/fiveMinuteStats">GitHub</a></li>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+<h1 class="title">Approximating the Wright-Fisher Model</h1>
+<h4 class="author"><em>Joe Marcus</em></h4>
+<h4 class="date"><em>2016-03-29</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#definition">Definition</a><ul>
+<li><a href="#the-normal-approximation">The Normal Approximation</a></li>
+<li><a href="#the-beta-approximation">The Beta Approximation</a><ul>
+<li><a href="#beta-with-spikes">Beta with Spikes</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#session-information">Session information</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><strong>Last updated:</strong> 2016-04-07</p>
+<p><strong>Code version:</strong> 506f3b9019562954d5971af25be7a2cd08b427a6</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>A basic knowledge of:</p>
+<ul>
+<li>introductory probability</li>
+<li>genetics terminology<br />
+</li>
+<li>the Wright-Fisher model</li>
+</ul>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Recall that the Wright-Fisher model is a discrete-time Markov chain with a state space of the set of possible counts of a given allele in a population. If we are modelling <span class="math inline">\(N\)</span> individuals in a population there are then <span class="math inline">\(2N + 1\)</span> possible states (we must include an allele count of <span class="math inline">\(0\)</span>) thus our transition probability matrix has dimension <span class="math inline">\((2N + 1) \times (2N + 1)\)</span>. The size of the probability transition matrix grows quadratically as <span class="math inline">\(N\)</span> grows and thus computations for large <span class="math inline">\(N\)</span> become intractable. For instance, the effective population size of humans in the past has roughly been estimated to be around <span class="math inline">\(10000\)</span> therefore our state space would be of size <span class="math inline">\(20001\)</span> and our probability transition matrix would have dimension <span class="math inline">\(20001 \times 20001\)</span>. Many organisms have even larger effective population sizes, thus the Wright-Fisher model becomes challenging if not impossibly slow to directly perform inference under. This problem has motivated the development of a diverse set of approximations to the Wright-Fisher model, each with their own advantages and disadvantages. Here I will outline two general approaches, the beta and normal approximations, which have both been widely used in multiple contexts. I will not cover the diffusion approximation, largely developed by Motoo Kimura in the late 1960s, but it is a worthwhile topic with many important contributions to population genetic theory, much of which the below distributional approximations are inspired by and can be derived from.</p>
+</div>
+<div id="definition" class="section level1">
+<h1>Definition</h1>
+<p>Recall that the expected value and variance of the frequency of the <span class="math inline">\(A\)</span> allele in the Wright Fisher model is:</p>
+<p><span class="math display">\[E(Y_t) = Y_0\]</span> <span class="math display">\[Var(Y_{t}) =  Y_0 (1 - Y_0) (1 - (1 - \frac{1}{2N})^t)\]</span></p>
+<p>One approach to approximating the Wright-Fisher model is to use a distribution of allele frequencies that has the same first two moments as shown above. By matching to the first two moments we hope to capture a reasonable amount information contained in the full distribution of allele frequencies under the Wright-Fisher model.</p>
+<div id="the-normal-approximation" class="section level2">
+<h2>The Normal Approximation</h2>
+<p>Consider a locus with two alleles <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span> in an ancestral population existing <span class="math inline">\(\tau\)</span> generations ago. The current frequency of the <span class="math inline">\(A\)</span> allele is distributed:</p>
+<p><span class="math display">\[Y_t \mid Y_{\tau} = y_{\tau} \sim Normal(\mu = y_{\tau}, \sigma^2 = y_\tau(1 - y_{\tau}) \frac{t - \tau}{2N})\]</span></p>
+<p>where <span class="math inline">\(Y_{\tau}\)</span> is the frequency of the <span class="math inline">\(A\)</span> allele in the ancestral population and <span class="math inline">\(N\)</span> again is the effective population size of the current population. The approximation is motivated by matching the first two moments of the normal distribution to the Wright-Fisher model (as derived in the first tutorial and discussed above). Note here the variance here is approximately matching the variance derived under the Wright-Fisher model (this makes the math a bit a simpler for various applications of the normal approximation). The normal approximation works well for many applications when modelling allele frequencies with intermediate values, but as soon as allele frequencies get close to the boundaries of the distribution, the variance of the Wright-Fisher is poorly approximated. Thus the normal approximation has appropriate use when the amount of drift that has occurred over the time since the split from the ancestral population is small and at intermediate allele frequency values. One major issue with this approximation is that the normal distribution is defined for <em>all</em> real numbers, therefore we place some of the probability density on values that should not be supported (<span class="math inline">\(0.0 \leq Y_t \leq 1.0\)</span>). One solution to this problem is to simply truncate the distribution:</p>
+<p><span class="math display">\[
+Y_t = Y_t \mid Y_{\tau} = Y_{\tau} \sim 
+\begin{cases}
+  TruncatedNormal(\mu = y_{\tau}, \sigma^2 = y_\tau(1 - y_{\tau}) &amp; 0.0 \leq  y_t \leq 1.0\\
+  0 &amp; otherwise \\
+\end{cases}
+\]</span></p>
+<p>Another way to narrow the support of the normal approximation is to apply a transformation such that the transformed frequency has values between 0 and 1. One commonly used transformation is the logit function:</p>
+<p><span class="math display">\[logit(x) = log(\frac{x}{1-x})\]</span></p>
+<p>If <span class="math inline">\(X\)</span> is a normally distributed random variable and <span class="math inline">\(Y = \frac{1}{1 + e^{-X}}\)</span> then:</p>
+<p><span class="math display">\[Y \sim LogitNormal(\mu_y, \sigma^2_y)\]</span> <span class="math display">\[f_y(y) = \frac{1}{\sigma_y \sqrt{2\pi}} \frac{1}{y(1-y)} exp(-\frac{(logit(y) - \mu_y)^2}{2\sigma^2_y})\]</span></p>
+<p>Unfortunately there is no analytical solution for the mean and variance for this distribution but we can use the univariate delta method to get approximate moments of <span class="math inline">\(Y\)</span> as a function of the first two moments of <span class="math inline">\(X\)</span>. If <span class="math inline">\(Y = g(X)\)</span> and <span class="math inline">\(g(.)\)</span> is some non-linear function then we can approximate the moments of <span class="math inline">\(Y\)</span> using a taylor series expansion which ultimately results in:</p>
+<p><span class="math display">\[E(Y) \approx g(\mu_X) + \frac{1}{2}\sigma^2_X g&#39;&#39;(\mu_X)\]</span> <span class="math display">\[Var(Y) \approx Var(X)(g&#39;(\mu_X))^2\]</span></p>
+<p>Specifically we would like to find the mean and variance of <span class="math inline">\(X\)</span> such that when we perform the transformation the mean and variance of <span class="math inline">\(Y\)</span> is matched to the Wright-Fisher model. Let <span class="math inline">\(Y^{*}_t\)</span> be the inverse logit transform of <span class="math inline">\(Y_t\)</span>. I wont work out the math here but it can be shown that we can match moments of the logit-normal distribution with the delta method using:</p>
+<p><span class="math display">\[Y^{*}_t \mid Y_{\tau} = y_{\tau} \sim LogitNormal(\mu = log(\frac{y_{\tau}}{1-y_{\tau}}),\sigma^2 = c \cdot y_\tau(1 - y_{\tau}) \frac{t - \tau}{2N})\]</span></p>
+<p>where <span class="math inline">\(c = \frac{(1-y_{\tau})(\frac{y_{\tau}}{1-y_{\tau}} + 1)^4}{2y_{\tau}}\)</span>.</p>
+</div>
+<div id="the-beta-approximation" class="section level2">
+<h2>The Beta Approximation</h2>
+<p>Akin to the normal approximation, we can match the first two moments of the beta distribution to those of the Wright-Fisher model. Again, “unsurprisingly”, Sewall Wright actually first showed that the stationary distribution of the Wright-Fisher model is a beta distribution, thus the beta approximation has some nice relationships to the Wright-Fisher beyond the moment matching approaches described here. If <span class="math inline">\(\mu_X\)</span> and <span class="math inline">\(\sigma^2_X\)</span> are the mean and variance we derived for the Wright-Fisher model then:</p>
+<p><span class="math display">\[ Y_t \mid Y_{\tau} = y_\tau \sim Beta(\alpha = (\frac{\mu_X (1 - \mu_X)}{\sigma^2_X} - 1) \mu_X, \beta = (\frac{\mu_X (1 - \mu_X)}{\sigma^2_X} - 1) (1 - \mu_X) )\]</span></p>
+<p>where</p>
+<p><span class="math display">\[\mu_X = y_{\tau}\]</span> <span class="math display">\[\sigma^2_X = y_{\tau} (1 - y_{\tau}) (1 - (1 - \frac{1}{2N})^{t - \tau})\]</span></p>
+<p>The beta approximation has many useful properties but it is not defined at 0.0 and 1.0. Similar to the problem with the normal distribution we had above, this makes the approximation poor at the boundaries of the Wright-Fisher distribution of allele frequencies because it cannot model fixation or loss of alleles which can occur with when drift is strong or relatively long time scales.</p>
+<div id="beta-with-spikes" class="section level3">
+<h3>Beta with Spikes</h3>
+<p>A recent publication described a modification of the beta approximation that helps to solve the problem described above. The essential idea of the publication is to use the same beta distribution as above to approximate the distribution of allele frequencies under the Wright-Fisher as well as additionally adding spikes to the boundries of the distribution, allowing for probability mass at both 0.0 and 1.0. This addition of spikes drastically increases the accuracy of the approximation for a pure drift model but also holds promising applications for modeling allele frequency trajectories with selection. See the paper <a href="http://www.genetics.org/content/early/2015/08/26/genetics.115.179606">here</a>.</p>
+</div>
+</div>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<p>see shiny app <a href="https://jhmarcus.shinyapps.io/daf_approximation/">here!</a> Note that:</p>
+<ul>
+<li>wf - Wright-Fisher</li>
+<li>norm - Normal approximation</li>
+<li>trunc_norm - Truncated normal approximation</li>
+<li>logit_norm - Logit transformed normal approximation</li>
+<li>beta - Beta approximation</li>
+</ul>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin15.2.0 (64-bit)
+Running under: OS X 10.11 (El Capitan)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.12.18
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    formatR_1.3     tools_3.2.3     htmltools_0.3  
+ [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.9.2 stringr_1.0.0  
+ [9] digest_0.6.9    evaluate_0.8.3 </code></pre>
+</div>
+</div>
+
+
+<!-- some extra javascript for older browsers -->
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script>
+
+// manage active state of menu based on current page
+$(document).ready(function () {
+
+    // active menu
+    href = window.location.pathname
+    href = href.substr(href.lastIndexOf('/') + 1)
+    $('a[href="' + href + '"]').parent().addClass('active');
+
+    // manage active menu header
+    if (href.startsWith('authoring_'))
+      $('a[href="' + 'authoring' + '"]').parent().addClass('active');
+    else if (href.endsWith('_format.html'))
+      $('a[href="' + 'formats' + '"]').parent().addClass('active');
+    else if (href.startsWith('developer_'))
+      $('a[href="' + 'developer' + '"]').parent().addClass('active');
+
+});
+
+</script>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

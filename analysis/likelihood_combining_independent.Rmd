@@ -1,0 +1,52 @@
+---
+title: "Untitled"
+author: "First Last"
+date: YYYY-MM-DD
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+Be familiar with the [likelihood ratio and log-likelihood ratio for discrete data](likelihood_ratio_simple_models.html).
+
+
+# Combining independent data
+
+One nice feature of LLRs is that when you combine independent data, then LLRs add. 
+
+To be more precise, suppose you observe two independent pieces of data $x_1$ and $x_2$.
+Then 
+$$LLR(M_1,M_0; x_1,x_2) = LLR(M_1,M_0; x_1) + LLR(M_1,M_0; x_2).$$
+
+This follows directly from the definition of LR, and the fact that for independent pieces
+of data the likelihoods multiply (so log-likelihoods add).
+
+For example, in our tusk example, the markers are considered independent, so the data at six markers
+can be broken down into six independent pieces of data, one from each marker. Thus the LLR for
+the data from 6 markers can be written as the sum of LLRs for each marker.
+```{r}
+x = c(1,0,1,0,0,1)
+fS = c(0.40, 0.12,0.21,0.12,0.02,0.32)
+fF = c(0.8,0.2,0.11,0.17,0.23,0.25)
+L = function(f,x){ log(f^x*(1-f)^(1-x)) }
+LR = L(fS,x)/L(fF,x)
+print(LR)
+```
+
+
+# Definition
+
+# Examples
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
