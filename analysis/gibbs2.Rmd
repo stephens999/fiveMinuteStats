@@ -1,7 +1,7 @@
 ---
-title: "Untitled"
-author: "First Last"
-date: YYYY-MM-DD
+title: "Gibbs Sampling for a mixture of normals"
+author: "Matthew Stephens"
+date: 2016-06-01
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -76,11 +76,11 @@ The point here is that all of these conditionals are easy to sample from.
   #' @param mu a k vector
   sample_z = function(x,pi,mu){
     dmat = outer(mu,x,"-") # k by n matrix, d_kj =(mu_k - x_j)
-    p.x.given.z = as.vector(pi) * dnorm(dmat,0,1) 
-    p.x.given.z = apply(p.x.given.z,2,normalize) # normalize columns
+    p.z.given.x = as.vector(pi) * dnorm(dmat,0,1) 
+    p.z.given.x = apply(p.z.given.x,2,normalize) # normalize columns
     z = rep(0, length(x))
     for(i in 1:length(z)){
-      z[i] = sample(1:length(pi), size=1,prob=p.x.given.z[,i],replace=TRUE)
+      z[i] = sample(1:length(pi), size=1,prob=p.z.given.x[,i],replace=TRUE)
     }
     return(z)
   }
