@@ -14,7 +14,9 @@ source("chunk-options.R")
 
 # Pre-requisites
 
-Be familiar with the [likelihood ratio for discrete data](likelihood_ratio_simple_models.html) and [continuous data](likelihood_ratio_simple_continuous_data.html).
+* Likelihood ratio for
+    - [discrete data](likelihood_ratio_simple_models.html) 
+    - [continuous data](likelihood_ratio_simple_continuous_data.html).
 
 # Overview
 
@@ -60,6 +62,7 @@ this means it can't even be a 1-1 transform of the same data - it has to be the 
 For example, suppose you observe data $x_1,\dots,x_n$, and you
 want to compare the models $M_0: x_1,\dots,x_n$ are normally distributed vs $M_1: log(x_1),\dots,\log(x_n)$ are normally distributed. You have to rephrase $M_1$ in terms of the original $x_j$: that is $M_1: x_1,\dots,x_n$ are log-normally distributed. 
 
+[Here](LR_error.html) is an extended version of this example.
 
 # Dealing with missing data; and the missing at random assumption
 

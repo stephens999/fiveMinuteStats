@@ -1,0 +1,81 @@
+---
+title: "Example to illustrate idea that likelihood ratio must be computed from same data"
+author: "Matthew Stephens"
+date: 2016-09-04
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
++ Likelihood Ratio.
+
+# Example
+
+Suppose that we are considering whether to model some data $X$ as normal or log-normal.
+In this case we'll assume the truth is that the data are log normal, which we can simulate as follows:
+```{r}
+X = exp(rnorm(1000,-5,2))
+```
+
+We will use $Z$ to denote $\log(X)$:
+```{r}
+Z = log(X)
+```
+
+And let's check by graphing which looks more normal:
+```{r}
+par(mfcol=c(2,2))
+hist(X)
+hist(Z)
+qqnorm(X)
+qqnorm(Z)
+```
+So it is pretty clear that the model ``$M_2: \log(X)$ is normal" is better than the model "$M_1: X$ is normal".
+
+Now consider computing a "log-likelihood" for each model.
+
+To compute a log-likelihood under the model "X is normal" we need to also specify
+a mean and variance (or standard deviation). We use the sample mean and variance 
+here:
+```{r}
+sum(dnorm(X, mean=mean(X), sd=sd(X),log=TRUE))
+```
+
+Doing the same for $Z$ we obtain:
+```{r}
+sum(dnorm(Z, mean=mean(Z), sd=sd(Z),log=TRUE))
+```
+
+Done this way the log-likelihood for $M_1$ appears much larger than the log-likelihood for $M_2$, contradicting both the graphical evidence and the way the data were simulated.
+
+# The right way
+
+The explanation here is that it does not make sense to compare a likelihood
+for $Z$ with a likelihood for $X$ because even though $Z$ and $X$ are 1-1 mappings
+of one another ($Z$ is determined by $X$, and vice versa), they are formally not the same data. That is, it does not make sense to compute
+$$\text{"LLR"} := \log(p(X|M_1)/p(Z|M_2))$$.
+
+However, we could compute a log-likelihood ratio for this problem as
+$$\text{LLR} := log(p(X|M_1)/p(X|M_2)).$$
+Here we are using the fact that the model $M_2$ for $Z$ actually implies a model for $X$:
+$Z$ is normal if and only if $X$ is log-normal. 
+So a sensible LLR would be given by:
+```{r}
+sum(dnorm(X, mean=mean(X), sd=sd(X),log=TRUE)) - sum(dlnorm(X, meanlog=mean(Z), sdlog=sd(Z),log=TRUE))
+```
+
+The fact that the LLR is very negative supports the graphical evidence that $M_2$ is a much better fitting model (and indeed, as we know -- since we simulated the data -- $M_2$ is the true model).
+
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

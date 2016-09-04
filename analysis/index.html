@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 
 
@@ -75,25 +75,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 
-
-</head>
-
-<body>
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
+<style type="text/css">
 h1 {
   font-size: 34px;
 }
@@ -115,6 +97,30 @@ h5 {
 h6 {
   font-size: 12px;
 }
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
 .tabbed-pane {
   padding-top: 12px;
 }
@@ -127,7 +133,7 @@ button.code-folding-btn:focus {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="libs/navigation-1.0/tabsets.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -164,7 +170,8 @@ $(document).ready(function () {
 <div class="fluid-row" id="header">
 
 
-<h1 class="title">Home</h1>
+
+<h1 class="title toc-ignore">Home</h1>
 
 </div>
 
@@ -188,8 +195,8 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-05-17</p>
-<p><strong>Code version:</strong> 6bb45604f2d858461070fc2097b5bb600d913596</p>
+<p><strong>Last updated:</strong> 2016-09-04</p>
+<p><strong>Code version:</strong> 8e22ef642fbbce95f1d626f90689e8e91f655a92</p>
 <div id="inference" class="section level2">
 <h2>Inference</h2>
 <div id="likelihood-ratio-and-likelihood" class="section level3">
@@ -197,7 +204,11 @@ $(document).ready(function () {
 <ul>
 <li><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></li>
 <li><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></li>
-<li><a href="likelihood_do_dont.html">Likelihood Ratios: Examples and Pitfalls</a></li>
+<li>Likelihood Ratios: Examples and Pitfalls
+<ul>
+<li><a href="likelihood_do_dont.html">Examples and Pitfalls</a></li>
+<li><a href="LR_error.html">Example: LRs must be computed on same data</a></li>
+</ul></li>
 <li><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></li>
 <li><a href="wilks.html">Likelihood Ratios: Wilks’s Theorem</a></li>
 <li><a href="likelihood_function.html">The Likelihood Function</a></li>
