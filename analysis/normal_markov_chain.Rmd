@@ -1,0 +1,99 @@
+---
+title: "Normal Markov Chain"
+author: "Matthew Stephens"
+date: 2016-02-15
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+You should be familiar with the idea of a Markov chain, and with the [multivariate normal distribution](mvnorm.html).
+
+# Overview
+
+This vignette introduces the idea that in a multivariate normal, conditional independences correspond to the zeros of the precision matrix (inverse covariance matrix). It also prepares you for the idea of Brownian motion.
+
+# A normal markov chain
+
+Consider a Markov chain $X_1,X_2,X_3,\dots$ where the transitions are given by
+$X_{t+1} | X_{t} \sim N(X_{t},1)$. You might think of this Markov chain as corresponding to a type of "random walk": given the current state, the next state is obtained by adding a random normal with mean 0 and variance 1. 
+
+The following code simulates a realization of this Markov chain, starting from an initial state $X_1 \sim N(0,1)$, and plots it.
+
+```{r}
+set.seed(100)
+sim_normal_MC=function(length=1000){
+  X = rep(0,length)
+  X[1] = rnorm(1)
+  for(t in 2:length){
+    X[t]= X[t-1] + rnorm(1)  
+  }
+  return(X)
+}
+plot(sim_normal_MC())
+```
+
+# A normal markov chain as a multivariate normal
+
+If you think a little you should be able to see that the above random walk simulation is actually simulating from a 1000-dimensional multivariate normal distribution!
+
+Why? 
+
+Well, let's write each of the $N(0,1)$ variables we generate using ''rnorm'' in that code as $Z_1,Z_2,\dots$. Then:
+$$X_1 = Z_1$$
+$$X_2 = X_1 + Z_2 = Z_1 + Z_2$$
+$$X_3 = X_2 + Z_3 = Z_1 + Z_2 + Z_3$$ etc.
+
+So we can write $X = AZ$ where $A$ is the 1000 by 1000 matrix
+$$A = \begin{pmatrix}
+1 & 0 & 0 & 0 & \dots \\
+1 & 1 & 0 & 0 & \dots \\
+1 & 1 & 1 & 0 & \dots \\
+\dots
+\end{pmatrix}.$$
+
+Let's take a look at what the covariance matrix Sigma looks like. (We get a good idea from just looking
+at the top left corner of the matrix what the pattern is)
+```{r}
+A = matrix(0,nrow=1000,ncol=1000)
+for(i in 1:1000){
+    A[i,]=c(rep(1,i),rep(0,1000-i))
+}
+Sigma = A %*% t(A)
+Sigma[1:10,1:10]
+```
+
+Something interesting happens when we look at the inverse of this covariance matrix, which is referred to as the *precision* matrix, and often denoted $\Omega$. Again
+we just show the top left corner of the precision matrix here. 
+```{r}
+Omega = chol2inv(chol(Sigma))
+Omega[1:10,1:10]
+```
+
+Notice all the 0s in the precision matrix. This is important! It is an example of the following much more general idea:
+
+Let $X$ be multivariate normal with covariance matrix $\Sigma$ and precision matrix $\Omega = \Sigma^{-1}$. Then 
+$$\Omega_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are conditionally independent given all other coordinates of } X.$$
+
+Also,
+$$\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.$$
+
+
+That is, the zeros of the covariance matrix tell us about independencies among coordinates of $X$, and zeros of the precision matrix tell us about *conditional* independencies.
+
+In a Markov chain (any Markov chain) the conditional distribution of $X_t$ 
+given the other $X_s$ ($s \neq t$) depends only on its neighbors $X_{t-1}$ and $X_{t+1}$. That is, $X_{t}$ is conditionally independent of all other $X_s$ given $X_{t-1}$ and $X_{t+1}$. This is exactly what we are seeing in the precision matrix above:
+the non-zero elements of the $t$th row are at coordinates $t-1,t$ and $t+1$.
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

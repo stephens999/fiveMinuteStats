@@ -1,0 +1,182 @@
+---
+title: "Untitled"
+author: "First Last"
+date: YYYY-MM-DD
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+Understand the [calculation of posterior probabilities for a simple two-class problem](LR_and_BF.html).
+
+# Overview
+
+Often, after performing some statistical calculations, one wants to make an actual *decision* based on those calculations. 
+For example, consider the problem of screening someone for a disease.
+Suppose you have computed, based on some preliminary medical tests, the (posterior) probability that a particular individual has the disease. The next step might be to decide, say, whether to treat the patient with a drug for the disease. 
+Or perhaps whether to do some
+further tests that are more invasive or more expensive, but more conclusive
+than the tests done up to now.
+
+Intuitively, in making such a decision, it makes sense to take account of the
+relative costs of different types of mistake. For example, if the treatment
+for a disease is cheap, simple, and has no side effects, then one might be inclined
+to treat even individuals who have a low probability of the disease, and not
+spend resources on expensive follow up. 
+On the other hand, if the treatment is expensive and complex,
+and has many side effects (which is perhaps more typical) then one would certainly
+want to avoid treating individuals who did not have the disease!
+
+More generally, in making a decision in the face of uncertainty, 
+it makes sense that one should conside the costs of different types of mistake.
+This vignette describes how this could be done.
+
+# Example
+
+We will consider this problem in the case of a disease diagnosis, before
+outlining the general framework.
+
+To keep things simple we will assume that there are only two options available
+to us: to treat the individual with a particular drug, or not to treat and send
+them away and tell them to come back if their symptoms get worse. That is
+"treat" or "don't treat".
+
+Taking account of the fact that the individual might or might not have the disease
+there are therefore four possible outcomes: 
+- the individual is diseased, and we treat them 
+- the individual is not diseased, and we treat them. 
+- the individual is diseased, and we do not treat them. 
+- the individual is not diseased and we do not treat them. 
+We will write these four outcomes as $(D,T), (\neg  D,T), (D,\neg T), (\neg D,\neg T)$ respectively.
+(The symbol $\neg$ is common mathematical shorthand for "not".)
+
+Some of these outcomes are obviously better than others, and our actions
+should of course reflect this. To do this we have to *quantify* how bad or good
+each outcome is. We suppose that we can do this by assigning a "loss" 
+to each outcome, saying how bad it is (relative to other outcomes). 
+This loss should, in principle, 
+take account of all features of each outcome - including 
+financial costs, emotional costs, patient suffering etc. 
+(Losses can be negative, to indicate a better outcome - see note on utility below.)
+
+Obviously assigning losses that really capture all these features is context-dependent, subjective, and ultimately
+extremely difficult in practice! However, this difficulty
+doesn't change the ultimate logic that our decision should depend on
+such considerations. Further, if we try to get around the practical difficulty
+by not *explicitly* assigning losses
+to outcomes, in the end, by making a decision, we will inevitably 
+be making implicit assumptions about these costs. The danger is that
+these implicit assumptions may turn out to be patently ridiculous, but we
+would not notice this because we never made them explicit! 
+(And one cannot get around the whole problem by "not making a decision",
+because that, in itself, is making a decision.)
+
+Having assigned losses, the idea is that a decision can be made as follows: 
+compute the *expected loss* under each action, and choose the action that minimizes this expected loss. (Because the expectation is computed conditional on having seen
+certain data it is referred to as the "posterior expected loss".)
+
+To illustrate, suppose we assign losses as follows:
+$$L(D,T) = 10$$
+$$L(\neg D,T) = 20$$
+$$L(D,\neg T) = 100$$
+$$L(\neg D,\neg T) = 0$$
+We will return to what these losses "mean" below.
+Now suppose we have an individual whose probability of disease has
+been computed as 0.5. That is $Pr(Z=D)=Pr(Z=\neg D)= 0.5$. 
+Then the expected loss under the decision $T$ is
+$$E(L(Z,T)) = 0.5 L(D,T) + 0.5 L(\neg D,T) = 15.$$
+And the expected loss under the decision $\neg T$ is
+$$E(L(Z,\neg T)) = 0.5 L(D,\neg T) + 0.5 L(\neg D,\neg T) = 50.$$
+So in this case we would decide to treat, because that decision has
+the smaller expected loss.
+
+# The decision depends only on the ratio of losses for "errors"
+
+Note a couple of things that should be clear from this example.
+First, if we added some constant to both the losses for a particular
+disease status then the outcome would not change. For example,
+suppose we add c to both $L(D,T)$ and $L(D,\neg T)$.
+Then the expected loss under the decision $T$ is
+$$E(L(Z,T)) = 0.5 [L(D,T)+c] + 0.5 L(\neg D,T) = 15+0.5c.$$
+And the expected loss under the decision $\neg T$ is
+$$E(L(Z,\neg T)) = 0.5 [L(D,\neg T)+c] + 0.5 L(\neg D,\neg T) = 50+0.5c.$$
+So we still choose $T$, whatever value of $c$.
+
+Similarly if we add c to both $L(\neg D,T)$ and $L(\neg D,T)$.
+
+And this invariance of optimal action 
+is true whatever the posterior probability $Pr(Z=D)$. (Try changing it!)
+
+From this it follows that, for each possible outcome, we can always subtract a constant from all the losses so that one of the losses is 0, without changing the
+decision. In our example one of the losses for $\neg D$ is already 0. But let's subtract
+10 from the losses for $D$, and we get:
+$$L(D,T) = 0$$
+$$L(\neg D,T) = 20$$
+$$L(D,\neg T) = 90$$
+$$L(\neg D,\neg T) = 0$$
+
+More generally, this shows that we can just assume the losses for 
+$L(D,T)$ and $L(\neg D,\neg T)$ are 0, and only specify two numbers instead of four.
+
+Furthermore it is clear that if we multiply all the losses by a (positive) constant
+then this does not change the optimal action: because it just multiplies
+all the expected losses by the same constant. Using this fact we can arbitrarily
+set one of the non-zero losses to 1. For example, we would get exactly the same
+decision rule with losses:
+$$L(D,T) = 0$$
+$$L(\neg D,T) = 2/9$$
+$$L(D,\neg T) = 1$$
+$$L(\neg D,\neg T) = 0.$$
+
+So now it suffices to specify just one number. This number is the ratio
+of the losses $L(\neg D,T)/L(D,\neg T)$. The argument above shows that the optimal action will depend on the losses only through this number! 
+
+This example is an example of a 2-class decision rule: there are two possible underlying classes (diseased, and normal), and two possible actions, which here 
+are "treat" and "don't treat", which can be thought of as corresponding to "classify as diseased" and "classify as normal".
+
+# The general calculation
+
+Consider selecting between two models/classes. We can call them $H_0$ and $H_1$ if you like. Suppose that one of them is "true", but we don't know which one.
+Let $c_{i|j}$ denote the loss for choosing $H_i$ if $H_j$ is true.
+So, for example, $c_{1|0}$ is the cost of selecting $H_1$ if $H_0$ is true,
+which in traditional hypothesis testing terminology might be called
+the cost of a "type I error."  Similarly $c_{0|1}$ is the cost of a type II error. Assume that if you make the right choice then you lose zero:
+$c_{0|0}=c_{1|1}=0$.
+
+If we select $H_0$ the posterior expected loss is:
+Posterior expected loss($H_0$) = $p(H_1 | x) c_{0|1}$
+
+If we select $H_1$ the posterior expected loss is:
+Posterior expected loss($H_1$) = $p(H_0 | x) c_{1|0}$
+
+So we choose $H_1$ if $p(H_1 | x) c_{0|1} > p(H_0 | x) c_{1|0}$.
+That is if the posterior odds $p(H_1 | x)/p(H_0 | x) > c_{1|0}/c_{0|1}$.
+
+Remember that the posterior odds is the LR times the Prior Odds. So 
+the quantities that go into the calculation are i) the LR, ii) the prior odds,
+iii) the cost ratio.
+
+If costs are equal, then threshold for posterior odds is 1.
+If cost of type I error is higher than cost of type II error
+then threshold is higher.
+
+# Utility vs Loss
+
+Note: in statistics the decision problem is usually phrased as above, in terms of minimizing "loss". But in economics one often phrases the problem in terms of maximizing "utility". In this case each outcome is assigned a utility,
+quantifying how good it is relative
+to other outcomes. The two formulations are essentially
+equivalent - the loss is just the negative
+of the utility and vice versa.
+
+## Session information
+
+```{r info}
+sessionInfo()
+```

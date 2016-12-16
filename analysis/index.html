@@ -7,17 +7,18 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 
 <title>Home</title>
 
-<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="libs/bootstrap-3.3.1/css/united.min.css" rel="stylesheet" />
-<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
-<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
-<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 
 <style type="text/css">
 
@@ -74,6 +75,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 
+
 </head>
 
 <body>
@@ -88,12 +90,55 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img { 
-  max-width:100%; 
-  height: auto; 
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
 }
 </style>
+
+
 <div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
 
 
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -116,8 +161,11 @@ img {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
+
+
 <h1 class="title">Home</h1>
+
 </div>
 
 <div id="TOC">
@@ -125,43 +173,112 @@ img {
 <li><a href="#inference">Inference</a><ul>
 <li><a href="#likelihood-ratio-and-likelihood">Likelihood Ratio and Likelihood</a></li>
 <li><a href="#simple-bayesian-inference">Simple Bayesian Inference</a></li>
-<li><a href="#stochastic-processes">Stochastic Processes</a></li>
+<li><a href="#decision-theory">Decision Theory</a></li>
+<li><a href="#mixture-models">Mixture Models</a></li>
+<li><a href="#bayesian-computation">Bayesian Computation</a></li>
+<li><a href="#markov-chain-monte-carlo">Markov Chain Monte Carlo</a></li>
 </ul></li>
+<li><a href="#stochastic-processes">Stochastic Processes</a><ul>
+<li><a href="#discrete-time-markov-chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#poisson-processes">Poisson Processes</a></li>
+<li><a href="#methods-for-sampling-non-standard-distributions">Methods for sampling non-standard distributions</a></li>
+<li><a href="#multivariate-normal">Multivariate Normal</a></li>
+</ul></li>
+<li><a href="#population-genetics">Population Genetics</a></li>
 </ul>
 </div>
 
-<p><strong>Last updated:</strong> 2016-01-31</p>
-<p><strong>Code version:</strong> c8c677bb060d7b9183bbe7a9080b9bbf72d23df8</p>
+<p><strong>Last updated:</strong> 2016-05-17</p>
+<p><strong>Code version:</strong> 6bb45604f2d858461070fc2097b5bb600d913596</p>
 <div id="inference" class="section level2">
 <h2>Inference</h2>
 <div id="likelihood-ratio-and-likelihood" class="section level3">
 <h3>Likelihood Ratio and Likelihood</h3>
 <ul>
-<li><p><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></p></li>
-<li><p><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></p></li>
-<li><p><a href="likelihood_do_dont.html">Likelihood Ratios: Examples and Pitfalls</a></p></li>
-<li><p><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></p></li>
-<li><p><a href="wilks.html">Likelihood Ratios: Wilks’s Theorem</a></p></li>
-<li><p><a href="likelihood_function.html">The Likelihood Function</a></p></li>
-<li><p><a href="asymptotic_normality_mle.html">Asymptotic Normality of MLE</a></p></li>
+<li><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></li>
+<li><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></li>
+<li><a href="likelihood_do_dont.html">Likelihood Ratios: Examples and Pitfalls</a></li>
+<li><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></li>
+<li><a href="wilks.html">Likelihood Ratios: Wilks’s Theorem</a></li>
+<li><a href="likelihood_function.html">The Likelihood Function</a></li>
+<li><a href="asymptotic_normality_mle.html">Asymptotic Normality of MLE</a></li>
 </ul>
 </div>
 <div id="simple-bayesian-inference" class="section level3">
 <h3>Simple Bayesian Inference</h3>
 <ul>
 <li><a href="bayes_multiclass.html">Posterior Distribution for multi-model comparisons</a></li>
+<li><a href="shiny_normal_example.html">Simple example: Bayesian inference for normal mean (known variance)</a></li>
+<li><a href="BF_and_pvalue.html">Relationship between Bayes Factor and p value</a></li>
 </ul>
 </div>
-<div id="stochastic-processes" class="section level3">
-<h3>Stochastic Processes</h3>
+<div id="decision-theory" class="section level3">
+<h3>Decision Theory</h3>
 <ul>
-<li><p><a href="markov_chains_discrete_introduction.html">Discrete Markov Chains: Introduction</a></p></li>
-<li><p><a href="markov_chains_discrete_stationary_dist.html">Discrete Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></p></li>
-<li><p><a href="stationary_distribution.html">Discrete Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></p></li>
-<li><p><a href="simulating_discrete_chains_1.html">Simulating Discrete Markov Chains: An Introduction</a></p></li>
-<li><p><a href="simulating_discrete_chains_2.html">Simulating Discrete Markov Chains: Limiting Distributions</a></p></li>
+<li><a href="decisions_costs_intro.html">Making a decision under uncertainty: the two class problem</a></li>
 </ul>
 </div>
+<div id="mixture-models" class="section level3">
+<h3>Mixture Models</h3>
+<ul>
+<li><a href="intro_to_mixture_models.html">Introduction to Mixture Models</a></li>
+<li><a href="intro_to_em.html">Introduction to EM: Gaussian Mixture Models</a></li>
+</ul>
+</div>
+<div id="bayesian-computation" class="section level3">
+<h3>Bayesian Computation</h3>
+<ul>
+<li><a href="integral.html">Every Bayesian computation is an integral (or a sum)</a></li>
+<li><a href="Importance_sampling.html">Importance sampling</a></li>
+</ul>
+</div>
+<div id="markov-chain-monte-carlo" class="section level3">
+<h3>Markov Chain Monte Carlo</h3>
+<ul>
+<li><a href="gibbs1.html">Introduction to Gibbs Sampling</a></li>
+<li><a href="gibbs2.html">Gibbs Sampling for a simple normal mixture</a></li>
+</ul>
+</div>
+</div>
+<div id="stochastic-processes" class="section level2">
+<h2>Stochastic Processes</h2>
+<div id="discrete-time-markov-chains" class="section level3">
+<h3>Discrete-Time Markov Chains</h3>
+<ul>
+<li><p><a href="markov_chains_discrete_intro.html">Discrete-Time Markov Chains: Introduction</a></p></li>
+<li><p><a href="stationary_distribution.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></p></li>
+<li><p><a href="markov_chains_discrete_stationary_dist.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></p></li>
+<li><p><a href="simulating_discrete_chains_1.html">Simulating Discrete-Time Markov Chains: An Introduction</a></p></li>
+<li><p><a href="simulating_discrete_chains_2.html">Simulating Discrete-Time Markov Chains: Limiting Distributions</a></p></li>
+</ul>
+</div>
+<div id="poisson-processes" class="section level3">
+<h3>Poisson Processes</h3>
+<ul>
+<li><a href="poisson_process_time_dependent_thinning.html">Poisson Processes: Thinning with time-dependent probabilities</a></li>
+<li><a href="bernoulli_poisson_process.html">Poisson Process: The Limiting Case of the Bernoulli Process</a></li>
+</ul>
+</div>
+<div id="methods-for-sampling-non-standard-distributions" class="section level3">
+<h3>Methods for sampling non-standard distributions</h3>
+<ul>
+<li><a href="inverse_transform_sampling.html">Inverse Transform Sampling</a></li>
+</ul>
+</div>
+<div id="multivariate-normal" class="section level3">
+<h3>Multivariate Normal</h3>
+<ul>
+<li><a href="mvnorm.html">Multivariate Normal</a></li>
+<li><a href="normal_markov_chain.html">Normal Markov Chain</a></li>
+</ul>
+</div>
+</div>
+<div id="population-genetics" class="section level2">
+<h2>Population Genetics</h2>
+<ul>
+<li><a href="wright_fisher_model.html">Wright-Fisher Model</a></li>
+<li><a href="approx_wright_fisher_model.html">Wright-Fisher Model Approximations</a></li>
+</ul>
 </div>
 
 
@@ -189,6 +306,8 @@ $(document).ready(function () {
 });
 
 </script>
+
+
 
 </div>
 

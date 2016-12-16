@@ -168,7 +168,7 @@ your code should probably include a function something like this:
 #' @example simulation_study(1000,1000,(0.40, 0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100))
 #'
 #'
-simulation_study(nS,nF,fS,fF,c){
+simulation_study(nS,nF,fS,fF,lc){
 ...
 }
 ```

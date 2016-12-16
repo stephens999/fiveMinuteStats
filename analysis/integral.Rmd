@@ -1,0 +1,71 @@
+---
+title: "Every Bayesian computation is an integral (or a sum)"
+author: "Matthew Stephens"
+date: 2016-05-02
+---
+
+**Last updated:** `r Sys.Date()`
+
+**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+
+```{r chunk-options, include=FALSE}
+source("chunk-options.R")
+```
+
+# Pre-requisites
+
+Be familiar with basic probability and Bayesian calculations.
+
+# Overview
+
+The goal here is simply to point out that everything you want to compute in Bayesian calculations is an integral.
+
+# Examples
+
+Consider inference for a parameter $\theta$ from data $D$.
+
+The posterior distribution of $\theta$ is 
+given by Bayes Theorem
+
+$$p(\theta | D) = p(\theta) p(D | \theta)/ p(D)$$
+
+First note that the denominator $p(D)$ is an integral:
+$$p(D) = \int p(D | \theta) p(\theta) d\theta$$.
+
+Now suppose we want to estimate $\theta$ by its posterior mean.
+This is
+$$E(\theta | D) = \int \theta p(\theta |D ) d\theta.$$
+
+
+And if we want to find a 90% posterior credible interval for $\theta$ then we want to find $A$ and $B$ such that $\Pr(\theta \in [A,B] | D) = 0.9$.
+Note that the LHS of this is
+$$\Pr(\theta \in [A,B]|D) = \int I(\theta \in [A,B]) p(\theta | D) d\theta,$$
+where $I(E)$ denotes the indicator function for the event $E$, which takes the value 1 if $E$ is true and $0$ otherwise. 
+
+
+# Examples: discrete
+
+Of course, if $\theta$ is discrete then the integrals above all become sums.
+
+For example
+$$E(\theta | D) = \sum_n \theta_n \Pr(\theta=\theta_n | D)$$
+where $\theta_1,\theta_2,\dots$ are the possible values for $\theta$.
+
+# Summary
+
+Pretty much all the things you want to compute when doing Bayesian inference are integrals (or sums) of one kind or another...
+
+If you are computing 1-dimensional integrals then numerical methods
+are often useful. For example, Simpsons Rule, Gaussian Quadrature.
+These can also work in 2-dimensions, and maybe even 3 or 4.
+
+Other simple methods that can work for low dimensions: naive Monte Carlo, and Importance Sampling. Also Laplace approximation.
+
+For higher dimensions we usually resort to Markov Chain Monte Carlo.
+
+
+## Session information
+
+```{r info}
+sessionInfo()
+```
