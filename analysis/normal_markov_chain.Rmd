@@ -94,6 +94,5 @@ the non-zero elements of the $t$th row are at coordinates $t-1,t$ and $t+1$.
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

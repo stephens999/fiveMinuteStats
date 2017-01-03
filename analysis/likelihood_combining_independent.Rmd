@@ -47,6 +47,5 @@ print(LR)
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -216,6 +216,5 @@ plot(ee[[2]], ylab='incomplete log-likelihood', xlab='iteration')
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

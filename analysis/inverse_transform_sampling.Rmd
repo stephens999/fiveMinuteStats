@@ -106,6 +106,5 @@ Again, the plot supports our claim that we are drawing from the true probability
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

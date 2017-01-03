@@ -106,6 +106,5 @@ NOTE: If you want to actually generate multivariate normal random variables in R
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

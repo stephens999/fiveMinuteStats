@@ -78,6 +78,5 @@ posterior_prob(L_vec, c(0.2,0.2,0.2,0.2,0.2))
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -55,6 +55,5 @@ The source code of the app can be found [here](https://github.com/road2stat/conj
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

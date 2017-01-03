@@ -128,6 +128,5 @@ e) Repeat the above, but in the case where only 2% of the screened population ar
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

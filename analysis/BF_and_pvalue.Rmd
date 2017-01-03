@@ -84,6 +84,5 @@ Note some key features:
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

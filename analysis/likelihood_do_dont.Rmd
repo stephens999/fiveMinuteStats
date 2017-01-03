@@ -82,6 +82,5 @@ This is called "informative missingness", and to compute the LR our models would
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

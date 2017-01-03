@@ -76,6 +76,5 @@ The fact that the LLR is very negative supports the graphical evidence that $M_2
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -66,6 +66,5 @@ diag(1/pi0)%*%t(P)%*%diag(pi0)
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

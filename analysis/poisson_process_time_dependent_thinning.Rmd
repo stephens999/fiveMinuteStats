@@ -190,6 +190,5 @@ A further challenge: Consider each arrival is initially of type 0 and that the p
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

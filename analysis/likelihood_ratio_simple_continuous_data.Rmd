@@ -122,6 +122,5 @@ approximately constant within the neighborhood of $x$ that has radius equal to t
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

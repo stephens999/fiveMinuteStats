@@ -164,6 +164,5 @@ abline(h=8, lty=3)
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -100,6 +100,5 @@ about what scale you use when plotting log-likelihoods (and, of course, figures 
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

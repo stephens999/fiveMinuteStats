@@ -170,6 +170,5 @@ For example, to get 90% posterior CIs for the mean parameters:
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

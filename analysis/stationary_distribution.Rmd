@@ -105,6 +105,5 @@ One challenge though is that we need the constrained solution which respects tha
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

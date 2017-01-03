@@ -177,6 +177,5 @@ of the utility and vice versa.
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

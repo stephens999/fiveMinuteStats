@@ -109,6 +109,5 @@ pnorm(100,lower.tail=FALSE,log=TRUE)
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -66,6 +66,5 @@ For higher dimensions we usually resort to Markov Chain Monte Carlo.
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

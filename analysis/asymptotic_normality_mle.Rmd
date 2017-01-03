@@ -87,6 +87,5 @@ hist(samples, freq=F)
 curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0.4, 1.2, lwd=2, xlab = "", ylab = "", add = T)
 ```
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -49,6 +49,5 @@ plot(theta, l(theta)-l(0.5), xlab="theta", ylab="l(theta)-l(0.5)",type="l")
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -195,6 +195,5 @@ Repeat after me:
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

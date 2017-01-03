@@ -153,6 +153,5 @@ And the solution checks out!
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

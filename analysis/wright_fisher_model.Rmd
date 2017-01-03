@@ -178,6 +178,5 @@ The horizontal facet is the starting frequency and the vertical facet is the eff
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

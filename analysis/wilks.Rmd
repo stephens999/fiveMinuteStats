@@ -74,8 +74,7 @@ hist(samples, freq=F, main='Histogram of LLR', xlab='sampled values of LLR value
 curve(dchisq(x, 1), 0, 20, lwd=2, xlab = "", ylab = "", add = T)
 ```
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```
 
 

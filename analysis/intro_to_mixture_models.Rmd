@@ -125,6 +125,5 @@ Now assume we are in the Gaussian mixture model setting where the $k$-th compone
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

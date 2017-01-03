@@ -98,6 +98,5 @@ see shiny app [here!](https://jhmarcus.shinyapps.io/daf_approximation/) Note tha
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

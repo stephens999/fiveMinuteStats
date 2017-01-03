@@ -80,6 +80,5 @@ Note that after a large number of steps the initial state does not matter any mo
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

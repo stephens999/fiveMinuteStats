@@ -254,6 +254,5 @@ legend('topright', paste('state.', 1:8, sep=''), lty=1, col=1:8)
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

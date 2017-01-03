@@ -93,6 +93,5 @@ and sees two heads, then this is not strong evidence against the hypothesis that
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

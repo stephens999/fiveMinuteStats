@@ -128,6 +128,5 @@ compare.density(bern.process[[11]], 2^(-shrink.vec[11]))
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```
