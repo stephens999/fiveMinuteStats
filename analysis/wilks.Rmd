@@ -2,10 +2,7 @@
 title: "Likelihood Ratio: Wilks's Theorem"
 author: "Matt Bonakdarpour"
 date: 2016-01-14
-output: 
-  html_document:
-    mathjax: default
-    keep_md: true
+output: html_document
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -19,7 +16,6 @@ knitr::read_chunk("chunks.R")
 ```{r knitr-opts-chunk, include=FALSE}
 ```
 
-```
 ## Pre-requisites
 
 This document assumes familiarity with the concepts of likelihoods, [likelihood ratios](likelihood_ratio_simple_models.html), and hypothesis testing. 
@@ -79,7 +75,3 @@ curve(dchisq(x, 1), 0, 20, lwd=2, xlab = "", ylab = "", add = T)
 
 ```{r session-info}
 ```
-
-
-
-
