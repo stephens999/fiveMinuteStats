@@ -14,6 +14,11 @@ knitr::read_chunk("chunks.R")
 
 ```{r knitr-opts-chunk, include=FALSE}
 ```
+
+This is a work-in-progress.
+
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
 # Pre-requisites
