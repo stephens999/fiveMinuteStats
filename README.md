@@ -26,5 +26,16 @@ update videos.
 
 If you are interested in these ideas, please get in touch, mstephenskanga@roouchicago.edu (remove the marsupial).
 
-The directory structure is probably more complex than it needs to be, because it was based
-on a template which we use for projects more generally. For most purposes you will only need to look at the vignettes, which are in the "analysis" subdirectory.  
+# For contributors
+
+The repo is organized using John Blischak's workflowr package https://github.com/jdblischak/workflowr.
+Each vignette is an Rmarkdown file, saved in the 'analysis' subdirectory. To add a vignette follow this
+instructions for "adding an analysis" under workflowr. (the key command is
+
+`> rmarkdown::draft(file = "analysis/newfile.Rmd", template = "analysis",
+                   package = "workflowr")`
+
+)
+
+
+ 
