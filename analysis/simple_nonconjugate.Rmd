@@ -8,8 +8,11 @@ date: YYYY-MM-DD
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Pre-requisites
@@ -53,12 +56,15 @@ log_post = function(b){
 
 Let's compute a 95% CI for $\theta$.
 First try a discrete grid
-```{r}
+
+**Note:** This is still a work in progress.
+
+```{r eval=FALSE}
 m = seq(-10,10,length=100)
 t = seq(-2,2,length=100)
 df = expand.grid(m=m,t=t)
 head(df)
-df = c(df,dplyr::ddply(df,log_post))
+#df = c(df,dplyr::ddply(df,log_post))
 
 ```
 
@@ -68,6 +74,5 @@ df = c(df,dplyr::ddply(df,log_post))
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

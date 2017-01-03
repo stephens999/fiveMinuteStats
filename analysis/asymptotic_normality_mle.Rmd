@@ -11,8 +11,11 @@ output:
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 ## Main Result
@@ -87,6 +90,5 @@ hist(samples, freq=F)
 curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0.4, 1.2, lwd=2, xlab = "", ylab = "", add = T)
 ```
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -8,8 +8,11 @@ date: 2016-01-06
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 
@@ -195,6 +198,5 @@ Repeat after me:
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -8,8 +8,11 @@ date: 2016-01-22
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Prerequisites
@@ -125,6 +128,5 @@ Now assume we are in the Gaussian mixture model setting where the $k$-th compone
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```
