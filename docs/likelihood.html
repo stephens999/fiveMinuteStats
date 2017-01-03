@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-01-04" />
+
+<title>Likelihood</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Likelihood</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-04</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2017-01-02</p>
+<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Be familiar with the concept of a <a href="model.html">Statistical Model</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The concept of “likelihood” is one of the most important in all of statistics. It plays a central role in performing inference, particularly in parametric inference - that is, in inferring plausible values of some unknown parameter from observed data.</p>
+<p>Outside of statistics the term likelihood is generally used as a synonym for probability. However, in statistics it has a specific technical usage. It is therefore important for students of statistics to learn the correct technical use of the term likelihood.</p>
+</div>
+<div id="definition" class="section level1">
+<h1>Definition</h1>
+<div id="likelihood-function" class="section level2">
+<h2>Likelihood Function</h2>
+<p>Let <span class="math inline">\(M\)</span> be a parametric statistical model for a random variable <span class="math inline">\(X\)</span>. Recall that this means that, for each value of a parameter <span class="math inline">\(\theta\)</span> in a parameter space <span class="math inline">\(\Theta\)</span>, <span class="math inline">\(M\)</span> defines a distribution <span class="math inline">\(p(\cdot; \theta)\)</span> for <span class="math inline">\(X\)</span>. Here <span class="math inline">\(p(\cdot ; \theta)\)</span> is a probability mass function if <span class="math inline">\(X\)</span> is discrete, and a probability density function if <span class="math inline">\(X\)</span> is continuous.</p>
+<p>The likelihood function (or just “likelihood”) for <span class="math inline">\(\theta\)</span>, given observed data <span class="math inline">\(X=x\)</span>, is defined by <span class="math display">\[L(\theta):=p(x; \theta).\]</span></p>
+<p>As should be clear from this definition, the likelihood depends on the observed data <span class="math inline">\(x\)</span>, and it can be useful to make this dependence explicit. To do this it is common to use the notation <span class="math inline">\(L(\theta; x)\)</span> for the likelihood: <span class="math inline">\(L(\theta;x):=p(x; \theta)\)</span>. [The alternative notation <span class="math inline">\(L(\theta | x)\)</span> is also sometimes used, but best avoided in this author’s opinion because it invites misinterpreting <span class="math inline">\(L\)</span> as a conditional distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span>, which it is not.]</p>
+</div>
+<div id="alternative-approach-for-continuous-random-variables" class="section level2">
+<h2>Alternative approach for continuous random variables</h2>
+<p>The definition above concerns the most common usage of likelihood: that is, the likelihood function for a parametric model. However, likelihood is also sometimes used for simple models. If <span class="math inline">\(M\)</span> is a simple model, it defines a single distribution for <span class="math inline">\(X\)</span>, <span class="math inline">\(p(x; M)\)</span> say. In this case we say that the likelihood for <span class="math inline">\(M\)</span> is a single number, <span class="math display">\[L(M; x):=p(x; M).\]</span></p>
+</div>
+<div id="likelihood-for-simple-models" class="section level2">
+<h2>Likelihood for simple models</h2>
+<p>The definition above concerns the likelihood function for a parametric model, which is the most common usage of likelihood. However, likelihood is also sometimes used for simple models. If <span class="math inline">\(M\)</span> is a simple model, it defines a single distribution for <span class="math inline">\(X\)</span>, <span class="math inline">\(p(x; M)\)</span> say. In this case the likelihood for <span class="math inline">\(M\)</span> is a single number, given by <span class="math display">\[L(M; x):=p(x; M).\]</span></p>
+</div>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<div id="coin-tossing" class="section level2">
+<h2>Coin Tossing</h2>
+<p>Suppose we obtain data by tossing a coin 3 times and recording the outcomes. The possible outcomes are S={HHH,HHT,HTH,HTT,THH,THT,TTH,TTT} where H denotes the coin landing heads and T denotes tails (so, for example, HTH denotes the outcome where the first toss lands heads, the second lands tails, and the third lands heads).</p>
+<p>Consider the parametric model which assumes that the tosses are independent, and that at each toss the probability of a head is <span class="math inline">\(\theta \in [0,1]\)</span>. Suppose that the outcome of the experiment is <span class="math inline">\(x=HTH\)</span>. Then the likelihood for <span class="math inline">\(\theta\)</span> is given by <span class="math display">\[L(\theta) = \theta(1-\theta)\theta = \theta^2 (1-\theta).\]</span></p>
+<p>We can plot the likelihood as a function of theta:</p>
+<pre class="r"><code>theta = seq(0,1,length=100)
+L =function(theta){theta^2 * (1-theta)}
+plot(theta, L(theta), xlab=&quot;theta&quot;, ylab=&quot;L(theta)&quot;,type=&quot;l&quot;)</code></pre>
+<p><img src="figure/likelihood.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="interpretation-and-importance-of-likelihood-ratio" class="section level1">
+<h1>Interpretation, and importance of likelihood ratio</h1>
+<p>There are two important things to note about the likelihood.</p>
+<p>First, for any given value of <span class="math inline">\(\theta\)</span>, <span class="math inline">\(\theta_0\)</span> say, <span class="math inline">\(L(\theta_0)\)</span> is a measure of how consistent the observed data are with the parameter value <span class="math inline">\(\theta=\theta_0\)</span>. That is, <span class="math inline">\(L(\theta_0)\)</span> is a measure of support for <span class="math inline">\(\theta=\theta_0\)</span>, with big values indicating stronger support.</p>
+<p>However, at the same time, what values of the likelihood correspond to “strong” support or “weak” support depends on the context. In this sense the likelihood is not an “absolute” measure of support. Instead, it turns out that the correct interpretation of the likelihood is as a <em>relative</em> measure of support. In other words, the likelihood ratio <span class="math inline">\(L(\theta_1)/L(\theta_0)\)</span> measures the relative support for <span class="math inline">\(\theta=\theta_1\)</span> vs <span class="math inline">\(\theta=\theta_0\)</span>, with large values indicating stronger relative support for <span class="math inline">\(\theta=\theta_1\)</span>. For example, a likelihood ratio of 10 means that the data provide 10 times stronger support for <span class="math inline">\(\theta=\theta_1\)</span> than for <span class="math inline">\(\theta=\theta_0\)</span>.</p>
+<p>Because of this one should focus on likelihood ratios, rather than likelihoods. Indeed, many treatments of likelihood consider the likelihood function to be defined only up to some arbitrary multiplicative constant.</p>
+<div id="example-coin-tossing" class="section level2">
+<h2>Example: Coin-tossing</h2>
+<p>Returning now to the coin-tossing example, we realize that the likelihoods we plotted before could be more interpretable if they were plotted as likelihood ratios. A simple way to turn the likelihood into a ratio is to take the <span class="math inline">\(L(\theta)/L(\theta_0)\)</span> for some fixed <span class="math inline">\(\theta_0\)</span>. In this case we take <span class="math inline">\(\theta_0=0.5\)</span>, which corresponds to the case of a “fair coin”. Here is the plot:</p>
+<pre class="r"><code>plot(theta, L(theta)/L(0.5), xlab=&quot;theta&quot;, ylab=&quot;L(theta)/L(0.5)&quot;,type=&quot;l&quot;)</code></pre>
+<p><img src="figure/likelihood.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Of course, dividing by a constant has not changed the shape of the likelihood, it has only changed the scale of the <span class="math inline">\(y\)</span> axis. But the numbers themselves have become at least a little more intepretable. For example, we can see that the value of <span class="math inline">\(\theta\)</span> that has strongest support from the data (i.e. the one with the largest likelihood, which in this case is <span class="math inline">\(\theta=2/3\)</span>) has a likelihood that is roughly 1.2 times as big as the likelihood for <span class="math inline">\(\theta=0.5\)</span>.</p>
+<p>One might intuitively feel that a factor of 1.2 is not especially noteworthy, and this would be correct. Indeed, this accords with the intuition that if one tosses a coin 3 times, and sees two heads, then this is not strong evidence against the hypothesis that the coin is fair, with equal probability of landing heads and tails. This intuitive notion can be formalized in various ways, including by the use of <a href="wilks.html">Wilks’s Theorem</a> and <a href="bayes_lr.html">Bayesian analysis</a>.</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] rmarkdown_1.1
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
+ [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
+[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

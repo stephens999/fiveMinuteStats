@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-01-06" />
+
+<title>Comparing two models with a likelihood ratio</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Comparing two models with a likelihood ratio</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-06</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2017-01-02</p>
+<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>This document introduces the concept of likelihood ratio for comparing two simple (“fully specified”) statistical models - one of the most fundamental concepts in statistical inference.</p>
+</div>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Be familiar with basic concepts from probability, particularly the concept of a probability distribution.</p>
+</div>
+<div id="motivating-problem" class="section level1">
+<h1>Motivating Problem</h1>
+<p>[Technical Note: to simplify this problem I have assumed that elephants are haploid, which they are not. If you do not know what this means you should simply ignore this comment.]</p>
+<p>There are two subspecies of African Elephant: savannah and forest elephants, which differ in their genetic makeup. Interpol have seized an illegally-smuggled elephant tusk, and they want to know which subspecies of elephant the tusk came from. To try to answer this they collect DNA from the tusk and measure it at a number of locations (“markers” in genetics jargon) along the elephant genome. At each marker the DNA can be one of two types (“alleles” in genetics jargon), which for simplicity we will label 0 and 1. So the available data on the tusk might look something like this.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Marker</th>
+<th>Allele</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Interpol also have information on the frequency of each allele in each of the two subspecies - this was obtained by measuring the DNA of a large number of savanna elephants and a large number of forest elephants. We will use <span class="math inline">\(f_{Sj}\)</span> and <span class="math inline">\(f_{Fj}\)</span> to denote the frequency of “1” allele at marker <span class="math inline">\(j\)</span> in savanna and forest elephants respectively (and since there are only two alleles, the frequency of the 0 allele is <span class="math inline">\(1-f_{Sj}\)</span> and <span class="math inline">\(1-f_{Fj}\)</span>). Here is a table of this information.</p>
+<table>
+<thead>
+<tr class="header">
+<th>marker</th>
+<th><span class="math inline">\(f_S\)</span></th>
+<th><span class="math inline">\(f_F\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0.40</td>
+<td>0.80</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0.12</td>
+<td>0.20</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0.21</td>
+<td>0.11</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0.12</td>
+<td>0.17</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>0.02</td>
+<td>0.23</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>0.32</td>
+<td>0.25</td>
+</tr>
+</tbody>
+</table>
+<p>The question before us is: Which subspecies of elephant did the tusk come from, and how confident should we be in this conclusion?</p>
+<p>To get some intuition, let us examine the data at the first few markers. At marker 1 our tusk has the allele 1. This allele is less common in savanna elephants than forest elephants (40% of savanna elephants carry this allele, vs 80% of forest elephants), so this observation seems to support the sample coming from forest. However, at the same time 40% of savanna samples carry this allele, so it remains plausible that the sample came from savanna.</p>
+<p>Moving to marker 2, our tusk has the allele 0, which is more common in savanna (88%) than forest elephants (80%). And at marker 3 the tusk has allele 1 which is also more common in savanna (21% vs 11%). So, in contrast to marker 1, the data at these two markers are more consistent with the tusk coming from a savanna elephant than a forest elephant.</p>
+<p>We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.</p>
+<p>(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See  and  for more details.)</p>
+</div>
+<div id="solution" class="section level1">
+<h1>Solution</h1>
+<p>We can phrase this problem as a “model comparison” problem. We have data <span class="math inline">\(X=x\)</span> from our tusk, and we have two different models for how those data might have arisen: it could have been sampled from a savanna elephant, or it could have been sampled from a forest elephant. We will use <span class="math inline">\(M_S\)</span> and <span class="math inline">\(M_F\)</span> as shorthand for these two models. A key point is that these two models imply different probability distributions for <span class="math inline">\(X\)</span>: some values of <span class="math inline">\(X\)</span> are more common under <span class="math inline">\(M_S\)</span> and others are more common under <span class="math inline">\(M_F\)</span>.</p>
+<p>Denoting the probability mass functions of these two distributions <span class="math inline">\(p(\cdot | M_S)\)</span> and <span class="math inline">\(p(\cdot | M_F)\)</span>, and assuming the data at different markers are independent, these probability distributions are: <span class="math display">\[p(x | M_S) = \prod_j f_{Sj}^{x_j} (1-f_{Sj})^{1-x_j}\]</span></p>
+<p>and <span class="math display">\[p(x | M_F) = \prod_j f_{Fj}^{x_j} (1-f_{Fj})^{1-x_j},\]</span></p>
+<p>where the values of <span class="math inline">\(f_S\)</span> and <span class="math inline">\(f_F\)</span> are given in the table above.</p>
+<p>Note that a key feature of these models is that they are “fully specified”. This means there are no unknown values in the probability distributions. Comparing fully-specified models is the simplest kind of model comparison, and so a good place to start in understanding the key concept of likelihood ratio introduced here.</p>
+<div id="the-likelihood-ratio" class="section level2">
+<h2>The likelihood ratio</h2>
+<p>The key idea to introduce here is that a useful summary of how strongly the data <span class="math inline">\(x\)</span> support one model vs another model is given by the “likelihood ratio” (LR).</p>
+<p>The LR comparing two fully-specified models is simply the ratio of the probability of the data under each model. (In saying the ``probability of the data&quot; here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail <a href="likelihood_ratio_simple_continuous_data.html">here</a>)</p>
+<p>The name Likelihood ratio comes from the fact that the probability of the data under each model is called the “likelihood” for that model. I recommended saying “likelihood for” the model, or “likelihood under” the model, rather than “likelihood of” the model, to help avoid confusing likelihood with probability.</p>
+<p>That is, given data <span class="math inline">\(x\)</span> the likelihood for a fully-specified (discrete) model <span class="math inline">\(M\)</span> is defined as</p>
+<p><span class="math display">\[L(M):=p(x | M)\]</span></p>
+<p>where <span class="math inline">\(p(\cdot | M)\)</span> denotes the probabilty mass function for model <span class="math inline">\(M\)</span>. And the likelihood ratio comparing two fully-specified (discrete) models <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is defined as</p>
+<p><span class="math display">\[LR(M_1, M_0) := L(M_1)/L(M_0).\]</span></p>
+<p>Note that the likelihood for <span class="math inline">\(M\)</span> depends on the data <span class="math inline">\(x\)</span>. To make this dependence explicit the likelihood is sometimes written <span class="math inline">\(L(M;x)\)</span> instead of just <span class="math inline">\(L(M)\)</span>. Large values of <span class="math inline">\(LR(M_1,M_0)\)</span> indicate that the data are much more probable under model <span class="math inline">\(M_1\)</span> than under model <span class="math inline">\(M_0\)</span>, and so indicate support for <span class="math inline">\(M_1\)</span>. Conversely, small values of <span class="math inline">\(LR\)</span> indicate support for model <span class="math inline">\(M_0\)</span>.</p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Using the numbers in the tables above we can compute the likelihood and LR for <span class="math inline">\(M_S\)</span> vs <span class="math inline">\(M_F\)</span>:</p>
+<pre class="r"><code>x = c(1,0,1,0,0,1)
+fS = c(0.40, 0.12,0.21,0.12,0.02,0.32)
+fF = c(0.8,0.2,0.11,0.17,0.23,0.25)
+L = function(f,x){ prod(f^x*(1-f)^(1-x)) }
+LR = L(fS,x)/L(fF,x)
+print(LR)</code></pre>
+<pre><code>[1] 1.81359</code></pre>
+<p>So <span class="math inline">\(LR(M_S,M_F;x)\)</span> is <code>1.8135904</code>. This means that the data favor the tusk coming from a savanna elephant by a factor of about 1.8. This is a fairly modest factor – not large enough to draw a convincing conclusion. We will have more to say about interpreting LRs, and what values might be considered “convincing” later.</p>
+<p>Note that we have deliberately focused on the likelihood ratio, and not the actual likelihood values themselves. This is because actual likelihood values are generally not useful - it is only the ratios that matter when comparing the models. One way of thinking about this is that the actual likelihood values are very context dependent, and so likelihoods from different data sets are not comparable with one another. However, the meaning of the likelihood ratio is in some sense consistent across contexts: LR =1.8 means that the data favour the first model by a factor of 1.8 whatever the context.</p>
+</div>
+</div>
+<div id="the-inverse-likelihood-ratio-and-the-log-likelihood-ratio" class="section level1">
+<h1>The inverse likelihood ratio, and the log-likelihood ratio</h1>
+<p>Notice that, from the definition of the LR, the LR for <span class="math inline">\(M_0\)</span> vs <span class="math inline">\(M_1\)</span> is the just inverse of the LR for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span>. That is <span class="math display">\[LR(M_0,M_1; x) = 1/LR(M_1,M_0; x).\]</span></p>
+<p>So, for example if <span class="math inline">\(LR(M_1,M_0)=0.01\)</span> then <span class="math inline">\(LR(M_0,M_1)=100\)</span> and the data favour <span class="math inline">\(M_0\)</span> vs <span class="math inline">\(M_1\)</span> by a factor of 100.</p>
+<p>For many reasons, it is common to work with the log likelihood ratio, <span class="math inline">\(LLR := log(LR)\)</span>. Usually mathematicians work with base logarithms base e, and we will use that convention unless otherwise stated. So, for example, if the LR=1.8 then LLR=<span class="math inline">\(\log_e\)</span>(1.8)=<code>0.5877867</code>.</p>
+<p>Although the usual convention is to use log base e, it can sometimes be useful to work with logarithms base 10 to make the inverse logarithm operation easier for human calculation. For example, if I tell you that the LLR, base 10, is 3 then you can immediately tell me that the LR is 1000.</p>
+</div>
+<div id="exercises" class="section level1">
+<h1>Exercises</h1>
+<ol style="list-style-type: decimal">
+<li><p>You are playing a game with a friend. The friend has two six-sided dice, one blue and one green. The sides on the blue dice are numbered 1,2,3,3,3, and 4. The sides on the green dice are labelled 1,2,2,3,4,4. He picks one of the dice without telling you, and rolls it 10 times, obtaining the results 3,3,2,3,1,2,3,3,4,3. Looking at these results, does intuition say that they support the green dice or the blue dice? Strongly or weakly? Phrase the problem as a model comparison problem. State your modelling assumptions, and compute a likelihood ratio. Does it support your intuition?</p></li>
+<li>(Read the whole question before starting!)</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><p>Perform the following simulation study. Simulate 1000 tusks (values of <span class="math inline">\(x\)</span>) from each of the models <span class="math inline">\(M_S\)</span> and <span class="math inline">\(M_F\)</span>. For each simulated tusk compute the LR for <span class="math inline">\(M_S\)</span> vs <span class="math inline">\(M_F\)</span>, so you have computed 2000 LRs. Now consider using the LR to classify each tusk as being from a savanna or a forest elephant. Recall that large values for LR indicate support for <span class="math inline">\(M_S\)</span>, so a natural classification rule is “classify as savanna if <span class="math inline">\(LR&gt;c\)</span>, otherwise classify as forest” for some threshold <span class="math inline">\(c\)</span>. Plot the misclassification rate (= number of tusks wrongly classified/2000) for this rule, as <span class="math inline">\(c\)</span> ranges from 0.01 to 100. What value of <span class="math inline">\(c\)</span> minimizes the misclassification rate? [Hint: the plot will look best if you do things on the log scale, so you could let log10(c) vary from -2 to 2 using an equally spaced grid, and plot the misclassification rate on the <span class="math inline">\(y\)</span> axis against log10(c) on the <span class="math inline">\(x\)</span> axis.]</p></li>
+<li><p>Repeat the above simulation study using 100 tusks from <span class="math inline">\(M_S\)</span> and 1900 tusks from <span class="math inline">\(M_F\)</span>. What value of <span class="math inline">\(c\)</span> minimizes the misclassification rate? Comment.</p></li>
+</ol>
+<p>Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using roxygen2 format. See <a href="http://kbroman.org/pkg_primer/pages/docs.html">Karl Broman’s tutorial</a> for example.</p>
+<p><em>DO NOT REPEAT THE SIMULATION STUDY BY COPYING AND PASTING CODE AND MODIFYING A FEW NUMBERS! GET INTO THE HABIT OF DOING IT PROPERLY</em></p>
+<p>To be more explicit, at the top level your code should probably include a function something like this:</p>
+<pre><code>#&#39; Simulation study 
+#&#39;
+#&#39; Simulates data from forest and savanna tusks from prespecified frequencies, and uses LR to classify them.
+#&#39;
+#&#39; @param nS number of savanna tusks to use
+#&#39; @param nF number of forest tusks to use
+#&#39; @param fS allele frequencies of savanna elephants
+#&#39; @param fF allele frequencies of forest elephants
+#&#39; @param lc vector of log(c) values of LR cutoff to use
+#&#39;
+#&#39; @return Plot of misclassification rate against threshold
+#&#39;
+#&#39; @example simulation_study(1000,1000,(0.40, 0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100))
+#&#39;
+#&#39;
+simulation_study(nS,nF,fS,fF,lc){
+...
+}</code></pre>
+<p>Then you can just call this simulation study function twice to complete the assignment.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Consider now modifying our example above on the tusk to allow for errors in the data. Specifically, suppose that there is an error probability of 0.02 when measuring each marker: with probability 0.98 you observe the true <span class="math inline">\(x_j\)</span>, but with probability 0.02 an error is made and you observe <span class="math inline">\(1-x_j\)</span>. Assume that errors occur independently at each marker <span class="math inline">\(j\)</span>. Let <span class="math inline">\(M&#39;_S\)</span> and <span class="math inline">\(M&#39;_F\)</span> denote the models with this error process incorporated. Derive expressions for the likelihood for <span class="math inline">\(M&#39;_S\)</span> and <span class="math inline">\(M&#39;_F\)</span>, and compute the LR for the example tusk data given here.</li>
+</ol>
+</div>
+<div id="summary-1" class="section level1">
+<h1>Summary</h1>
+<p>Repeat after me:</p>
+<ol style="list-style-type: decimal">
+<li><p>“The likelihood for a model is the probability of the data under the model”</p></li>
+<li><p>“Individual likelihood values are mostly irrelevant: it is likelihood ratios that matter”</p></li>
+<li><p>“If the likelihood ratio for model 1 vs model 2 is x, then this means the data favour model 1 by a factor of x”. (Or, if x &lt;1 then it means “the data favour model 2 by a factor of 1/x”“)</p></li>
+</ol>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] rmarkdown_1.1
+
+loaded via a namespace (and not attached):
+ [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
+ [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
+[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
