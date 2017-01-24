@@ -116,10 +116,13 @@ hist(z3,breaks=seq(0,maxz,length=20))
 
 
 
-Exercises: use the function easyMCMC to explore the following:
-+ 1a) how do different starting values affect the MCMC scheme?  
-+ 1b) what is the effect of having a bigger/smaller proposal standard deviation?
-+ 1c) try changing the target function to the following
+## Exercise
+
+Use the function `easyMCMC` to explore the following:
+
+  a) how do different starting values affect the MCMC scheme?  
+  b) what is the effect of having a bigger/smaller proposal standard deviation?
+  c) try changing the target function to the following
 
 ```{r}
 target = function(x){
@@ -208,7 +211,10 @@ hist(z[5001:10000])
 ```
 
 
-Some things to try: how do the starting point and proposal sd affect things?
+## Exercise
+
+Investigate how the starting point and proposal standard deviation affect the convergence of the algorithm. 
+
 
 
 # Example 3: Estimating an allele frequency and inbreeding coefficient
@@ -273,9 +279,14 @@ $$p(g_i=aa | z_i = 1) = (1-p); p(g_i =aa | z_i=0) = (1-p)^2$$
 Summing over $z_i$ gives the same model as above:
 $$p(g_i=AA) = fp + (1-f)p^2$$
 
-Exercise: Implementing a Gibbs Sampler requires iterating the following steps
-1) sample z from p(z | g, f, p)
-2) sample f,p from p(f, p | g, z)
+## Exercise: 
+
+Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of z,f, and p given g.
+
+Hint: this requires iterating the following steps
+  
+  1) sample z from p(z | g, f, p)
+  2) sample f,p from p(f, p | g, z)
 
 
 
