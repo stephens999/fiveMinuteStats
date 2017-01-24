@@ -46,6 +46,8 @@ title: "Home"
 * [Introduction to Gibbs Sampling](gibbs1.html)
 * [Gibbs Sampling for a simple normal mixture](gibbs2.html)
 
+* [Simple examples of Metropolis--Hastings algorithm](MH-examples1.html)
+
 
 ## Stochastic Processes
 
