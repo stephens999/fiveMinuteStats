@@ -310,7 +310,7 @@ div.tocify {
 
 
 <p><strong>Last updated:</strong> 2017-01-25</p>
-<p><strong>Code version:</strong> ba83f29</p>
+<p><strong>Code version:</strong> ea1f50e</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 </div>
@@ -400,9 +400,9 @@ hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
 </div>
 <div id="example-2-estimating-an-allele-frequency" class="section level1">
 <h1>Example 2: Estimating an allele frequency</h1>
-<p>A standard assumption when modelling genotypes of bi-allelic loci (eg loci with alleles A and a) is that the population is “randomly mating”. From this assumption it follows that the population will be in “Hardy Weinberg Equilibrium” (HWE), which means that if p is the frequency of the allele A then the genotypes AA, Aa and aa will have frequencies <span class="math inline">\(p^2, 2p(1-p)\)</span> and <span class="math inline">\((1-p)^2\)</span>.</p>
-<p>A simple prior for p is to assume it is uniform on [0,1]. Suppose that we sample n individuals, and observe nAA with genotype AA, nAa with genotype Aa and naa with genotype aa.</p>
-<p>The following R code gives a short MCMC routine to sample from the posterior distribution of p. Try to go through the code to see how it works.</p>
+<p>A standard assumption when modelling genotypes of bi-allelic loci (eg loci with alleles <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span>) is that the population is “randomly mating”. From this assumption it follows that the population will be in “Hardy Weinberg Equilibrium” (HWE), which means that if <span class="math inline">\(p\)</span> is the frequency of the allele <span class="math inline">\(A\)</span> then the genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span> and <span class="math inline">\(aa\)</span> will have frequencies <span class="math inline">\(p^2, 2p(1-p)\)</span> and <span class="math inline">\((1-p)^2\)</span> respectively.</p>
+<p>A simple prior for <span class="math inline">\(p\)</span> is to assume it is uniform on <span class="math inline">\([0,1]\)</span>. Suppose that we sample <span class="math inline">\(n\)</span> individuals, and observe <span class="math inline">\(n_{AA}\)</span> with genotype <span class="math inline">\(AA\)</span>, <span class="math inline">\(n_{Aa}\)</span> with genotype <span class="math inline">\(Aa\)</span> and <span class="math inline">\(n_{aa}\)</span> with genotype <span class="math inline">\(aa\)</span>.</p>
+<p>The following R code gives a short MCMC routine to sample from the posterior distribution of <span class="math inline">\(p\)</span>. Try to go through the code to see how it works.</p>
 <pre class="r"><code>prior = function(p){
   if((p&lt;0) || (p&gt;1)){  # || here means &quot;or&quot;
     return(0)}
@@ -429,9 +429,9 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
   }
   return(p)
 }</code></pre>
-<p>Running this sample for nAA = 50, nAa = 21, naa=29.</p>
+<p>Running this sample for <span class="math inline">\(n_{AA}\)</span> = 50, <span class="math inline">\(n_{Aa}\)</span> = 21, <span class="math inline">\(n_{aa}\)</span>=29.</p>
 <pre class="r"><code>z=psampler(50,21,29,10000,0.5,0.01)</code></pre>
-<p>Now some R code to compare the sample from the posterior with the theoretical posterior (which in this case is available analytically; since we observed 121 As, and 79 as, out of 200, the posterior for <span class="math inline">\(p\)</span> is Beta(121+1,79+1).</p>
+<p>Now some R code to compare the sample from the posterior with the theoretical posterior (which in this case is available analytically; since we observed 121 <span class="math inline">\(A\)</span>s, and 79 <span class="math inline">\(a\)</span>s, out of 200, the posterior for <span class="math inline">\(p\)</span> is Beta(121+1,79+1).</p>
 <pre class="r"><code>x=seq(0,1,length=1000)
 hist(z,prob=T)
 lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
@@ -446,10 +446,14 @@ lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
 </div>
 <div id="example-3-estimating-an-allele-frequency-and-inbreeding-coefficient" class="section level1">
 <h1>Example 3: Estimating an allele frequency and inbreeding coefficient</h1>
-<p>A slightly more complex alternative than HWE is to assume that there is a tendency for people to mate with others who are slightly more closely-related than “random” (as might happen in a geographically-structured population, for example). This will result in an excess of homozygotes compared with HWE. A simple way to capture this is to introduce an extra parameter, the “inbreeding coefficient” f, and assume that the genotypes AA, Aa and aa have frequencies <span class="math inline">\(fp + (1-f)p*p, (1-f) 2p(1-p)\)</span>, and <span class="math inline">\(f(1-p) + (1-f)(1-p)(1-p)\)</span>.</p>
-<p>In most cases it would be natural to treat f as a feature of the population, and therefore assume f is constant across loci. For simplicity we will consider just a single locus.</p>
-<p>Note that both f and p are constrained to lie between 0 and 1 (inclusive). A simple prior for each of these two parameters is to assume that they are independent, uniform on [0,1]. Suppose that we sample n individuals, and observe nAA with genotype AA, nAa with genotype Aa and naa with genotype aa.</p>
-<p>Exercise: write a short MCMC routine to sample from the joint distribution of f and p.</p>
+<p>A slightly more complex alternative than HWE is to assume that there is a tendency for people to mate with others who are slightly more closely-related than “random” (as might happen in a geographically-structured population, for example). This will result in an excess of homozygotes compared with HWE. A simple way to capture this is to introduce an extra parameter, the “inbreeding coefficient” <span class="math inline">\(f\)</span>, and assume that the genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span> and <span class="math inline">\(aa\)</span> have frequencies <span class="math inline">\(fp + (1-f)p*p, (1-f) 2p(1-p)\)</span>, and <span class="math inline">\(f(1-p) + (1-f)(1-p)(1-p)\)</span>.</p>
+<p>In most cases it would be natural to treat <span class="math inline">\(f\)</span> as a feature of the population, and therefore assume <span class="math inline">\(f\)</span> is constant across loci. For simplicity we will consider just a single locus.</p>
+<p>Note that both <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span> are constrained to lie between 0 and 1 (inclusive). A simple prior for each of these two parameters is to assume that they are independent, uniform on <span class="math inline">\([0,1]\)</span>. Suppose that we sample <span class="math inline">\(n\)</span> individuals, and observe <span class="math inline">\(n_{AA}\)</span> with genotype <span class="math inline">\(AA\)</span>, <span class="math inline">\(n_{Aa}\)</span> with genotype <span class="math inline">\(Aa\)</span> and <span class="math inline">\(n_{aa}\)</span> with genotype <span class="math inline">\(aa\)</span>.</p>
+<div id="exercise-2" class="section level2">
+<h2>Exercise:</h2>
+<ul>
+<li>Write a short MCMC routine to sample from the joint distribution of <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span>.</li>
+</ul>
 <p>Hint: here is a start; you’ll need to fill in the …</p>
 <pre class="r"><code>fpsampler = function(nAA, nAa, naa, niter, fstartval, pstartval, fproposalsd, pproposalsd){
   f = rep(0,niter)
@@ -465,19 +469,23 @@ lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
   }
   return(list(f=f,p=p)) # return a &quot;list&quot; with two elements named f and p
 }</code></pre>
+<ul>
+<li>Use this sample to obtain point estimates for <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span> (e.g. using posterior means) and interval estimates for both <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span> (e.g. 90% posterior credible intervals), when the data are <span class="math inline">\(n_{AA} = 50, n_{Aa} = 21, n_{aa}=29\)</span>.</li>
+</ul>
+</div>
 </div>
 <div id="addendum-gibbs-sampling" class="section level1">
 <h1>Addendum: Gibbs Sampling</h1>
 <p>You could also tackle this problem with a Gibbs Sampler (see vignettes <a href="gibbs1.Rmd">here</a> and <a href="gibbs2.Rmd">here</a>).</p>
 <p>To do so you will want to use the following “latent variable” representation of the model: <span class="math display">\[z_i \sim Bernoulli(f)\]</span> <span class="math display">\[p(g_i=AA | z_i=1) = p; p(g_i=AA | z_i=0) = p^2\]</span> <span class="math display">\[p(g_i=Aa | z_i = 1)= 0; p(g_i=Aa | z_i=0) = 2p(1-p)\]</span> <span class="math display">\[p(g_i=aa | z_i = 1) = (1-p); p(g_i =aa | z_i=0) = (1-p)^2\]</span></p>
 <p>Summing over <span class="math inline">\(z_i\)</span> gives the same model as above: <span class="math display">\[p(g_i=AA) = fp + (1-f)p^2\]</span></p>
-<div id="exercise-2" class="section level2">
+<div id="exercise-3" class="section level2">
 <h2>Exercise:</h2>
-<p>Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of z,f, and p given g.</p>
+<p>Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of <span class="math inline">\(z,f,\)</span> and <span class="math inline">\(p\)</span> given genotype data <span class="math inline">\(g\)</span>.</p>
 <p>Hint: this requires iterating the following steps</p>
 <ol style="list-style-type: decimal">
-<li>sample z from p(z | g, f, p)</li>
-<li>sample f,p from p(f, p | g, z)</li>
+<li>sample <span class="math inline">\(z\)</span> from <span class="math inline">\(p(z | g, f, p)\)</span></li>
+<li>sample <span class="math inline">\(f,p\)</span> from <span class="math inline">\(p(f, p | g, z)\)</span></li>
 </ol>
 </div>
 <div id="session-information" class="section level2">
