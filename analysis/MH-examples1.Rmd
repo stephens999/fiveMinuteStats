@@ -137,21 +137,21 @@ What happens if the proposal sd is too small here? (try eg 1 and 0.1)
 # Example 2: Estimating an allele frequency
 
 A standard assumption when modelling genotypes of
-bi-allelic loci (eg loci with alleles A and a) is
+bi-allelic loci (eg loci with alleles $A$ and $a$) is
 that the population is "randomly mating". From this assumption
 it follows that the population will be in 
 "Hardy Weinberg Equilibrium" (HWE), which means that 
-if p is the frequency of the allele A then the
-genotypes AA, Aa and aa will have frequencies
-$p^2, 2p(1-p)$ and $(1-p)^2$.
+if $p$ is the frequency of the allele $A$ then the
+genotypes $AA$, $Aa$ and $aa$ will have frequencies
+$p^2, 2p(1-p)$ and $(1-p)^2$ respectively.
 
 
-A simple prior for p is to assume it is uniform on [0,1].
-Suppose that we sample n individuals, and observe nAA with genotype AA,
-nAa with genotype Aa and naa with genotype aa. 
+A simple prior for $p$ is to assume it is uniform on $[0,1]$.
+Suppose that we sample $n$ individuals, and observe $n_{AA}$ with genotype $AA$,
+$n_{Aa}$ with genotype $Aa$ and $n_{aa}$ with genotype $aa$.  
 
 The following R code gives a short MCMC routine to sample from the posterior
-distribution of p. Try to go through the code to see how it works.
+distribution of $p$. Try to go through the code to see how it works.
 
 
 ```{r}
@@ -186,7 +186,7 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
 ```
 
 
-Running this sample for nAA = 50, nAa = 21, naa=29.
+Running this sample for $n_{AA}$ = 50, $n_{Aa}$ = 21, $n_{aa}$=29.
 ```{r}
 z=psampler(50,21,29,10000,0.5,0.01)
 ```
@@ -194,7 +194,7 @@ z=psampler(50,21,29,10000,0.5,0.01)
 
 Now some R code to compare the sample from the posterior
 with the theoretical posterior (which in this case is available analytically;
-since we observed 121 As, and 79 as, out of 200, the posterior
+since we observed 121 $A$s, and 79 $a$s, out of 200, the posterior
 for $p$ is Beta(121+1,79+1). 
 
 ```{r}
@@ -225,22 +225,24 @@ slightly more closely-related than "random" (as might
 happen in a geographically-structured population, for example).
 This will result in an excess of homozygotes compared with
 HWE. A simple way to capture this is to introduce an extra parameter,
-the "inbreeding coefficient" f, and assume that the genotypes
-AA, Aa and aa have frequencies $fp + (1-f)p*p, (1-f) 2p(1-p)$,
+the "inbreeding coefficient" $f$, and assume that the genotypes
+$AA$, $Aa$ and $aa$ have frequencies $fp + (1-f)p*p, (1-f) 2p(1-p)$,
 and $f(1-p) + (1-f)(1-p)(1-p)$.
 
-In most cases it would be natural to treat f as a feature of
-the population, and therefore assume f is constant across loci.
+In most cases it would be natural to treat $f$ as a feature of
+the population, and therefore assume $f$ is constant across loci.
 For simplicity we will consider just a single locus.
 
-Note that both f and p are constrained to lie between 0 and 1
+Note that both $f$ and $p$ are constrained to lie between 0 and 1
 (inclusive). A simple prior for each of these two parameters is to assume
-that they are independent, uniform on [0,1]. Suppose
-that we sample n individuals, and observe nAA with genotype AA,
-nAa with genotype Aa and naa with genotype aa. 
+that they are independent, uniform on $[0,1]$. Suppose
+that we sample $n$ individuals, and observe $n_{AA}$ with genotype $AA$,
+$n_{Aa}$ with genotype $Aa$ and $n_{aa}$ with genotype $aa$. 
 
-Exercise: write a short MCMC routine to sample from the joint
-distribution of f and p.
+## Exercise: 
+
+- Write a short MCMC routine to sample from the joint
+distribution of $f$ and $p$. 
 
 Hint: here is a start; you'll need to fill in the ...
 
@@ -262,6 +264,9 @@ fpsampler = function(nAA, nAa, naa, niter, fstartval, pstartval, fproposalsd, pp
 }
 ```
 
+- Use this sample to obtain point estimates for
+$f$ and $p$ (e.g. using posterior means) and interval estimates for both $f$ and $p$
+(e.g. 90% posterior credible intervals), when the data are $n_{AA} = 50, n_{Aa} = 21, n_{aa}=29$.
 
 # Addendum: Gibbs Sampling
 
@@ -281,12 +286,12 @@ $$p(g_i=AA) = fp + (1-f)p^2$$
 
 ## Exercise: 
 
-Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of z,f, and p given g.
+Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of $z,f,$ and $p$ given genotype data $g$.
 
 Hint: this requires iterating the following steps
   
-  1) sample z from p(z | g, f, p)
-  2) sample f,p from p(f, p | g, z)
+  1) sample $z$ from $p(z | g, f, p)$
+  2) sample $f,p$ from $p(f, p | g, z)$
 
 
 
