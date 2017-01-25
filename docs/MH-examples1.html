@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-24</p>
-<p><strong>Code version:</strong> 17331b4</p>
+<p><strong>Last updated:</strong> 2017-01-25</p>
+<p><strong>Code version:</strong> ba83f29</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 </div>
@@ -348,9 +348,9 @@ for(i in 2:1000){
 }</code></pre>
 <p>Note that x is a realisation of a Markov Chain. We can make a few plots of x:</p>
 <pre class="r"><code>plot(x) </code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>hist(x)</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We can wrap this up in a function to make things a bit neater, and make it easy to try changing starting values and proposal distributions</p>
 <pre class="r"><code>easyMCMC = function(niter, startval, proposalsd){
   x = rep(0,niter)
@@ -375,20 +375,28 @@ z3=easyMCMC(1000,3,1)
 plot(z1,type=&quot;l&quot;)
 lines(z2,col=2)
 lines(z3,col=3)</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>par(mfcol=c(3,1)) #rather odd command tells R to put 3 graphs on a single page
 maxz=max(c(z1,z2,z3))
 hist(z1,breaks=seq(0,maxz,length=20))
 hist(z2,breaks=seq(0,maxz,length=20))
 hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Exercises: use the function easyMCMC to explore the following: + 1a) how do different starting values affect the MCMC scheme?<br />
-+ 1b) what is the effect of having a bigger/smaller proposal standard deviation? + 1c) try changing the target function to the following</p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="exercise" class="section level2">
+<h2>Exercise</h2>
+<p>Use the function <code>easyMCMC</code> to explore the following:</p>
+<ol style="list-style-type: lower-alpha">
+<li>how do different starting values affect the MCMC scheme?<br />
+</li>
+<li>what is the effect of having a bigger/smaller proposal standard deviation?</li>
+<li>try changing the target function to the following</li>
+</ol>
 <pre class="r"><code>target = function(x){
   
   return((x&gt;0 &amp; x &lt;1) + (x&gt;2 &amp; x&lt;3))
 }</code></pre>
 <p>What does this target look like? What happens if the proposal sd is too small here? (try eg 1 and 0.1)</p>
+</div>
 </div>
 <div id="example-2-estimating-an-allele-frequency" class="section level1">
 <h1>Example 2: Estimating an allele frequency</h1>
@@ -427,11 +435,14 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
 <pre class="r"><code>x=seq(0,1,length=1000)
 hist(z,prob=T)
 lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>You might also like to discard the first 5000 z’s as “burnin”. Here’s one way in R to select only the last 5000 zs</p>
 <pre class="r"><code>hist(z[5001:10000])</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Some things to try: how do the starting point and proposal sd affect things?</p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="exercise-1" class="section level2">
+<h2>Exercise</h2>
+<p>Investigate how the starting point and proposal standard deviation affect the convergence of the algorithm.</p>
+</div>
 </div>
 <div id="example-3-estimating-an-allele-frequency-and-inbreeding-coefficient" class="section level1">
 <h1>Example 3: Estimating an allele frequency and inbreeding coefficient</h1>
@@ -460,7 +471,15 @@ lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
 <p>You could also tackle this problem with a Gibbs Sampler (see vignettes <a href="gibbs1.Rmd">here</a> and <a href="gibbs2.Rmd">here</a>).</p>
 <p>To do so you will want to use the following “latent variable” representation of the model: <span class="math display">\[z_i \sim Bernoulli(f)\]</span> <span class="math display">\[p(g_i=AA | z_i=1) = p; p(g_i=AA | z_i=0) = p^2\]</span> <span class="math display">\[p(g_i=Aa | z_i = 1)= 0; p(g_i=Aa | z_i=0) = 2p(1-p)\]</span> <span class="math display">\[p(g_i=aa | z_i = 1) = (1-p); p(g_i =aa | z_i=0) = (1-p)^2\]</span></p>
 <p>Summing over <span class="math inline">\(z_i\)</span> gives the same model as above: <span class="math display">\[p(g_i=AA) = fp + (1-f)p^2\]</span></p>
-<p>Exercise: Implementing a Gibbs Sampler requires iterating the following steps 1) sample z from p(z | g, f, p) 2) sample f,p from p(f, p | g, z)</p>
+<div id="exercise-2" class="section level2">
+<h2>Exercise:</h2>
+<p>Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of z,f, and p given g.</p>
+<p>Hint: this requires iterating the following steps</p>
+<ol style="list-style-type: decimal">
+<li>sample z from p(z | g, f, p)</li>
+<li>sample f,p from p(f, p | g, z)</li>
+</ol>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session Information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -474,14 +493,11 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] workflowr_0.3.0 rmarkdown_1.3  
-
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.8    
- [9] stringi_1.1.2   knitr_1.15.1    git2r_0.18.0    stringr_1.1.0  
-[13] digest_0.6.10   evaluate_0.10  </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   tools_3.3.2    
+ [5] htmltools_0.3.5 yaml_2.1.14     Rcpp_0.12.8     stringi_1.1.2  
+ [9] rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0    stringr_1.1.0  
+[13] digest_0.6.10   workflowr_0.3.0 evaluate_0.10  </code></pre>
 </div>
 </div>
 
