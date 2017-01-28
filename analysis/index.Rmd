@@ -26,7 +26,7 @@ title: "Home"
 *  [Bayesian inference for comparing two fully-specified models](LR_and_BF.html)
 *  [Bayesian inference for comparing multiple fully-specified models](bayes_multiclass.html)
 *  [Bayesian inference for a continuous parameter: analytic calculation](bayes_beta_binomial.html)
-*  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_intepret_posterior.html)
+*  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_interpret_posterior.html)
 
 *  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
 *  [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
