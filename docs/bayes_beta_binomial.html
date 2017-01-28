@@ -309,11 +309,11 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-25</p>
-<p><strong>Code version:</strong> b48dd9c</p>
+<p><strong>Last updated:</strong> 2017-01-28</p>
+<p><strong>Code version:</strong> 35d9a16</p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>This vignette illustrates how to perform Bayesian inference for a binomial proportion. It also introduces the idea of conjugacy, or “conjugate prior” distributions.</p>
+<p>This vignette illustrates how to perform Bayesian inference for a continuous parameter, specifically a binomial proportion. It introduces two key ideas: first the mechanics of how we actually calculate the posterior distribution; and second how we use this posterior distribution to do inference (e.g. interval estimates and point estimates).</p>
 <p>You should be familiar with the concepts of <a href="likelihood_function.html">Likelihood function</a>, and <a href="bayes_multiclass.html">Bayesian inference for discrete random variables</a>. You should also be familiar with the binomial distribution and the <a href="beta.html">Beta distribution</a>.</p>
 </div>
 <div id="motivation" class="section level1">
@@ -322,8 +322,8 @@ div.tocify {
 <p>Suppose we sample 100 elephants from a population, and measure their DNA at a location in their genome (“locus”) where there are two types (“alleles”), which it is convenient to label 0 and 1.</p>
 <p>In my sample, I observe that 30 of the elephants have the “1” allele and 70 have the “0” allele. What can I say about the frequency (<span class="math inline">\(q\)</span> say) of the “1” allele in the population?</p>
 </div>
-<div id="bayesian-inference" class="section level1">
-<h1>Bayesian inference</h1>
+<div id="bayesian-inference-calculating-the-posterior" class="section level1">
+<h1>Bayesian inference: calculating the posterior</h1>
 <p>Here we are doing inference for a parameter <span class="math inline">\(q\)</span> that can, in principle, take any value between 0 and 1. That is, we are doing inference for a “continuous” parameter. Bayesian inference for a continuous parameter proceeds in essentially exactly the same way as Bayesian inference for a <a href="bayes_multiclass.html">discrete quantity</a>, except that probability mass functions get replaced by densities.</p>
 <p>Specifically remember the form of Bayes Theorem: <span class="math display">\[\text{posterior} \propto 
 \text{likelihood} \times \text{prior}.\]</span> To apply this we need to have both the prior distribution and the likelihood.</p>
@@ -337,14 +337,22 @@ div.tocify {
 <p>This <span class="math inline">\(U[0,1]\)</span> prior says many things. For example, it says that before seeing the data the idea that <span class="math inline">\(q&lt;0.5\)</span> is just as plausible as <span class="math inline">\(q&gt;0.5\)</span>. And it says that <span class="math inline">\(q&lt;0.1\)</span> is just as plausible as <span class="math inline">\(q&gt;0.9\)</span>, or <span class="math inline">\(0.4&lt;q&lt;0.5\)</span>. If for some reason these are not equally plausible then you should use a different prior, at least in principle. However, in practice it is sometimes (but not always) the case that the results of Bayesian inference are robust to the choice of prior distribution, so in such cases is common not to worry too much about minor deviations between what you believe and what the prior implies.</p>
 <p>For now, we are simply aiming to show how the Bayesian calculations are done under this prior specification.</p>
 </div>
-<div id="posterior" class="section level3">
-<h3>Posterior</h3>
+<div id="posterior-calculation" class="section level3">
+<h3>Posterior calculation</h3>
 <p>Using Bayes Theorem to combine the prior distribution and the likelihood we obtain: <span class="math display">\[p(q | D) \propto p(D|q) p(q) = q^{30} (1-q)^{70} \qquad (q \in [0,1]).\]</span></p>
 <p>Here, because <span class="math inline">\(q\)</span> is a continuous parameter, this is referred to as the “posterior density”&quot; for <span class="math inline">\(q\)</span>.</p>
-<p>Now the final “trick” is to notice that this density, <span class="math inline">\(q^{30} (1-q)^70\)</span> is exactly the density of a <a href="beta.html">Beta distribution</a>. Indeed, specifically it is the density of a Beta(31,71) distribution. So the posterior distribution for <span class="math inline">\(q\)</span> is Beta(31,71), and we might write <span class="math inline">\(q | D \sim \text{Beta}(31,71)\)</span>.</p>
-<p>This kind of “trick” is common in Bayesian inference: you look at the posterior density and “recognize” it as a distribution you know. It turns out that the number of distributions in common use is relatively small, so you only need to learn a few distributions to get sufficiently good at this trick for practial purposes. For example, it is a good start to be able to reconize the following distributions: exponential, binomial, Poisson, Gamma, Beta, Dirichlet, and Normal. If your posterior distribution does not look like one of these, then you may well be in a situation where you need to use computational methods (like Importance Sampling or Markov chain Monte Carlo) to do your computations.</p>
-<p>However, in this case we are lucky: the posterior distribution is a nice distribution that we recognize, and this means we can do lots of calculations very easily: <code>R</code> has lots of built-in functions to deal with the Beta distribution, and many analytic properties have been derived (e.g. <a href="https://en.wikipedia.org/wiki/Beta_distribution">Wikipedia</a>.)</p>
+<p>Now the final “trick” is to notice that this density, <span class="math inline">\(q^{30} (1-q)^{70}\)</span> is exactly the density of a <a href="beta.html">Beta distribution</a>. Indeed, specifically it is the density of a Beta(31,71) distribution. So the posterior distribution for <span class="math inline">\(q\)</span> is Beta(31,71), and we might write <span class="math inline">\(q | D \sim \text{Beta}(31,71)\)</span>.</p>
+<p>This kind of “trick” is common in Bayesian inference: you look at the posterior density and “recognize” it as a distribution you know. It turns out that the number of distributions in common use is relatively small, so you only need to learn a few distributions to get sufficiently good at this trick for practial purposes. For example, it is a good start to be able to reconize the following distributions: exponential, binomial, Poisson, Gamma, Beta, Dirichlet, and Normal. If your posterior distribution does not look like one of these, then you may well be in a situation where you need to use computational methods (like <a href="is_simple.html">Importance Sampling</a> or <a href="MH-examples1.html">Markov chain Monte Carlo</a>) to do your computations.</p>
+<p>So, in this case we are lucky: the posterior distribution is a nice distribution that we recognize, and this means we can do lots of calculations very easily: <code>R</code> has lots of built-in functions to deal with the Beta distribution, and many analytic properties have been derived (e.g. <a href="https://en.wikipedia.org/wiki/Beta_distribution">Wikipedia</a>.) We can use this to summarize and interpret the posterior distribution, as illustrated <a href="summarize_interpret_posterior.html">here</a>.</p>
 </div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<ul>
+<li><p>To compute the posterior density of a continuous parameter, up to a normalizing constant, you multiply the likelihood by the prior density.</p></li>
+<li><p>In simple cases you may find that the result is the density of a distribution you recognize. If so, you can often use known properties of that distribution to comptue quantities of interest. <a href="summarize_interpret_posterior.html">Example</a>.</p></li>
+<li><p>In cases where you do not recognize the posterior distribution, you may need to use computational methods to compute quanties of interest.</p></li>
+</ul>
 <div id="session-information" class="section level2">
 <h2>Session Information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -358,14 +366,11 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] workflowr_0.3.0 rmarkdown_1.3  
-
 loaded via a namespace (and not attached):
  [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.8    
- [9] stringi_1.1.2   knitr_1.15.1    git2r_0.18.0    stringr_1.1.0  
-[13] digest_0.6.10   evaluate_0.10  </code></pre>
+ [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.9    
+ [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
+[13] stringr_1.1.0   digest_0.6.10   workflowr_0.3.0 evaluate_0.10  </code></pre>
 </div>
 </div>
 
