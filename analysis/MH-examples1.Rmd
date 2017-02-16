@@ -14,7 +14,7 @@ knitr::read_chunk("chunks.R")
 
 **Last updated:** `r Sys.Date()`
 
-**Code version:** `r workflowr::extract_commit(".", 1)$sha1`
+**Code version:** `r if(require(workflowr,quietly=TRUE)){workflowr::extract_commit(".", 1)$sha1}`
 
 # Pre-requisites
 
