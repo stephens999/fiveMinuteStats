@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-25</p>
-<p><strong>Code version:</strong> ea1f50e</p>
+<p><strong>Last updated:</strong> 2017-02-16</p>
+<p><strong>Code version:</strong> 0207794</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 </div>
@@ -348,9 +348,9 @@ for(i in 2:1000){
 }</code></pre>
 <p>Note that x is a realisation of a Markov Chain. We can make a few plots of x:</p>
 <pre class="r"><code>plot(x) </code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-80-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>hist(x)</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-80-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We can wrap this up in a function to make things a bit neater, and make it easy to try changing starting values and proposal distributions</p>
 <pre class="r"><code>easyMCMC = function(niter, startval, proposalsd){
   x = rep(0,niter)
@@ -375,13 +375,13 @@ z3=easyMCMC(1000,3,1)
 plot(z1,type=&quot;l&quot;)
 lines(z2,col=2)
 lines(z3,col=3)</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-82-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>par(mfcol=c(3,1)) #rather odd command tells R to put 3 graphs on a single page
 maxz=max(c(z1,z2,z3))
 hist(z1,breaks=seq(0,maxz,length=20))
 hist(z2,breaks=seq(0,maxz,length=20))
 hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-82-2.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="exercise" class="section level2">
 <h2>Exercise</h2>
 <p>Use the function <code>easyMCMC</code> to explore the following:</p>
@@ -435,10 +435,10 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
 <pre class="r"><code>x=seq(0,1,length=1000)
 hist(z,prob=T)
 lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-86-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>You might also like to discard the first 5000 z’s as “burnin”. Here’s one way in R to select only the last 5000 zs</p>
 <pre class="r"><code>hist(z[5001:10000])</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-87-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="exercise-1" class="section level2">
 <h2>Exercise</h2>
 <p>Investigate how the starting point and proposal standard deviation affect the convergence of the algorithm.</p>
@@ -501,11 +501,29 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] workflowr_0.3.0 rmarkdown_1.3   ggplot2_2.1.0   dplyr_0.5.0    
+ [5] magrittr_1.5    shiny_1.0.0     mixfdr_1.0      ashr_2.1.2     
+ [9] dscr_0.1.1      horseshoe_0.1.0
+
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   tools_3.3.2    
- [5] htmltools_0.3.5 yaml_2.1.14     Rcpp_0.12.8     stringi_1.1.2  
- [9] rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0    stringr_1.1.0  
-[13] digest_0.6.10   workflowr_0.3.0 evaluate_0.10  </code></pre>
+ [1] Rcpp_0.12.9        git2r_0.18.0       plyr_1.8.4        
+ [4] iterators_1.0.8    tools_3.3.2        digest_0.6.10     
+ [7] memoise_1.0.0      tibble_1.2         jsonlite_1.2      
+[10] evaluate_0.10      gtable_0.2.0       lattice_0.20-34   
+[13] Matrix_1.2-7.1     foreach_1.4.3      DBI_0.5-1         
+[16] rstudioapi_0.6     curl_2.2           yaml_2.1.14       
+[19] parallel_3.3.2     httr_1.2.1         withr_1.0.2       
+[22] stringr_1.1.0      knitr_1.15.1       devtools_1.12.0   
+[25] REBayes_0.73       rprojroot_1.2      grid_3.3.2        
+[28] R6_2.2.0           EbayesThresh_1.3.2 reshape2_1.4.2    
+[31] whisker_0.3-2      backports_1.0.5    scales_0.4.0      
+[34] codetools_0.2-15   htmltools_0.3.5    MASS_7.3-45       
+[37] assertthat_0.1     mime_0.5           colorspace_1.2-7  
+[40] xtable_1.8-2       httpuv_1.3.3       labeling_0.3      
+[43] stringi_1.1.2      Rmosek_7.1.2       lazyeval_0.2.0    
+[46] munsell_0.4.3      doParallel_1.0.10  pscl_1.4.9        
+[49] truncnorm_1.0-7    SQUAREM_2016.8-2  </code></pre>
 </div>
 </div>
 
