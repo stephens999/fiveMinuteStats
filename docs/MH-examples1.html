@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-02-16</p>
-<p><strong>Code version:</strong> 0207794</p>
+<p><strong>Last updated:</strong> 2017-02-17</p>
+<p><strong>Code version:</strong> 0a96ec4f599f56f6968bec3929589cf0212b40a9</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 </div>
@@ -348,9 +348,9 @@ for(i in 2:1000){
 }</code></pre>
 <p>Note that x is a realisation of a Markov Chain. We can make a few plots of x:</p>
 <pre class="r"><code>plot(x) </code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-80-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>hist(x)</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-80-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We can wrap this up in a function to make things a bit neater, and make it easy to try changing starting values and proposal distributions</p>
 <pre class="r"><code>easyMCMC = function(niter, startval, proposalsd){
   x = rep(0,niter)
@@ -375,13 +375,13 @@ z3=easyMCMC(1000,3,1)
 plot(z1,type=&quot;l&quot;)
 lines(z2,col=2)
 lines(z3,col=3)</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-82-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>par(mfcol=c(3,1)) #rather odd command tells R to put 3 graphs on a single page
 maxz=max(c(z1,z2,z3))
 hist(z1,breaks=seq(0,maxz,length=20))
 hist(z2,breaks=seq(0,maxz,length=20))
 hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-82-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="exercise" class="section level2">
 <h2>Exercise</h2>
 <p>Use the function <code>easyMCMC</code> to explore the following:</p>
@@ -435,10 +435,10 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
 <pre class="r"><code>x=seq(0,1,length=1000)
 hist(z,prob=T)
 lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-86-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>You might also like to discard the first 5000 z’s as “burnin”. Here’s one way in R to select only the last 5000 zs</p>
 <pre class="r"><code>hist(z[5001:10000])</code></pre>
-<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-87-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MH-examples1.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="exercise-1" class="section level2">
 <h2>Exercise</h2>
 <p>Investigate how the starting point and proposal standard deviation affect the convergence of the algorithm.</p>
