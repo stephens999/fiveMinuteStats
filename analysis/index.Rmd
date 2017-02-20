@@ -27,6 +27,9 @@ title: "Home"
 *  [Bayesian inference for comparing multiple fully-specified models](bayes_multiclass.html)
 *  [Bayesian inference for a continuous parameter: analytic calculation](bayes_beta_binomial.html)
 *  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_interpret_posterior.html)
+*  [Bayesian inference for a continuous parameter: conjugacy](bayes_conjugate.html)
+*  [Bayesian inference for multiple independent parameters: conjugacy](bayes_independent.html)
+
 
 *  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
 *  [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
@@ -48,7 +51,7 @@ title: "Home"
 ### Markov Chain Monte Carlo
 
 * [Introduction to Gibbs Sampling](gibbs1.html)
-* [Gibbs Sampling for a simple normal mixture](gibbs2.html)
+* [Gibbs Sampling for a univariate normal mixture](gibbs2.html)
 
 * [Simple examples of Metropolis--Hastings algorithm](MH-examples1.html)
 
