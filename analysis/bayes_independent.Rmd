@@ -24,7 +24,8 @@ You should be familiar with [Bayesian inference for a continuous parameter](baye
 
 # Summary
 
-Suppose we want to do inference for multiple parameters, and suppose that the data that are informative for each parameter are independent. Then provided the prior distributions on these parameters are independent, the posterior distributions are also independent. 
+Suppose we want to do inference for multiple parameters, and suppose that the data that are informative for each parameter are independent. Then provided the prior distributions on these parameters are independent, the posterior distributions are also independent. This is useful as it essentially means we can do Bayesian inference
+for all the parameters by doing the inference for each parameter separately.
 
 
 # Overview
@@ -47,7 +48,7 @@ p(\theta_1, \theta_2 | D_1,D_2) & \propto p(D_1, D_2 | \theta_1, \theta_2) p(\th
 
 That is, the posterior distribution on $\theta_1,\theta_2$ factorizes into independent parts $p(\theta_1 | D_1)$ and $p(\theta_2 | D_2)$. We say "$\theta_1$ and $\theta_2$ are *a posteriori* independent".
 
-#Generalization
+# Generalization
 
 This result extends naturally from 2 parameters to $J$ parameters. 
 That is, if we have independent data sets $D_1,\dots,D_J$ that depend on parameters $\theta_1,\dots,\theta_J$, with 
@@ -85,7 +86,7 @@ Under these assumptions we have that the $q_j$ are *a posteriori* independent,
 with 
 $$p(q | n ) = \prod_j p(q_j | n_j).$$
 
-Furthermore, we know from [here](bayes_conjugate.html) that if the prior distribution on $q_j$ is a Beta distribution, say $q_j \sim \text{Beta}(a_j,b_j)$, then the posterior $p(q_j | n_j)$
+Furthermore, we know from [conjugacy](bayes_conjugate.html) that if the prior distribution on $q_j$ is a Beta distribution, say $q_j \sim \text{Beta}(a_j,b_j)$, then the posterior $p(q_j | n_j)$
 is also a Beta distribution, with
 $q_j | n_j \sim \text{Beta}(a_j + n_{j1}, b_j + n_{j0})$.
 

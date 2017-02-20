@@ -28,7 +28,7 @@ title: "Home"
 *  [Bayesian inference for a continuous parameter: analytic calculation](bayes_beta_binomial.html)
 *  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_interpret_posterior.html)
 *  [Bayesian inference for a continuous parameter: conjugacy](bayes_conjugate.html)
-*  [Bayesian inference for multiple independent parameters: conjugacy](bayes_independent.html)
+*  [Bayesian inference for multiple independent parameters](bayes_independent.html)
 
 
 *  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
