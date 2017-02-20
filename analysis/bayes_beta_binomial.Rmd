@@ -18,7 +18,8 @@ knitr::read_chunk("chunks.R")
 
 # Overview
 
-This vignette illustrates how to perform Bayesian inference for a continuous parameter, specifically a binomial proportion. It introduces two key ideas: first the mechanics of how we actually calculate the posterior distribution; and second how we use this posterior distribution to do inference (e.g. interval estimates and point estimates).
+This vignette illustrates how to perform Bayesian inference for a continuous parameter, specifically a binomial proportion. Specifically it illustrates the mechanics of how we actually calculate the posterior distribution. 
+
 
 You should be familiar with the concepts of [Likelihood function](likelihood_function.html), and [Bayesian inference for discrete random variables](bayes_multiclass.html). You should also be familiar with the binomial distribution and the [Beta distribution](beta.html).
 
