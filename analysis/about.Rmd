@@ -3,7 +3,7 @@ title: "About"
 ---
 
 ```{r, echo=FALSE}
-revision <- gsub("'", "", system("git log -1 --format='%h'", intern = TRUE))
+revision <- system("git log -1 --format=%h", intern = TRUE)
 ```
 
 **Last updated:** `r format(Sys.Date(), "%d %b %Y")`
