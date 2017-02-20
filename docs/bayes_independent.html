@@ -9,9 +9,11 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Matthew Stephens" />
 
+<meta name="date" content="2017-02-19" />
 
-<title>Home</title>
+<title>Bayesian inference for multiple parameters under independence</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -300,119 +302,74 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">Bayesian inference for multiple parameters under independence</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2017-02-19</em></h4>
 
 </div>
 
 
 <p><strong>Last updated:</strong> 2017-02-20</p>
-<p><strong>Code version:</strong> 92d7daa384497338e472ed5846058e33369f8feb</p>
-<div id="inference" class="section level2">
-<h2>Inference</h2>
-<div id="likelihood-ratio-and-likelihood" class="section level3">
-<h3>Likelihood Ratio and Likelihood</h3>
-<ul>
-<li><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></li>
-<li><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></li>
-<li>Likelihood Ratios: Examples and Pitfalls
-<ul>
-<li><a href="likelihood_do_dont.html">Examples and Pitfalls</a></li>
-<li><a href="LR_error.html">Example: LRs must be computed on same data</a></li>
-</ul></li>
-<li><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></li>
-<li><a href="wilks.html">Likelihood Ratios: Wilks’s Theorem</a></li>
-<li><a href="likelihood_function.html">The Likelihood Function</a></li>
-<li><a href="asymptotic_normality_mle.html">Asymptotic Normality of MLE</a></li>
-</ul>
+<p><strong>Code version:</strong> d20b048</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>You should be familiar with <a href="bayes_beta_binomial.html">Bayesian inference for a continuous parameter</a>.</p>
 </div>
-<div id="bayesian-inference" class="section level3">
-<h3>Bayesian Inference</h3>
-<ul>
-<li><a href="LR_and_BF.html">Bayesian inference for comparing two fully-specified models</a></li>
-<li><a href="bayes_multiclass.html">Bayesian inference for comparing multiple fully-specified models</a></li>
-<li><a href="bayes_beta_binomial.html">Bayesian inference for a continuous parameter: analytic calculation</a></li>
-<li><a href="summarize_interpret_posterior.html">Bayesian inference for a continuous parameter: summarizing the posterior</a></li>
-<li><a href="bayes_conjugate.html">Bayesian inference for a continuous parameter: conjugacy</a></li>
-<li><p><a href="bayes_independent.html">Bayesian inference for multiple independent parameters</a></p></li>
-<li><a href="shiny_normal_example.html">Bayesian inference for normal mean (known variance)</a></li>
-<li><p><a href="BF_and_pvalue.html">Relationship between Bayes Factor and p value</a></p></li>
-</ul>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Suppose we want to do inference for multiple parameters, and suppose that the data that are informative for each parameter are independent. Then provided the prior distributions on these parameters are independent, the posterior distributions are also independent. This is useful as it essentially means we can do Bayesian inference for all the parameters by doing the inference for each parameter separately.</p>
 </div>
-<div id="decision-theory" class="section level3">
-<h3>Decision Theory</h3>
-<ul>
-<li><a href="decisions_costs_intro.html">Making a decision under uncertainty: the two class problem</a></li>
-</ul>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Suppose we have data <span class="math inline">\(D_1\)</span> that depend on parameter <span class="math inline">\(\theta_1\)</span>, and independent data <span class="math inline">\(D_2\)</span> that depend on a second parameter <span class="math inline">\(\theta_2\)</span>. That is, suppose that the joint distribution of the data <span class="math inline">\((D_1,D_2)\)</span> factorizes as <span class="math display">\[p(D_1,D_2 | \theta_1, \theta_2) = p(D_1 | \theta_1)p(D_2 | \theta_2).\]</span></p>
+<p>Now assume that our prior distribution on <span class="math inline">\((\theta_1,\theta_2)\)</span> has the property that <span class="math inline">\(\theta_1, \theta_2\)</span> are independent. (This is sometimes said “<span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span> are <em>a priori</em> independent”.) Intuitively this independence assumption means that telling you <span class="math inline">\(\theta_1\)</span> would not tell you anything about <span class="math inline">\(\theta_2\)</span>. Mathematically, the independence assumption means that the prior distribution for <span class="math inline">\(\theta_1,\theta_2\)</span> factorizes as <span class="math display">\[p(\theta_1,\theta_2) = p(\theta_1)p(\theta_2).\]</span></p>
+<p>Applying Bayes theorem we have</p>
+<span class="math display">\[\begin{align}
+p(\theta_1, \theta_2 | D_1,D_2) &amp; \propto p(D_1, D_2 | \theta_1, \theta_2) p(\theta_1, \theta_2) \\
+&amp; \propto p(D_1 | \theta_1) p(D_2 | \theta_2) p(\theta_1) p(\theta_2) \\
+&amp;  = p(D_1 | \theta_1)p(\theta_1) \, p(D_2 | \theta_2) p(\theta_2) \\
+&amp; \propto p(\theta_1 | D_1) \, p(\theta_2 | D_2)
+\end{align}\]</span>
+<p>That is, the posterior distribution on <span class="math inline">\(\theta_1,\theta_2\)</span> factorizes into independent parts <span class="math inline">\(p(\theta_1 | D_1)\)</span> and <span class="math inline">\(p(\theta_2 | D_2)\)</span>. We say “<span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span> are <em>a posteriori</em> independent”.</p>
 </div>
-<div id="mixture-models" class="section level3">
-<h3>Mixture Models</h3>
-<ul>
-<li><a href="intro_to_mixture_models.html">Introduction to Mixture Models</a></li>
-<li><a href="intro_to_em.html">Introduction to EM: Gaussian Mixture Models</a></li>
-</ul>
+<div id="generalization" class="section level1">
+<h1>Generalization</h1>
+<p>This result extends naturally from 2 parameters to <span class="math inline">\(J\)</span> parameters. That is, if we have independent data sets <span class="math inline">\(D_1,\dots,D_J\)</span> that depend on parameters <span class="math inline">\(\theta_1,\dots,\theta_J\)</span>, with <span class="math display">\[p(D_1,\dots, D_J | \theta_1,\dots,\theta_J) = \prod_{j=1}^J p(D_j | \theta_j)\]</span> and we assume independent priors <span class="math display">\[p(\theta_1,\dots,\theta_J) = \prod_{j=1}^J p(\theta_j)\]</span> then the posteriors also factorize <span class="math display">\[p(\theta_1,\dots, \theta_J | D_1,\dots, D_J) = \prod_{j=1}^J p(\theta_j | D_j).\]</span></p>
 </div>
-<div id="bayesian-computation" class="section level3">
-<h3>Bayesian Computation</h3>
-<ul>
-<li><a href="integral.html">Every Bayesian computation is an integral (or a sum)</a></li>
-<li><a href="Importance_sampling.html">Importance sampling</a></li>
-</ul>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>Suppose we collect genetic data on <span class="math inline">\(n\)</span> elephants at <span class="math inline">\(J\)</span> locations along the genome (“loci”). Suppose that at each location there are two genetic types (“alleles”) that we label “0” and “1”. Our goal is to estimate the frequency of the “1” allele, <span class="math inline">\(q_j\)</span>, at each locus <span class="math inline">\(j=1,\dots,J\)</span>.</p>
+<p>Let <span class="math inline">\(n_{ja}\)</span> denote the number of alleles of type <span class="math inline">\(a\)</span> observed at locus <span class="math inline">\(j\)</span> (<span class="math inline">\(a \in \{0,1\}\)</span>, <span class="math inline">\(j \in \{1,2,\dots,J\}\)</span>). Let <span class="math inline">\(n_j\)</span> denote the data at locus <span class="math inline">\(j\)</span> (so <span class="math inline">\(n_j = (n_{j0},n_{j1})\)</span>) and <span class="math inline">\(n\)</span> denote the data at all <span class="math inline">\(J\)</span> loci.</p>
+<p>Also let <span class="math inline">\(q\)</span> denote the vector <span class="math inline">\((q_1,\dots,q_J)\)</span>.</p>
+<p>Thus, <span class="math inline">\(n\)</span> denotes the data and <span class="math inline">\(q\)</span> denotes the unknown parameters. To do Bayesian inference for <span class="math inline">\(q\)</span> we want to compute the posterior distribution <span class="math inline">\(p(q | n)\)</span>.</p>
+<p>To apply the above results we must assume that</p>
+<ol style="list-style-type: lower-roman">
+<li><p>data at different loci are independent, so <span class="math display">\[p(n | q) = \prod p(n_j | q_j),\]</span> and</p></li>
+<li><p>the <span class="math inline">\(q_j\)</span> are <em>a priori</em> independent. This would imply, for example, that telling you <span class="math inline">\(q_1\)</span> (the frequency of the 1 allele at locus 1) would not tell<br />
+you anything about <span class="math inline">\(q_2\)</span> (the frequency of the 1 allele at locus 2).</p></li>
+</ol>
+<p>In practice these are reasonable assumptions provided that the loci are well separated along the genome and the samples are taken from a well-mixing (“random-mating”) population of elephants without substructure.</p>
+<p>Under these assumptions we have that the <span class="math inline">\(q_j\)</span> are <em>a posteriori</em> independent, with <span class="math display">\[p(q | n ) = \prod_j p(q_j | n_j).\]</span></p>
+<p>Furthermore, we know from <a href="bayes_conjugate.html">conjugacy</a> that if the prior distribution on <span class="math inline">\(q_j\)</span> is a Beta distribution, say <span class="math inline">\(q_j \sim \text{Beta}(a_j,b_j)\)</span>, then the posterior <span class="math inline">\(p(q_j | n_j)\)</span> is also a Beta distribution, with <span class="math inline">\(q_j | n_j \sim \text{Beta}(a_j + n_{j1}, b_j + n_{j0})\)</span>.</p>
+<div id="session-information" class="section level2">
+<h2>Session Information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.9    
+ [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
+[13] stringr_1.1.0   digest_0.6.12   workflowr_0.3.0 evaluate_0.10  </code></pre>
 </div>
-<div id="markov-chain-monte-carlo" class="section level3">
-<h3>Markov Chain Monte Carlo</h3>
-<ul>
-<li><a href="gibbs1.html">Introduction to Gibbs Sampling</a></li>
-<li><p><a href="gibbs2.html">Gibbs Sampling for a univariate normal mixture</a></p></li>
-<li><p><a href="MH-examples1.html">Simple examples of Metropolis–Hastings algorithm</a></p></li>
-</ul>
-</div>
-</div>
-<div id="distributions" class="section level2">
-<h2>Distributions</h2>
-<ul>
-<li><a href="beta.html">The Beta Distribution</a></li>
-<li><a href="dirichlet.html">The Dirichlet Distribution</a></li>
-</ul>
-</div>
-<div id="stochastic-processes" class="section level2">
-<h2>Stochastic Processes</h2>
-<div id="discrete-time-markov-chains" class="section level3">
-<h3>Discrete-Time Markov Chains</h3>
-<ul>
-<li><p><a href="markov_chains_discrete_intro.html">Discrete-Time Markov Chains: Introduction</a></p></li>
-<li><p><a href="stationary_distribution.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></p></li>
-<li><p><a href="markov_chains_discrete_stationary_dist.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></p></li>
-<li><p><a href="simulating_discrete_chains_1.html">Simulating Discrete-Time Markov Chains: An Introduction</a></p></li>
-<li><p><a href="simulating_discrete_chains_2.html">Simulating Discrete-Time Markov Chains: Limiting Distributions</a></p></li>
-</ul>
-</div>
-<div id="poisson-processes" class="section level3">
-<h3>Poisson Processes</h3>
-<ul>
-<li><a href="poisson_process_time_dependent_thinning.html">Poisson Processes: Thinning with time-dependent probabilities</a></li>
-<li><a href="bernoulli_poisson_process.html">Poisson Process: The Limiting Case of the Bernoulli Process</a></li>
-</ul>
-</div>
-<div id="methods-for-sampling-non-standard-distributions" class="section level3">
-<h3>Methods for sampling non-standard distributions</h3>
-<ul>
-<li><a href="inverse_transform_sampling.html">Inverse Transform Sampling</a></li>
-</ul>
-</div>
-<div id="multivariate-normal" class="section level3">
-<h3>Multivariate Normal</h3>
-<ul>
-<li><a href="mvnorm.html">Multivariate Normal</a></li>
-<li><a href="normal_markov_chain.html">Normal Markov Chain</a></li>
-</ul>
-</div>
-</div>
-<div id="population-genetics" class="section level2">
-<h2>Population Genetics</h2>
-<ul>
-<li><a href="wright_fisher_model.html">Wright-Fisher Model</a></li>
-<li><a href="approx_wright_fisher_model.html">Wright-Fisher Model Approximations</a></li>
-</ul>
 </div>
 
 <hr>

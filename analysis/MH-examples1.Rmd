@@ -14,7 +14,17 @@ knitr::read_chunk("chunks.R")
 
 **Last updated:** `r Sys.Date()`
 
-**Code version:** `r workflowr::extract_commit(".", 1)$sha1`
+**Code version:** `r 
+if(requireNamespace("git2r", quietly = TRUE)) {
+  if(git2r::in_repository()) {
+    git2r::commits()[[1]]@sha
+  } else {
+    "Unavailable. Initialize Git repository to enable."
+  }
+} else {
+  "Unavailable. Install git2r package to enable."
+}`
+
 
 # Pre-requisites
 
