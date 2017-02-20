@@ -310,14 +310,14 @@ div.tocify {
 
 
 <p><strong>Last updated:</strong> 2017-02-20</p>
-<p><strong>Code version:</strong> fdabcb7</p>
+<p><strong>Code version:</strong> d20b048</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should be familiar with <a href="bayes_beta_binomial.html">Bayesian inference for a continuous parameter</a>.</p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>Suppose we want to do inference for multiple parameters, and suppose that the data that are informative for each parameter are independent. Then provided the prior distributions on these parameters are independent, the posterior distributions are also independent.</p>
+<p>Suppose we want to do inference for multiple parameters, and suppose that the data that are informative for each parameter are independent. Then provided the prior distributions on these parameters are independent, the posterior distributions are also independent. This is useful as it essentially means we can do Bayesian inference for all the parameters by doing the inference for each parameter separately.</p>
 </div>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
@@ -350,7 +350,7 @@ you anything about <span class="math inline">\(q_2\)</span> (the frequency of th
 </ol>
 <p>In practice these are reasonable assumptions provided that the loci are well separated along the genome and the samples are taken from a well-mixing (“random-mating”) population of elephants without substructure.</p>
 <p>Under these assumptions we have that the <span class="math inline">\(q_j\)</span> are <em>a posteriori</em> independent, with <span class="math display">\[p(q | n ) = \prod_j p(q_j | n_j).\]</span></p>
-<p>Furthermore, we know from <a href="bayes_conjugate.html">here</a> that if the prior distribution on <span class="math inline">\(q_j\)</span> is a Beta distribution, say <span class="math inline">\(q_j \sim \text{Beta}(a_j,b_j)\)</span>, then the posterior <span class="math inline">\(p(q_j | n_j)\)</span> is also a Beta distribution, with <span class="math inline">\(q_j | n_j \sim \text{Beta}(a_j + n_{j1}, b_j + n_{j0})\)</span>.</p>
+<p>Furthermore, we know from <a href="bayes_conjugate.html">conjugacy</a> that if the prior distribution on <span class="math inline">\(q_j\)</span> is a Beta distribution, say <span class="math inline">\(q_j \sim \text{Beta}(a_j,b_j)\)</span>, then the posterior <span class="math inline">\(p(q_j | n_j)\)</span> is also a Beta distribution, with <span class="math inline">\(q_j | n_j \sim \text{Beta}(a_j + n_{j1}, b_j + n_{j0})\)</span>.</p>
 <div id="session-information" class="section level2">
 <h2>Session Information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
