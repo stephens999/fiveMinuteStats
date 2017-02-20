@@ -2,9 +2,12 @@
 title: "About"
 ---
 
-**Last updated:** `r Sys.Date()`
+```{r, echo=FALSE}
+revision <- gsub("'", "", system("git log -1 --format='%h'", intern = TRUE))
+```
+**Last updated:** `r format(Sys.time(), "%d %b %Y")`
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+**Code version:** [`r revision`](https://github.com/stephens999/fiveMinuteStats/tree/`r revision`)
 
 [Matthew Stephens][github-io] is a Professor in Statistics and Human Genetics at the University of Chicago.
 
