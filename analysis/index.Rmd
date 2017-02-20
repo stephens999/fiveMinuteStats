@@ -57,7 +57,8 @@ title: "Home"
 
 ## Distributions
 
-* [The Beta Distribution](beta.hmtl)
+* [The Beta Distribution](beta.html)
+* [The Dirichlet Distribution](dirichlet.html)
 
 ## Stochastic Processes
 
