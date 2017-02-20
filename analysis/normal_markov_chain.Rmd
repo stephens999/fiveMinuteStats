@@ -1,5 +1,5 @@
 ---
-title: "Normal Markov Chain"
+title: "Multivariate normal: the precision matrix"
 author: "Matthew Stephens"
 date: 2016-02-15
 ---
@@ -17,13 +17,32 @@ knitr::read_chunk("chunks.R")
 
 # Pre-requisites
 
-You should be familiar with the idea of a Markov chain, and with the [multivariate normal distribution](mvnorm.html).
+You should be familiar with the [multivariate normal distribution](mvnorm.html)
+and the idea of conditional independence, particularly as illustrated by a [Markov Chain](markov_chains_discrete_intro.html).
 
 # Overview
 
-This vignette introduces the idea that in a multivariate normal, conditional independences correspond to the zeros of the precision matrix (inverse covariance matrix). It also prepares you for the idea of Brownian motion.
+This vignette introduces the precision matrix of a multivariate normal. It also illustrates
+its key property: the zeros of the precision matrix correspond to conditional independencies of the variables.
 
-# A normal markov chain
+
+# Definition, and statement of key property
+
+Let $X$ be multivariate normal with covariance matrix $\Sigma$. 
+
+The precision matrix, $\Omega$, is simply defined to be the inverse of the covariance matrix: 
+$$\Omega := \Sigma^{-1}$$. 
+
+The key property of the precision matrix is that its zeros tell you about conditional independence. Specifically:
+$$\Omega_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are conditionally independent given all other coordinates of } X.$$
+
+It may help to compare and constrast this with the analogous property of the covariance matrix:
+$$\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.$$
+
+That is, whereas zeros of the covariance matrix tell you about independence, zeros of the precision matrix tell you about *conditional* independence.
+
+
+# Example: A normal markov chain
 
 Consider a Markov chain $X_1,X_2,X_3,\dots$ where the transitions are given by
 $X_{t+1} | X_{t} \sim N(X_{t},1)$. You might think of this Markov chain as corresponding to a type of "random walk": given the current state, the next state is obtained by adding a random normal with mean 0 and variance 1. 
@@ -43,7 +62,7 @@ sim_normal_MC=function(length=1000){
 plot(sim_normal_MC())
 ```
 
-# A normal markov chain as a multivariate normal
+## The normal markov chain as a multivariate normal
 
 If you think a little you should be able to see that the above random walk simulation is actually simulating from a 1000-dimensional multivariate normal distribution!
 
@@ -73,25 +92,15 @@ Sigma = A %*% t(A)
 Sigma[1:10,1:10]
 ```
 
-Something interesting happens when we look at the inverse of this covariance matrix, which is referred to as the *precision* matrix, and often denoted $\Omega$. Again
+Now let us examine the *precision* matrix, $\Omega$, which recall is the inverse of $\Sigma$. Again
 we just show the top left corner of the precision matrix here. 
 ```{r}
 Omega = chol2inv(chol(Sigma))
 Omega[1:10,1:10]
 ```
 
-Notice all the 0s in the precision matrix. This is important! It is an example of the following much more general idea:
-
-Let $X$ be multivariate normal with covariance matrix $\Sigma$ and precision matrix $\Omega = \Sigma^{-1}$. Then 
-$$\Omega_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are conditionally independent given all other coordinates of } X.$$
-
-Also,
-$$\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.$$
-
-
-That is, the zeros of the covariance matrix tell us about independencies among coordinates of $X$, and zeros of the precision matrix tell us about *conditional* independencies.
-
-In a Markov chain (any Markov chain) the conditional distribution of $X_t$ 
+Notice all the 0s in the precision matrix. This is because of the conditional independencies that occur
+in a Markov chain. In a Markov chain (any Markov chain) the conditional distribution of $X_t$ 
 given the other $X_s$ ($s \neq t$) depends only on its neighbors $X_{t-1}$ and $X_{t+1}$. That is, $X_{t}$ is conditionally independent of all other $X_s$ given $X_{t-1}$ and $X_{t+1}$. This is exactly what we are seeing in the precision matrix above:
 the non-zero elements of the $t$th row are at coordinates $t-1,t$ and $t+1$.
 
