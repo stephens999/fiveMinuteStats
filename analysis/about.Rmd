@@ -5,7 +5,8 @@ title: "About"
 ```{r, echo=FALSE}
 revision <- gsub("'", "", system("git log -1 --format='%h'", intern = TRUE))
 ```
-**Last updated:** `r format(Sys.time(), "%d %b %Y")`
+
+**Last updated:** `r format(Sys.Date(), "%d %b %Y")`
 
 **Code version:** [`r revision`](https://github.com/stephens999/fiveMinuteStats/tree/`r revision`)
 
