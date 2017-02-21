@@ -104,6 +104,38 @@ in a Markov chain. In a Markov chain (any Markov chain) the conditional distribu
 given the other $X_s$ ($s \neq t$) depends only on its neighbors $X_{t-1}$ and $X_{t+1}$. That is, $X_{t}$ is conditionally independent of all other $X_s$ given $X_{t-1}$ and $X_{t+1}$. This is exactly what we are seeing in the precision matrix above:
 the non-zero elements of the $t$th row are at coordinates $t-1,t$ and $t+1$.
 
+
+# Addendum: interpretation of $\Omega$ in terms of conditional mean of $X_i$
+
+The following fact is also useful, both in practice and for intuition.
+
+Suppose $X \sim N_r(0,\Omega^{-1})$, where the subscript $r$ indicates that $X$ is $r$-variate.
+
+Let $Y_1$ denote the first coordinate of $X$ and $Y_2$ denote the remaining coordinates (so $Y_2:= (X_2,\dots,X_r)$). Further let $\Omega_{12}$ denote the $1 \times (r-1)$ submatrix of $\Omega$ that consists of row 1 and columns 2 to r.
+
+
+The conditional distribution of $Y_1 | Y_2$ is (univariate) normal, with mean
+$$E(Y_1 | Y_2) = - (1/\Omega_{11}) \Omega_{12} Y_2$$  
+and variance $1/\Omega_{11}$. 
+
+Of course there is nothing special about $X_1$: a similar result applies for any $X_p$. You just have to replace $\Omega_{11}$ with $\Omega_{pp}$ and 
+define $\Omega_{12}$ to be the $p$th row of $\Omega$ with all columns except $p$. 
+
+## Application
+
+An application of this is imputation of missing values: suppose one of the $X$ values is missing, say $X_p$ is missing, but you know the covariance matrix and all the other $X$ values. Then you could impute $X_p$ by its conditional mean, which is a simple linear combination of the other values that can be read directly off the $p$th row of the precision matrix. This idea is the essence of [Kriging](https://en.wikipedia.org/wiki/Kriging).
+
+
+## Example
+
+Consider the Markov chain above. The conditional distribution of $X_1$ given all other $X$ values is given by
+$$X_1 | X_2,X_3,\dots \sim N(X_2/2, 1/2).$$
+
+And the conditional distribution of $X_2$ given all other $X$ values is
+$$X_2 | X_1,X_3, \dots \sim N((X_1+X_3)/2, 1/2).$$ 
+Similarly for $X_p$ for $p>2$. The intuition is that, if one wanted to guess what the
+value of $X_p$ were given all other $X$s, the best guess would be the average of its neighbours.
+
 ## Session information
 
 ```{r session-info}
