@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-02-20</p>
-<p><strong>Code version:</strong> e778974f2f0b95c6ba67de64e5e5250af4abb052</p>
+<p><strong>Last updated:</strong> 2017-02-22</p>
+<p><strong>Code version:</strong> b12c5ac77e59e8115502419a4959089d1333d3a4</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should be familiar with the <a href="mvnorm.html">multivariate normal distribution</a> and the idea of conditional independence, particularly as illustrated by a <a href="markov_chains_discrete_intro.html">Markov Chain</a>.</p>
@@ -341,7 +341,7 @@ sim_normal_MC=function(length=1000){
   return(X)
 }
 plot(sim_normal_MC())</code></pre>
-<p><img src="figure/normal_markov_chain.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/normal_markov_chain.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="the-normal-markov-chain-as-a-multivariate-normal" class="section level2">
 <h2>The normal markov chain as a multivariate normal</h2>
 <p>If you think a little you should be able to see that the above random walk simulation is actually simulating from a 1000-dimensional multivariate normal distribution!</p>
@@ -387,6 +387,24 @@ Omega[1:10,1:10]</code></pre>
 [10,]    0    0    0    0    0    0    0    0   -1     2</code></pre>
 <p>Notice all the 0s in the precision matrix. This is because of the conditional independencies that occur in a Markov chain. In a Markov chain (any Markov chain) the conditional distribution of <span class="math inline">\(X_t\)</span> given the other <span class="math inline">\(X_s\)</span> (<span class="math inline">\(s \neq t\)</span>) depends only on its neighbors <span class="math inline">\(X_{t-1}\)</span> and <span class="math inline">\(X_{t+1}\)</span>. That is, <span class="math inline">\(X_{t}\)</span> is conditionally independent of all other <span class="math inline">\(X_s\)</span> given <span class="math inline">\(X_{t-1}\)</span> and <span class="math inline">\(X_{t+1}\)</span>. This is exactly what we are seeing in the precision matrix above: the non-zero elements of the <span class="math inline">\(t\)</span>th row are at coordinates <span class="math inline">\(t-1,t\)</span> and <span class="math inline">\(t+1\)</span>.</p>
 </div>
+</div>
+<div id="addendum-interpretation-of-omega-in-terms-of-conditional-mean-of-x_i" class="section level1">
+<h1>Addendum: interpretation of <span class="math inline">\(\Omega\)</span> in terms of conditional mean of <span class="math inline">\(X_i\)</span></h1>
+<p>The following fact is also useful, both in practice and for intuition.</p>
+<p>Suppose <span class="math inline">\(X \sim N_r(0,\Omega^{-1})\)</span>, where the subscript <span class="math inline">\(r\)</span> indicates that <span class="math inline">\(X\)</span> is <span class="math inline">\(r\)</span>-variate.</p>
+<p>Let <span class="math inline">\(Y_1\)</span> denote the first coordinate of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y_2\)</span> denote the remaining coordinates (so <span class="math inline">\(Y_2:= (X_2,\dots,X_r)\)</span>). Further let <span class="math inline">\(\Omega_{12}\)</span> denote the <span class="math inline">\(1 \times (r-1)\)</span> submatrix of <span class="math inline">\(\Omega\)</span> that consists of row 1 and columns 2 to r.</p>
+<p>The conditional distribution of <span class="math inline">\(Y_1 | Y_2\)</span> is (univariate) normal, with mean <span class="math display">\[E(Y_1 | Y_2) = - (1/\Omega_{11}) \Omega_{12} Y_2\]</span><br />
+and variance <span class="math inline">\(1/\Omega_{11}\)</span>.</p>
+<p>Of course there is nothing special about <span class="math inline">\(X_1\)</span>: a similar result applies for any <span class="math inline">\(X_p\)</span>. You just have to replace <span class="math inline">\(\Omega_{11}\)</span> with <span class="math inline">\(\Omega_{pp}\)</span> and define <span class="math inline">\(\Omega_{12}\)</span> to be the <span class="math inline">\(p\)</span>th row of <span class="math inline">\(\Omega\)</span> with all columns except <span class="math inline">\(p\)</span>.</p>
+<div id="application" class="section level2">
+<h2>Application</h2>
+<p>An application of this is imputation of missing values: suppose one of the <span class="math inline">\(X\)</span> values is missing, say <span class="math inline">\(X_p\)</span> is missing, but you know the covariance matrix and all the other <span class="math inline">\(X\)</span> values. Then you could impute <span class="math inline">\(X_p\)</span> by its conditional mean, which is a simple linear combination of the other values that can be read directly off the <span class="math inline">\(p\)</span>th row of the precision matrix. This idea is the essence of <a href="https://en.wikipedia.org/wiki/Kriging">Kriging</a>.</p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Consider the Markov chain above. The conditional distribution of <span class="math inline">\(X_1\)</span> given all other <span class="math inline">\(X\)</span> values is given by <span class="math display">\[X_1 | X_2,X_3,\dots \sim N(X_2/2, 1/2).\]</span></p>
+<p>And the conditional distribution of <span class="math inline">\(X_2\)</span> given all other <span class="math inline">\(X\)</span> values is <span class="math display">\[X_2 | X_1,X_3, \dots \sim N((X_1+X_3)/2, 1/2).\]</span> Similarly for <span class="math inline">\(X_p\)</span> for <span class="math inline">\(p&gt;2\)</span>. The intuition is that, if one wanted to guess what the value of <span class="math inline">\(X_p\)</span> were given all other <span class="math inline">\(X\)</span>s, the best guess would be the average of its neighbours.</p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -400,29 +418,12 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
- [1] workflowr_0.3.0 rmarkdown_1.3   ggplot2_2.2.1   dplyr_0.5.0    
- [5] magrittr_1.5    shiny_1.0.0     mixfdr_1.0      ashr_2.1.2     
- [9] dscr_0.1.1      horseshoe_0.1.0
-
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.9        git2r_0.18.0       plyr_1.8.4        
- [4] iterators_1.0.8    tools_3.3.2        digest_0.6.12     
- [7] memoise_1.0.0      tibble_1.2         jsonlite_1.2      
-[10] evaluate_0.10      gtable_0.2.0       lattice_0.20-34   
-[13] Matrix_1.2-7.1     foreach_1.4.3      DBI_0.5-1         
-[16] rstudioapi_0.6     curl_2.2           yaml_2.1.14       
-[19] parallel_3.3.2     httr_1.2.1         withr_1.0.2       
-[22] stringr_1.1.0      knitr_1.15.1       devtools_1.12.0   
-[25] REBayes_0.73       rprojroot_1.2      grid_3.3.2        
-[28] R6_2.2.0           EbayesThresh_1.3.2 reshape2_1.4.2    
-[31] whisker_0.3-2      backports_1.0.5    scales_0.4.1      
-[34] codetools_0.2-15   htmltools_0.3.5    MASS_7.3-45       
-[37] assertthat_0.1     mime_0.5           colorspace_1.2-7  
-[40] xtable_1.8-2       httpuv_1.3.3       labeling_0.3      
-[43] stringi_1.1.2      Rmosek_7.1.2       lazyeval_0.2.0    
-[46] munsell_0.4.3      doParallel_1.0.10  pscl_1.4.9        
-[49] truncnorm_1.0-7    SQUAREM_2016.8-2  </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.9    
+ [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
+[13] stringr_1.1.0   digest_0.6.12   workflowr_0.3.0 gtools_3.5.0   
+[17] evaluate_0.10  </code></pre>
 </div>
 </div>
 
