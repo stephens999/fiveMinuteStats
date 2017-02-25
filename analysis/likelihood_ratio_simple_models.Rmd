@@ -61,7 +61,7 @@ Moving to marker 2, our tusk has the allele 0, which is more common in savanna (
 
 We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.
 
-(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See \cite{wasser.etal.07} and \cite{wasser.etal.08} for more details.)
+(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See @wasser.etal.07 and @wasser.etal.08 for more details.)
 
 # Solution
 
@@ -199,3 +199,5 @@ Repeat after me:
 
 ```{r session-info}
 ```
+
+## References
