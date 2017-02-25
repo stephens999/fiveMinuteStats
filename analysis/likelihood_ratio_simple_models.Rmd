@@ -2,6 +2,7 @@
 title: "Comparing two models with a likelihood ratio"
 author: "Matthew Stephens"
 date: 2016-01-06
+bibliography: citations.bib
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -27,7 +28,7 @@ Be familiar with basic concepts from probability, particularly the concept of a 
 # Motivating Problem
 
 [Technical Note: to simplify this problem I have 
-assumed that elephants are haploid, which they are not. If you do not know what this means you should simply ignore this comment.]
+assumed that elephants are [haploid](https://en.wikipedia.org/wiki/Ploidy), which they are not. If you do not know what this means you should simply ignore this comment.]
 
 There are two subspecies of African Elephant: savannah and forest elephants, which differ in their genetic makeup. Interpol have 
 seized an illegally-smuggled elephant tusk, and they want to know which subspecies of elephant the tusk came from. To try to answer this they collect DNA from the tusk and measure it at a number of locations ("markers" in genetics jargon) along the elephant genome. At each marker the DNA can be one of two types ("alleles" in genetics jargon), which for simplicity we will label 0 and 1.  So the available data on the tusk might look something like this.
@@ -60,9 +61,7 @@ Moving to marker 2, our tusk has the allele 0, which is more common in savanna (
 
 We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.
 
-(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See
-\cite{wasser.etal.07} and \cite{wasser.etal.08}
-for more details.)
+(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See \cite{wasser.etal.07} and \cite{wasser.etal.08} for more details.)
 
 # Solution
 
@@ -95,8 +94,7 @@ That is, given data $x$ the likelihood for a fully-specified
 
 $$L(M):=p(x | M)$$
 
-where $p(\cdot | M)$ denotes the probabilty mass function for model $M$. And the likelihood ratio comparing two fully-specified (discrete) models 
-$M_1$ vs $M_0$ is defined as
+where $p(\cdot | M)$ denotes the probability mass function for model $M$. And the likelihood ratio comparing two fully-specified (discrete) models $M_1$ vs $M_0$ is defined as
 
 $$LR(M_1, M_0) := L(M_1)/L(M_0).$$
 
@@ -147,7 +145,7 @@ so you have computed 2000 LRs. Now consider using the LR to classify each tusk a
 
   b) Repeat the above simulation study using 100 tusks from $M_S$ and 1900 tusks from $M_F$. What value of $c$ minimizes the misclassification rate? Comment. 
 
-  Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using roxygen2 format. See [Karl Broman's tutorial](http://kbroman.org/pkg_primer/pages/docs.html) for example.
+  Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html) format. See [Karl Broman's tutorial](http://kbroman.org/pkg_primer/pages/docs.html) for example.
 
 
 *DO NOT REPEAT THE SIMULATION STUDY BY COPYING AND PASTING CODE AND MODIFYING A FEW NUMBERS! GET INTO THE HABIT OF DOING IT PROPERLY*
@@ -165,13 +163,14 @@ your code should probably include a function something like this:
 #' @param fS allele frequencies of savanna elephants
 #' @param fF allele frequencies of forest elephants
 #' @param lc vector of log(c) values of LR cutoff to use
+#' @param seed set a random seed using set.seed() for reproducibility
 #'
 #' @return Plot of misclassification rate against threshold
 #'
-#' @example simulation_study(1000,1000,(0.40, 0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100))
+#' @example simulation_study(1000, 1000, c(0.40,0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100), seed)
 #'
 #'
-simulation_study(nS,nF,fS,fF,lc){
+simulation_study(nS, nF, fS, fF, lc, seed){
 ...
 }
 ```
