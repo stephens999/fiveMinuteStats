@@ -88,7 +88,7 @@ $$LR = \Pr(X \in [x-\epsilon,x+\epsilon] | M_1)/ \Pr(X \in [x-\epsilon,x+\epsilo
 The approximation usually works well, but 
 here is a simple example to illustrate how the approximation could break down in principle.
 
-Consider observing a single datapoint $X$ and we compare the models that
+Consider observing a single data point $X$ and we compare the models that
 $M_0: X \sim N(0,\sigma_0)$ vs $M_1: X \sim N(0,\sigma_1)$. Suppose that we observe $X=0.00$, assumed to be correct to the nearest 0.01. So the ``true" LR is
 given by
 ```{r}

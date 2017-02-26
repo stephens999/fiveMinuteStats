@@ -77,7 +77,7 @@ We say "the Beta distribution is the conjugate prior for a binomial proportion".
 
 # Exercise
 
-Show that the Gamms distribution is the conjugate prior for a Poisson mean.
+Show that the Gamma distribution is the conjugate prior for a Poisson mean.
 
 That is, 
 suppose we have observations $X$ that are Poisson distributed,

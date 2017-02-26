@@ -84,7 +84,7 @@ The key idea to introduce here is that a useful summary of
 how strongly the data $x$ support one model vs another model is given by the "likelihood ratio" (LR). 
 
 The LR comparing two fully-specified models is simply the ratio of the probability of the data under each model. 
-(In saying the ``probability of the data" here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail [here](likelihood_ratio_simple_continuous_data.html))
+(In saying the "probability of the data" here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail [here](likelihood_ratio_simple_continuous_data.html))
 
 The name Likelihood ratio comes from the fact that the probability of the data under each model is called the "likelihood" for that model.
 I recommended saying "likelihood for" the model, or "likelihood under" the model, rather than "likelihood of" the model, to help avoid confusing likelihood with probability.

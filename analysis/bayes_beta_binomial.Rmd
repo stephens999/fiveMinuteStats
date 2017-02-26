@@ -68,7 +68,7 @@ Here, because $q$ is a continuous parameter, this is referred to as the "posteri
 Now the final "trick" is to notice that this density, $q^{30} (1-q)^{70}$ is exactly the density of a [Beta distribution](beta.html). Indeed, specifically it is the density of a Beta(31,71) distribution.  So the posterior distribution for $q$ is Beta(31,71), and we might write
 $q | D \sim \text{Beta}(31,71)$. 
 
-This kind of "trick" is common in Bayesian inference: you look at the posterior density and "recognize" it as a distribution you know. It turns out that the number of distributions in common use is relatively small, so you only need to learn a few distributions to get sufficiently good at this trick for practial purposes. For example, it is a good start to be able to reconize the following distributions: exponential, binomial, Poisson, Gamma, Beta, Dirichlet, and Normal.  If your posterior distribution does not look like one of these, then you may well be in a situation where you need to use computational methods (like [Importance Sampling](is_simple.html) or [Markov chain Monte Carlo](MH-examples1.html)) to do your computations.
+This kind of "trick" is common in Bayesian inference: you look at the posterior density and "recognize" it as a distribution you know. It turns out that the number of distributions in common use is relatively small, so you only need to learn a few distributions to get sufficiently good at this trick for practical purposes. For example, it is a good start to be able to recognize the following distributions: exponential, binomial, Poisson, Gamma, Beta, Dirichlet, and Normal.  If your posterior distribution does not look like one of these, then you may well be in a situation where you need to use computational methods (like [Importance Sampling](is_simple.html) or [Markov chain Monte Carlo](MH-examples1.html)) to do your computations.
 
 So, in this case we are lucky: the posterior distribution is a nice distribution that we recognize, and this means we can do lots of calculations very easily: `R` has lots of built-in functions to deal with the Beta distribution, and many analytic properties have been derived (e.g. [Wikipedia](https://en.wikipedia.org/wiki/Beta_distribution).)
 We can use this to summarize and interpret the posterior distribution, as illustrated
@@ -79,10 +79,10 @@ We can use this to summarize and interpret the posterior distribution, as illust
 
 - To compute the posterior density of a continuous parameter, up to a normalizing constant, you multiply the likelihood by the prior density.
 
-- In simple cases you may find that the result is the density of a distribution you recognize. If so, you can often use known properties of that distribution to comptue quantities of interest. [Example](summarize_interpret_posterior.html).
+- In simple cases you may find that the result is the density of a distribution you recognize. If so, you can often use known properties of that distribution to compute quantities of interest. [Example](summarize_interpret_posterior.html).
 
 - In cases where you do not recognize the posterior distribution, you may need
-to use computational methods to compute quanties of interest.
+to use computational methods to compute quantities of interest.
 
 
 ## Session Information

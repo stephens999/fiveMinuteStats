@@ -70,7 +70,7 @@ sensible. In this case we can see that the maximum likelihood estimate is $q=0.3
 
 Note that from the likelihood function we can easily compute the likelihood ratio for any pair of parameter values! And just as with comparing two models, it is not the likelihoods that matter, but the likelihood ratios. That is you can divide the likelihood function by any constant without affecting the likelihood ratios.
 
-One way to emphasise this is to standardize the likelihood function so that its maximum is at 1, by dividing $L(\theta)/L(\hat{\theta})$.
+One way to emphasize this is to standardize the likelihood function so that its maximum is at 1, by dividing $L(\theta)/L(\hat{\theta})$.
 
 ```{r}
 q = seq(0,1,length=100)
@@ -93,7 +93,7 @@ plot(q,l(q)-l(0.3),ylab="l(q) - l(qhat)",xlab="q",type="l",ylim=c(-10,0))
 Changes in the log-likelihood function are referred to as "log-likelihood units". For example the difference in the support for $q=0.3$ and $q=0.35$ is ``l(0.3)-l(0.35)`` = ``r l(0.3)-l(0.35)`` log-likelihood units. 
 Again, remember that it is differences in $l$ that matter, not the actual values.
 
-Notice that the scale of the $y$ axis in this plot was set to span 10 log likelihood units. Setting the scale in this way makes sure the plot focusses on the parts of the parameter space that have more than miniscule support from the data (in this case, LR no smaller than 1/exp(10)). Without this the
+Notice that the scale of the $y$ axis in this plot was set to span 10 log likelihood units. Setting the scale in this way makes sure the plot focuses on the parts of the parameter space that have more than minuscule support from the data (in this case, LR no smaller than 1/exp(10)). Without this the
 plot can be much harder to read. For example, here is the plot using the default scale selected by R:
 ```{r}
 plot(q,l(q)-l(0.3),ylab="l(q) - l(qhat)",xlab="q",type="l")
