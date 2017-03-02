@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <div id="pre-requisites" class="section level2">
 <h2>Pre-requisites</h2>
 <p>This document assumes familiarity with the concepts of likelihoods, <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, and hypothesis testing.</p>
@@ -320,12 +319,12 @@ div.tocify {
 <h2>Background</h2>
 <p>When performing a statistical hypothesis test, like comparing two models, if the hypotheses completely specify the probability distributions, these hypotheses are called <strong>simple hypotheses</strong>. For example, suppose we observe <span class="math inline">\(X_1,\ldots,X_n\)</span> from a normal distribution with known variance and we want to test whether the true mean is equal to <span class="math inline">\(\mu_0\)</span> or <span class="math inline">\(\mu_1\)</span>. One hypothesis <span class="math inline">\(H_0\)</span> might be that the distribution has mean <span class="math inline">\(\mu_0\)</span>, and <span class="math inline">\(H_1\)</span> might be that the mean is <span class="math inline">\(\mu_1\)</span>. Since these hypotheses completely specify the distribution of the <span class="math inline">\(X_i\)</span>, they are called simple hypotheses.</p>
 <p>Now suppose <span class="math inline">\(H_0\)</span> is again that the true mean, <span class="math inline">\(\mu\)</span>, is equal to <span class="math inline">\(\mu_0\)</span>, but <span class="math inline">\(H_1\)</span> was that <span class="math inline">\(\mu &gt; \mu_0\)</span>. In this case, the <span class="math inline">\(H_0\)</span> is still simple, but <span class="math inline">\(H_1\)</span> does not completely specify a single probability distribution. It specifies a set of distributions, and is therefore an example of a <strong>composite hypothesis</strong>. In most practical scenarios, both hypotheses are rarely simple.</p>
-<p>As seen in the fiveMinuteStats on <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, given the observed data <span class="math inline">\(X_1\ldots,X_n\)</span>, we can measure the relative plausibility of <span class="math inline">\(H_1\)</span> to <span class="math inline">\(H_0\)</span> by the log-likelihood ratio: <span class="math display">\[\log\left(\frac{f(X_1,\ldots,X_n|H_1)}{f(X_1,\ldots,X_n|H_0)}\right)\]</span></p>
-<p>The log-likelihood ratio could help us choose which model (<span class="math inline">\(H_0\)</span> or <span class="math inline">\(H_1\)</span>) is a more likely explanation for the data. One common question is this: what constitues are <strong>large</strong> likelihood ratio? Wilks’s Theorem helps us answer this question – but first, we will define the notion of a <strong>generalized log-likelihood ratio</strong>.</p>
+<p>As seen in the <a href="https://github.com/stephens999/fiveMinuteStats">fiveMinuteStats</a> on <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, given the observed data <span class="math inline">\(X_1\ldots,X_n\)</span>, we can measure the relative plausibility of <span class="math inline">\(H_1\)</span> to <span class="math inline">\(H_0\)</span> by the log-likelihood ratio: <span class="math display">\[\log\left(\frac{f(X_1,\ldots,X_n|H_1)}{f(X_1,\ldots,X_n|H_0)}\right)\]</span></p>
+<p>The log-likelihood ratio could help us choose which model (<span class="math inline">\(H_0\)</span> or <span class="math inline">\(H_1\)</span>) is a more likely explanation for the data. One common question is this: what constitutes are <strong>large</strong> likelihood ratio? Wilks’s Theorem helps us answer this question – but first, we will define the notion of a <strong>generalized log-likelihood ratio</strong>.</p>
 </div>
 <div id="generalized-log-likelihood-ratios" class="section level2">
 <h2>Generalized Log-Likelihood Ratios</h2>
-<p>Let’s assume we are dealing with distributions parameterized by <span class="math inline">\(\theta\)</span>. To generalize the case of simple hypotheses, let’s assume that <span class="math inline">\(H_0\)</span> specifies that <span class="math inline">\(\theta\)</span> lives in some set <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(H_1\)</span> specifies that <span class="math inline">\(\theta \in \Theta_1\)</span>. Let <span class="math inline">\(\Omega = \Theta_0 \cup \Theta_1\)</span>. A somewhat natural extension to the likelihood ratio test statistic we discussed above is the generalized log-likehood ratio: <span class="math display">\[\Lambda^* = \log{\frac{\max_{\theta \in \Theta_1}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
+<p>Let’s assume we are dealing with distributions parameterized by <span class="math inline">\(\theta\)</span>. To generalize the case of simple hypotheses, let’s assume that <span class="math inline">\(H_0\)</span> specifies that <span class="math inline">\(\theta\)</span> lives in some set <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(H_1\)</span> specifies that <span class="math inline">\(\theta \in \Theta_1\)</span>. Let <span class="math inline">\(\Omega = \Theta_0 \cup \Theta_1\)</span>. A somewhat natural extension to the likelihood ratio test statistic we discussed above is the generalized log-likelihood ratio: <span class="math display">\[\Lambda^* = \log{\frac{\max_{\theta \in \Theta_1}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
 <p>For technical reasons, it is preferable to use the following related quantity:</p>
 <p><span class="math display">\[\Lambda_n = 2\log{\frac{\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
 <p>Just like before, larger values of <span class="math inline">\(\Lambda_n\)</span> provide stronger evidence against <span class="math inline">\(H_0\)</span>.</p>
@@ -354,31 +353,26 @@ hist(samples, freq=F, main=&#39;Histogram of LLR&#39;, xlab=&#39;sampled values 
 curve(dchisq(x, 1), 0, 20, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
 <p><img src="figure/wilks.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] knitr_1.14     MASS_7.3-45    expm_0.999-0   Matrix_1.2-7.1
-[5] rmarkdown_1.1 
+[1] knitr_1.15.1    expm_0.999-0    Matrix_1.2-6    workflowr_0.3.0
+[5] rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.7     lattice_0.20-34 gtools_3.5.0    digest_0.6.9   
- [5] assertthat_0.1  mime_0.4        R6_2.1.2        grid_3.3.2     
- [9] xtable_1.8-2    formatR_1.4     magrittr_1.5    evaluate_0.9   
-[13] stringi_1.1.1   tools_3.3.2     stringr_1.0.0   shiny_0.13.2   
-[17] httpuv_1.3.3    yaml_2.1.13     htmltools_0.3.5 tibble_1.2     </code></pre>
+ [1] Rcpp_0.12.5     lattice_0.20-33 digest_0.6.9    rprojroot_1.2  
+ [5] mime_0.5        R6_2.1.2        grid_3.3.0      xtable_1.8-2   
+ [9] backports_1.0.5 git2r_0.18.0    magrittr_1.5    evaluate_0.10  
+[13] stringi_1.1.2   tools_3.3.0     stringr_1.2.0   shiny_0.13.2   
+[17] httpuv_1.3.3    yaml_2.1.14     htmltools_0.3.5</code></pre>
 </div>
 
 <hr>
@@ -415,8 +409,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

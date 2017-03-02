@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
 <p>This document introduces the likelihood ratio for continuous data and models, and explains its connection with discrete models.</p>
@@ -349,7 +348,7 @@ lines(x, dgamma(x,scale = 1,shape = 2), type=&quot;l&quot;, col=&quot;red&quot;)
 <div id="an-example-where-the-approximation-breaks-down" class="section level1">
 <h1>An example where the approximation breaks down</h1>
 <p>The approximation usually works well, but here is a simple example to illustrate how the approximation could break down in principle.</p>
-<p>Consider observing a single datapoint <span class="math inline">\(X\)</span> and we compare the models that <span class="math inline">\(M_0: X \sim N(0,\sigma_0)\)</span> vs <span class="math inline">\(M_1: X \sim N(0,\sigma_1)\)</span>. Suppose that we observe <span class="math inline">\(X=0.00\)</span>, assumed to be correct to the nearest 0.01. So the ``true&quot; LR is given by</p>
+<p>Consider observing a single data point <span class="math inline">\(X\)</span> and we compare the models that <span class="math inline">\(M_0: X \sim N(0,\sigma_0)\)</span> vs <span class="math inline">\(M_1: X \sim N(0,\sigma_1)\)</span>. Suppose that we observe <span class="math inline">\(X=0.00\)</span>, assumed to be correct to the nearest 0.01. So the ``true&quot; LR is given by</p>
 <pre class="r"><code>trueLR = function(s0,s1){
   L0= pnorm(0.005,sd=s0)-pnorm(-0.005,sd=s0)
   L1= pnorm(0.005,sd=s1)-pnorm(-0.005,sd=s1)
@@ -368,29 +367,23 @@ lines(x, dgamma(x,scale = 1,shape = 2), type=&quot;l&quot;, col=&quot;red&quot;)
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_1.1
+[1] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
- [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
-[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.0     yaml_2.1.14     Rcpp_0.12.5     stringi_1.1.2  
+ [9] knitr_1.15.1    stringr_1.2.0   digest_0.6.9    evaluate_0.10  </code></pre>
 </div>
 </div>
 
@@ -428,8 +421,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

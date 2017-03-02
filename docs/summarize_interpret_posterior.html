@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-28</p>
-<p><strong>Code version:</strong> 5d88119</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d674141</p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette illustrates how to summarize and interpret a posterior distribution that has been computed analytically.</p>
@@ -341,7 +341,7 @@ plot(q, dbeta(q, 31,71), main=&quot;Posterior for $q$&quot;, ylab=&quot;density&
 <pre><code>[1] 0.2315858</code></pre>
 <pre class="r"><code>qbeta(0.95,31,71)</code></pre>
 <pre><code>[1] 0.38065</code></pre>
-<p>So [0.23, 0.38] is a 90% Bayesian Confidence Inverval for <span class="math inline">\(q\)</span>. (It is 90% because there is a 5% chance of it being above 0.23 and 5% of it being above 0.38).</p>
+<p>So [0.23, 0.38] is a 90% Bayesian Confidence Interval for <span class="math inline">\(q\)</span>. (It is 90% because there is a 5% chance of it being above 0.23 and 5% of it being above 0.38).</p>
 </div>
 <div id="point-estimates" class="section level2">
 <h2>Point Estimates</h2>
@@ -373,21 +373,26 @@ plot(q, dbeta(q, 31,71), main=&quot;Posterior for $q$&quot;, ylab=&quot;density&
 <div id="session-information" class="section level2">
 <h2>Session Information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
+<pre><code>R version 3.3.0 (2016-05-03)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] knitr_1.15.1    expm_0.999-0    Matrix_1.2-6    workflowr_0.3.0
+[5] rmarkdown_1.3  
+
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   tools_3.3.2    
- [5] htmltools_0.3.5 yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
- [9] rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0    stringr_1.1.0  
-[13] digest_0.6.10   workflowr_0.3.0 evaluate_0.10  </code></pre>
+ [1] Rcpp_0.12.5     lattice_0.20-33 digest_0.6.9    rprojroot_1.2  
+ [5] mime_0.5        R6_2.1.2        grid_3.3.0      xtable_1.8-2   
+ [9] backports_1.0.5 git2r_0.18.0    magrittr_1.5    evaluate_0.10  
+[13] stringi_1.1.2   tools_3.3.0     stringr_1.2.0   shiny_0.13.2   
+[17] httpuv_1.3.3    yaml_2.1.14     htmltools_0.3.5</code></pre>
 </div>
 </div>
 
