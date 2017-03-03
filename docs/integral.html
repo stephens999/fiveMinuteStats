@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-04</p>
+<p><strong>Code version:</strong> 5d0fa13282db4a97dc7d62e2d704e88a5afdb824</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>Be familiar with basic probability and Bayesian calculations.</p>
@@ -343,29 +342,30 @@ div.tocify {
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_1.1
+ [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
+ [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
+ [9] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
- [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
-[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+ [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
+ [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
+ [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
+[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
+[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
+[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
+[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
+[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
 </div>
 </div>
 
@@ -403,8 +403,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

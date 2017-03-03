@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-03-03</p>
-<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
+<p><strong>Last updated:</strong> 2017-03-04</p>
+<p><strong>Code version:</strong> 5d0fa13282db4a97dc7d62e2d704e88a5afdb824</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with <a href="intro_to_mixture_models.html">mixture models</a>.</p>
@@ -451,7 +451,7 @@ EM.iter &lt;- function(w.curr, L, ...) {
 <pre class="r"><code>#perform EM
 ee &lt;- mixture.EM(w.init=c(0.5,0.5), L, X)
 print(paste(&quot;Estimate = (&quot;, round(ee[[1]][1],2), &quot;,&quot;, round(ee[[1]][2],2), &quot;)&quot;, sep=&quot;&quot;))</code></pre>
-<pre><code>[1] &quot;Estimate = (0.27,0.73)&quot;</code></pre>
+<pre><code>[1] &quot;Estimate = (0.29,0.71)&quot;</code></pre>
 <p>Finally, we inspect the evolution of the log-likelihood and note that it is strictly increases:</p>
 <pre class="r"><code>plot(ee[[2]], ylab=&#39;incomplete log-likelihood&#39;, xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/intro_to_em.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -470,12 +470,19 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_0.3.0 rmarkdown_1.3  
+ [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
+ [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
+ [9] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.0     yaml_2.1.14     Rcpp_0.12.5     stringi_1.1.2  
- [9] knitr_1.15.1    stringr_1.2.0   digest_0.6.9    evaluate_0.10  </code></pre>
+ [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
+ [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
+ [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
+[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
+[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
+[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
+[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
+[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
 </div>
 
 <hr>

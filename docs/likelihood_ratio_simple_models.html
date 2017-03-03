@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-04</p>
+<p><strong>Code version:</strong> 5d0fa13282db4a97dc7d62e2d704e88a5afdb824</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
 <p>This document introduces the concept of likelihood ratio for comparing two simple (“fully specified”) statistical models - one of the most fundamental concepts in statistical inference.</p>
@@ -322,7 +321,7 @@ div.tocify {
 </div>
 <div id="motivating-problem" class="section level1">
 <h1>Motivating Problem</h1>
-<p>[Technical Note: to simplify this problem I have assumed that elephants are haploid, which they are not. If you do not know what this means you should simply ignore this comment.]</p>
+<p>[Technical Note: to simplify this problem I have assumed that elephants are <a href="https://en.wikipedia.org/wiki/Ploidy">haploid</a>, which they are not. If you do not know what this means you should simply ignore this comment.]</p>
 <p>There are two subspecies of African Elephant: savannah and forest elephants, which differ in their genetic makeup. Interpol have seized an illegally-smuggled elephant tusk, and they want to know which subspecies of elephant the tusk came from. To try to answer this they collect DNA from the tusk and measure it at a number of locations (“markers” in genetics jargon) along the elephant genome. At each marker the DNA can be one of two types (“alleles” in genetics jargon), which for simplicity we will label 0 and 1. So the available data on the tusk might look something like this.</p>
 <table>
 <thead>
@@ -404,7 +403,7 @@ div.tocify {
 <p>To get some intuition, let us examine the data at the first few markers. At marker 1 our tusk has the allele 1. This allele is less common in savanna elephants than forest elephants (40% of savanna elephants carry this allele, vs 80% of forest elephants), so this observation seems to support the sample coming from forest. However, at the same time 40% of savanna samples carry this allele, so it remains plausible that the sample came from savanna.</p>
 <p>Moving to marker 2, our tusk has the allele 0, which is more common in savanna (88%) than forest elephants (80%). And at marker 3 the tusk has allele 1 which is also more common in savanna (21% vs 11%). So, in contrast to marker 1, the data at these two markers are more consistent with the tusk coming from a savanna elephant than a forest elephant.</p>
 <p>We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.</p>
-<p>(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See  and  for more details.)</p>
+<p>(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See <span class="citation">Samuel K. Wasser and Stephens (2007)</span> and <span class="citation">S K Wasser and Stephens (2008)</span> for more details.)</p>
 </div>
 <div id="solution" class="section level1">
 <h1>Solution</h1>
@@ -416,11 +415,11 @@ div.tocify {
 <div id="the-likelihood-ratio" class="section level2">
 <h2>The likelihood ratio</h2>
 <p>The key idea to introduce here is that a useful summary of how strongly the data <span class="math inline">\(x\)</span> support one model vs another model is given by the “likelihood ratio” (LR).</p>
-<p>The LR comparing two fully-specified models is simply the ratio of the probability of the data under each model. (In saying the ``probability of the data&quot; here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail <a href="likelihood_ratio_simple_continuous_data.html">here</a>)</p>
+<p>The LR comparing two fully-specified models is simply the ratio of the probability of the data under each model. (In saying the “probability of the data” here we are assuming that the data and models involved are discrete. For continuous data and models the LR is the ratio of the probability densities of the two models evaluated at the data, as discussed in detail <a href="likelihood_ratio_simple_continuous_data.html">here</a>)</p>
 <p>The name Likelihood ratio comes from the fact that the probability of the data under each model is called the “likelihood” for that model. I recommended saying “likelihood for” the model, or “likelihood under” the model, rather than “likelihood of” the model, to help avoid confusing likelihood with probability.</p>
 <p>That is, given data <span class="math inline">\(x\)</span> the likelihood for a fully-specified (discrete) model <span class="math inline">\(M\)</span> is defined as</p>
 <p><span class="math display">\[L(M):=p(x | M)\]</span></p>
-<p>where <span class="math inline">\(p(\cdot | M)\)</span> denotes the probabilty mass function for model <span class="math inline">\(M\)</span>. And the likelihood ratio comparing two fully-specified (discrete) models <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is defined as</p>
+<p>where <span class="math inline">\(p(\cdot | M)\)</span> denotes the probability mass function for model <span class="math inline">\(M\)</span>. And the likelihood ratio comparing two fully-specified (discrete) models <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is defined as</p>
 <p><span class="math display">\[LR(M_1, M_0) := L(M_1)/L(M_0).\]</span></p>
 <p>Note that the likelihood for <span class="math inline">\(M\)</span> depends on the data <span class="math inline">\(x\)</span>. To make this dependence explicit the likelihood is sometimes written <span class="math inline">\(L(M;x)\)</span> instead of just <span class="math inline">\(L(M)\)</span>. Large values of <span class="math inline">\(LR(M_1,M_0)\)</span> indicate that the data are much more probable under model <span class="math inline">\(M_1\)</span> than under model <span class="math inline">\(M_0\)</span>, and so indicate support for <span class="math inline">\(M_1\)</span>. Conversely, small values of <span class="math inline">\(LR\)</span> indicate support for model <span class="math inline">\(M_0\)</span>.</p>
 </div>
@@ -455,7 +454,7 @@ print(LR)</code></pre>
 <li><p>Perform the following simulation study. Simulate 1000 tusks (values of <span class="math inline">\(x\)</span>) from each of the models <span class="math inline">\(M_S\)</span> and <span class="math inline">\(M_F\)</span>. For each simulated tusk compute the LR for <span class="math inline">\(M_S\)</span> vs <span class="math inline">\(M_F\)</span>, so you have computed 2000 LRs. Now consider using the LR to classify each tusk as being from a savanna or a forest elephant. Recall that large values for LR indicate support for <span class="math inline">\(M_S\)</span>, so a natural classification rule is “classify as savanna if <span class="math inline">\(LR&gt;c\)</span>, otherwise classify as forest” for some threshold <span class="math inline">\(c\)</span>. Plot the misclassification rate (= number of tusks wrongly classified/2000) for this rule, as <span class="math inline">\(c\)</span> ranges from 0.01 to 100. What value of <span class="math inline">\(c\)</span> minimizes the misclassification rate? [Hint: the plot will look best if you do things on the log scale, so you could let log10(c) vary from -2 to 2 using an equally spaced grid, and plot the misclassification rate on the <span class="math inline">\(y\)</span> axis against log10(c) on the <span class="math inline">\(x\)</span> axis.]</p></li>
 <li><p>Repeat the above simulation study using 100 tusks from <span class="math inline">\(M_S\)</span> and 1900 tusks from <span class="math inline">\(M_F\)</span>. What value of <span class="math inline">\(c\)</span> minimizes the misclassification rate? Comment.</p></li>
 </ol>
-<p>Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using roxygen2 format. See <a href="http://kbroman.org/pkg_primer/pages/docs.html">Karl Broman’s tutorial</a> for example.</p>
+<p>Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using <a href="https://cran.r-project.org/web/packages/roxygen2/index.html">roxygen2</a> format. See <a href="http://kbroman.org/pkg_primer/pages/docs.html">Karl Broman’s tutorial</a> for example.</p>
 <p><em>DO NOT REPEAT THE SIMULATION STUDY BY COPYING AND PASTING CODE AND MODIFYING A FEW NUMBERS! GET INTO THE HABIT OF DOING IT PROPERLY</em></p>
 <p>To be more explicit, at the top level your code should probably include a function something like this:</p>
 <pre><code>#&#39; Simulation study 
@@ -467,13 +466,14 @@ print(LR)</code></pre>
 #&#39; @param fS allele frequencies of savanna elephants
 #&#39; @param fF allele frequencies of forest elephants
 #&#39; @param lc vector of log(c) values of LR cutoff to use
+#&#39; @param seed set a random seed using set.seed() for reproducibility
 #&#39;
 #&#39; @return Plot of misclassification rate against threshold
 #&#39;
-#&#39; @example simulation_study(1000,1000,(0.40, 0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100))
+#&#39; @example simulation_study(1000, 1000, c(0.40,0.12,0.21,0.12,0.02,0.32), c(0.8,0.2,0.11,0.17,0.23,0.25), seq(-2,2,length=100), seed)
 #&#39;
 #&#39;
-simulation_study(nS,nF,fS,fF,lc){
+simulation_study(nS, nF, fS, fF, lc, seed){
 ...
 }</code></pre>
 <p>Then you can just call this simulation study function twice to complete the assignment.</p>
@@ -492,29 +492,41 @@ simulation_study(nS,nF,fS,fF,lc){
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_1.1
+ [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
+ [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
+ [9] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
- [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
-[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+ [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
+ [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
+ [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
+[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
+[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
+[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
+[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
+[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-wasser.etal.08">
+<p>S K Wasser, O Drori, W J Clark, and M Stephens. 2008. “Combating the Illegal Trade in African Elephat Ivory with Dna Forensics.” <em>Conservations Biology</em> 22 (4): 1065–71.</p>
+</div>
+<div id="ref-wasser.etal.07">
+<p>Samuel K. Wasser, Rebecca Booth, Celia Mailand, and Matthew Stephens. 2007. “Using Dna to Track the Origin of the Largest Ivory Seizure Since the 1989 Trade Ban.” <em>Proceedings of the National Academy of Sciences</em> 104 (10): 4228–33.</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -552,8 +564,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 
