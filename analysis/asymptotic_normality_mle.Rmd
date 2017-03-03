@@ -19,7 +19,7 @@ knitr::read_chunk("chunks.R")
 ```
 
 ## Main Result
-Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples $X_1,\ldots,X_n$ with probability distribution governed by the parameter $\theta$. Let $\theta_0$ be the true value of $\theta$, and $\hat{\theta}$ be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for $\theta$ is asympototically normal with mean $\theta_0$ and variance $I^{-1}(\theta_0)$. $I(\theta_0)$ is called the **Fisher information** -- we will describe it below. Precisely, this result states that:
+Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples $X_1,\ldots,X_n$ with probability distribution governed by the parameter $\theta$. Let $\theta_0$ be the true value of $\theta$, and $\hat{\theta}$ be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for $\theta$ is asymptotically normal with mean $\theta_0$ and variance $I^{-1}(\theta_0)$. $I(\theta_0)$ is called the **Fisher information** -- we will describe it below. Precisely, this result states that:
 $$\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))$$
 
 If $\hat{\theta}$ is the MLE, then this says that $(\hat{\theta} - \theta_0)/I^{-1}(\theta_0)$ is nearly $N(0,1)$ when the sample size $n$ is large. This allows us to construct approximate confidence intervals for $\theta$ and perform hypothesis tests. 

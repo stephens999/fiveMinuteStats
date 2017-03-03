@@ -40,7 +40,7 @@ Now we will consider the discrete version of the inverse transform method. Assum
 
 Notice that the second step requires a *search*. 
 
-Assume our random variable $X$ can take on any one of $K$ values with probabilities $\{p_1, \ldots, p_K\}$. We implement the algorithm below, assuming these probabilities are stored in a vector called "p.vec."
+Assume our random variable $X$ can take on any one of $K$ values with probabilities $\{p_1, \ldots, p_K\}$. We implement the algorithm below, assuming these probabilities are stored in a vector called `p.vec.`
 
 ```{r}
 # note: this inefficient implementation is for pedagogical purposes
@@ -59,7 +59,7 @@ discrete.inv.transform.sample <- function( p.vec ) {
 ```
 
 # Continuous Example: Exponential Distribution
-Assume $Y$ is an exponential random variable with rate paramter $\lambda = 2$. Recall that the probability density function is $p(y) = 2e^{-2y}$, for $y > 0$. First, we compute the CDF:
+Assume $Y$ is an exponential random variable with rate parameter $\lambda = 2$. Recall that the probability density function is $p(y) = 2e^{-2y}$, for $y > 0$. First, we compute the CDF:
 $$F_Y(x) = P(Y\leq x) = \int_0^x 2e^{-2y} dy = 1 - e^{-2x}$$
 
 Solving for the inverse CDF, we get that

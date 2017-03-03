@@ -21,7 +21,7 @@ Be familiar with the [Computing the posterior probability on classes for 2 class
 
 # Overview
 
-Suppose we have an observation $X$, which we believe to have come from one of $K$ models, $M_1 \dots, M_K$. Suppose we can compute the likelihood for any models. This document lays out the computation of the posterior probability that the model came from model $K$, and emphasises that the result depends only on the likelihood ratios.  This is a straightforward extension of the 2-class calculations. 
+Suppose we have an observation $X$, which we believe to have come from one of $K$ models, $M_1 \dots, M_K$. Suppose we can compute the likelihood for any models. This document lays out the computation of the posterior probability that the model came from model $K$, and emphasizes that the result depends only on the likelihood ratios.  This is a straightforward extension of the 2-class calculations.
 
 # Example
 

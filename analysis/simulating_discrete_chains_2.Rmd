@@ -42,7 +42,7 @@ With the facts above, we could keep track of our probability vector $\pi^{(n)}$ 
 We augment our function for simulating Markov chains from [this note](simulating_discrete_chains_1.html) with the following changes:  
 1. We keep track of $\pi^{(n)}$.  
 2. We add the functionality of simulating multiple chains at once -- as a result, the vectors we dealt with in the previous note have turned into matrices.  
-3. We use the rmultinom() function instead of our inv.transform.sample() method.  
+3. We use the `rmultinom()` function instead of our `inv.transform.sample()` method.
 
 
 ```{r}
@@ -203,7 +203,7 @@ abline(h=1, lty=3)
 abline(h=8, lty=3)
 ```
 
-Next we inpsect $\pi^{(n)}$ through time:
+Next we inspect $\pi^{(n)}$ through time:
 ```{r}
 all.probs <- sim2a[[1]]
 matplot(all.probs, type='l', col=1:8, lty=1, ylab='probability',

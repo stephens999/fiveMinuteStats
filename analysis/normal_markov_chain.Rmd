@@ -36,7 +36,7 @@ $$\Omega := \Sigma^{-1}$$.
 The key property of the precision matrix is that its zeros tell you about conditional independence. Specifically:
 $$\Omega_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are conditionally independent given all other coordinates of } X.$$
 
-It may help to compare and constrast this with the analogous property of the covariance matrix:
+It may help to compare and contrast this with the analogous property of the covariance matrix:
 $$\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.$$
 
 That is, whereas zeros of the covariance matrix tell you about independence, zeros of the precision matrix tell you about *conditional* independence.
@@ -68,7 +68,7 @@ If you think a little you should be able to see that the above random walk simul
 
 Why? 
 
-Well, let's write each of the $N(0,1)$ variables we generate using ''rnorm'' in that code as $Z_1,Z_2,\dots$. Then:
+Well, let's write each of the $N(0,1)$ variables we generate using `rnorm()` in that code as $Z_1,Z_2,\dots$. Then:
 $$X_1 = Z_1$$
 $$X_2 = X_1 + Z_2 = Z_1 + Z_2$$
 $$X_3 = X_2 + Z_3 = Z_1 + Z_2 + Z_3$$ etc.
@@ -111,7 +111,7 @@ The following fact is also useful, both in practice and for intuition.
 
 Suppose $X \sim N_r(0,\Omega^{-1})$, where the subscript $r$ indicates that $X$ is $r$-variate.
 
-Let $Y_1$ denote the first coordinate of $X$ and $Y_2$ denote the remaining coordinates (so $Y_2:= (X_2,\dots,X_r)$). Further let $\Omega_{12}$ denote the $1 \times (r-1)$ submatrix of $\Omega$ that consists of row 1 and columns 2 to r.
+Let $Y_1$ denote the first coordinate of $X$ and $Y_2$ denote the remaining coordinates (so $Y_2:= (X_2,\dots,X_r)$). Further let $\Omega_{12}$ denote the $1 \times (r-1)$ sub matrix of $\Omega$ that consists of row 1 and columns 2 to r.
 
 
 The conditional distribution of $Y_1 | Y_2$ is (univariate) normal, with mean

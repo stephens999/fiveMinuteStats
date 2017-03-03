@@ -29,7 +29,7 @@ and to mention some pitfalls to be avoided.
 # Infinite and zero LRs
 
 Suppose you are throwing a six-sided die with sides marked 1,2,3,4,5 and 6. 
-Consider comparing the models $M_0$: the die is fair (ie each face has probability 1/6) vs
+Consider comparing the models $M_0$: the die is fair (i.e. each face has probability 1/6) vs
 $M_1$: the die is loaded, and will always land 6.
 
 If we observe a "6" then the likelihood ratio for $M_1$ is 1/(1/6)=6.

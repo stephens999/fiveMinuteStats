@@ -38,7 +38,7 @@ and has many side effects (which is perhaps more typical) then one would certain
 want to avoid treating individuals who did not have the disease!
 
 More generally, in making a decision in the face of uncertainty, 
-it makes sense that one should conside the costs of different types of mistake.
+it makes sense that one should consider the costs of different types of mistake.
 This vignette describes how this could be done.
 
 # Example

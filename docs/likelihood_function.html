@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
@@ -337,7 +336,7 @@ plot(q,L(q),ylab=&quot;L(q)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code><
 <p>The value of <span class="math inline">\(\theta\)</span> that maximizes the likelihood function is referred to as the “maximum likelihood estimate”, and usually denoted <span class="math inline">\(\hat{\theta}\)</span>. That is <span class="math display">\[\hat{\theta}:= \arg \max L(\theta).\]</span></p>
 <p>Provided the data are sufficiently informative, and the number of parameters is not too large, maximum likelihood estimates tend to be sensible. In this case we can see that the maximum likelihood estimate is <span class="math inline">\(q=0.3\)</span>, which also corresponds to our intuition.</p>
 <p>Note that from the likelihood function we can easily compute the likelihood ratio for any pair of parameter values! And just as with comparing two models, it is not the likelihoods that matter, but the likelihood ratios. That is you can divide the likelihood function by any constant without affecting the likelihood ratios.</p>
-<p>One way to emphasise this is to standardize the likelihood function so that its maximum is at 1, by dividing <span class="math inline">\(L(\theta)/L(\hat{\theta})\)</span>.</p>
+<p>One way to emphasize this is to standardize the likelihood function so that its maximum is at 1, by dividing <span class="math inline">\(L(\theta)/L(\hat{\theta})\)</span>.</p>
 <pre class="r"><code>q = seq(0,1,length=100)
 L= function(q){q^30 * (1-q)^70}
 plot(q,L(q)/L(0.3),ylab=&quot;L(q)/L(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
@@ -351,36 +350,30 @@ plot(q,L(q)/L(0.3),ylab=&quot;L(q)/L(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l
 l= function(q){30*log(q) + 70 * log(1-q)}
 plot(q,l(q)-l(0.3),ylab=&quot;l(q) - l(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;,ylim=c(-10,0))</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /> Changes in the log-likelihood function are referred to as “log-likelihood units”. For example the difference in the support for <span class="math inline">\(q=0.3\)</span> and <span class="math inline">\(q=0.35\)</span> is <code>l(0.3)-l(0.35)</code> = <code>0.5630377</code> log-likelihood units. Again, remember that it is differences in <span class="math inline">\(l\)</span> that matter, not the actual values.</p>
-<p>Notice that the scale of the <span class="math inline">\(y\)</span> axis in this plot was set to span 10 log likelihood units. Setting the scale in this way makes sure the plot focusses on the parts of the parameter space that have more than miniscule support from the data (in this case, LR no smaller than 1/exp(10)). Without this the plot can be much harder to read. For example, here is the plot using the default scale selected by R:</p>
+<p>Notice that the scale of the <span class="math inline">\(y\)</span> axis in this plot was set to span 10 log likelihood units. Setting the scale in this way makes sure the plot focuses on the parts of the parameter space that have more than minuscule support from the data (in this case, LR no smaller than 1/exp(10)). Without this the plot can be much harder to read. For example, here is the plot using the default scale selected by R:</p>
 <pre class="r"><code>plot(q,l(q)-l(0.3),ylab=&quot;l(q) - l(qhat)&quot;,xlab=&quot;q&quot;,type=&quot;l&quot;)</code></pre>
 <p><img src="figure/likelihood_function.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /> Notice how different this plot looks to the eye even though it is exactly the same curve being plotted (just different <span class="math inline">\(y\)</span> axis scale). It is worth thinking about what scale you use when plotting log-likelihoods (and, of course, figures in general!).</p>
 </div>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_1.1
+[1] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
- [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
-[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.0     yaml_2.1.14     Rcpp_0.12.5     stringi_1.1.2  
+ [9] knitr_1.15.1    stringr_1.2.0   digest_0.6.9    evaluate_0.10  </code></pre>
 </div>
 
 <hr>
@@ -417,8 +410,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

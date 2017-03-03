@@ -22,7 +22,7 @@ This document assumes basic familiarity with the Poisson process.
 
 To gain intuition about the Poisson process, it is useful think of it as a continuous time version of the Bernoulli process. We first review some basics about the Poisson process and settle on notation before moving on to an illustrative example.
 
-For a Poisson process, arrivals may occur at any arbitrary time $t \geq 0$. One way to specify a Poisson process is by the counting process $N_t$ denoting the number of arrivals up to and including time $t$. For a Poisson process with rate paramters $\lambda$, we have that 
+For a Poisson process, arrivals may occur at any arbitrary time $t \geq 0$. One way to specify a Poisson process is by the counting process $N_t$ denoting the number of arrivals up to and including time $t$. For a Poisson process with rate parameters $\lambda$, we have that
 $$N_t \sim \text{Poisson}(\lambda t)$$
 
 Therefore, the expected number of time arrivals up to and including $t$ is equal to $E[N_t] = \lambda t$. In the examples that follow, we will assume our rate parameter $\lambda$ is $0.75$ arrivals per second, and we are interested in the number of arrivals after 10 seconds, $N_{10}$. In this example, we expect and average of $10\times\lambda = 7.5$ arrivals after $10$ seconds. 

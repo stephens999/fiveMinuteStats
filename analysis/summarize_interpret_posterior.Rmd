@@ -78,7 +78,7 @@ In our example, these quantiles of the Beta distribution can be computed using t
 qbeta(0.05,31,71)
 qbeta(0.95,31,71)
 ```
-So [`r round(qbeta(0.05,31,71),2)`, `r round(qbeta(0.95,31,71),2)`] is a 90% Bayesian Confidence Inverval for $q$. (It is 90% because there is a 5% chance of it being above `r round(qbeta(0.05,31,71),2)` and 5% of it being above `r round(qbeta(0.95,31,71),2)`).
+So [`r round(qbeta(0.05,31,71),2)`, `r round(qbeta(0.95,31,71),2)`] is a 90% Bayesian Confidence Interval for $q$. (It is 90% because there is a 5% chance of it being above `r round(qbeta(0.05,31,71),2)` and 5% of it being above `r round(qbeta(0.95,31,71),2)`).
 
 ## Point Estimates
 

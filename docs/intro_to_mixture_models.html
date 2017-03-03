@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <div id="prerequisites" class="section level1">
 <h1>Prerequisites</h1>
 <p>This document assumes basic familiarity with probability theory.</p>
@@ -357,13 +356,13 @@ hist(heights)</code></pre>
 <p><img src="figure/intro_to_mixture_models.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Here we see that the Gaussian mixture model is unimodal because there is so much overlap between the two densities. In this example, you can see that the population density is not symmetric, and therefore not normally distributed.</p>
 <p>These two illustrative examples above give rise to the general notion of a <strong>mixture model</strong> which assumes each observation is generated from one of <span class="math inline">\(K\)</span> mixture components. We formalize this notion in the next section.</p>
-<p>Before moving on, we make one small pedagogical note that sometimes confuses students new to mixture models. You might recall that if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <em>independent</em> normal random variables, then <span class="math inline">\(Z=X+Y\)</span> is also a normally distributed random variable. From this, you might wonder why the mixture models above aren’t normal. The reason is that <span class="math inline">\(X+Y\)</span> is <em>not</em> a mixture of normals. It is a linear combination of normals. A random variable sampled from a simple Gaussian mixture model can be thought of as a two stage process. First, we randomly sample a component (e.g. male or female), then we sample our observation from the normal distribution corresponding to that component. This is clearly different than sampling <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> from different normal distributions, then adding them together.</p>
+<p>Before moving on, we make one small pedagogical note that sometimes confuses students new to mixture models. You might recall that if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <em>independent</em> normal random variables, then <span class="math inline">\(Z=X+Y\)</span> is also a normally distributed random variable. From this, you might wonder why the mixture models above aren’t normal. The reason is that <span class="math inline">\(X+Y\)</span> is <em>not</em> a bivariate mixture of normals. It is a linear combination of normals. A random variable sampled from a simple Gaussian mixture model can be thought of as a two stage process. First, we randomly sample a component (e.g. male or female), then we sample our observation from the normal distribution corresponding to that component. This is clearly different than sampling <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> from different normal distributions, then adding them together.</p>
 </div>
 <div id="definition" class="section level1">
 <h1>Definition</h1>
 <p>Assume we observe <span class="math inline">\(X_1,\ldots,X_n\)</span> and that each <span class="math inline">\(X_i\)</span> is sampled from one of <span class="math inline">\(K\)</span> <strong>mixture components</strong>. In the second example above, the mixture components were <span class="math inline">\(\{\text{male,female}\}\)</span>. Associated with each random variable <span class="math inline">\(X_i\)</span> is a label <span class="math inline">\(Z_i \in \{1,\ldots,K\}\)</span> which indicates which component <span class="math inline">\(X_i\)</span> came from. In our height example, <span class="math inline">\(Z_i\)</span> would be either <span class="math inline">\(1\)</span> or <span class="math inline">\(2\)</span> depending on whether <span class="math inline">\(X_i\)</span> was a male or female height. Often times we don’t observe <span class="math inline">\(Z_i\)</span> (e.g. we might just obtain a list of heights with no gender information), so the <span class="math inline">\(Z_i\)</span>’s are sometimes called <strong>latent variables</strong>.</p>
 <p>From the law of total probability, we know that the marginal probability of <span class="math inline">\(X_i\)</span> is: <span class="math display">\[P(X_i = x) = \sum_{k=1}^K P(X_i=x|Z_i=k)\underbrace{P(Z_i=k)}_{\pi_k} = \sum_{k=1}^K P(X_i=x|Z_i=k)\pi_k\]</span></p>
-<p>Here, the <span class="math inline">\(\pi_k\)</span> are called <strong>mixture proportions</strong> or <strong>mixture weights</strong> and they represent the probability that <span class="math inline">\(X_i\)</span> belongs to the <span class="math inline">\(k\)</span>-th mixture component. The mixture proportions are nonneggative and they sum to one, <span class="math inline">\(\sum_{k=1}^K \pi_k = 1\)</span>. We call <span class="math inline">\(P(X_i|Z_i=k)\)</span> the <strong>mixture component</strong>, and it represents the distribution of <span class="math inline">\(X_i\)</span> assuming it came from component <span class="math inline">\(k\)</span>. The mixture components in our examples above were normal distributions.</p>
+<p>Here, the <span class="math inline">\(\pi_k\)</span> are called <strong>mixture proportions</strong> or <strong>mixture weights</strong> and they represent the probability that <span class="math inline">\(X_i\)</span> belongs to the <span class="math inline">\(k\)</span>-th mixture component. The mixture proportions are nonnegative and they sum to one, <span class="math inline">\(\sum_{k=1}^K \pi_k = 1\)</span>. We call <span class="math inline">\(P(X_i|Z_i=k)\)</span> the <strong>mixture component</strong>, and it represents the distribution of <span class="math inline">\(X_i\)</span> assuming it came from component <span class="math inline">\(k\)</span>. The mixture components in our examples above were normal distributions.</p>
 <p>For discrete random variables these mixture components can be any probability mass function <span class="math inline">\(p(. \mid Z_{k})\)</span> and for continuous random variables they can be any probability density function <span class="math inline">\(f(. \mid Z_{k})\)</span>. The corresponding pmf and pdf for the mixture model is therefore:</p>
 <p><span class="math display">\[p(x) =  \sum_{k=1}^{K}\pi_k p(x \mid Z_{k})\]</span> <span class="math display">\[f_{x}(x) = \sum_{k=1}^{K}\pi_k f_{x \mid Z_{k}}(x \mid Z_{k}) \]</span></p>
 <p>If we observe independent samples <span class="math inline">\(X_1,\ldots,X_n\)</span> from this mixture, with mixture proportion vector <span class="math inline">\(\pi=(\pi_1, \pi_2,\ldots,\pi_K)\)</span>, then the likelihood function is: <span class="math display">\[L(\pi) = \prod_{i=1}^n P(X_i|\pi) = \prod_{i=1}^n\sum_{k=1}^K P(X_i|Z_i=k)\pi_k\]</span></p>
@@ -373,29 +372,23 @@ hist(heights)</code></pre>
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_1.1
+[1] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
- [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
-[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.0     yaml_2.1.14     Rcpp_0.12.5     stringi_1.1.2  
+ [9] knitr_1.15.1    stringr_1.2.0   digest_0.6.9    evaluate_0.10  </code></pre>
 </div>
 
 <hr>
@@ -432,8 +425,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

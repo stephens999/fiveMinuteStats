@@ -2,6 +2,7 @@
 title: "Simple example of how a p value translates to a Bayes Factor"
 author: "Matthew Stephens"
 date: 2016-04-20
+bibliography: citations.bib
 ---
 
 **Last updated:** `r Sys.Date()`
@@ -21,7 +22,7 @@ You should know what a Bayes Factor is and what a p value is.
 
 # Overview
 
-Sellke et al (The American Statistician; Volume 55, Issue 1, 2001) study the following question (paraphrased and shortened here). 
+Sellke et al [@Sellke.et.al.01] study the following question (paraphrased and shortened here). 
 
 Consider the situation in which experimental drugs D1; D2; D3; etc are to be tested. Each test will be thought of as completely independent; we simply have a series of tests so that we can
 explore the frequentist properties of p values. In each test,
@@ -89,3 +90,5 @@ Note some key features:
 
 ```{r session-info}
 ```
+
+## References
