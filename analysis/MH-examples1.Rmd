@@ -73,7 +73,7 @@ for(i in 2:1000){
 }
 ```
 
-Note that x is a realisation of a Markov Chain. We can make a few plots of x:
+Note that x is a realization of a Markov Chain. We can make a few plots of x:
 ```{r}
 plot(x) 
 hist(x)
@@ -142,12 +142,12 @@ target = function(x){
 ```
 
 What does this target look like?
-What happens if the proposal sd is too small here? (try eg 1 and 0.1)
+What happens if the proposal sd is too small here? (try e.g. 1 and 0.1)
 
 # Example 2: Estimating an allele frequency
 
 A standard assumption when modelling genotypes of
-bi-allelic loci (eg loci with alleles $A$ and $a$) is
+bi-allelic loci (e.g. loci with alleles $A$ and $a$) is
 that the population is "randomly mating". From this assumption
 it follows that the population will be in 
 "Hardy Weinberg Equilibrium" (HWE), which means that 
@@ -215,7 +215,8 @@ lines(x,dbeta(x,122, 80))  # overlays beta density on histogram
 
 
 You might also like to discard the first 5000 z's as "burnin".
-Here's one way in R to select only the last 5000 zs
+Here's one way in R to select only the last 5000 z's
+
 ```{r}
 hist(z[5001:10000])
 ```
@@ -296,7 +297,7 @@ $$p(g_i=AA) = fp + (1-f)p^2$$
 
 ## Exercise: 
 
-Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of $z,f,$ and $p$ given genotype data $g$.
+Using the above, implement a Gibbs Sampler to sample from the joint distribution of $z,f,$ and $p$ given genotype data $g$.
 
 Hint: this requires iterating the following steps
   

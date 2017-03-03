@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <p>This is a work-in-progress.</p>
 <pre class="r"><code>knitr::opts_chunk$set(eval = FALSE)</code></pre>
 <div id="pre-requisites" class="section level1">
@@ -328,7 +327,7 @@ div.tocify {
 </div>
 <div id="example-garys-mood" class="section level1">
 <h1>Example: Gary’s mood</h1>
-<p>In Sheldon Ross’s Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary’s mood. Gary alternates between 3 state: Cheery (<span class="math inline">\(X=1\)</span>), So-So (<span class="math inline">\(X=2\)</span>), or Glum (<span class="math inline">\(X=3\)</span>). Here we input the <span class="math inline">\(P\)</span> matrix given by Ross and we input an abitrary initial probability matrix.</p>
+<p>In Sheldon Ross’s Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary’s mood. Gary alternates between 3 state: Cheery (<span class="math inline">\(X=1\)</span>), So-So (<span class="math inline">\(X=2\)</span>), or Glum (<span class="math inline">\(X=3\)</span>). Here we input the <span class="math inline">\(P\)</span> matrix given by Ross and we input an arbitrary initial probability matrix.</p>
 <pre class="r"><code># Define prob transition matrix 
 # (note matrix() takes vectors in column form so there is a transpose here to switch col&#39;s to row&#39;s)
 P=t(matrix(c(c(0.5,0.4,0.1),c(0.3,0.4,0.3),c(0.2,0.3,0.5)),nrow=3))
@@ -341,7 +340,7 @@ x0=c(0.1,0.2,0.7)
 sum(x0)</code></pre>
 <div id="time-reversibility" class="section level4">
 <h4>Time-reversibility</h4>
-<p>The reverse chain transition prob’s are: <span class="math display">\[\frac{\pi_j P_{ji}}{\pi_i}\]</span></p>
+<p>The reverse chain transition probabilities are: <span class="math display">\[\frac{\pi_j P_{ji}}{\pi_i}\]</span></p>
 <pre class="r"><code>diag(1/pivec)%*%(t(P)%*%diag(pivec))</code></pre>
 <p>So for our example we see it’s not time reversible…</p>
 <p>Let’s make a time-reversible example…</p>
@@ -394,8 +393,11 @@ diag(1/pi0)%*%t(P)%*%diag(pi0)</code></pre>
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

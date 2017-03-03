@@ -35,7 +35,7 @@ TBD
 
 # Example: Gary's mood
 
-In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an abitrary initial probability matrix. 
+In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an arbitrary initial probability matrix.
 
 ```{r}
 # Define prob transition matrix 
@@ -54,7 +54,7 @@ sum(x0)
 
 #### Time-reversibility
 
-The reverse chain transition prob's are: $$\frac{\pi_j P_{ji}}{\pi_i}$$
+The reverse chain transition probabilities are: $$\frac{\pi_j P_{ji}}{\pi_i}$$
 ```{r}
 diag(1/pivec)%*%(t(P)%*%diag(pivec))
 ```

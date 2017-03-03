@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>This document assumes basic familiarity with <a href="intro_to_mixture_models.html">mixture models</a>.</p>
@@ -346,7 +345,7 @@ L(\mu) &amp;= \prod_{i=1}^n \frac{1}{\sigma\sqrt{2\pi}}\exp{-\frac{(x_i-\mu)^2}{
 \hat{\sigma_k^2} &amp;= \frac{1}{N_k}\sum_{i=1}^n \gamma_{z_i}(k) (x_i - \mu_k)^2 \tag{4} \\
 \hat{\pi_k} &amp;= \frac{N_k}{n} \tag{5}
 \end{align}\]</span></p>
-<p>Again, remember that <span class="math inline">\(\gamma_{Z_i}(k)\)</span> depends on the unknown parameters, so these equations are not closed-form expressions. This looks like a vicious circle. But, as Cosma Shalizi says, “one man’s vicious circle is another man’s successive approximation procedure.”</p>
+<p>Again, remember that <span class="math inline">\(\gamma_{Z_i}(k)\)</span> depends on the unknown parameters, so these equations are not closed-form expressions. This looks like a vicious circle. But, as <a href="https://en.wikipedia.org/wiki/Cosma_Shalizi">Cosma Shalizi</a> says, “one man’s vicious circle is another man’s successive approximation procedure.”</p>
 <p>We are now in the following situation:</p>
 <ol style="list-style-type: decimal">
 <li>If we knew the parameters, we could compute the posterior probabilities <span class="math inline">\(\gamma_{Z_i}(k)\)</span></li>
@@ -369,7 +368,7 @@ L(\mu) &amp;= \prod_{i=1}^n \frac{1}{\sigma\sqrt{2\pi}}\exp{-\frac{(x_i-\mu)^2}{
 <p>Let <span class="math inline">\(X\)</span> be the entire set of observed variables and <span class="math inline">\(Z\)</span> the entire set of latent variables. The log-likelihood is therefore: <span class="math display">\[\log \left( P(X|\Theta)\right ) = \log \left ( \sum_{Z} P(X,Z|\Theta) \right )\]</span></p>
 <p>where we’ve simply marginalized <span class="math inline">\(Z\)</span> out of the joint distribution.</p>
 <p>As we noted above, the existence of the sum inside the logarithm prevents us from applying the log to the densities which results in a complicated expression for the MLE. Now suppose that we observed both <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>. We call <span class="math inline">\(\{X,Z\}\)</span> the <strong>complete</strong> data set, and we say <span class="math inline">\(X\)</span> is <strong>incomplete</strong>. As we noted previously, if we knew <span class="math inline">\(Z\)</span>, the maximization would be easy.</p>
-<p>We typically don’t know <span class="math inline">\(Z\)</span>, but the information we do have about <span class="math inline">\(Z\)</span> is contained in the posterior <span class="math inline">\(P(Z|X,\Theta)\)</span>. Since we don’t know the complete log-likelhood, we consider its expectation under the posterior distribution of the latent variables. This corresponds to the <strong>E-step</strong> above. In the <strong>M-step</strong>, we maximize this expectation to find a new estimate for the parameters.</p>
+<p>We typically don’t know <span class="math inline">\(Z\)</span>, but the information we do have about <span class="math inline">\(Z\)</span> is contained in the posterior <span class="math inline">\(P(Z|X,\Theta)\)</span>. Since we don’t know the complete log-likelihood, we consider its expectation under the posterior distribution of the latent variables. This corresponds to the <strong>E-step</strong> above. In the <strong>M-step</strong>, we maximize this expectation to find a new estimate for the parameters.</p>
 <p>In the <strong>E-step</strong>, we use the current value of the parameters <span class="math inline">\(\theta^0\)</span> to find the posterior distribution of the latent variables given by <span class="math inline">\(P(Z|X, \theta^0)\)</span>. This corresponds to the <span class="math inline">\(\gamma_{Z_i}(k)\)</span> in the previous section. We then use this to find the expectation of the complete data log-likelihood, with respect to this posterior, evaluated at an arbitrary <span class="math inline">\(\theta\)</span>. This expectation is denoted <span class="math inline">\(Q(\theta, \theta^0)\)</span> and it equals: <span class="math display">\[Q(\theta, \theta^0) = E_{Z|X,\theta^0}\left [\log (P(X,Z|\theta)) \right] =\sum_Z P(Z|X,\theta^0) \log (P(X,Z|\theta))\]</span></p>
 <p>In the M-step, we determine the new parameter <span class="math inline">\(\hat{\theta}\)</span> by maximizing Q: <span class="math display">\[\hat{\theta} = \text{argmax}_{\theta} Q(\theta, \theta^0)\]</span></p>
 <div id="gaussian-mixture-models" class="section level2">
@@ -416,7 +415,7 @@ hist(X,breaks=15)</code></pre>
 <pre class="r"><code>L = matrix(NA, nrow=length(X), ncol= 2)
 L[, 1] = dnorm(X, mean=mu.true[1], sd = sigma.true[1])
 L[, 2] = dnorm(X, mean=mu.true[2], sd = sigma.true[2])</code></pre>
-<p>Finally, we implement the E and M step in the EM.iter function below. The mixture.EM function is the driver which checks for convergence by computing the log-likelihoods at each step.</p>
+<p>Finally, we implement the E and M step in the <code>EM.iter</code> function below. The <code>mixture.EM</code> function is the driver which checks for convergence by computing the log-likelihoods at each step.</p>
 <pre class="r"><code>mixture.EM &lt;- function(w.init, L, X) {
   
   w.curr &lt;- w.init
@@ -452,7 +451,7 @@ EM.iter &lt;- function(w.curr, L, ...) {
 <pre class="r"><code>#perform EM
 ee &lt;- mixture.EM(w.init=c(0.5,0.5), L, X)
 print(paste(&quot;Estimate = (&quot;, round(ee[[1]][1],2), &quot;,&quot;, round(ee[[1]][2],2), &quot;)&quot;, sep=&quot;&quot;))</code></pre>
-<pre><code>[1] &quot;Estimate = (0.29,0.71)&quot;</code></pre>
+<pre><code>[1] &quot;Estimate = (0.27,0.73)&quot;</code></pre>
 <p>Finally, we inspect the evolution of the log-likelihood and note that it is strictly increases:</p>
 <pre class="r"><code>plot(ee[[2]], ylab=&#39;incomplete log-likelihood&#39;, xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/intro_to_em.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -460,29 +459,23 @@ print(paste(&quot;Estimate = (&quot;, round(ee[[1]][1],2), &quot;,&quot;, round(
 <div id="session-information" class="section level1">
 <h1>Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_1.1
+[1] workflowr_0.3.0 rmarkdown_1.3  
 
 loaded via a namespace (and not attached):
- [1] magrittr_1.5    assertthat_0.1  formatR_1.4     htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.13     tibble_1.2      Rcpp_0.12.7    
- [9] stringi_1.1.1   knitr_1.14      stringr_1.0.0   digest_0.6.9   
-[13] gtools_3.5.0    evaluate_0.9   </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.0     yaml_2.1.14     Rcpp_0.12.5     stringi_1.1.2  
+ [9] knitr_1.15.1    stringr_1.2.0   digest_0.6.9    evaluate_0.10  </code></pre>
 </div>
 
 <hr>
@@ -519,8 +512,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

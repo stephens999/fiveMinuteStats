@@ -309,8 +309,8 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-02-22</p>
-<p><strong>Code version:</strong> b12c5ac77e59e8115502419a4959089d1333d3a4</p>
+<p><strong>Last updated:</strong> 2017-03-03</p>
+<p><strong>Code version:</strong> d6741417d44f168473b77d41bba75ddf1acce30b</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should be familiar with the <a href="mvnorm.html">multivariate normal distribution</a> and the idea of conditional independence, particularly as illustrated by a <a href="markov_chains_discrete_intro.html">Markov Chain</a>.</p>
@@ -324,7 +324,7 @@ div.tocify {
 <p>Let <span class="math inline">\(X\)</span> be multivariate normal with covariance matrix <span class="math inline">\(\Sigma\)</span>.</p>
 <p>The precision matrix, <span class="math inline">\(\Omega\)</span>, is simply defined to be the inverse of the covariance matrix: <span class="math display">\[\Omega := \Sigma^{-1}\]</span>.</p>
 <p>The key property of the precision matrix is that its zeros tell you about conditional independence. Specifically: <span class="math display">\[\Omega_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are conditionally independent given all other coordinates of } X.\]</span></p>
-<p>It may help to compare and constrast this with the analogous property of the covariance matrix: <span class="math display">\[\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.\]</span></p>
+<p>It may help to compare and contrast this with the analogous property of the covariance matrix: <span class="math display">\[\Sigma_{ij}=0 \text{ if and only if } X_i \text{ and } X_j \text{ are independent}.\]</span></p>
 <p>That is, whereas zeros of the covariance matrix tell you about independence, zeros of the precision matrix tell you about <em>conditional</em> independence.</p>
 </div>
 <div id="example-a-normal-markov-chain" class="section level1">
@@ -341,12 +341,12 @@ sim_normal_MC=function(length=1000){
   return(X)
 }
 plot(sim_normal_MC())</code></pre>
-<p><img src="figure/normal_markov_chain.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/normal_markov_chain.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="the-normal-markov-chain-as-a-multivariate-normal" class="section level2">
 <h2>The normal markov chain as a multivariate normal</h2>
 <p>If you think a little you should be able to see that the above random walk simulation is actually simulating from a 1000-dimensional multivariate normal distribution!</p>
 <p>Why?</p>
-<p>Well, let’s write each of the <span class="math inline">\(N(0,1)\)</span> variables we generate using ‘’rnorm’’ in that code as <span class="math inline">\(Z_1,Z_2,\dots\)</span>. Then: <span class="math display">\[X_1 = Z_1\]</span> <span class="math display">\[X_2 = X_1 + Z_2 = Z_1 + Z_2\]</span> <span class="math display">\[X_3 = X_2 + Z_3 = Z_1 + Z_2 + Z_3\]</span> etc.</p>
+<p>Well, let’s write each of the <span class="math inline">\(N(0,1)\)</span> variables we generate using <code>rnorm()</code> in that code as <span class="math inline">\(Z_1,Z_2,\dots\)</span>. Then: <span class="math display">\[X_1 = Z_1\]</span> <span class="math display">\[X_2 = X_1 + Z_2 = Z_1 + Z_2\]</span> <span class="math display">\[X_3 = X_2 + Z_3 = Z_1 + Z_2 + Z_3\]</span> etc.</p>
 <p>So we can write <span class="math inline">\(X = AZ\)</span> where <span class="math inline">\(A\)</span> is the 1000 by 1000 matrix <span class="math display">\[A = \begin{pmatrix}
 1 &amp; 0 &amp; 0 &amp; 0 &amp; \dots \\
 1 &amp; 1 &amp; 0 &amp; 0 &amp; \dots \\
@@ -392,7 +392,7 @@ Omega[1:10,1:10]</code></pre>
 <h1>Addendum: interpretation of <span class="math inline">\(\Omega\)</span> in terms of conditional mean of <span class="math inline">\(X_i\)</span></h1>
 <p>The following fact is also useful, both in practice and for intuition.</p>
 <p>Suppose <span class="math inline">\(X \sim N_r(0,\Omega^{-1})\)</span>, where the subscript <span class="math inline">\(r\)</span> indicates that <span class="math inline">\(X\)</span> is <span class="math inline">\(r\)</span>-variate.</p>
-<p>Let <span class="math inline">\(Y_1\)</span> denote the first coordinate of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y_2\)</span> denote the remaining coordinates (so <span class="math inline">\(Y_2:= (X_2,\dots,X_r)\)</span>). Further let <span class="math inline">\(\Omega_{12}\)</span> denote the <span class="math inline">\(1 \times (r-1)\)</span> submatrix of <span class="math inline">\(\Omega\)</span> that consists of row 1 and columns 2 to r.</p>
+<p>Let <span class="math inline">\(Y_1\)</span> denote the first coordinate of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y_2\)</span> denote the remaining coordinates (so <span class="math inline">\(Y_2:= (X_2,\dots,X_r)\)</span>). Further let <span class="math inline">\(\Omega_{12}\)</span> denote the <span class="math inline">\(1 \times (r-1)\)</span> sub matrix of <span class="math inline">\(\Omega\)</span> that consists of row 1 and columns 2 to r.</p>
 <p>The conditional distribution of <span class="math inline">\(Y_1 | Y_2\)</span> is (univariate) normal, with mean <span class="math display">\[E(Y_1 | Y_2) = - (1/\Omega_{11}) \Omega_{12} Y_2\]</span><br />
 and variance <span class="math inline">\(1/\Omega_{11}\)</span>.</p>
 <p>Of course there is nothing special about <span class="math inline">\(X_1\)</span>: a similar result applies for any <span class="math inline">\(X_p\)</span>. You just have to replace <span class="math inline">\(\Omega_{11}\)</span> with <span class="math inline">\(\Omega_{pp}\)</span> and define <span class="math inline">\(\Omega_{12}\)</span> to be the <span class="math inline">\(p\)</span>th row of <span class="math inline">\(\Omega\)</span> with all columns except <span class="math inline">\(p\)</span>.</p>
@@ -408,22 +408,24 @@ and variance <span class="math inline">\(1/\Omega_{11}\)</span>.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
+<pre><code>R version 3.3.0 (2016-05-03)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Running under: OS X 10.10.5 (Yosemite)
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] expm_0.999-0    Matrix_1.2-6    workflowr_0.3.0 rmarkdown_1.3  
+
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.9    
- [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
-[13] stringr_1.1.0   digest_0.6.12   workflowr_0.3.0 gtools_3.5.0   
-[17] evaluate_0.10  </code></pre>
+ [1] Rcpp_0.12.5     lattice_0.20-33 digest_0.6.9    rprojroot_1.2  
+ [5] grid_3.3.0      backports_1.0.5 magrittr_1.5    evaluate_0.10  
+ [9] stringi_1.1.2   tools_3.3.0     stringr_1.2.0   yaml_2.1.14    
+[13] htmltools_0.3.5 knitr_1.15.1   </code></pre>
 </div>
 </div>
 

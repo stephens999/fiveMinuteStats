@@ -28,7 +28,7 @@ A basic knowledge of:
 
 # Overview
 
-A major goal of population genetics is to understand the effect of various evolutionary forces, such as genetic drift, selection, mutation and migration, on the change in allele frequencies within a population. Named after early pioneers of theoretical population genetics, Sewall Wright and Ronald A. Fisher, the Wright-Fisher model describes the sampling of alleles in a population with no selection, no mutation, no migration, non-overlapping generation times and random mating. Of course, real populations in nature do not adhere to these assumptions, yet the Wright-Fisher model provides a tool for studying how introducing more complex evolutionary forces can effect a relatively simple model. 
+A major goal of population genetics is to understand the effect of various evolutionary forces, such as genetic drift, selection, mutation and migration, on the change in allele frequencies within a population. Named after early pioneers of theoretical population genetics, [Sewall Wright](https://en.wikipedia.org/wiki/Sewall_Wright) and [Ronald A. Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher), the [Wright-Fisher model](https://en.wikipedia.org/wiki/Genetic_drift#Wright.E2.80.93Fisher_model) describes the sampling of alleles in a population with no selection, no mutation, no migration, non-overlapping generation times and random mating. Of course, real populations in nature do not adhere to these assumptions, yet the Wright-Fisher model provides a tool for studying how introducing more complex evolutionary forces can effect a relatively simple model.
 
 # Definition
 

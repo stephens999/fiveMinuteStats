@@ -4,7 +4,7 @@ runtime: shiny
 output: html_document
 ---
 
-The code chunks below cannot be rendered as part of the website. GitHub Pages only serves static webpages, and shiny apps are dynamic.
+The code chunks below cannot be rendered as part of the website. [GitHub Pages](https://pages.github.com) only serves static webpages, whereas shiny applications are dynamic.
 
 ```{r eval-false}
 library("knitr")
