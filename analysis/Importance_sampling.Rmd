@@ -100,7 +100,7 @@ lmean=function(lx){
 ```
 
 Exploiting this we can now do IS for $z=100$:
-```
+```{r}
 lpnorm.IS= function(z,nsamp=100000){
   y = rnorm(nsamp,z,1)
   w = dnorm(y,0,1,log=TRUE) - dnorm(y,z,1, log=TRUE)
