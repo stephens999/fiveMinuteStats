@@ -4,17 +4,6 @@ author: "First Last"
 date: YYYY-MM-DD
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 Understand the [calculation of posterior probabilities for a simple two-class problem](LR_and_BF.html).
@@ -178,7 +167,3 @@ to other outcomes. The two formulations are essentially
 equivalent - the loss is just the negative
 of the utility and vice versa.
 
-## Session information
-
-```{r session-info}
-```

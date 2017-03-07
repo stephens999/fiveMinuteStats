@@ -4,17 +4,6 @@ author: "John Novembre"
 date: 2016-01-31
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 This is a work-in-progress.
 
 ```{r}
@@ -72,7 +61,3 @@ pi0=(P%^%100)[1,]
 diag(1/pi0)%*%t(P)%*%diag(pi0)
 ```
 
-## Session information
-
-```{r session-info}
-```

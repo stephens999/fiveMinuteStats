@@ -4,17 +4,6 @@ author: "Matt Bonakdarpour"
 date: 2016-01-22
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Prerequisites
 
 This document assumes basic familiarity with probability theory. 
@@ -126,7 +115,3 @@ Now assume we are in the Gaussian mixture model setting where the $k$-th compone
 
 **Acknowledgement:** The "Examples" section above was taken from lecture notes written by Ramesh Sridharan.
 
-# Session information
-
-```{r session-info}
-```

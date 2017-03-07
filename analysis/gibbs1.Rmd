@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-01-23
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 Be familiar with the concept of joint distribution and a conditional distribution. Ideally also with the concept of a Markov chain and its stationary distribution.
@@ -146,7 +135,3 @@ result.
 
 
 
-## Session information
-
-```{r session-info}
-```

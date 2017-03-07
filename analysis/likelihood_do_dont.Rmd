@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-01-11
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 * Likelihood ratio for
@@ -83,7 +72,3 @@ This is called "informative missingness", and to compute the LR our models would
 
 
 
-# Session information
-
-```{r session-info}
-```

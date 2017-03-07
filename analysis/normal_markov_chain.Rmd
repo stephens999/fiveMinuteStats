@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-02-15
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 You should be familiar with the [multivariate normal distribution](mvnorm.html)
@@ -136,7 +125,3 @@ $$X_2 | X_1,X_3, \dots \sim N((X_1+X_3)/2, 1/2).$$
 Similarly for $X_p$ for $p>2$. The intuition is that, if one wanted to guess what the
 value of $X_p$ were given all other $X$s, the best guess would be the average of its neighbours.
 
-## Session information
-
-```{r session-info}
-```

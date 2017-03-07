@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-06-01
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 Know what a Gibbs sampler is, and a mixture model is, and be familiar with Bayesian inference for a normal mean and for the two class problem.
@@ -171,7 +160,3 @@ For example, to get 90% posterior CIs for the mean parameters:
   quantile(res3$mu[-(1:10),2],c(0.05,0.95))
 ```
 
-## Session information
-
-```{r session-info}
-```

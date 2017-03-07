@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-01-05
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 You should have come across the concept of [likelihood](likelihood.html), and be aware that likelihood provides
@@ -50,7 +39,3 @@ plot(theta, l(theta)-l(0.5), xlab="theta", ylab="l(theta)-l(0.5)",type="l")
 
 
 
-## Session information
-
-```{r session-info}
-```

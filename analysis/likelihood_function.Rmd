@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-01-12
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 You should understand the concept of using likelihood ratio for [discrete data](likelihood_ratio_simple_models.html) and [continuous data](likelihood_ratio_simple_continuous_data.html)
@@ -101,7 +90,3 @@ plot(q,l(q)-l(0.3),ylab="l(q) - l(qhat)",xlab="q",type="l")
 Notice how different this plot looks to the eye even though it is exactly the same curve being plotted (just different $y$ axis scale). It is worth thinking
 about what scale you use when plotting log-likelihoods (and, of course, figures in general!).
 
-# Session information
-
-```{r session-info}
-```

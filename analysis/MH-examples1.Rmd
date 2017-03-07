@@ -12,17 +12,6 @@ knitr::read_chunk("chunks.R")
 ```{r knitr-opts-chunk, include=FALSE}
 ```
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r 
-if(requireNamespace("git2r", quietly = TRUE)) {
-  if(git2r::in_repository()) {
-    git2r::commits()[[1]]@sha
-  } else {
-    "Unavailable. Initialize Git repository to enable."
-  }
-} else {
-  "Unavailable. Install git2r package to enable."
 }`
 
 
@@ -306,7 +295,3 @@ Hint: this requires iterating the following steps
 
 
 
-## Session Information
-
-```{r session-info}
-```

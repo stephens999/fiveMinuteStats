@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-05-02
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 Be familiar with basic probability and Bayesian calculations.
@@ -67,7 +56,3 @@ Other simple methods that can work for low dimensions: naive Monte Carlo, and Im
 For higher dimensions we usually resort to Markov Chain Monte Carlo.
 
 
-## Session information
-
-```{r session-info}
-```

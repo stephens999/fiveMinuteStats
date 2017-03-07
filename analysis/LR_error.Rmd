@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-09-04
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 + Likelihood Ratio.
@@ -77,7 +66,3 @@ sum(dnorm(X, mean=mean(X), sd=sd(X),log=TRUE)) - sum(dlnorm(X, meanlog=mean(Z), 
 The fact that the LLR is very negative supports the graphical evidence that $M_2$ is a much better fitting model (and indeed, as we know -- since we simulated the data -- $M_2$ is the true model).
 
 
-## Session information
-
-```{r session-info}
-```

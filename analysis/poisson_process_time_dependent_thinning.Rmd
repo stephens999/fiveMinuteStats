@@ -4,17 +4,6 @@ author: "John Novembre"
 date: 2016-01-31
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-```
 
 # Pre-requisites
 
@@ -191,7 +180,3 @@ As a practical application of the model, try to answer these questions: 1) What 
 ## Challenge Problem 3
 A further challenge: Consider each arrival is initially of type 0 and that the probabiity an item arriving at time $s$ is of type $i$ at time $t$ is determined by a continous time Markov transition probability matrix $P_{0i}(t-s)$.  For a simple transition matrix of your choice, work out a simulation and check against the theory. 
 
-## Session information
-
-```{r session-info}
-```

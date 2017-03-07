@@ -4,17 +4,6 @@ author: "Matthew Stephens"
 date: 2016-01-04
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
 # Pre-requisites
 
 Be familiar with the concept of a [Statistical Model](model.html).
@@ -94,7 +83,3 @@ One might intuitively feel that a factor of 1.2 is not especially noteworthy, an
 and sees two heads, then this is not strong evidence against the hypothesis that the coin is fair, with equal probability of landing heads and tails. This intuitive notion can be formalized in various ways, including by the use of [Wilks's Theorem](wilks.html) and [Bayesian analysis](bayes_lr.html).
 
 
-## Session information
-
-```{r session-info}
-```
