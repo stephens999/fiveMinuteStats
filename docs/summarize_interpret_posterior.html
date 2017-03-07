@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-03-04</p>
-<p><strong>Code version:</strong> 5d0fa13</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette illustrates how to summarize and interpret a posterior distribution that has been computed analytically.</p>
@@ -371,32 +377,34 @@ plot(q, dbeta(q, 31,71), main=&quot;Posterior for $q$&quot;, ylab=&quot;density&
 <li>a point estimate for <span class="math inline">\(\theta\)</span>.</li>
 </ol>
 <div id="session-information" class="section level2">
-<h2>Session Information</h2>
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.0 (2016-05-03)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X 10.10.5 (Yosemite)
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
 
 locale:
-[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
- [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
- [9] workflowr_0.3.0 rmarkdown_1.3  
+[1] knitr_1.15.1       MASS_7.3-45        expm_0.999-0      
+[4] Matrix_1.2-8       workflowr_0.4.0    rmarkdown_1.3.9004
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
- [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
- [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
-[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
-[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
-[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
-[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
-[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
+ [1] Rcpp_0.12.9     lattice_0.20-34 gtools_3.5.0    digest_0.6.12  
+ [5] rprojroot_1.2   mime_0.5        R6_2.2.0        grid_3.3.2     
+ [9] xtable_1.8-2    backports_1.0.5 git2r_0.18.0    magrittr_1.5   
+[13] evaluate_0.10   stringi_1.1.2   tools_3.3.2     stringr_1.2.0  
+[17] shiny_1.0.0     httpuv_1.3.3    yaml_2.1.14     htmltools_0.3.5</code></pre>
 </div>
 </div>
 
