@@ -4,6 +4,25 @@ author: "Matthew Stephens"
 date: 2016-01-12
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 # Pre-requisites
 
 You should understand the concept of using likelihood ratio for [discrete data](likelihood_ratio_simple_models.html) and [continuous data](likelihood_ratio_simple_continuous_data.html)
@@ -90,3 +109,9 @@ plot(q,l(q)-l(0.3),ylab="l(q) - l(qhat)",xlab="q",type="l")
 Notice how different this plot looks to the eye even though it is exactly the same curve being plotted (just different $y$ axis scale). It is worth thinking
 about what scale you use when plotting log-likelihoods (and, of course, figures in general!).
 
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

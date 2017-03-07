@@ -4,6 +4,25 @@ author: "Matt Bonakdarpour"
 date: 2016-02-02
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 # Pre-requisites
 
 This document assumes basic familiarity with probability theory.
@@ -96,3 +115,9 @@ barplot(table(samples), main='Empirical Probability Mass Function')
 Again, the plot supports our claim that we are drawing from the true probability distribution 
 
 
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

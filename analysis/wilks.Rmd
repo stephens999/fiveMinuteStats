@@ -5,6 +5,25 @@ date: 2016-01-14
 output: html_document
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 ## Pre-requisites
 
 This document assumes familiarity with the concepts of likelihoods, [likelihood ratios](likelihood_ratio_simple_models.html), and hypothesis testing. 
@@ -62,3 +81,9 @@ hist(samples, freq=F, main='Histogram of LLR', xlab='sampled values of LLR value
 curve(dchisq(x, 1), 0, 20, lwd=2, xlab = "", ylab = "", add = T)
 ```
 
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

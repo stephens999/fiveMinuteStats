@@ -5,16 +5,24 @@ date: 2017-01-25
 output: html_document
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
 ```{r read-chunk, include=FALSE, cache=FALSE}
 knitr::read_chunk("chunks.R")
 ```
 
+<!-- Update knitr chunk options -->
 ```{r knitr-opts-chunk, include=FALSE}
 ```
 
-**Last updated:** `r Sys.Date()`
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
 
-**Code version:** `r workflowr::extract_commit(".", 1)$sha1`
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
 
 
 # Overview
@@ -93,7 +101,8 @@ legend(0.5,2, c("Be(0.1,0.1)","Be(0.5,0.5)","Be(0.1,0.5)", "Be(0.5,2)"),lty=c(1,
 
 - Sketch what you think the Be(5,5) and Be(0.5,5) and Be(500,200) distributions would look like. Check your sketches against the truth computed using `dbeta`. 
 
-## Session Information
+## Session information
 
+<!-- Insert the session information into the document -->
 ```{r session-info}
 ```

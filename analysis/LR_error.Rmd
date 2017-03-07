@@ -4,6 +4,25 @@ author: "Matthew Stephens"
 date: 2016-09-04
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 # Pre-requisites
 
 + Likelihood Ratio.
@@ -66,3 +85,9 @@ sum(dnorm(X, mean=mean(X), sd=sd(X),log=TRUE)) - sum(dlnorm(X, meanlog=mean(Z), 
 The fact that the LLR is very negative supports the graphical evidence that $M_2$ is a much better fitting model (and indeed, as we know -- since we simulated the data -- $M_2$ is the true model).
 
 
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

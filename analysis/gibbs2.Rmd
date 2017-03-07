@@ -4,6 +4,25 @@ author: "Matthew Stephens"
 date: 2016-06-01
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 # Pre-requisites
 
 Know what a Gibbs sampler is, and a mixture model is, and be familiar with Bayesian inference for a normal mean and for the two class problem.
@@ -160,3 +179,9 @@ For example, to get 90% posterior CIs for the mean parameters:
   quantile(res3$mu[-(1:10),2],c(0.05,0.95))
 ```
 
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

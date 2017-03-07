@@ -4,6 +4,25 @@ author: "Matthew Stephens"
 date: 2016-05-02
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 # Pre-requisites
 
 Be familiar with basic probability and Bayesian calculations.
@@ -56,3 +75,9 @@ Other simple methods that can work for low dimensions: naive Monte Carlo, and Im
 For higher dimensions we usually resort to Markov Chain Monte Carlo.
 
 
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```
