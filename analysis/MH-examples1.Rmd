@@ -24,16 +24,6 @@ knitr::read_chunk("chunks.R")
 ```{r code-version, echo=FALSE, results='asis'}
 ```
 
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
-
-}`
-
-
 # Pre-requisites
 
 

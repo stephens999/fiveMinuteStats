@@ -28,14 +28,15 @@ If you are interested in these ideas, please get in touch, mstephenskanga@roouch
 
 # For contributors
 
-The repo is organized using John Blischak's workflowr package https://github.com/jdblischak/workflowr.
-Each vignette is an Rmarkdown file, saved in the 'analysis' subdirectory. To add a vignette follow this
-instructions for "adding an analysis" under workflowr. (the key command is
+The repo is organized using John Blischak's [workflowr][] R package.
+Each vignette is an R Markdown file, saved in the 'analysis' subdirectory. To add a vignette, run the following:
 
-`> rmarkdown::draft(file = "analysis/newfile.Rmd", template = "analysis",
-                   package = "workflowr")`
+```r
+library("workflowr")
+wflow_open("newfile.Rmd")
+```
 
-)
+See the [workflowr online documentation][docs] to learn more.
 
-
- 
+[workflowr]: https://github.com/jdblischak/workflowr
+[docs]: https://jdblischak.github.io/workflowr
