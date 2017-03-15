@@ -8,8 +8,11 @@ date: 2016-01-23
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Pre-requisites
@@ -32,7 +35,7 @@ X \\ Y | 0 | 1 |
 
 That is, for example, $p_{X,Y}(0,0)=0.6$. 
 
-The conditional distribution of $X$ given any given value is easy to compute by the usual formula for conditional probability, $\Pr(A | B) = \Pr(A and B)/\Pr(B)$. For example:
+The conditional distribution of $X$ given any given value is easy to compute by the usual formula for conditional probability, $\Pr(A | B) = \Pr(A \cap B)/\Pr(B)$. For example:
 $$\Pr(X=0 | Y=0) = \Pr(X=0 \cap Y=0)/Pr(Y=0) = 0.6/0.75 = 0.8$$
 and so
 $$\Pr(X=1 | Y=0) = 1-0.8 = 0.2.$$
@@ -145,6 +148,5 @@ result.
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

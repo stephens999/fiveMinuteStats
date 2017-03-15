@@ -16,6 +16,9 @@ title: "Home"
 # Likelihood Function (continuous parameter)
 
 *  [The Likelihood Function](likelihood_function.html)
+*  [Bayesian inference for a continuous parameter: analytic calculation](bayes_beta_binomial.html)
+*  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_interpret_posterior.html)
+
 *  [Simple example: Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
 
 

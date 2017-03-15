@@ -8,8 +8,11 @@ date: 2016-01-07
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Summary
@@ -128,6 +131,5 @@ e) Repeat the above, but in the case where only 2% of the screened population ar
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

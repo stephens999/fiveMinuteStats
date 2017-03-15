@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="First Last" />
+
+
+<title>Untitled</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Untitled</h1>
+<h4 class="author"><em>First Last</em></h4>
+<h4 class="date"><em>YYYY-MM-DD</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2017-03-04</p>
+<p><strong>Code version:</strong> 5d0fa13282db4a97dc7d62e2d704e88a5afdb824</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Understand the <a href="LR_and_BF.html">calculation of posterior probabilities for a simple two-class problem</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Often, after performing some statistical calculations, one wants to make an actual <em>decision</em> based on those calculations. For example, consider the problem of screening someone for a disease. Suppose you have computed, based on some preliminary medical tests, the (posterior) probability that a particular individual has the disease. The next step might be to decide, say, whether to treat the patient with a drug for the disease. Or perhaps whether to do some further tests that are more invasive or more expensive, but more conclusive than the tests done up to now.</p>
+<p>Intuitively, in making such a decision, it makes sense to take account of the relative costs of different types of mistake. For example, if the treatment for a disease is cheap, simple, and has no side effects, then one might be inclined to treat even individuals who have a low probability of the disease, and not spend resources on expensive follow up. On the other hand, if the treatment is expensive and complex, and has many side effects (which is perhaps more typical) then one would certainly want to avoid treating individuals who did not have the disease!</p>
+<p>More generally, in making a decision in the face of uncertainty, it makes sense that one should consider the costs of different types of mistake. This vignette describes how this could be done.</p>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>We will consider this problem in the case of a disease diagnosis, before outlining the general framework.</p>
+<p>To keep things simple we will assume that there are only two options available to us: to treat the individual with a particular drug, or not to treat and send them away and tell them to come back if their symptoms get worse. That is “treat” or “don’t treat”.</p>
+<p>Taking account of the fact that the individual might or might not have the disease there are therefore four possible outcomes: - the individual is diseased, and we treat them - the individual is not diseased, and we treat them. - the individual is diseased, and we do not treat them. - the individual is not diseased and we do not treat them. We will write these four outcomes as <span class="math inline">\((D,T), (\neg D,T), (D,\neg T), (\neg D,\neg T)\)</span> respectively. (The symbol <span class="math inline">\(\neg\)</span> is common mathematical shorthand for “not”.)</p>
+<p>Some of these outcomes are obviously better than others, and our actions should of course reflect this. To do this we have to <em>quantify</em> how bad or good each outcome is. We suppose that we can do this by assigning a “loss” to each outcome, saying how bad it is (relative to other outcomes). This loss should, in principle, take account of all features of each outcome - including financial costs, emotional costs, patient suffering etc. (Losses can be negative, to indicate a better outcome - see note on utility below.)</p>
+<p>Obviously assigning losses that really capture all these features is context-dependent, subjective, and ultimately extremely difficult in practice! However, this difficulty doesn’t change the ultimate logic that our decision should depend on such considerations. Further, if we try to get around the practical difficulty by not <em>explicitly</em> assigning losses to outcomes, in the end, by making a decision, we will inevitably be making implicit assumptions about these costs. The danger is that these implicit assumptions may turn out to be patently ridiculous, but we would not notice this because we never made them explicit! (And one cannot get around the whole problem by “not making a decision”, because that, in itself, is making a decision.)</p>
+<p>Having assigned losses, the idea is that a decision can be made as follows: compute the <em>expected loss</em> under each action, and choose the action that minimizes this expected loss. (Because the expectation is computed conditional on having seen certain data it is referred to as the “posterior expected loss”.)</p>
+<p>To illustrate, suppose we assign losses as follows: <span class="math display">\[L(D,T) = 10\]</span> <span class="math display">\[L(\neg D,T) = 20\]</span> <span class="math display">\[L(D,\neg T) = 100\]</span> <span class="math display">\[L(\neg D,\neg T) = 0\]</span> We will return to what these losses “mean” below. Now suppose we have an individual whose probability of disease has been computed as 0.5. That is <span class="math inline">\(Pr(Z=D)=Pr(Z=\neg D)= 0.5\)</span>. Then the expected loss under the decision <span class="math inline">\(T\)</span> is <span class="math display">\[E(L(Z,T)) = 0.5 L(D,T) + 0.5 L(\neg D,T) = 15.\]</span> And the expected loss under the decision <span class="math inline">\(\neg T\)</span> is <span class="math display">\[E(L(Z,\neg T)) = 0.5 L(D,\neg T) + 0.5 L(\neg D,\neg T) = 50.\]</span> So in this case we would decide to treat, because that decision has the smaller expected loss.</p>
+</div>
+<div id="the-decision-depends-only-on-the-ratio-of-losses-for-errors" class="section level1">
+<h1>The decision depends only on the ratio of losses for “errors”</h1>
+<p>Note a couple of things that should be clear from this example. First, if we added some constant to both the losses for a particular disease status then the outcome would not change. For example, suppose we add c to both <span class="math inline">\(L(D,T)\)</span> and <span class="math inline">\(L(D,\neg T)\)</span>. Then the expected loss under the decision <span class="math inline">\(T\)</span> is <span class="math display">\[E(L(Z,T)) = 0.5 [L(D,T)+c] + 0.5 L(\neg D,T) = 15+0.5c.\]</span> And the expected loss under the decision <span class="math inline">\(\neg T\)</span> is <span class="math display">\[E(L(Z,\neg T)) = 0.5 [L(D,\neg T)+c] + 0.5 L(\neg D,\neg T) = 50+0.5c.\]</span> So we still choose <span class="math inline">\(T\)</span>, whatever value of <span class="math inline">\(c\)</span>.</p>
+<p>Similarly if we add c to both <span class="math inline">\(L(\neg D,T)\)</span> and <span class="math inline">\(L(\neg D,T)\)</span>.</p>
+<p>And this invariance of optimal action is true whatever the posterior probability <span class="math inline">\(Pr(Z=D)\)</span>. (Try changing it!)</p>
+<p>From this it follows that, for each possible outcome, we can always subtract a constant from all the losses so that one of the losses is 0, without changing the decision. In our example one of the losses for <span class="math inline">\(\neg D\)</span> is already 0. But let’s subtract 10 from the losses for <span class="math inline">\(D\)</span>, and we get: <span class="math display">\[L(D,T) = 0\]</span> <span class="math display">\[L(\neg D,T) = 20\]</span> <span class="math display">\[L(D,\neg T) = 90\]</span> <span class="math display">\[L(\neg D,\neg T) = 0\]</span></p>
+<p>More generally, this shows that we can just assume the losses for <span class="math inline">\(L(D,T)\)</span> and <span class="math inline">\(L(\neg D,\neg T)\)</span> are 0, and only specify two numbers instead of four.</p>
+<p>Furthermore it is clear that if we multiply all the losses by a (positive) constant then this does not change the optimal action: because it just multiplies all the expected losses by the same constant. Using this fact we can arbitrarily set one of the non-zero losses to 1. For example, we would get exactly the same decision rule with losses: <span class="math display">\[L(D,T) = 0\]</span> <span class="math display">\[L(\neg D,T) = 2/9\]</span> <span class="math display">\[L(D,\neg T) = 1\]</span> <span class="math display">\[L(\neg D,\neg T) = 0.\]</span></p>
+<p>So now it suffices to specify just one number. This number is the ratio of the losses <span class="math inline">\(L(\neg D,T)/L(D,\neg T)\)</span>. The argument above shows that the optimal action will depend on the losses only through this number!</p>
+<p>This example is an example of a 2-class decision rule: there are two possible underlying classes (diseased, and normal), and two possible actions, which here are “treat” and “don’t treat”, which can be thought of as corresponding to “classify as diseased” and “classify as normal”.</p>
+</div>
+<div id="the-general-calculation" class="section level1">
+<h1>The general calculation</h1>
+<p>Consider selecting between two models/classes. We can call them <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span> if you like. Suppose that one of them is “true”, but we don’t know which one. Let <span class="math inline">\(c_{i|j}\)</span> denote the loss for choosing <span class="math inline">\(H_i\)</span> if <span class="math inline">\(H_j\)</span> is true. So, for example, <span class="math inline">\(c_{1|0}\)</span> is the cost of selecting <span class="math inline">\(H_1\)</span> if <span class="math inline">\(H_0\)</span> is true, which in traditional hypothesis testing terminology might be called the cost of a “type I error.” Similarly <span class="math inline">\(c_{0|1}\)</span> is the cost of a type II error. Assume that if you make the right choice then you lose zero: <span class="math inline">\(c_{0|0}=c_{1|1}=0\)</span>.</p>
+<p>If we select <span class="math inline">\(H_0\)</span> the posterior expected loss is: Posterior expected loss(<span class="math inline">\(H_0\)</span>) = <span class="math inline">\(p(H_1 | x) c_{0|1}\)</span></p>
+<p>If we select <span class="math inline">\(H_1\)</span> the posterior expected loss is: Posterior expected loss(<span class="math inline">\(H_1\)</span>) = <span class="math inline">\(p(H_0 | x) c_{1|0}\)</span></p>
+<p>So we choose <span class="math inline">\(H_1\)</span> if <span class="math inline">\(p(H_1 | x) c_{0|1} &gt; p(H_0 | x) c_{1|0}\)</span>. That is if the posterior odds <span class="math inline">\(p(H_1 | x)/p(H_0 | x) &gt; c_{1|0}/c_{0|1}\)</span>.</p>
+<p>Remember that the posterior odds is the LR times the Prior Odds. So the quantities that go into the calculation are i) the LR, ii) the prior odds, iii) the cost ratio.</p>
+<p>If costs are equal, then threshold for posterior odds is 1. If cost of type I error is higher than cost of type II error then threshold is higher.</p>
+</div>
+<div id="utility-vs-loss" class="section level1">
+<h1>Utility vs Loss</h1>
+<p>Note: in statistics the decision problem is usually phrased as above, in terms of minimizing “loss”. But in economics one often phrases the problem in terms of maximizing “utility”. In this case each outcome is assigned a utility, quantifying how good it is relative to other outcomes. The two formulations are essentially equivalent - the loss is just the negative of the utility and vice versa.</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.0 (2016-05-03)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.10.5 (Yosemite)
+
+locale:
+[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
+ [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
+ [9] workflowr_0.3.0 rmarkdown_1.3  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
+ [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
+ [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
+[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
+[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
+[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
+[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
+[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

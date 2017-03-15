@@ -8,8 +8,11 @@ date: 2016-01-31
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Pre-requisites
@@ -22,11 +25,11 @@ Here we provide a quick introduction to discrete Markov Chains.
 
 # Definition of a Markov Chain
 
-A Markov Chain is a discrete stochastic process with the *Markov property* : $P(X_t|X_{t-1},\ldots,X_1)= P(X_t|X_{t-1})$.  It is fully determined by a probability transition matrix $P$ which defines the transition probabilities ($P_ij=P(X_t=j|X_{t-1}=i)$ and an initial probability distribution specficied by the vector $x$ where $x_i=P(X_0=i)$.  The time-dependent random variable $X_t$ is describing the state of our probabilistic system at time-step $t$.  
+A Markov Chain is a discrete stochastic process with the *Markov property* : $P(X_t|X_{t-1},\ldots,X_1)= P(X_t|X_{t-1})$.  It is fully determined by a probability transition matrix $P$ which defines the transition probabilities ($P_ij=P(X_t=j|X_{t-1}=i)$ and an initial probability distribution specified by the vector $x$ where $x_i=P(X_0=i)$.  The time-dependent random variable $X_t$ is describing the state of our probabilistic system at time-step $t$.
 
 # Example: Gary's mood
 
-In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an abitrary initial probability matrix. 
+In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an arbitrary initial probability matrix.
 
 ```{r}
 # Define prob transition matrix 
@@ -57,7 +60,7 @@ x0%*%P%*%P
 ```
 
 # What about an abitrary number of time steps? 
-To generalize to an abitrary number of time steps into the future, we can compute a the matrix power.  In R, this can be done easily with the package expm.  Let's load the library and verify the second power is the same as we saw for P%*%P above. 
+To generalize to an arbitrary number of time steps into the future, we can compute a the matrix power.  In R, this can be done easily with the package [expm](https://cran.r-project.org/web/packages/expm/index.html).  Let's load the library and verify the second power is the same as we saw for P%*%P above.
 ```{r}
 # Load library 
 library(expm)
@@ -69,7 +72,7 @@ And now let's push this : Looking at the state of the chain after many steps, sa
 ```{r}
 P%^%100
 ```
-What do you notice about the rows?   And let's see what this does for various starting distrbutions:
+What do you notice about the rows?   And let's see what this does for various starting distributions:
 ```{r}
 c(1,0,0) %*%(P%^%100)
 c(0.2,0.5,0.3) %*%(P%^%100)
@@ -80,6 +83,5 @@ Note that after a large number of steps the initial state does not matter any mo
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

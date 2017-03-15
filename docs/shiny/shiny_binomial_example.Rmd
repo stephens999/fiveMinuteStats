@@ -1,0 +1,56 @@
+---
+title: 'Simple example: Bayesian inference for binomial proportion'
+runtime: shiny
+output: html_document
+---
+
+This illustrates how the prior, likelihood, and posterior behave for
+inference for a binomial proportion ($q$) from binomial data, with
+a conjugate prior on $q$.
+
+Specifically the prior on $q$ is Beta($\alpha$,$\beta$) [dotted line] and the data is the number of successes and number of failures in the binomial experiment, which gives the likelihood [black line]. Note that the likelihood is scaled so it fits nicely on the graph (remember, likelihoods only
+matter up to a constant, so you can scale them however is convenient).
+
+Because the Beta distribution is the conjugate prior for binomial sampling,
+the posterior distribution is also a Beta distribution, and is shown in red.
+
+
+```{r, echo=FALSE}
+
+inputPanel(
+    
+    numericInput("prior_alpha", label = "prior: alpha",
+              width=200,value=0.5),
+   
+     numericInput("prior_beta", label = "prior: beta",
+              width=200,value=0.5),
+    
+    br(), #starts new line
+   
+    numericInput("data_s", label = "data: #successes",
+              width=200,value=50),
+   
+     numericInput("data_f", label = "data: #failures",
+              width=200,value=50)
+
+)
+
+renderPlot({
+  q=seq(0,1,length=100)
+  y_prior = dbeta(q,as.numeric(input$prior_alpha),as.numeric(input$prior_beta))
+  y_lik = dbeta(q,input$data_s+1,input$data_f+1)
+  y_post = dbeta(q,input$data_s+input$prior_alpha,input$data_f+input$prior_beta)
+  #set up limit for y axis so that all lines fit on graph;
+  #exclude endpoints as they can be infinite if prior hyperparameters<1
+  y_max = max(c(y_prior[-c(1,100)],y_lik[-c(1,100)],y_post[-c(1,100)]))
+
+  
+  plot(q,y_prior,type="l", xlab= "allele frequency, q",ylab="density", lty=2,ylim=c(0,y_max))
+  lines(q,y_lik,type="l", xlab= "allele frequency, q",lty=1)
+  lines(q,y_post,type="l", xlab= "allele frequency, q",lwd=2,col=2)
+
+})
+```
+
+
+

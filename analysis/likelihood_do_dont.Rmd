@@ -8,8 +8,11 @@ date: 2016-01-11
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Pre-requisites
@@ -26,7 +29,7 @@ and to mention some pitfalls to be avoided.
 # Infinite and zero LRs
 
 Suppose you are throwing a six-sided die with sides marked 1,2,3,4,5 and 6. 
-Consider comparing the models $M_0$: the die is fair (ie each face has probability 1/6) vs
+Consider comparing the models $M_0$: the die is fair (i.e. each face has probability 1/6) vs
 $M_1$: the die is loaded, and will always land 6.
 
 If we observe a "6" then the likelihood ratio for $M_1$ is 1/(1/6)=6.
@@ -82,6 +85,5 @@ This is called "informative missingness", and to compute the LR our models would
 
 # Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

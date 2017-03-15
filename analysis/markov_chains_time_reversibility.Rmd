@@ -8,9 +8,17 @@ date: 2016-01-31
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
-opts_chunk$set(eval = FALSE)  # have to do this to pass make
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+This is a work-in-progress.
+
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
 # Pre-requisites
@@ -27,7 +35,7 @@ TBD
 
 # Example: Gary's mood
 
-In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an abitrary initial probability matrix. 
+In Sheldon Ross's Introduction to Probability Models, he has an example (4.3) of a Markov Chain for modeling Gary's mood.  Gary alternates between 3 state: Cheery ($X=1$), So-So ($X=2$), or Glum ($X=3$).  Here we input the $P$ matrix given by Ross and we input an arbitrary initial probability matrix.
 
 ```{r}
 # Define prob transition matrix 
@@ -46,7 +54,7 @@ sum(x0)
 
 #### Time-reversibility
 
-The reverse chain transition prob's are: $$\frac{\pi_j P_{ji}}{\pi_i}$$
+The reverse chain transition probabilities are: $$\frac{\pi_j P_{ji}}{\pi_i}$$
 ```{r}
 diag(1/pivec)%*%(t(P)%*%diag(pivec))
 ```
@@ -66,6 +74,5 @@ diag(1/pi0)%*%t(P)%*%diag(pi0)
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -8,8 +8,11 @@ date: 2016-05-02
 
 **Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+```{r knitr-opts-chunk, include=FALSE}
 ```
 
 # Pre-requisites
@@ -109,6 +112,5 @@ pnorm(100,lower.tail=FALSE,log=TRUE)
 
 ## Session information
 
-```{r info}
-sessionInfo()
+```{r session-info}
 ```

@@ -21,10 +21,17 @@ title: "Home"
 *  [The Likelihood Function](likelihood_function.html)
 *  [Asymptotic Normality of MLE](asymptotic_normality_mle.html)
 
-### Simple Bayesian Inference
+### Bayesian Inference
 
-*  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
-*  [Simple example: Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
+*  [Bayesian inference for comparing two fully-specified models](LR_and_BF.html)
+*  [Bayesian inference for comparing multiple fully-specified models](bayes_multiclass.html)
+*  [Bayesian inference for a continuous parameter: analytic calculation](bayes_beta_binomial.html)
+*  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_interpret_posterior.html)
+*  [Bayesian inference for a continuous parameter: conjugacy](bayes_conjugate.html)
+*  [Bayesian inference for multiple independent parameters](bayes_independent.html)
+
+
+*  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
 *  [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
 
 ### Decision Theory
@@ -44,8 +51,14 @@ title: "Home"
 ### Markov Chain Monte Carlo
 
 * [Introduction to Gibbs Sampling](gibbs1.html)
-* [Gibbs Sampling for a simple normal mixture](gibbs2.html)
+* [Gibbs Sampling for a univariate normal mixture](gibbs2.html)
 
+* [Simple examples of Metropolis--Hastings algorithm](MH-examples1.html)
+
+## Distributions
+
+* [The Beta Distribution](beta.html)
+* [The Dirichlet Distribution](dirichlet.html)
 
 ## Stochastic Processes
 
