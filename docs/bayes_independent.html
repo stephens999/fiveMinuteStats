@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-03-04</p>
-<p><strong>Code version:</strong> 5d0fa13</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>You should be familiar with <a href="bayes_beta_binomial.html">Bayesian inference for a continuous parameter</a>.</p>
@@ -352,32 +358,32 @@ you anything about <span class="math inline">\(q_2\)</span> (the frequency of th
 <p>Under these assumptions we have that the <span class="math inline">\(q_j\)</span> are <em>a posteriori</em> independent, with <span class="math display">\[p(q | n ) = \prod_j p(q_j | n_j).\]</span></p>
 <p>Furthermore, we know from <a href="bayes_conjugate.html">conjugacy</a> that if the prior distribution on <span class="math inline">\(q_j\)</span> is a Beta distribution, say <span class="math inline">\(q_j \sim \text{Beta}(a_j,b_j)\)</span>, then the posterior <span class="math inline">\(p(q_j | n_j)\)</span> is also a Beta distribution, with <span class="math inline">\(q_j | n_j \sim \text{Beta}(a_j + n_{j1}, b_j + n_{j0})\)</span>.</p>
 <div id="session-information" class="section level2">
-<h2>Session Information</h2>
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.0 (2016-05-03)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X 10.10.5 (Yosemite)
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
 
 locale:
-[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
- [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
- [9] workflowr_0.3.0 rmarkdown_1.3  
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
- [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
- [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
-[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
-[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
-[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
-[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
-[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] evaluate_0.10  </code></pre>
 </div>
 </div>
 
