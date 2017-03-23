@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-25</p>
-<p><strong>Code version:</strong> 9cd56b5</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>The purpose of this vignette is to introduce the Beta distribution. You should be familiar with basic concepts related to distributions before - e.g. maybe you have come across the normal distribution and a uniform distribution before, and understand what it would mean to talk about their mean, variance and density.</p>
@@ -337,7 +343,7 @@ lines(p, dbeta(p, 10, 10), type =&quot;l&quot;, col=3)
 lines(p, dbeta(p, 2, 2), col=2) 
 lines(p, dbeta(p, 1, 1), col=1) 
 legend(0.7,8, c(&quot;Be(100,100)&quot;,&quot;Be(10,10)&quot;,&quot;Be(2,2)&quot;, &quot;Be(1,1)&quot;),lty=c(1,1,1,1),col=c(4,3,2,1))</code></pre>
-<p><img src="figure/beta.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/beta.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Now non-equal values of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> with both <span class="math inline">\(\geq 1\)</span>:</p>
 <pre class="r"><code>p = seq(0,1, length=100)
 plot(p, dbeta(p, 900, 100), ylab=&quot;density&quot;, type =&quot;l&quot;, col=4)
@@ -345,7 +351,7 @@ lines(p, dbeta(p, 90, 10), type =&quot;l&quot;, col=3)
 lines(p, dbeta(p, 30, 70), col=2) 
 lines(p, dbeta(p, 3, 7), col=1) 
 legend(0.2,30, c(&quot;Be(900,100)&quot;,&quot;Be(90,10)&quot;,&quot;Be(30,70)&quot;, &quot;Be(3,7)&quot;),lty=c(1,1,1,1),col=c(4,3,2,1))</code></pre>
-<p><img src="figure/beta.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/beta.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>From these examples you should note the following:</p>
 <ul>
 <li>The distribution is roughly centered on <span class="math inline">\(a/(a+b)\)</span>. Actually, it turns out that the mean is exactly <span class="math inline">\(a/(a+b)\)</span>. Thus the mean of the distribution is determined by the <em>relative</em> values of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>.</li>
@@ -363,7 +369,7 @@ lines(p, dbeta(p, 0.5, 0.5), type =&quot;l&quot;, col=3)
 lines(p, dbeta(p, 0.1, 0.5), col=2) 
 lines(p, dbeta(p, 0.5, 2), col=1) 
 legend(0.5,2, c(&quot;Be(0.1,0.1)&quot;,&quot;Be(0.5,0.5)&quot;,&quot;Be(0.1,0.5)&quot;, &quot;Be(0.5,2)&quot;),lty=c(1,1,1,1),col=c(4,3,2,1))</code></pre>
-<p><img src="figure/beta.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/beta.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="exercise" class="section level2">
 <h2>Exercise</h2>
@@ -372,26 +378,32 @@ legend(0.5,2, c(&quot;Be(0.1,0.1)&quot;,&quot;Be(0.5,0.5)&quot;,&quot;Be(0.1,0.5
 </ul>
 </div>
 <div id="session-information" class="section level2">
-<h2>Session Information</h2>
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_0.3.0 rmarkdown_1.3  
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
 
 loaded via a namespace (and not attached):
  [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.8    
- [9] stringi_1.1.2   knitr_1.15.1    git2r_0.18.0    stringr_1.1.0  
-[13] digest_0.6.10   evaluate_0.10  </code></pre>
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] evaluate_0.10  </code></pre>
 </div>
 </div>
 

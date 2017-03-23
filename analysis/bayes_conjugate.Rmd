@@ -5,16 +5,24 @@ date: 2017-02-19
 output: html_document
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
 ```{r read-chunk, include=FALSE, cache=FALSE}
 knitr::read_chunk("chunks.R")
 ```
 
+<!-- Update knitr chunk options -->
 ```{r knitr-opts-chunk, include=FALSE}
 ```
 
-**Last updated:** `r Sys.Date()`
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
 
-**Code version:** `r workflowr::extract_commit(".", 1)$sha1`
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
 
 
 # Overview
@@ -87,7 +95,8 @@ distribution with parameters $n$ and $\lambda$. Show that the posterior distribu
 Hint: you should take the following steps. 1. write down the likelihood $p(X|\mu)$ for $\mu$ (look up the Poisson distribution if you cannot remember it). 2. Write down the prior density for $\mu$ (look up the density of a Gamma distribution if you cannot remember it). 3. Multiply them together to obtain the posterior density (up to a constant of proportionality), and notice that it has the same form as the gamma distribution. 
 
 
-## Session Information
+## Session information
 
+<!-- Insert the session information into the document -->
 ```{r session-info}
 ```

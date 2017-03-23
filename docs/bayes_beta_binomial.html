@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-02-20</p>
-<p><strong>Code version:</strong> e7101d7</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette illustrates how to perform Bayesian inference for a continuous parameter, specifically a binomial proportion. Specifically it illustrates the mechanics of how we actually calculate the posterior distribution.</p>
@@ -342,7 +348,7 @@ div.tocify {
 <p>Using Bayes Theorem to combine the prior distribution and the likelihood we obtain: <span class="math display">\[p(q | D) \propto p(D|q) p(q) = q^{30} (1-q)^{70} \qquad (q \in [0,1]).\]</span></p>
 <p>Here, because <span class="math inline">\(q\)</span> is a continuous parameter, this is referred to as the “posterior density”&quot; for <span class="math inline">\(q\)</span>.</p>
 <p>Now the final “trick” is to notice that this density, <span class="math inline">\(q^{30} (1-q)^{70}\)</span> is exactly the density of a <a href="beta.html">Beta distribution</a>. Indeed, specifically it is the density of a Beta(31,71) distribution. So the posterior distribution for <span class="math inline">\(q\)</span> is Beta(31,71), and we might write <span class="math inline">\(q | D \sim \text{Beta}(31,71)\)</span>.</p>
-<p>This kind of “trick” is common in Bayesian inference: you look at the posterior density and “recognize” it as a distribution you know. It turns out that the number of distributions in common use is relatively small, so you only need to learn a few distributions to get sufficiently good at this trick for practial purposes. For example, it is a good start to be able to reconize the following distributions: exponential, binomial, Poisson, Gamma, Beta, Dirichlet, and Normal. If your posterior distribution does not look like one of these, then you may well be in a situation where you need to use computational methods (like <a href="is_simple.html">Importance Sampling</a> or <a href="MH-examples1.html">Markov chain Monte Carlo</a>) to do your computations.</p>
+<p>This kind of “trick” is common in Bayesian inference: you look at the posterior density and “recognize” it as a distribution you know. It turns out that the number of distributions in common use is relatively small, so you only need to learn a few distributions to get sufficiently good at this trick for practical purposes. For example, it is a good start to be able to recognize the following distributions: exponential, binomial, Poisson, Gamma, Beta, Dirichlet, and Normal. If your posterior distribution does not look like one of these, then you may well be in a situation where you need to use computational methods (like <a href="is_simple.html">Importance Sampling</a> or <a href="MH-examples1.html">Markov chain Monte Carlo</a>) to do your computations.</p>
 <p>So, in this case we are lucky: the posterior distribution is a nice distribution that we recognize, and this means we can do lots of calculations very easily: <code>R</code> has lots of built-in functions to deal with the Beta distribution, and many analytic properties have been derived (e.g. <a href="https://en.wikipedia.org/wiki/Beta_distribution">Wikipedia</a>.) We can use this to summarize and interpret the posterior distribution, as illustrated <a href="summarize_interpret_posterior.html">here</a>.</p>
 </div>
 </div>
@@ -350,27 +356,36 @@ div.tocify {
 <h1>Summary</h1>
 <ul>
 <li><p>To compute the posterior density of a continuous parameter, up to a normalizing constant, you multiply the likelihood by the prior density.</p></li>
-<li><p>In simple cases you may find that the result is the density of a distribution you recognize. If so, you can often use known properties of that distribution to comptue quantities of interest. <a href="summarize_interpret_posterior.html">Example</a>.</p></li>
-<li><p>In cases where you do not recognize the posterior distribution, you may need to use computational methods to compute quanties of interest.</p></li>
+<li><p>In simple cases you may find that the result is the density of a distribution you recognize. If so, you can often use known properties of that distribution to compute quantities of interest. <a href="summarize_interpret_posterior.html">Example</a>.</p></li>
+<li><p>In cases where you do not recognize the posterior distribution, you may need to use computational methods to compute quantities of interest.</p></li>
 </ul>
 <div id="session-information" class="section level2">
-<h2>Session Information</h2>
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
 loaded via a namespace (and not attached):
  [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.9    
- [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
-[13] stringr_1.1.0   digest_0.6.12   workflowr_0.3.0 evaluate_0.10  </code></pre>
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] evaluate_0.10  </code></pre>
 </div>
 </div>
 

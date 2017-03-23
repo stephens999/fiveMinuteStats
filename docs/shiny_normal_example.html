@@ -24,13 +24,12 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/textmate.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
   pre:not([class]) {
     background-color: white;
@@ -157,7 +156,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -183,7 +181,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -242,8 +240,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -310,9 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-01-02</p>
-<p><strong>Code version:</strong> 55e11cf8f7785ad926b716fb52e4e87b342f38e1</p>
-<p>This illustrates how the prior, likelihood, and posterior behave for inference for a normal mean (<span class="math inline">\(\mu\)</span>) from normal-distributed data, with a conjugate prior on <span class="math inline">\(\mu\)</span>.</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc This illustrates how the prior, likelihood, and posterior behave for inference for a normal mean (<span class="math inline">\(\mu\)</span>) from normal-distributed data, with a conjugate prior on <span class="math inline">\(\mu\)</span>.</p>
 <p>Specifically the prior on <span class="math inline">\(\mu\)</span> is N(<span class="math inline">\(\mu_0\)</span>, <span class="math inline">\(\tau_0^2\)</span>) [dotted line] and the data is sampled from a normal distribution N(<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma^2\)</span>), which gives the likelihood [black line]. Note that the likelihood is scaled so it fits nicely on the graph (remember, likelihoods only matter up to a constant, so you can scale them however is convenient).</p>
 <p>Because the normal distribution is the conjugate prior for normal sampling, the posterior distribution is also a normal distribution, and is shown in red.</p>
 <p>By Bayes theorem:</p>
@@ -336,8 +340,9 @@ div.tocify {
 </iframe>
 </div>
 <p>The source code of the app can be found <a href="https://github.com/road2stat/conjugate-normal-umkv">here</a>.</p>
-<div id="session-information" class="section level1">
-<h1>Session information</h1>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
 Platform: x86_64-pc-linux-gnu (64-bit)
@@ -355,15 +360,15 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] knitr_1.14     MASS_7.3-45    expm_0.999-0   Matrix_1.2-7.1
-[5] rmarkdown_1.1 
+[1] knitr_1.15.1       MASS_7.3-45        expm_0.999-0      
+[4] Matrix_1.2-8       workflowr_0.4.0    rmarkdown_1.3.9004
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.7     lattice_0.20-34 gtools_3.5.0    digest_0.6.9   
- [5] assertthat_0.1  mime_0.4        R6_2.1.2        grid_3.3.2     
- [9] xtable_1.8-2    formatR_1.4     magrittr_1.5    evaluate_0.9   
-[13] stringi_1.1.1   tools_3.3.2     stringr_1.0.0   shiny_0.13.2   
-[17] httpuv_1.3.3    yaml_2.1.13     htmltools_0.3.5 tibble_1.2     </code></pre>
+ [1] Rcpp_0.12.9     lattice_0.20-34 gtools_3.5.0    digest_0.6.12  
+ [5] rprojroot_1.2   mime_0.5        R6_2.2.0        grid_3.3.2     
+ [9] xtable_1.8-2    backports_1.0.5 git2r_0.18.0    magrittr_1.5   
+[13] evaluate_0.10   stringi_1.1.2   tools_3.3.2     stringr_1.2.0  
+[17] shiny_1.0.0     httpuv_1.3.3    yaml_2.1.14     htmltools_0.3.5</code></pre>
 </div>
 
 <hr>
@@ -400,8 +405,11 @@ loaded via a namespace (and not attached):
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
 
 

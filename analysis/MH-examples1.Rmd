@@ -5,26 +5,24 @@ date: 2017-01-24
 output: html_document
 ---
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
 ```{r read-chunk, include=FALSE, cache=FALSE}
 knitr::read_chunk("chunks.R")
 ```
 
+<!-- Update knitr chunk options -->
 ```{r knitr-opts-chunk, include=FALSE}
 ```
 
-**Last updated:** `r Sys.Date()`
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
 
-**Code version:** `r 
-if(requireNamespace("git2r", quietly = TRUE)) {
-  if(git2r::in_repository()) {
-    git2r::commits()[[1]]@sha
-  } else {
-    "Unavailable. Initialize Git repository to enable."
-  }
-} else {
-  "Unavailable. Install git2r package to enable."
-}`
-
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
 
 # Pre-requisites
 
@@ -306,7 +304,9 @@ Hint: this requires iterating the following steps
 
 
 
-## Session Information
 
+## Session information
+
+<!-- Insert the session information into the document -->
 ```{r session-info}
 ```

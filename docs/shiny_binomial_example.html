@@ -305,10 +305,17 @@ div.tocify {
 </div>
 
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <p>The code chunks below cannot be rendered as part of the website. <a href="https://pages.github.com">GitHub Pages</a> only serves static webpages, whereas shiny applications are dynamic.</p>
-<pre class="r"><code>library(&quot;knitr&quot;)</code></pre>
-<pre><code>## Warning: package &#39;knitr&#39; was built under R version 3.3.2</code></pre>
-<pre class="r"><code>opts_chunk$set(eval = FALSE)</code></pre>
+<pre class="r"><code>library(&quot;knitr&quot;)
+opts_chunk$set(eval = FALSE)</code></pre>
 <p>This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately.</p>
 <p>To learn more, see <a href="http://rmarkdown.rstudio.com/authoring_shiny.html">Interactive Documents</a>.</p>
 <div id="section-inputs-and-outputs" class="section level2">
@@ -331,6 +338,11 @@ renderPlot({
  # dens &lt;- density(faithful$eruptions, adjust = input$bw_adjust)
   #lines(dens, col = &quot;blue&quot;)
 })</code></pre>
+</div>
+<div id="section-session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
 </div>
 
 <hr>

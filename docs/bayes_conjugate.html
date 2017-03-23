@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-02-20</p>
-<p><strong>Code version:</strong> 16f3278</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This vignette introduces the idea of “conjugate prior” distributions for Bayesian inference for a continuous parameter. You should be familiar with <a href="bayes_beta_binomial.html">Bayesian inference for a binomial proportion</a>.</p>
@@ -347,27 +353,36 @@ div.tocify {
 </div>
 <div id="exercise" class="section level1">
 <h1>Exercise</h1>
-<p>Show that the Gamms distribution is the conjugate prior for a Poisson mean.</p>
+<p>Show that the Gamma distribution is the conjugate prior for a Poisson mean.</p>
 <p>That is, suppose we have observations <span class="math inline">\(X\)</span> that are Poisson distributed, <span class="math inline">\(X \sim Poi(\mu)\)</span>. Assume that your prior distribution on <span class="math inline">\(\mu\)</span> is a Gamma distribution with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(\lambda\)</span>. Show that the posterior distribution on <span class="math inline">\(\mu\)</span> is also a Gamma distribution.</p>
 <p>Hint: you should take the following steps. 1. write down the likelihood <span class="math inline">\(p(X|\mu)\)</span> for <span class="math inline">\(\mu\)</span> (look up the Poisson distribution if you cannot remember it). 2. Write down the prior density for <span class="math inline">\(\mu\)</span> (look up the density of a Gamma distribution if you cannot remember it). 3. Multiply them together to obtain the posterior density (up to a constant of proportionality), and notice that it has the same form as the gamma distribution.</p>
 <div id="session-information" class="section level2">
-<h2>Session Information</h2>
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
 loaded via a namespace (and not attached):
  [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     rstudioapi_0.6  yaml_2.1.14     Rcpp_0.12.9    
- [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
-[13] stringr_1.1.0   digest_0.6.12   workflowr_0.3.0 evaluate_0.10  </code></pre>
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] evaluate_0.10  </code></pre>
 </div>
 </div>
 

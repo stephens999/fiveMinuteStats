@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-02-17</p>
-<p><strong>Code version:</strong> 0a96ec4f599f56f6968bec3929589cf0212b40a9</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 </div>
@@ -346,7 +352,7 @@ for(i in 2:1000){
     x[i] = currentx        # otherwise &quot;reject&quot; move, and stay where we are
   }
 }</code></pre>
-<p>Note that x is a realisation of a Markov Chain. We can make a few plots of x:</p>
+<p>Note that x is a realization of a Markov Chain. We can make a few plots of x:</p>
 <pre class="r"><code>plot(x) </code></pre>
 <p><img src="figure/MH-examples1.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>hist(x)</code></pre>
@@ -395,12 +401,12 @@ hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
   
   return((x&gt;0 &amp; x &lt;1) + (x&gt;2 &amp; x&lt;3))
 }</code></pre>
-<p>What does this target look like? What happens if the proposal sd is too small here? (try eg 1 and 0.1)</p>
+<p>What does this target look like? What happens if the proposal sd is too small here? (try e.g. 1 and 0.1)</p>
 </div>
 </div>
 <div id="example-2-estimating-an-allele-frequency" class="section level1">
 <h1>Example 2: Estimating an allele frequency</h1>
-<p>A standard assumption when modelling genotypes of bi-allelic loci (eg loci with alleles <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span>) is that the population is “randomly mating”. From this assumption it follows that the population will be in “Hardy Weinberg Equilibrium” (HWE), which means that if <span class="math inline">\(p\)</span> is the frequency of the allele <span class="math inline">\(A\)</span> then the genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span> and <span class="math inline">\(aa\)</span> will have frequencies <span class="math inline">\(p^2, 2p(1-p)\)</span> and <span class="math inline">\((1-p)^2\)</span> respectively.</p>
+<p>A standard assumption when modelling genotypes of bi-allelic loci (e.g. loci with alleles <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span>) is that the population is “randomly mating”. From this assumption it follows that the population will be in “Hardy Weinberg Equilibrium” (HWE), which means that if <span class="math inline">\(p\)</span> is the frequency of the allele <span class="math inline">\(A\)</span> then the genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span> and <span class="math inline">\(aa\)</span> will have frequencies <span class="math inline">\(p^2, 2p(1-p)\)</span> and <span class="math inline">\((1-p)^2\)</span> respectively.</p>
 <p>A simple prior for <span class="math inline">\(p\)</span> is to assume it is uniform on <span class="math inline">\([0,1]\)</span>. Suppose that we sample <span class="math inline">\(n\)</span> individuals, and observe <span class="math inline">\(n_{AA}\)</span> with genotype <span class="math inline">\(AA\)</span>, <span class="math inline">\(n_{Aa}\)</span> with genotype <span class="math inline">\(Aa\)</span> and <span class="math inline">\(n_{aa}\)</span> with genotype <span class="math inline">\(aa\)</span>.</p>
 <p>The following R code gives a short MCMC routine to sample from the posterior distribution of <span class="math inline">\(p\)</span>. Try to go through the code to see how it works.</p>
 <pre class="r"><code>prior = function(p){
@@ -436,7 +442,7 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
 hist(z,prob=T)
 lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
 <p><img src="figure/MH-examples1.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>You might also like to discard the first 5000 z’s as “burnin”. Here’s one way in R to select only the last 5000 zs</p>
+<p>You might also like to discard the first 5000 z’s as “burnin”. Here’s one way in R to select only the last 5000 z’s</p>
 <pre class="r"><code>hist(z[5001:10000])</code></pre>
 <p><img src="figure/MH-examples1.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="exercise-1" class="section level2">
@@ -481,7 +487,7 @@ lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
 <p>Summing over <span class="math inline">\(z_i\)</span> gives the same model as above: <span class="math display">\[p(g_i=AA) = fp + (1-f)p^2\]</span></p>
 <div id="exercise-3" class="section level2">
 <h2>Exercise:</h2>
-<p>Unsing the above, implement a Gibbs Sampler to sample from the joint distribution of <span class="math inline">\(z,f,\)</span> and <span class="math inline">\(p\)</span> given genotype data <span class="math inline">\(g\)</span>.</p>
+<p>Using the above, implement a Gibbs Sampler to sample from the joint distribution of <span class="math inline">\(z,f,\)</span> and <span class="math inline">\(p\)</span> given genotype data <span class="math inline">\(g\)</span>.</p>
 <p>Hint: this requires iterating the following steps</p>
 <ol style="list-style-type: decimal">
 <li>sample <span class="math inline">\(z\)</span> from <span class="math inline">\(p(z | g, f, p)\)</span></li>
@@ -489,41 +495,33 @@ lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
 </ol>
 </div>
 <div id="session-information" class="section level2">
-<h2>Session Information</h2>
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] workflowr_0.3.0 rmarkdown_1.3   ggplot2_2.1.0   dplyr_0.5.0    
- [5] magrittr_1.5    shiny_1.0.0     mixfdr_1.0      ashr_2.1.2     
- [9] dscr_0.1.1      horseshoe_0.1.0
+[1] MASS_7.3-45        expm_0.999-0       Matrix_1.2-8      
+[4] workflowr_0.4.0    rmarkdown_1.3.9004
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.9        git2r_0.18.0       plyr_1.8.4        
- [4] iterators_1.0.8    tools_3.3.2        digest_0.6.10     
- [7] memoise_1.0.0      tibble_1.2         jsonlite_1.2      
-[10] evaluate_0.10      gtable_0.2.0       lattice_0.20-34   
-[13] Matrix_1.2-7.1     foreach_1.4.3      DBI_0.5-1         
-[16] rstudioapi_0.6     curl_2.2           yaml_2.1.14       
-[19] parallel_3.3.2     httr_1.2.1         withr_1.0.2       
-[22] stringr_1.1.0      knitr_1.15.1       devtools_1.12.0   
-[25] REBayes_0.73       rprojroot_1.2      grid_3.3.2        
-[28] R6_2.2.0           EbayesThresh_1.3.2 reshape2_1.4.2    
-[31] whisker_0.3-2      backports_1.0.5    scales_0.4.0      
-[34] codetools_0.2-15   htmltools_0.3.5    MASS_7.3-45       
-[37] assertthat_0.1     mime_0.5           colorspace_1.2-7  
-[40] xtable_1.8-2       httpuv_1.3.3       labeling_0.3      
-[43] stringi_1.1.2      Rmosek_7.1.2       lazyeval_0.2.0    
-[46] munsell_0.4.3      doParallel_1.0.10  pscl_1.4.9        
-[49] truncnorm_1.0-7    SQUAREM_2016.8-2  </code></pre>
+ [1] Rcpp_0.12.9     lattice_0.20-34 gtools_3.5.0    digest_0.6.12  
+ [5] rprojroot_1.2   grid_3.3.2      backports_1.0.5 git2r_0.18.0   
+ [9] magrittr_1.5    evaluate_0.10   stringi_1.1.2   tools_3.3.2    
+[13] stringr_1.2.0   yaml_2.1.14     htmltools_0.3.5 knitr_1.15.1   </code></pre>
 </div>
 </div>
 

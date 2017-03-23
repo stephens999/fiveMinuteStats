@@ -7,3 +7,4 @@ analysis/rda
 analysis/figure
 analysis/*html
 Gemfile*
+analysis/*_cache

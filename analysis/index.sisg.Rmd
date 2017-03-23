@@ -2,10 +2,6 @@
 title: "Home"
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
 # Likelihood Ratios 
 *  [Fully specified models, discrete data](likelihood_ratio_simple_models.html)
 *  [Fully specified models, continuous data](likelihood_ratio_simple_continuous_data.html)
