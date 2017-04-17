@@ -45,7 +45,7 @@ considered to be strong evidence *against* the null.
 Suppose $x \in \{1,2,3\}$ and $\theta \in \{0,1\}$
 with 
 
-```{r echo=FALSE}
+```{r table, echo=FALSE}
 df = rbind(c("$p(x | \\theta=0)$", 0.005,0.005,0.99),c("$p(x | \\theta=1)$", 0.009,0.001,0))
 knitr::kable(df,col.names=c("x","1","2","3"))
 ```
