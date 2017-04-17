@@ -30,6 +30,10 @@ title: "Home"
 *  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
 *  [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
 
+
+### Frequentist vs Bayesian Inference
+
+* [Conditional coverage of a standard normal CI](CI_conditional_coverage.html)
 ### Decision Theory
 
 *  [Making a decision under uncertainty: the two class problem](decisions_costs_intro.html)
