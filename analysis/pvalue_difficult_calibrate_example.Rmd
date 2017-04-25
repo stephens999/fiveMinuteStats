@@ -46,13 +46,12 @@ Suppose $x \in \{1,2,3\}$ and $\theta \in \{0,1\}$
 with 
 
 ```{r table, echo=FALSE}
-df = rbind(c("$p(x | \\theta=0)$", 0.005,0.005,0.99),c("$p(x | \\theta=1)$", 0.009,0.001,0))
+df = rbind(c("$p(x | \\theta=0)$", 0.005,0.005,0.99),c("$p(x | \\theta=1)$", 0.999,0.001,0))
 knitr::kable(df,col.names=c("x","1","2","3"))
 ```
 
-
 Note that the [likelihood ratios](likelihood_ratio_simple_models.html) 
-for $H_1$ vs $H_0$ for $x=1,2,3$ are $9/5, 1/5$ and $0$ respectively. So as $x$ increases the evidence against $H_0$ decreases.
+for $H_1$ vs $H_0$ for $x=1,2,3$ are $999/5, 1/5$ and $0$ respectively. So as $x$ increases the evidence against $H_0$ decreases.
 
 
 Now, let us suppose that we observe $x=2$.
