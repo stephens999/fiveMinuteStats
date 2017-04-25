@@ -313,10 +313,10 @@ div.tocify {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2017-04-17</p>
+<p><strong>Last updated:</strong> 2017-04-24</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 335d169</p>
+<p><strong>Code version:</strong> ebc0b7a</p>
 <div id="pre-requisite" class="section level1">
 <h1>Pre-requisite</h1>
 <p>You should know what a <span class="math inline">\(p\)</span> value is.</p>
@@ -346,13 +346,13 @@ shared across the workflowr files. -->
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(p(x | \theta=1)\)</span></td>
-<td align="left">0.009</td>
+<td align="left">0.999</td>
 <td align="left">0.001</td>
 <td align="left">0</td>
 </tr>
 </tbody>
 </table>
-<p>Note that the <a href="likelihood_ratio_simple_models.html">likelihood ratios</a> for <span class="math inline">\(H_1\)</span> vs <span class="math inline">\(H_0\)</span> for <span class="math inline">\(x=1,2,3\)</span> are <span class="math inline">\(9/5, 1/5\)</span> and <span class="math inline">\(0\)</span> respectively. So as <span class="math inline">\(x\)</span> increases the evidence against <span class="math inline">\(H_0\)</span> decreases.</p>
+<p>Note that the <a href="likelihood_ratio_simple_models.html">likelihood ratios</a> for <span class="math inline">\(H_1\)</span> vs <span class="math inline">\(H_0\)</span> for <span class="math inline">\(x=1,2,3\)</span> are <span class="math inline">\(999/5, 1/5\)</span> and <span class="math inline">\(0\)</span> respectively. So as <span class="math inline">\(x\)</span> increases the evidence against <span class="math inline">\(H_0\)</span> decreases.</p>
 <p>Now, let us suppose that we observe <span class="math inline">\(x=2\)</span>. Then by definition the <span class="math inline">\(p\)</span> value for this observation is <span class="math display">\[p:= \Pr(\text{we would see evidence as strong or stronger against $H_0$ than $x=2$} | \theta=0).\]</span></p>
 <p>Here “evidence as strong or stronger against <span class="math inline">\(H_0\)</span> than <span class="math inline">\(x=2\)</span>” is <span class="math inline">\(x \in \{1,2\}\)</span>. And the probability of this under <span class="math inline">\(H_0\)</span> is <span class="math display">\[\Pr(x \in \{1,2\} | H_0) = 0.005+0.005 = 0.01.\]</span></p>
 <p>So the <span class="math inline">\(p\)</span> value for <span class="math inline">\(x=2\)</span> is 0.01.</p>
@@ -377,14 +377,23 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] workflowr_0.4.0 rmarkdown_1.4  
-
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.10    digest_0.6.12   rprojroot_1.2   backports_1.0.5
- [5] git2r_0.18.0    magrittr_1.5    evaluate_0.10   highr_0.6      
- [9] stringi_1.1.2   rstudioapi_0.6  tools_3.3.2     stringr_1.2.0  
-[13] yaml_2.1.14     rsconnect_0.7   htmltools_0.3.5 knitr_1.15.1   </code></pre>
+ [1] Rcpp_0.12.10         highr_0.6            git2r_0.18.0        
+ [4] BiocInstaller_1.24.0 workflowr_0.4.0      bitops_1.0-6        
+ [7] iterators_1.0.8      tools_3.3.2          digest_0.6.12       
+[10] evaluate_0.10        lattice_0.20-34      Matrix_1.2-8        
+[13] foreach_1.4.3        graph_1.52.0         BiocCheck_1.10.1    
+[16] yaml_2.1.14          parallel_3.3.2       httr_1.2.1          
+[19] stringr_1.2.0        knitr_1.15.1         REBayes_0.73        
+[22] stats4_3.3.2         rprojroot_1.2        grid_3.3.2          
+[25] getopt_1.20.0        optparse_1.3.2       Biobase_2.34.0      
+[28] R6_2.2.0             XML_3.98-1.5         RBGL_1.50.0         
+[31] rmarkdown_1.4        ashr_2.1-10          magrittr_1.5        
+[34] backports_1.0.5      codetools_0.2-15     htmltools_0.3.5     
+[37] biocViews_1.42.0     MASS_7.3-45          BiocGenerics_0.20.0 
+[40] RUnit_0.4.31         assertthat_0.2.0     stringi_1.1.2       
+[43] RCurl_1.95-4.8       pscl_1.4.9           doParallel_1.0.10   
+[46] truncnorm_1.0-7      SQUAREM_2016.8-2    </code></pre>
 </div>
 </div>
 
