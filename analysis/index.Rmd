@@ -32,9 +32,8 @@ title: "Home"
 
 ### Frequentist vs Bayesian Inference
 
-* [The difficulty calibrating p values](CI_conditional_coverage.html)
+* [The difficulty calibrating p values](pvalue_difficult_calibrate_example.html)
 * [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
-
 * [Conditional coverage of a standard normal CI](CI_conditional_coverage.html)
 
 
