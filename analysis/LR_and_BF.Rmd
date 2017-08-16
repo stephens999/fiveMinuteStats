@@ -114,8 +114,8 @@ Note that the "Odds" of an event $E_1$ vs an event $E_2$ means the ratio of thei
 
 # Example
 
-Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/20.
-And a LR of 14 in favor of disease yields a posterior odds of 14/20 (or "14 to 20", or "7 to 10").
+Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/19.
+And a LR of 14 in favor of disease yields a posterior odds of 14/19 (or "14 to 19").
 
 Suppose that 50% of screened people have the disease. Then the prior odds for disease is 1.
 And a LR of 14 in favor of disease yields a posterior odds of 14 (or "14 to 1").
