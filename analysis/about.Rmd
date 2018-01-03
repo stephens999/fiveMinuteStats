@@ -2,10 +2,6 @@
 title: "About"
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
 [Matthew Stephens][github-io] is a Professor in Statistics and Human Genetics at the University of Chicago.
 
 [github-io]: http://stephens999.github.io/

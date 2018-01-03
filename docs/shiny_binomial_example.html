@@ -305,6 +305,14 @@ div.tocify {
 </div>
 
 
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
 <p>The code chunks below cannot be rendered as part of the website. <a href="https://pages.github.com">GitHub Pages</a> only serves static webpages, whereas shiny applications are dynamic.</p>
 <pre class="r"><code>library(&quot;knitr&quot;)
 opts_chunk$set(eval = FALSE)</code></pre>
@@ -330,6 +338,11 @@ renderPlot({
  # dens &lt;- density(faithful$eruptions, adjust = input$bw_adjust)
   #lines(dens, col = &quot;blue&quot;)
 })</code></pre>
+</div>
+<div id="section-session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
 </div>
 
 <hr>

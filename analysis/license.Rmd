@@ -2,9 +2,5 @@
 title: "License"
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
 The copyright is maintained by the individual contributors.
 The material is released under the [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/).

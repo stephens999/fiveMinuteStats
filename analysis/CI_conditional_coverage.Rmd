@@ -1,0 +1,117 @@
+---
+title: "Conditional coverage of a frequentist CI"
+author: "Matthew Stephens"
+date: 2017-04-17
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+# Pre-requisite
+
+You should be familiar with the result that if $X \sim N(\theta,\sigma^2)$ then
+$X \pm 1.96\sigma$ is a 95\% Confidence Interval (CI) for $\theta$.
+
+
+# Coverage vs Conditional Coverage
+
+Suppose we consider going through life computing normal 95% CIs in lots of different situations.
+
+That is, on occassion $j$ ($j=1,2,3,\dots$) we observe data 
+$$X_j | \theta_j, \sigma_j \sim N(\theta_j, \sigma_j),$$
+where $\theta_j$ is unknown to us. For simplicity let us further assume that in each case
+the measurement error standard deviation, $\sigma_j=1$, and is known to us.) Then we compute the standard 95\% CI for $\theta_j$: 
+$$CI_j = [X_j -1.96, X_j + 1.96].$$
+
+Consider now two questions:
+  
+  i) What proportion of our intervals $CI_j$ cover (contain) the true value of $\theta_j$? 
+  
+  ii) Of the occasions when our interval $CI_j$ excludes 0, what proportion will our interval cover the true value of $\theta$?
+
+It is important to recognize that the answers to these two questions will be different.
+
+The answer to i) is 95\% because the definition of a 95\% CI ensures this.
+This corresponds to the usual notion of the "coverage" of the CIs.
+
+However, the answer to ii) will not generally be 95\%. 
+To see this, consider the extreme case where the
+$\theta_j$ we consider over our life are all actually exactly equal to 0. 
+Then the answer to the second question will be "never"!. More generally,
+the answer to ii) depends
+on the distribution of the actual $\theta_j$ values that we consider during our life. 
+
+## Illustration
+
+Before setting out the analytic calculation, we will illustrate by simulation.
+Suppose first that the distribution of $\theta_j$ we encounter over our life is $N(0,s^2)$.
+Let us see by simulation how our answer to ii) depends on $s$:
+
+```{r}
+s = c(0.01,0.1,0.5,1,2,10,100)
+nsim = 10000
+coverage = rep(0,length(s))
+cond_coverage = rep(0,length(s))
+for(i in 1:length(s)){
+  theta = rnorm(nsim, 0, s[i])
+  X = rnorm(nsim, theta, 1)
+  A = X-1.96
+  B = X+1.96
+  coverage[i] = mean(theta>A & theta< B)
+  subset = (A>0 | B<0)
+  cond_coverage[i] = mean(theta[subset]>A[subset] & theta[subset]<B[subset])
+}
+plot(log10(s),coverage,main="Coverage (black) and conditional coverage (red)", ylim=c(0,1), xlab="log_10(s)")
+points(log10(s),cond_coverage,col="red")
+abline(h=0.95,lty=2)
+```
+
+What one can see here is that for very small $s$ we get an answer close to the "never" answer
+that we discussed above (when $\theta_j$ are identically 0).
+
+And for large $s$ we get the conditional coverage equal to 0.95. (This 
+essentially follows from the result that in the limit $s \rightarrow \infty$ the posterior
+distribution on $\theta | X_j$ is $N(X_j, 1)$.)
+
+## Analytic calculations
+
+Actually computing the answer analytically here is not possible, but it is perhaps
+instructive to at least write out what we are (approximately) computing in the above simulation.
+
+First, note that $CI_j$ excludes 0 if and only if $|X_j|>1.96$.
+So the probability we are asked to compute in ii) is
+$$\Pr( X_j - 1.96 < \theta_j < X_j + 1.96 | |X_j|>1.96).$$
+Computing this conditional distribution analytically leads to integrals
+of bivariate normal densities. The simulation above approximates this calculation (with
+error going to 0 as `nsamp` increases to infinity.)
+
+
+
+
+
+
+
+
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

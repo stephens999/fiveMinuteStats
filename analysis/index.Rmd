@@ -2,10 +2,6 @@
 title: "Home"
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
 ## Inference
 
 ### Likelihood Ratio and Likelihood
@@ -32,7 +28,14 @@ title: "Home"
 
 
 *  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
-*  [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
+
+
+### Frequentist vs Bayesian Inference
+
+* [The difficulty calibrating p values](pvalue_difficult_calibrate_example.html)
+* [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
+* [Conditional coverage of a standard normal CI](CI_conditional_coverage.html)
+
 
 ### Decision Theory
 

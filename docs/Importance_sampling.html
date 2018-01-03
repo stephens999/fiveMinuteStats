@@ -309,8 +309,14 @@ div.tocify {
 </div>
 
 
-<p><strong>Last updated:</strong> 2017-03-04</p>
-<p><strong>Code version:</strong> 5d0fa13282db4a97dc7d62e2d704e88a5afdb824</p>
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-23</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> 827320d</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 </div>
@@ -364,40 +370,34 @@ lmean=function(lx){
   m + log(mean(exp(lx-m))) 
 }</code></pre>
 <p>Exploiting this we can now do IS for <span class="math inline">\(z=100\)</span>:</p>
-<pre><code>lpnorm.IS= function(z,nsamp=100000){
+<pre class="r"><code>lpnorm.IS= function(z,nsamp=100000){
   y = rnorm(nsamp,z,1)
   w = dnorm(y,0,1,log=TRUE) - dnorm(y,z,1, log=TRUE)
   log(mean(y&gt;z)) + lmean(w[y&gt;z])
 }
-lpnorm.IS(100)
-pnorm(100,lower.tail=FALSE,log=TRUE)</code></pre>
+lpnorm.IS(100)</code></pre>
+<pre><code>[1] -5005.571</code></pre>
+<pre class="r"><code>pnorm(100,lower.tail=FALSE,log=TRUE)</code></pre>
+<pre><code>[1] -5005.524</code></pre>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
+<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.0 (2016-05-03)
+<pre><code>R version 3.3.2 (2016-10-31)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X 10.10.5 (Yosemite)
+Running under: OS X El Capitan 10.11.6
 
 locale:
-[1] en_NZ.UTF-8/en_NZ.UTF-8/en_NZ.UTF-8/C/en_NZ.UTF-8/en_NZ.UTF-8
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
- [1] tidyr_0.4.1     dplyr_0.5.0     ggplot2_2.1.0   knitr_1.15.1   
- [5] MASS_7.3-45     expm_0.999-0    Matrix_1.2-6    viridis_0.3.4  
- [9] workflowr_0.3.0 rmarkdown_1.3  
-
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.5      git2r_0.18.0     plyr_1.8.4       tools_3.3.0     
- [5] digest_0.6.9     evaluate_0.10    tibble_1.1       gtable_0.2.0    
- [9] lattice_0.20-33  shiny_0.13.2     DBI_0.4-1        yaml_2.1.14     
-[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
-[17] grid_3.3.0       R6_2.1.2         reshape2_1.4.1   magrittr_1.5    
-[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
-[25] mime_0.5         colorspace_1.2-6 xtable_1.8-2     httpuv_1.3.3    
-[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
+ [1] backports_1.0.5 magrittr_1.5    rsconnect_0.7   rprojroot_1.2  
+ [5] htmltools_0.3.5 tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9    
+ [9] stringi_1.1.2   rmarkdown_1.3   knitr_1.15.1    git2r_0.18.0   
+[13] stringr_1.2.0   digest_0.6.12   workflowr_0.4.0 evaluate_0.10  </code></pre>
 </div>
 </div>
 
