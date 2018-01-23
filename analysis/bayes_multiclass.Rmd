@@ -4,12 +4,23 @@ author: "Matthew Stephens"
 date: 2016-01-19
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Pre-requisites
@@ -18,7 +29,7 @@ Be familiar with the [Computing the posterior probability on classes for 2 class
 
 # Overview
 
-Suppose we have an observation $X$, which we believe to have come from one of $K$ models, $M_1 \dots, M_K$. Suppose we can compute the likelihood for any models. This document lays out the computation of the posterior probability that the model came from model $K$, and emphasises that the result depends only on the likelihood ratios.  This is a straightforward extension of the 2-class calculations. 
+Suppose we have an observation $X$, which we believe to have come from one of $K$ models, $M_1 \dots, M_K$. Suppose we can compute the likelihood for any models. This document lays out the computation of the posterior probability that the model came from model $K$, and emphasizes that the result depends only on the likelihood ratios.  This is a straightforward extension of the 2-class calculations.
 
 # Example
 
@@ -76,8 +87,9 @@ posterior_prob(L_vec, c(0.2,0.2,0.2,0.2,0.2))
 
 
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

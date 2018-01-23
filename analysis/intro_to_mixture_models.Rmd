@@ -4,12 +4,23 @@ author: "Matt Bonakdarpour"
 date: 2016-01-22
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Prerequisites
@@ -99,7 +110,7 @@ Here we see that the Gaussian mixture model is unimodal because there is so much
 
 These two illustrative examples above give rise to the general notion of a **mixture model** which assumes each observation is generated from one of $K$ mixture components. We formalize this notion in the next section. 
 
-Before moving on, we make one small pedagogical note that sometimes confuses students new to mixture models. You might recall that if $X$ and $Y$ are *independent* normal random variables, then $Z=X+Y$ is also a normally distributed random variable. From this, you might wonder why the mixture models above aren't normal. The reason is that $X+Y$ is *not* a mixture of normals. It is a linear combination of normals.  A random variable sampled from a simple Gaussian mixture model can be thought of as a two stage process. First, we randomly sample a component (e.g. male or female), then we sample our observation from the normal distribution corresponding to that component. This is clearly different than sampling $X$ and $Y$ from different normal distributions, then adding them together. 
+Before moving on, we make one small pedagogical note that sometimes confuses students new to mixture models. You might recall that if $X$ and $Y$ are *independent* normal random variables, then $Z=X+Y$ is also a normally distributed random variable. From this, you might wonder why the mixture models above aren't normal. The reason is that $X+Y$ is *not* a bivariate mixture of normals. It is a linear combination of normals.  A random variable sampled from a simple Gaussian mixture model can be thought of as a two stage process. First, we randomly sample a component (e.g. male or female), then we sample our observation from the normal distribution corresponding to that component. This is clearly different than sampling $X$ and $Y$ from different normal distributions, then adding them together.
 
 # Definition
 
@@ -108,7 +119,7 @@ Assume we observe $X_1,\ldots,X_n$ and that each $X_i$ is sampled from one of $K
 From the law of total probability, we know that the marginal probability of $X_i$ is:
 $$P(X_i = x) = \sum_{k=1}^K P(X_i=x|Z_i=k)\underbrace{P(Z_i=k)}_{\pi_k} = \sum_{k=1}^K P(X_i=x|Z_i=k)\pi_k$$
 
-Here, the $\pi_k$ are called **mixture proportions** or **mixture weights** and they represent the probability that $X_i$ belongs to the $k$-th mixture component. The mixture proportions are nonneggative and they sum to one, $\sum_{k=1}^K \pi_k = 1$. We call $P(X_i|Z_i=k)$ the **mixture component**, and it represents the distribution of $X_i$ assuming it came from component $k$. The mixture components in our examples above were normal distributions. 
+Here, the $\pi_k$ are called **mixture proportions** or **mixture weights** and they represent the probability that $X_i$ belongs to the $k$-th mixture component. The mixture proportions are nonnegative and they sum to one, $\sum_{k=1}^K \pi_k = 1$. We call $P(X_i|Z_i=k)$ the **mixture component**, and it represents the distribution of $X_i$ assuming it came from component $k$. The mixture components in our examples above were normal distributions.
 
 For discrete random variables these mixture components can be any probability mass function $p(. \mid Z_{k})$ and for continuous random variables they can be any probability density function $f(. \mid Z_{k})$. The corresponding pmf and pdf for the mixture model is therefore:
 
@@ -123,8 +134,9 @@ Now assume we are in the Gaussian mixture model setting where the $k$-th compone
 
 **Acknowledgement:** The "Examples" section above was taken from lecture notes written by Ramesh Sridharan.
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

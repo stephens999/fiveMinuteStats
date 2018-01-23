@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Joe Marcus" />
+
+<meta name="date" content="2016-03-29" />
+
+<title>Introduction to the Wright-Fisher Model</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to the Wright-Fisher Model</h1>
+<h4 class="author"><em>Joe Marcus</em></h4>
+<h4 class="date"><em>2016-03-29</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>A basic knowledge of:</p>
+<ul>
+<li>introductory probability</li>
+<li>genetics terminology<br />
+</li>
+<li>discrete-time Markov chains.</li>
+</ul>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>A major goal of population genetics is to understand the effect of various evolutionary forces, such as genetic drift, selection, mutation and migration, on the change in allele frequencies within a population. Named after early pioneers of theoretical population genetics, <a href="https://en.wikipedia.org/wiki/Sewall_Wright">Sewall Wright</a> and <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald A. Fisher</a>, the <a href="https://en.wikipedia.org/wiki/Genetic_drift#Wright.E2.80.93Fisher_model">Wright-Fisher model</a> describes the sampling of alleles in a population with no selection, no mutation, no migration, non-overlapping generation times and random mating. Of course, real populations in nature do not adhere to these assumptions, yet the Wright-Fisher model provides a tool for studying how introducing more complex evolutionary forces can effect a relatively simple model.</p>
+</div>
+<div id="definition" class="section level1">
+<h1>Definition</h1>
+<p>Let <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span> denote two alleles segregating at a locus in a given population. The Wright-Fisher model is a discrete-time Markov chain that describes the evolution of the count of one of these alleles over time. Let <span class="math inline">\(X_t\)</span> be the count of the <span class="math inline">\(A\)</span> allele in a population with <span class="math inline">\(N\)</span> diploid individuals at generation <span class="math inline">\(t\)</span>. The state space of this Markov chain is the set of possible counts of the <span class="math inline">\(A\)</span> allele i.e. <span class="math inline">\(X_t \in \{0, 1, \dots, 2N\}\)</span>. Each generation, a collection of alleles are sampled, with replacement, from the current population at generation <span class="math inline">\(t\)</span> to form a new population at generation <span class="math inline">\(t + 1\)</span>. This process describes the binomial sampling of alleles each generation, which allows us to write the probability transition matrix for the Markov chain as:</p>
+<p><span class="math display">\[P_{ij} = {2N \choose j} (\frac{i}{2N})^{j} (1 - \frac{i}{2N})^{2N - j}\]</span></p>
+<p>In other words the probability of transitioning from an allele count of <span class="math inline">\(i\)</span>, at generation <span class="math inline">\(t-1\)</span>, to an allele count of <span class="math inline">\(j\)</span>, at generation <span class="math inline">\(t\)</span>, can be computed from binomial probability mass function with size <span class="math inline">\(2N\)</span> and success probability being equal to the frequency of the <span class="math inline">\(A\)</span> allele at time <span class="math inline">\(t-1\)</span>:</p>
+<p><span class="math display">\[X_{t} \mid X_{t-1} = x_{t-1} \sim Binomial(n = 2N, p = \frac{x_{t-1}}{2N})\]</span></p>
+<div id="properties" class="section level3">
+<h3>Properties</h3>
+<div id="mean" class="section level4">
+<h4>Mean</h4>
+<p>One useful property to know is the expected value of <span class="math inline">\(X_t\)</span> at any time throughout the process. This can be computed using the fact that the expectation of a binomial distribution is <span class="math inline">\(np\)</span> and the law of total expectation:</p>
+<p><span class="math display">\[E(X_t) = E(E(X_t \mid X_{t-1})) = E(2N \frac{X_{t-1}}{2N})\]</span> <span class="math display">\[= E(X_{t-1}) = E(E(X_{t-1} \mid X_{t-2})) = E(2N \frac{X_{t-2}}{2N})\]</span> <span class="math display">\[= E[X_{t-2}] = \dots = X_0\]</span></p>
+<p>We see that the expected value of the Wright-Fisher process at any time-point is just the count of the <span class="math inline">\(A\)</span> allele in the first generation. If <span class="math inline">\(Y_t\)</span> is the frequency of the <span class="math inline">\(A\)</span> allele at time <span class="math inline">\(t\)</span> then the above result can be extended such that:</p>
+<p><span class="math display">\[E(Y_t) = Y_0\]</span></p>
+</div>
+<div id="variance" class="section level4">
+<h4>Variance</h4>
+<p>It is a little bit harder to find the variance of <span class="math inline">\(X_t\)</span> but it is useful to know and will be important for later tutorials. Recall from basic probability theory the definition of the variance:</p>
+<p><span class="math display">\[Var(X_t) = E(X^2_t) - E(X_t)^2\]</span></p>
+<p>We have shown about that <span class="math inline">\(E(X_t) = X_0\)</span> thus:</p>
+<p><span class="math display">\[Var(X_t) = E(X^2_t) - X^2_0\]</span></p>
+<p>Using the law of total variance and the mean and variance of the binomial distribution:</p>
+<p><span class="math display">\[E(X^2_{t}) = E(E(X^2_{t} \mid X_{t-1})) = E(Var(X_{t} \mid X_{t-1}) + E(X_{t} \mid X_{t-1})^2)\]</span> <span class="math display">\[ = E(2N\frac{X_{t-1}}{2N}(1 - \frac{X_{t-1}}{2N}) + (2N\frac{X_{t-1}}{2N})^2) \]</span> <span class="math display">\[ = E(X_{t-1} - \frac{X^2_{t-1}}{2N} + X^2_{t-1}) = E(X^2_{t-1} - \frac{X^2_{t-1}}{2N} + X_{t-1})\]</span> <span class="math display">\[= E(X^2_{t-1}) (1 - \frac{1}{2N}) + E(X_{t-1})\]</span></p>
+<p>thus we can rewrite <span class="math inline">\(E(X^2_{t})\)</span> as:</p>
+<p><span class="math display">\[Var(X_{t}) + X^2_0 = (Var(X_{t-1}) + X^2_0) (1 - \frac{1}{2N}) + X_0\]</span> <span class="math display">\[= Var(X_{t-1})(1 - \frac{1}{2N}) + X^2_0 - \frac{X^2_0}{2N} + X_0\]</span> <span class="math display">\[\Rightarrow Var(X_{t}) = Var(X_{t-1})(1 - \frac{1}{2N}) + X_0(1 - \frac{X_0}{2N})\]</span></p>
+<p>solving the above recurrence results in:</p>
+<p><span class="math display">\[Var(X_{t}) = 2N X_0 (1 - \frac{X_0}{2N}) (1 - (1 - \frac{1}{2N})^t)\]</span></p>
+<p>and finally in terms of the frequency of the <span class="math inline">\(A\)</span> allele:</p>
+<p><span class="math display">\[Var(Y_{t}) =  Y_0 (1 - Y_0) (1 - (1 - \frac{1}{2N})^t)\]</span></p>
+</div>
+<div id="fixation-probabilities" class="section level4">
+<h4>Fixation probabilities</h4>
+<p>Using the above moments we can compute some interesting features of the Markov chain which also have important biological relevance. Recall that absorbing states of a Markov chain are the states, once entered, can never be exited. More formally, if <span class="math inline">\(X^{*}_t\)</span> is an absorbing state then:</p>
+<p><span class="math display">\[P_{\{i = {X^{*}_t}\}j} = 0\]</span></p>
+<p>In the Wright-Fisher model we can intuitively see that the fixation or loss of an allele are absorbing states i.e. if all of the individuals in the population carry two copies of the <span class="math inline">\(A\)</span> allele or <span class="math inline">\(a\)</span> allele the allele of the other type cannot be sampled without mutation or migration. The absorbing states in the Wright-Fisher model are <span class="math inline">\(X^{*}_t \in \{0, 2N\}\)</span>. We can compute the probability of fixation of the <span class="math inline">\(A\)</span> allele, transitioning to the absorbing state <span class="math inline">\(X^{*}_{t+1} = 2N\)</span> from any other state, using the conditional expectation described above:</p>
+<p><span class="math display">\[E(X^{*}_{t+1} \mid X_t = i) = 2NP(X_{t+1} = 2N \mid X_t = i) \]</span> <span class="math display">\[\Rightarrow i = 2NP(X_{t+1} = 2N \mid X_{t} = i)\]</span> <span class="math display">\[\Rightarrow P(X_{t+1} = 2N \mid X_{t} = i) = \frac{i}{2N}\]</span></p>
+<p>Therefore we can reciprocally write the probability of losing the <span class="math inline">\(A\)</span> allele (fixation of the <span class="math inline">\(a\)</span> allele):</p>
+<p><span class="math display">\[ P(X_{t+1} = 0 \mid X_{t} = i) = 1 -  P(X_{t+1} = 2N \mid X_{t} = i) = 1 - \frac{i}{2N}\]</span></p>
+<p>We can see that the probability of fixation or loss of an allele in a pure drift Wright-Fisher model only depends on the previous count of the allele and the effective population size.</p>
+</div>
+</div>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<div id="visualizing-p_ij" class="section level2">
+<h2>Visualizing <span class="math inline">\(P_{ij}\)</span></h2>
+<p>Visualization of the probability transition matrix can provide some intuition on the how the process can proceed given different starting points.</p>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(viridis)
+
+N &lt;- 10 # effective population size  
+
+# fill up the probility transition matrix
+P &lt;- matrix(NA, ncol = 2*N + 1, 2*N + 1)
+P_df &lt;- data.frame()
+for(i in 0:(2*N)){
+  for(j in 0:(2*N)){
+    # add to matrix for examples
+    P[i+1, j+1] &lt;- dbinom(j, 2*N, (i / (2*N))) 
+    
+    # add to data.frame for viz below
+    P_df &lt;- bind_rows(P_df, data.frame(i = i, j = j, p = P[i+1, j+1]))
+  }
+}
+
+# plot it up!
+p &lt;- ggplot(P_df, aes(x = i, y = j, fill = p)) +   
+     geom_tile() + scale_fill_viridis(option=&quot;D&quot;)
+p</code></pre>
+<p><img src="figure/wright_fisher_model.Rmd/p_matrix-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="simulating-the-wright-fisher-model" class="section level2">
+<h2>Simulating the Wright-Fisher Model</h2>
+<p>Lets simulate a grid of parameter values to explore the concepts introduced above:</p>
+<pre class="r"><code># data.frame to be filled
+wf_df &lt;- data.frame()
+
+# effective population sizes
+sizes &lt;- c(50, 100, 1000, 5000)
+
+# starting allele frequencies
+starting_p &lt;- c(.01, .1, .5, .8)
+
+# number of generations
+n_gen &lt;- 100
+
+# number of replicates per simulation
+n_reps &lt;- 50
+
+# run the simulations
+for(N in sizes){
+  for(p in starting_p){
+    p0 &lt;- p
+    for(j in 1:n_gen){
+      X &lt;- rbinom(n_reps, 2*N, p)
+      p &lt;- X / (2*N)
+      rows &lt;- data.frame(replicate = 1:n_reps, N = rep(N, n_reps), 
+                         gen = rep(j, n_reps), p0 = rep(p0, n_reps), 
+                         p = p)
+      wf_df &lt;- bind_rows(wf_df, rows)
+    }
+  }
+}
+
+# plot it up!
+p &lt;- ggplot(wf_df, aes(x = gen, y = p, group = replicate)) +
+     geom_path(alpha = .5) + facet_grid(N ~ p0) + guides(colour=FALSE)
+p</code></pre>
+<p><img src="figure/wright_fisher_model.Rmd/wf_simulation-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The horizontal facet is the starting frequency and the vertical facet is the effective population size. We see that as we increase the population size the less noisy the allele frequency trajectory as expected from our derivation. Additionally we see that probability of fixation or loss is more likely when lower and higher starting allele frequencies (again as expected).</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] viridis_0.3.4      tidyr_0.5.1        dplyr_0.5.0       
+ [4] ggplot2_2.1.0      knitr_1.15.1       MASS_7.3-45       
+ [7] expm_0.999-0       Matrix_1.2-8       workflowr_0.4.0   
+[10] rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.9      git2r_0.18.0     plyr_1.8.4       tools_3.3.2     
+ [5] digest_0.6.12    evaluate_0.10    tibble_1.2       gtable_0.2.0    
+ [9] lattice_0.20-34  shiny_1.0.0      DBI_0.5-1        yaml_2.1.14     
+[13] gridExtra_2.2.1  stringr_1.2.0    gtools_3.5.0     rprojroot_1.2   
+[17] grid_3.3.2       R6_2.2.0         reshape2_1.4.1   magrittr_1.5    
+[21] backports_1.0.5  scales_0.4.0     htmltools_0.3.5  assertthat_0.1  
+[25] mime_0.5         xtable_1.8-2     colorspace_1.2-6 httpuv_1.3.3    
+[29] labeling_0.3     stringi_1.1.2    munsell_0.4.3   </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-06-01" />
+
+<title>Gibbs Sampling for a mixture of normals</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Gibbs Sampling for a mixture of normals</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-06-01</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Know what a Gibbs sampler is, and a mixture model is, and be familiar with Bayesian inference for a normal mean and for the two class problem.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>We consider using Gibbs sampling to perform inference for a normal mixture model, <span class="math display">\[X_1,\dots,X_n \sim f(\cdot)\]</span> where <span class="math display">\[f(\cdot) = \sum_{k=1}^K \pi_k N(\cdot; \mu_k,1).\]</span> Here <span class="math inline">\(\pi_1,\dots,\pi_K\)</span> are non-negative and sum to 1, and <span class="math inline">\(N(\cdot;\mu,\sigma^2)\)</span> denotes the density of the <span class="math inline">\(N(\mu,\sigma^2)\)</span> distribution.</p>
+<p>Recall the latent variable representation of this model: <span class="math display">\[\Pr(Z_j = k) = \pi_k\]</span> <span class="math display">\[X_j | Z_j = k \sim N(\mu_k,1)\]</span></p>
+<p>To illustrate, let’s simulate data from this model:</p>
+<pre class="r"><code>set.seed(33)
+
+# generate from mixture of normals
+#&#39; @param n number of samples
+#&#39; @param pi mixture proportions
+#&#39; @param mu mixture means
+#&#39; @param s mixture standard deviations
+rmix = function(n,pi,mu,s){
+  z = sample(1:length(pi),prob=pi,size=n,replace=TRUE)
+  x = rnorm(n,mu[z],s[z])
+  return(x)
+}
+x = rmix(n=1000,pi=c(0.5,0.5),mu=c(-2,2),s=c(1,1))
+hist(x)</code></pre>
+<p><img src="figure/gibbs2.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="gibbs-sampler" class="section level1">
+<h1>Gibbs sampler</h1>
+<p>Suppose we want to inference for the parameters <span class="math inline">\(\mu,\pi\)</span>. That is, we want to sample from <span class="math inline">\(p(\mu,\pi | x)\)</span>. We can use a Gibbs sampler. However, to do this we have to augment the space to sample from <span class="math inline">\(p(z,\mu,\pi | x)\)</span>, not only <span class="math inline">\(p(\mu,\pi | x)\)</span>.</p>
+<p>Here is the algorithm in outline:</p>
+<ul>
+<li>sample <span class="math inline">\(\mu\)</span> from <span class="math inline">\(\mu | x, z, \pi\)</span></li>
+<li>sample <span class="math inline">\(\pi\)</span> from <span class="math inline">\(\pi | x, z, \mu\)</span></li>
+<li>sample <span class="math inline">\(z\)</span> from <span class="math inline">\(z | x, \pi, \mu\)</span></li>
+</ul>
+<p>The point here is that all of these conditionals are easy to sample from.</p>
+</div>
+<div id="code" class="section level1">
+<h1>Code</h1>
+<pre class="r"><code>  normalize = function(x){return(x/sum(x))}
+  
+  #&#39; @param x an n vector of data
+  #&#39; @param pi a k vector
+  #&#39; @param mu a k vector
+  sample_z = function(x,pi,mu){
+    dmat = outer(mu,x,&quot;-&quot;) # k by n matrix, d_kj =(mu_k - x_j)
+    p.z.given.x = as.vector(pi) * dnorm(dmat,0,1) 
+    p.z.given.x = apply(p.z.given.x,2,normalize) # normalize columns
+    z = rep(0, length(x))
+    for(i in 1:length(z)){
+      z[i] = sample(1:length(pi), size=1,prob=p.z.given.x[,i],replace=TRUE)
+    }
+    return(z)
+  }
+ 
+    
+  #&#39; @param z an n vector of cluster allocations (1...k)
+  #&#39; @param k the number of clusters
+  sample_pi = function(z,k){
+    counts = colSums(outer(z,1:k,FUN=&quot;==&quot;))
+    pi = gtools::rdirichlet(1,counts+1)
+    return(pi)
+  }
+
+  #&#39; @param x an n vector of data
+  #&#39; @param z an n vector of cluster allocations
+  #&#39; @param k the number o clusters
+  #&#39; @param prior.mean the prior mean for mu
+  #&#39; @param prior.prec the prior precision for mu
+  sample_mu = function(x, z, k, prior){
+    df = data.frame(x=x,z=z)
+    mu = rep(0,k)
+    for(i in 1:k){
+      sample.size = sum(z==i)
+      sample.mean = ifelse(sample.size==0,0,mean(x[z==i]))
+      
+      post.prec = sample.size+prior$prec
+      post.mean = (prior$mean * prior$prec + sample.mean * sample.size)/post.prec
+      mu[i] = rnorm(1,post.mean,sqrt(1/post.prec))
+    }
+    return(mu)
+  }
+  
+  gibbs = function(x,k,niter =1000,muprior = list(mean=0,prec=0.1)){
+    pi = rep(1/k,k) # initialize
+    mu = rnorm(k,0,10)
+    z = sample_z(x,pi,mu)
+    res = list(mu=matrix(nrow=niter, ncol=k), pi = matrix(nrow=niter,ncol=k), z = matrix(nrow=niter, ncol=length(x)))
+    res$mu[1,]=mu
+    res$pi[1,]=pi
+    res$z[1,]=z 
+    for(i in 2:niter){
+        pi = sample_pi(z,k)
+        mu = sample_mu(x,z,k,muprior)
+        z = sample_z(x,pi,mu)
+        res$mu[i,] = mu
+        res$pi[i,] = pi
+        res$z[i,] = z
+    }
+    return(res)
+  }</code></pre>
+<p>Try the Gibbs sampler on the data simulated above. We see it quickly moves to a part of the space where the mean parameters are near their true values (-2,2).</p>
+<pre class="r"><code>  res = gibbs(x,2)
+  plot(res$mu[,1],ylim=c(-4,4),type=&quot;l&quot;)
+  lines(res$mu[,2],col=2)</code></pre>
+<p><img src="figure/gibbs2.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>If we simulate data with fewer observations we should see more uncertainty</p>
+<pre class="r"><code>  x = rmix(100,c(0.5,0.5),c(-2,2),c(1,1))
+  res2 = gibbs(x,2)
+  plot(res2$mu[,1],ylim=c(-4,4),type=&quot;l&quot;)
+  lines(res2$mu[,2],col=2)</code></pre>
+<p><img src="figure/gibbs2.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>And fewer observations still…</p>
+<pre class="r"><code>  x = rmix(10,c(0.5,0.5),c(-2,2),c(1,1))
+  res3 = gibbs(x,2)
+  plot(res3$mu[,1],ylim=c(-4,4),type=&quot;l&quot;)
+  lines(res3$mu[,2],col=2)</code></pre>
+<p><img src="figure/gibbs2.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>And we can get credible intervals (CI) from these samples (discard the first few samples as “burn-in”).</p>
+<p>For example, to get 90% posterior CIs for the mean parameters:</p>
+<pre class="r"><code>  quantile(res3$mu[-(1:10),1],c(0.05,0.95))</code></pre>
+<pre><code>       5%       95% 
+-2.644896 -1.004009 </code></pre>
+<pre class="r"><code>  quantile(res3$mu[-(1:10),2],c(0.05,0.95))</code></pre>
+<pre><code>       5%       95% 
+0.9400428 2.7773584 </code></pre>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] gtools_3.5.0    evaluate_0.10  </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

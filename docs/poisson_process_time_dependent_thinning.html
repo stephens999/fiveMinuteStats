@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="John Novembre" />
+
+<meta name="date" content="2016-01-31" />
+
+<title>Time-dependent thinning of a Poisson Process</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Time-dependent thinning of a Poisson Process</h1>
+<h4 class="author"><em>John Novembre</em></h4>
+<h4 class="date"><em>2016-01-31</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This vignette assumes a previous introduction to Poisson Processes.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>An important extension to the basic Poisson Process with rate <span class="math inline">\(\lambda\)</span> is to consider that each arrival may be categorized according to a certain type. If we let <span class="math inline">\(K\)</span> be the total number of types, we might build a model in which the types are determined probabilistically according to a set of type probabilities (<span class="math inline">\(p_1,\ldots,p_K\)</span>,<span class="math inline">\(\sum_{i=1}^K p_i = 1\)</span>). In this case, where we say the type probabilities are <em>time-homogeneous</em>, the arrivals of type <span class="math inline">\(i\)</span> form a thinned Poisson Process that has a rate parameter of <span class="math inline">\(\lambda p_i\)</span>.</p>
+<p>In this vignette, we are going to address the more difficult case in which the type probabilities vary through time.</p>
+<p>Let <span class="math inline">\(P_i(s)\)</span> reflect the probability of an arrival being type <span class="math inline">\(i\)</span> given it arrives at time <span class="math inline">\(s\)</span>. A result from Poisson Process theory is that the number of arrivals of type <span class="math inline">\(i\)</span> by time <span class="math inline">\(t\)</span>, which we denote <span class="math inline">\(N_i(t)\)</span>, will be Poisson with rate <span class="math display">\[N_i(t) \sim Pois(\lambda \int_0^t P_i(s)ds).\]</span> Our first goal here is to demonstrate this result holds true in some simulations.</p>
+</div>
+<div id="simulating-a-poisson-process-with-time-dependent-type-probabilities" class="section level1">
+<h1>Simulating a Poisson Process with time-dependent type probabilities</h1>
+<p>An algorithm for simulating a Poisson Process with time-dependent type probabilities can be fairly simple:</p>
+<ol style="list-style-type: decimal">
+<li>Simulate the number of arrivals <span class="math inline">\(N\)</span> via a <span class="math inline">\(Pois(\lambda t)\)</span></li>
+<li>Conditional on <span class="math inline">\(N\)</span>, simluate the arrival times as independent uniform draws from <span class="math inline">\((0,t]\)</span>.</li>
+<li>For each arrival, simulate it’s type from the discrete probability distribution specified by <span class="math inline">\({P_i(t),i=1,\ldots,K}\)</span>.</li>
+</ol>
+<p>Let’s try this in practice.</p>
+<div id="motivation-the-rate-of-arrival-of-successful-foragers" class="section level2">
+<h2>Motivation: The rate of arrival of successful foragers</h2>
+<p>So that we have a concrete example, suppose that we are monitoring the success of foragers, who have a maximum capacity of gathering <span class="math inline">\(K\)</span> food items. The number collected by each forager determines their type (so a forager who brings back 3 items is type 3). Let’s further suppose the number of food items they gather is binomially distributed with a probability that is time dependent according to a function <span class="math inline">\(p(t)\)</span>. Further suppose we expect food to be harder and harder to gather - such that <span class="math inline">\(p(t)\)</span> is a logistic decay function <span class="math display">\[p(t)=\frac{1}{1+e^{-b(t-a)}}\]</span> where <span class="math inline">\(b&lt;0\)</span>. The parameters <span class="math inline">\(a\)</span>determine the inflection point of the logistic curve and <span class="math inline">\(b\)</span> determines the rate of change of the success probabilty through time.</p>
+<p>To add some further interpretability to the parameters, let’s suppose we are thinking of foraging bees returning to a hive and that our time scale of interest is a single day of foraging (say 9 hours over which they are returning to the hive), that the inflection point is midday (so <span class="math inline">\(a=4.5\)</span> hours) and the rate at which the flowers are being depleted has a logistic decay rate such that <span class="math inline">\(b=-1\)</span>. Let’s plot this success probability curve.</p>
+<pre class="r"><code>t&lt;-seq(0,9,by=0.01)
+p&lt;-function(t,a=4.5,b=-1){return(1/(1+exp(-b*(t-a))))}
+
+# Plot for a=50, b=0.1
+plot(t,p(t,a=4.5,b=-1),ylim=c(0,1))</code></pre>
+<p><img src="figure/poisson_process_time_dependent_thinning.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Very cool. Let’s further suppose the rate at which foraging bees return is 10 per hour and they can bring a maximum of 4 pollen granules back. We might suppose using a binomial distribution to determine their type is appropriate if they are visiting <span class="math inline">\(K\)</span> flowers, and at each they have an independent probability of picking up a pollen granule.</p>
+<p>So if all goes well our Poisson Process result will help us derive the number of bees of each type at different time-points during the day. Going into this, we can expect that given <span class="math inline">\(b&lt;0\)</span> the beginning of the process will contain more type <span class="math inline">\(4\)</span> individuals, and then later in the process it will decrease.</p>
+</div>
+<div id="simulation-of-a-single-instance" class="section level2">
+<h2>Simulation of a single instance</h2>
+<p>All the above is simply to say we have time-dependent thinned Poisson Process with <span class="math inline">\(P_i(t) = P(X=k)\)</span>, where <span class="math inline">\(X \sim Binom(n,p(t))\)</span>, <span class="math inline">\(p(t)=\frac{1}{1+e^{-b(t-a)}}\)</span>, and <span class="math inline">\(\lambda=10, K=4, t=9, a=4.5, b=-1\)</span>. So we can now write out our full simulation code:</p>
+<pre class="r"><code># Initialize parameters
+lambda&lt;-10
+K&lt;- 4
+b&lt;- -1
+a&lt;- 4.5
+t&lt;- 9
+
+# Declare p(t)
+p&lt;-function(t,a=50,b=-0.1){return(1/(1+exp(-b*(t-a))))}
+
+# Declare function that assigns a random type
+assign_type&lt;-function(t,K,a,b){
+ return(rbinom(1,K,p(t,a,b))) 
+}
+
+# Begin one replicate of simulation
+## Draw total number of arrivals 
+N&lt;-rpois(1,lambda*t)
+## Draw the arrival times
+arrival_times&lt;-runif(N,min=0,max=t)
+## Assign types to the arrivals
+types&lt;-numeric()
+for(i in seq(1,N)){
+  types[i]&lt;-assign_type(arrival_times[i],K,a,b)
+}</code></pre>
+<p>So the R variables N, arrival_times, and types contain the # of arrivals, the sequence of arrival_times and types.</p>
+</div>
+<div id="ploting-results-for-a-realization-of-the-process" class="section level2">
+<h2>Ploting results for a realization of the process</h2>
+<p>We can make a simple plot of the timing of arrivals, annotating them each by type:</p>
+<pre class="r"><code>## And let&#39;s make a plot
+plot(c(0,t),c(0,0),type=&#39;l&#39;,xlab=&#39;Time (hours)&#39;,ylab=&#39;&#39;,yaxt=&#39;n&#39;);
+points(arrival_times,rep(0,N),pch=&#39;|&#39;,cex=0.85)
+text(arrival_times,rep(0.25,N),types,cex=0.85)</code></pre>
+<p><img src="figure/poisson_process_time_dependent_thinning.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /> And indeed we see the prevalence of types is changing and with the higher number types becoming rarer as time progresses.</p>
+<p>Another useful plot is the standard counting process plot:</p>
+<pre class="r"><code>x&lt;-seq(0,t,by=0.01)
+n_t&lt;-sapply(x,function(s) sum(arrival_times&lt;s))
+plot(x,n_t,type=&#39;l&#39;,xlab=&#39;Time (hours)&#39;,ylab=&#39;# of returning bees&#39;)</code></pre>
+<p><img src="figure/poisson_process_time_dependent_thinning.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now let’s try making a plot that adds in the arrivals of each type:</p>
+<pre class="r"><code>x&lt;-seq(0,t,by=0.01)
+n_t&lt;-sapply(x,function(s) sum(arrival_times&lt;s))
+plot(x,n_t,type=&#39;l&#39;,xlab=&quot;Time (hours)&quot;,ylab=&quot;# of returning bees&quot;)
+for(i in seq(0,K)){
+  n_i&lt;-sapply(x,function(s) sum(arrival_times[types==i]&lt;s))
+  points(x,n_i,type=&quot;l&quot;,col=(i+2))
+}
+legend(0,0.8*t*lambda,legend=c(&quot;N(t)&quot;,&quot;# of type 0&quot;,&quot;# of type 1&quot;,&quot;# of type 2&quot;,&quot;# of type 3&quot;,&quot;# of type 4&quot;),lty=1,col=c(1,2,3,4,5,6),cex=0.5)</code></pre>
+<p><img src="figure/poisson_process_time_dependent_thinning.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /> So cool! We can see the type 4 arrival bees drop off and the type 0 arrivals increase as the hours pass.</p>
+<p>What is cooler is that we can generate theoretical expectations for these patterns. Our simluations should follow some underlying mean values that we can predict given the parameters. Let’s try.</p>
+</div>
+<div id="comparison-to-theory" class="section level2">
+<h2>Comparison to theory</h2>
+<p>For the total number we have a simple Poisson Process, so <span class="math display">\[E[N(t)]=\lambda t.\]</span> Now let’s consider the counts of type <span class="math inline">\(i\)</span> arrivals. From Poisson Process theory we know:<br />
+<span class="math display">\[E[N_i(t)]=\lambda \int_0^t P_i(s)ds.\]</span> But what do we obtain from this using our example?</p>
+<p>Let’s substitute in our problem-specific <span class="math inline">\(P_i(s)\)</span>, which we know is binomial probability mass function with a specific time varying success probability (<span class="math inline">\(p(t)\)</span>).<br />
+<span class="math display">\[E[N_i(t)]=\lambda \int_0^t \frac{n!}{(n-i)!i!} (\frac{1}{1+e^{-b(s-a)}})^i(1-\frac{1}{1+e^{-b(s-a)}})^{n-i}ds\]</span> Nasty! Makes us wish those bees had a simple linear or exponential decay to their foraging success, because then we’d have some hope of integrating this mess analytically. As it is, we need to numerically integrate. To evaluate this for a single <span class="math inline">\(t\)</span> we could use a single call to the integrate function, but we’re interested in plotting the mean values over a range of <span class="math inline">\(t\)</span>, so let’s build our own (crude) numerical integrator and store the partial integrals for all the values of t we want.</p>
+<pre class="r"><code># Code for numerical intergration 
+## Set a little dx for the increments in our numerical integration
+dx=0.01
+## Initalize a sequence of x&#39;s we will evaluate the integrand
+x&lt;-seq(0,9,by=dx)
+## Initialize a matrix where we&#39;ll store values of partial integral for each of the K+1 possible types.
+int_pt=matrix(nrow=K+1,ncol=length(x))
+for(i in seq(0,K)){
+    int_pt[i+1,1]&lt;-0
+    for(l in seq(2,length(x))){
+      ## Being a little cautious, we work with log of integrand evaluated at x
+      log_pr&lt;-i*log(1/(1+exp(-b*(x[l]-a))))+(K-i)*log(1-(1/(1+exp(-b*(x[l]-a)))))
+      ## And then take exponential, multiply by dx, and to our running sum
+      int_pt[i+1,l]&lt;-int_pt[i+1,l-1]+exp(log_pr)*dx
+  }
+}
+
+# And then we make plots
+plot(x,lambda*x,type=&quot;l&quot;,ylab=&quot;E[# of returning bees]&quot;,xlab=&quot;Time (hours)&quot;)
+for(i in seq(0,K)){
+  points(x,lambda*choose(K,i)*int_pt[i+1,],type=&quot;l&quot;,col=(i+2))
+}
+legend(0,0.8*t*lambda,legend=c(&quot;N(t)&quot;,&quot;# of type 0&quot;,&quot;# of type 1&quot;,&quot;# of type 2&quot;,&quot;# of type 3&quot;,&quot;# of type 4&quot;),lty=1,col=c(1,2,3,4,5,6),cex=0.5)</code></pre>
+<p><img src="figure/poisson_process_time_dependent_thinning.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Victory! Our theory for the expectation matches the observed pattern fairly nicely.</p>
+</div>
+<div id="a-follow-up-question-about-the-hive" class="section level2">
+<h2>A follow-up question about the hive:</h2>
+<p>So what is the total amount of pollen in the hive? We’d guess the total amount might plateau through time. To calculate the amount, call it <span class="math inline">\(F(t)\)</span>, we can do some basic accounting to write it as <span class="math display">\[F(t)=\sum_{i=1}^K iN_i(t)\]</span>. Let’s just look at this based on the results of our expectation:</p>
+<pre class="r"><code>Ft&lt;-rep(0,length(x))
+for(i in seq(0,K)){
+  Ft&lt;-Ft+i*int_pt[i+1,]
+}
+plot(Ft)</code></pre>
+<p><img src="figure/poisson_process_time_dependent_thinning.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /> And indeed we see a plateau! When does it suggest the bees should stop bothering with collecting?</p>
+</div>
+</div>
+<div id="extensions" class="section level1">
+<h1>Extensions</h1>
+<div id="challenge-problem-1" class="section level2">
+<h2>Challenge Problem 1</h2>
+<p>Repeat the problem above but assume a linear decay from a probability of 1 to 0 over the time period of 0 to <span class="math inline">\(t\)</span>. As the main challenge, derive an analytical form for the mean of <span class="math inline">\(N_i(t)\)</span> (i.e, you should not need to use the numerical solution for the integral obtained above, though you could use it to check your answer!).</p>
+</div>
+<div id="challenge-problem-2" class="section level2">
+<h2>Challenge Problem 2</h2>
+<p>Consider a system where there are only two possible types of arrivals at time <span class="math inline">\(t\)</span>: <span class="math inline">\(N_1(t)\)</span> and <span class="math inline">\(N_2(t)\)</span>. And let’s add a wrinkle of complexity. An arrival at time <span class="math inline">\(s\)</span> will first be of type 1, but will transition to be type 2 at a random time. Let that waiting time be distributed according to a cumulative distribution function <span class="math inline">\(G(s)\)</span>. This implies an arrival at time <span class="math inline">\(s\)</span> will still be type <span class="math inline">\(1\)</span> at time <span class="math inline">\(t\)</span> with probability <span class="math inline">\(G(t-s)\)</span> and will have changed to type 2 with probability <span class="math inline">\(1-G(t-s)\)</span>.</p>
+<p>This sounds complicated, but we can still apply our time-dependent Poission Process results to it. In this case <span class="math inline">\(P_1(t)=\int_0^t G(t-s)ds\)</span> and <span class="math inline">\(P_2(t)=\int_0^t (1-G(t-s))ds\)</span>. For the case where <span class="math inline">\(G(s)=e^{-\lambda_{12}}\)</span>, generate simulation code and test it against the theory as we did above. One challenge will be that your code for assigning types will depend on <span class="math inline">\(s\)</span> and <span class="math inline">\(t\)</span>!</p>
+<p>To provide a biological motivation, ground your work in supposing you are monitoring a susceptible population of individuals and <span class="math inline">\(\lambda\)</span> is the rate of arrival of infected individuals to your hospital over the period of 100 days. Suppose <span class="math inline">\(\lambda=0.5\)</span> patient arrivals per day. Suppose the survival time of individuals in your hospital is exponential with rate of 0.1 patients per day (<span class="math inline">\(\lambda_{12}=0.2\)</span>).</p>
+<p>As a practical application of the model, try to answer these questions: 1) What is the average number of patients you expect 100 days into the epidemic? 2) You’d be cursed to design your hospital based on the average number, because you’d have to turn away sick patients quite often. So if you are preparing for a particularly bad outcome, say the upper number of patients that would be expected in 1 out of 100 epidemics, how many beds would you put in your hospital?</p>
+</div>
+<div id="challenge-problem-3" class="section level2">
+<h2>Challenge Problem 3</h2>
+<p>A further challenge: Consider each arrival is initially of type 0 and that the probabiity an item arriving at time <span class="math inline">\(s\)</span> is of type <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span> is determined by a continous time Markov transition probability matrix <span class="math inline">\(P_{0i}(t-s)\)</span>. For a simple transition matrix of your choice, work out a simulation and check against the theory.</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] MASS_7.3-45        expm_0.999-0       Matrix_1.2-8      
+[4] workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.9     lattice_0.20-34 gtools_3.5.0    digest_0.6.12  
+ [5] rprojroot_1.2   grid_3.3.2      backports_1.0.5 git2r_0.18.0   
+ [9] magrittr_1.5    evaluate_0.10   stringi_1.1.2   tools_3.3.2    
+[13] stringr_1.2.0   yaml_2.1.14     htmltools_0.3.5 knitr_1.15.1   </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

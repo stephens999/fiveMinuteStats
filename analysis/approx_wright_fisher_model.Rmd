@@ -4,12 +4,23 @@ author: "Joe Marcus"
 date: 2016-03-29
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Pre-requisites
@@ -22,7 +33,7 @@ A basic knowledge of:
 
 # Overview
 
-Recall that the Wright-Fisher model is a discrete-time Markov chain with a state space of the set of possible counts of a given allele in a population. If we are modelling $N$ individuals in a population there are then $2N + 1$ possible states (we must include an allele count of $0$) thus our transition probability matrix has dimension $(2N + 1) \times (2N + 1)$. The size of the probability transition matrix grows quadratically as $N$ grows and thus computations for large $N$ become intractable. For instance, the effective population size of humans in the past has roughly been estimated to be around $10000$ therefore our state space would be of size $20001$ and our probability transition matrix would have dimension $20001 \times 20001$. Many organisms have even larger effective population sizes, thus the Wright-Fisher model becomes challenging if not impossibly slow to directly perform inference under. This problem has motivated the development of a diverse set of approximations to the Wright-Fisher model, each with their own advantages and disadvantages. Here I will outline two general approaches, the beta and normal approximations, which have both been widely used in multiple contexts. I will not cover the diffusion approximation, largely developed by Motoo Kimura in the late 1960s, but it is a worthwhile topic with many important contributions to population genetic theory, much of which the below distributional approximations are inspired by and can be derived from.
+Recall that the Wright-Fisher model is a discrete-time Markov chain with a state space of the set of possible counts of a given allele in a population. If we are modelling $N$ individuals in a population there are then $2N + 1$ possible states (we must include an allele count of $0$) thus our transition probability matrix has dimension $(2N + 1) \times (2N + 1)$. The size of the probability transition matrix grows quadratically as $N$ grows and thus computations for large $N$ become intractable. For instance, the effective population size of humans in the past has roughly been estimated to be around $10000$ therefore our state space would be of size $20001$ and our probability transition matrix would have dimension $20001 \times 20001$. Many organisms have even larger effective population sizes, thus the Wright-Fisher model becomes challenging if not impossibly slow to directly perform inference under. This problem has motivated the development of a diverse set of approximations to the Wright-Fisher model, each with their own advantages and disadvantages. Here I will outline two general approaches, the beta and normal approximations, which have both been widely used in multiple contexts. I will not cover the diffusion approximation, largely developed by [Motoo Kimura](https://en.wikipedia.org/wiki/Motoo_Kimura) in the late 1960s, but it is a worthwhile topic with many important contributions to population genetic theory, much of which the below distributional approximations are inspired by and can be derived from.
 
 # Definition
 
@@ -71,7 +82,7 @@ where $c = \frac{(1-y_{\tau})(\frac{y_{\tau}}{1-y_{\tau}} + 1)^4}{2y_{\tau}}$.
 
 ## The Beta Approximation 
 
-Akin to the normal approximation, we can match the first two moments of the beta distribution to those of the Wright-Fisher model. Again, "unsurprisingly", Sewall Wright actually first showed that the stationary distribution of the Wright-Fisher model is a beta distribution, thus the beta approximation has some nice relationships to the Wright-Fisher beyond the moment matching approaches described here. If $\mu_X$ and $\sigma^2_X$ are the mean and variance we derived for the Wright-Fisher model then:
+Akin to the normal approximation, we can match the first two moments of the beta distribution to those of the Wright-Fisher model. Again, "unsurprisingly", [Sewall Wright](https://en.wikipedia.org/wiki/Sewall_Wright) actually first showed that the stationary distribution of the Wright-Fisher model is a beta distribution, thus the beta approximation has some nice relationships to the Wright-Fisher beyond the moment matching approaches described here. If $\mu_X$ and $\sigma^2_X$ are the mean and variance we derived for the Wright-Fisher model then:
 
 $$ Y_t \mid Y_{\tau} = y_\tau \sim Beta(\alpha = (\frac{\mu_X (1 - \mu_X)}{\sigma^2_X} - 1) \mu_X, \beta = (\frac{\mu_X (1 - \mu_X)}{\sigma^2_X} - 1) (1 - \mu_X) )$$
 
@@ -96,8 +107,9 @@ see shiny app [here!](https://jhmarcus.shinyapps.io/daf_approximation/) Note tha
 * logit_norm - Logit transformed normal approximation
 * beta - Beta approximation 
 
+
 ## Session information
 
-```{r info}
-sessionInfo()
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

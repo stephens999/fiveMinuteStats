@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-01-07" />
+
+<title>The likelihood ratio for continuous data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">The likelihood ratio for continuous data</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-07</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>This document introduces the likelihood ratio for continuous data and models, and explains its connection with discrete models.</p>
+</div>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Be familiar with the <a href="likelihood_ratio_simple_models.html">likelihood ratio for discrete data</a></p>
+</div>
+<div id="definition" class="section level1">
+<h1>Definition</h1>
+<p>Recall that if models <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_1\)</span> are fully-specified model for discrete data <span class="math inline">\(X=x\)</span>, with probability mass functions <span class="math inline">\(p(\cdot | M_0)\)</span> and <span class="math inline">\(p(\cdot | M_1)\)</span>, then the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is defined as</p>
+<p><span class="math display">\[LR(M_1,M_0) := p(x | M_1)/p(x | M_0).\]</span></p>
+<p>Now suppose that the data and models are continuous. So instead of a probability <em>mass</em> function, each model has a probability <em>density</em> function. Then the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> is usually defined as the ratio of the probability density functions. That is, we have exactly the same expression for the LR,</p>
+<p><span class="math display">\[LR(M_1,M_0) := p(x | M_1)/p(x | M_0)\]</span></p>
+<p>but now <span class="math inline">\(p(\cdot | M_1)\)</span> and <span class="math inline">\(p(\cdot | M_0)\)</span> are probability density functions instead of probability mass functions.</p>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>A medical screening test for a disease involves measuring the concentration (<span class="math inline">\(X\)</span>) of a protein in the blood. In normal individuals <span class="math inline">\(X\)</span> has a Gamma distribution with mean 1 and shape 2. In diseased individuals the protein becomes elevated, and <span class="math inline">\(X\)</span> has a Gamma distribution with mean 2 and shape 2. Plotting the probability density functions of these distributions yields:</p>
+<pre class="r"><code>x = seq(0,10,length=100)
+plot(x, dgamma(x,scale = 0.5,shape = 2), type=&quot;l&quot;, xlab=&quot;protein concentration&quot;)
+lines(x, dgamma(x,scale = 1,shape = 2), type=&quot;l&quot;, col=&quot;red&quot;)</code></pre>
+<p><img src="figure/likelihood_ratio_simple_continuous_data.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Suppose that for a particular patient we observe <span class="math inline">\(X=4.02\)</span>. Then the likelihood ratio for the model that this patient is from the normal group (<span class="math inline">\(M_n\)</span>) vs the model that the patient is from the diseased group (<span class="math inline">\(M_d\)</span>) is <code>dgamma(4.02,scale=0.5,shape=2)/dgamma(4.02,scale=1,shape=2)</code> which is <code>0.0718</code>. That is, the data favour this individual being diseased by a factor of approximately <code>14</code>.</p>
+</div>
+<div id="connection-with-discrete-models" class="section level1">
+<h1>Connection with Discrete Models</h1>
+<p>Often the likelihood ratio for continuous models is simply <em>defined</em> as the ratio of the densities, as above. However, an alternative approach, which can yield greater insight, is instead to <em>derive</em> this result as an approximation, from the definition of likelihood ratio for discrete models, as follows.</p>
+<p>The first step is to recognize that in practice all observations are actually discrete, because of finite precision. Sometimes the measurement precision is made explicit, but often it is implicit in the number of decimal places used to report an observation. For example, in the example above, where we were told that we observed a protein concentration of <span class="math inline">\(X=4.02\)</span>, it would be reasonable to think that the measurement precision is 2 decimal places, and that this observation actually corresponds to “<span class="math inline">\(X\)</span> lies in the interval <span class="math inline">\([4.015,4.025)\)</span>”. The probability of this observation, under a continuous model for <span class="math inline">\(X\)</span>, is the integral of the probability density function from <span class="math inline">\(4.015\)</span> to <span class="math inline">\(4.025\)</span>. In other words, it is<span class="math inline">\(F_X(4.025)-F_X(4.015)\)</span> where <span class="math inline">\(F_X\)</span> denotes the cumulative distribution function for <span class="math inline">\(X\)</span>.</p>
+<p>With this view, the likelihood for the “observation” <span class="math inline">\(X=4.02\)</span> under <span class="math inline">\(M_n\)</span> is actually <code>pgamma(4.025,scale=0.5,shape=2)-pgamma(4.015,scale=0.5,shape=2)</code> = <code>5.1827928\times 10^{-5}</code>. Similarly, the likelihood under <span class="math inline">\(M_d\)</span> is <code>7.217107\times 10^{-4}</code>, and the likelihood ratio is <code>0.0718126</code>.</p>
+<p>As you can see, this approach yields a LR that is numerically very close to that obtained using the ratio of the densities, as above. This is not a coincidence! Here is why we should expect this to happen more generally. Suppose we assume that measurement precision is <span class="math inline">\(\epsilon\)</span>. So the “observation” <span class="math inline">\(X=x\)</span> really means <span class="math inline">\(X \in [x-\epsilon,x+\epsilon]\)</span>. Then the likelihood for a model <span class="math inline">\(M\)</span>, given this observation, is <span class="math inline">\(\Pr(X \in [x-\epsilon,x+\epsilon] | M)\)</span>. Provided that the density <span class="math inline">\(p(x|M)\)</span> is approximately constant in the region within radius <span class="math inline">\(\epsilon\)</span> around <span class="math inline">\(x\)</span>, then this probability is approximately <span class="math inline">\(2\epsilon p(x | M)\)</span>. Thus the LR for two models <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span>, is given by</p>
+<p><span class="math display">\[LR = \Pr(X \in [x-\epsilon,x+\epsilon] | M_1)/ \Pr(X \in [x-\epsilon,x+\epsilon] | M_0) 
+\approx 2\epsilon p(x | M_1)/2\epsilon p(x|M_0) = p(x|M_1)/p(x|M_0).\]</span></p>
+</div>
+<div id="an-example-where-the-approximation-breaks-down" class="section level1">
+<h1>An example where the approximation breaks down</h1>
+<p>The approximation usually works well, but here is a simple example to illustrate how the approximation could break down in principle.</p>
+<p>Consider observing a single data point <span class="math inline">\(X\)</span> and we compare the models that <span class="math inline">\(M_0: X \sim N(0,\sigma_0)\)</span> vs <span class="math inline">\(M_1: X \sim N(0,\sigma_1)\)</span>. Suppose that we observe <span class="math inline">\(X=0.00\)</span>, assumed to be correct to the nearest 0.01. So the ``true&quot; LR is given by</p>
+<pre class="r"><code>trueLR = function(s0,s1){
+  L0= pnorm(0.005,sd=s0)-pnorm(-0.005,sd=s0)
+  L1= pnorm(0.005,sd=s1)-pnorm(-0.005,sd=s1)
+  return(L0/L1)
+}</code></pre>
+<p>and the approximation is given by</p>
+<pre class="r"><code>approxLR = function(s0,s1){
+  return(dnorm(0,sd=s0)/dnorm(0,sd=s1))
+}</code></pre>
+<p>Now, if <span class="math inline">\(\sigma_0\)</span> and <span class="math inline">\(\sigma_1\)</span> are both not too small the the approximation works fine. For example, for <span class="math inline">\(\sigma_0,\sigma_1 = 0.5,1\)</span> we have the truth and approximation as 1.999975 and 2.</p>
+<p>But if one of the <span class="math inline">\(\sigma_j\)</span> is small, we have the problem that the density is not approximately constant within the region <span class="math inline">\([-0.005,0.005]\)</span>. For example, at <span class="math inline">\(\sigma_0,\sigma_1 = 0.001,1\)</span> we have the truth and approximation as 250.6637282 and 1000.</p>
+</div>
+<div id="summary-1" class="section level1">
+<h1>Summary</h1>
+<p>In most cases, the Likelihood ratio for model <span class="math inline">\(M_1\)</span> vs model <span class="math inline">\(M_0\)</span> for a continuous random variable <span class="math inline">\(X\)</span>, given an observation <span class="math inline">\(X=x\)</span>, can we well approximated by the ratio of the model densities of <span class="math inline">\(X\)</span>, evaluated at <span class="math inline">\(x\)</span>. This approximation comes from assuming that the model density functions are approximately constant within the neighborhood of <span class="math inline">\(x\)</span> that has radius equal to the measurement precision.</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] gtools_3.5.0    evaluate_0.10  </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

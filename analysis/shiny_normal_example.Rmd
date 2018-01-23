@@ -3,14 +3,25 @@ title: 'Simple example: Bayesian inference for normal mean (known variance)'
 author: "Nan Xiao"
 date: 2016-04-13
 ---
-**Last updated:** `r Sys.Date()`
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
 ```
 
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
 This illustrates how the prior, likelihood, and posterior behave for
 inference for a normal mean ($\mu$) from normal-distributed data, with
 a conjugate prior on $\mu$.
@@ -53,8 +64,9 @@ when the prior and the (scaled) data likelihood changes:
 
 The source code of the app can be found [here](https://github.com/road2stat/conjugate-normal-umkv).
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

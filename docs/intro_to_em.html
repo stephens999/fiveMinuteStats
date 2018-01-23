@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-01-22" />
+
+<title>Introduction to EM: Gaussian Mixture Models</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to EM: Gaussian Mixture Models</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-22</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This document assumes basic familiarity with <a href="intro_to_mixture_models.html">mixture models</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>In <a href="intro_to_mixture_models.html">this note</a> we introduced mixture models. Recall that if our observations <span class="math inline">\(X_i\)</span> come from a mixture model with <span class="math inline">\(K\)</span> mixture components, the marginal probability distribution of <span class="math inline">\(X_i\)</span> is of the form: <span class="math display">\[P(X_i = x) = \sum_{k=1}^K \pi_kP(X_i=x|Z_i=k)\]</span> where <span class="math inline">\(Z_i \in \{1,\ldots,K\}\)</span> is the latent variable representing the mixture component for <span class="math inline">\(X_i\)</span>, <span class="math inline">\(P(X_i|Z_i)\)</span> is the mixture component, and <span class="math inline">\(\pi_k\)</span> is the mixture proportion representing the probability that <span class="math inline">\(X_i\)</span> belongs to the <span class="math inline">\(k\)</span>-th mixture component.</p>
+<p>In this note, we will introduce the <strong>expectation-maximization</strong> (EM) algorithm in the context of Gaussian mixture models. Let <span class="math inline">\(N(\mu, \sigma^2)\)</span> denote the probability distribution function for a normal random variable. In this scenario, we have that the conditional distribution <span class="math inline">\(X_i|Z_i = k \sim N(\mu_k, \sigma_k^2)\)</span> so that the marginal distribution of <span class="math inline">\(X_i\)</span> is: <span class="math display">\[P(X_i = x) = \sum_{k=1}^K P(Z_i = k) P(X_i=x | Z_i = k) = \sum_{k=1}^K \pi_k N(x; \mu_k, \sigma_k^2)\]</span></p>
+<p>Similarly, the joint probability of observations <span class="math inline">\(X_1,\ldots,X_n\)</span> is therefore: <span class="math display">\[P(X_1=x_1,\ldots,X_n=x_n) = \prod_{i=1}^n \sum_{k=1}^K \pi_k N(x_i; \mu_k, \sigma_k^2)\]</span></p>
+<p>This note describes the EM algorithm which aims to obtain the maximum likelihood estimates of <span class="math inline">\(\pi_k, \mu_k\)</span> and <span class="math inline">\(\sigma_k^2\)</span> given a data set of observations <span class="math inline">\(\{x_1,\ldots, x_n\}\)</span>.</p>
+</div>
+<div id="review-mle-of-normal-distribution" class="section level1">
+<h1>Review: MLE of Normal Distribution</h1>
+<p>Suppose we have <span class="math inline">\(n\)</span> observations <span class="math inline">\(X_1,\ldots,X_n\)</span> from a Gaussian distribution with unknown mean <span class="math inline">\(\mu\)</span> and known variance <span class="math inline">\(\sigma^2\)</span>. To find the maximum likelihood estimate for <span class="math inline">\(\mu\)</span>, we find the log-likelihood <span class="math inline">\(\ell (\mu)\)</span>, take the derivative with respect to <span class="math inline">\(\mu\)</span>, set it equal zero, and solve for <span class="math inline">\(\mu\)</span>: <span class="math display">\[\begin{align}
+L(\mu) &amp;= \prod_{i=1}^n \frac{1}{\sigma\sqrt{2\pi}}\exp{-\frac{(x_i-\mu)^2}{2\sigma^2}} \\
+\Rightarrow \ell(\mu) &amp;= \sum_{i=1}^n\log \left (\frac{1}{\sigma\sqrt{2\pi}} \right )  - \left (\frac{(x_i-\mu)^2}{2\sigma^2} \right) \\
+\rightarrow \frac{d}{d\mu}\ell(\mu) &amp;= \sum_{i=1}^n \frac{x_i - \mu}{2\sigma^2}
+\end{align}\]</span></p>
+<p>Setting this equal to zero and solving for <span class="math inline">\(\mu\)</span>, we get that <span class="math inline">\(\mu_{\text{MLE}} = \frac{1}{n}\sum_{i=1}^n x_i\)</span>. Note that applying the log function to the likelihood helped us decompose the product and removed the exponential function so that we could easily solve for the MLE.</p>
+</div>
+<div id="mle-of-gaussian-mixture-model" class="section level1">
+<h1>MLE of Gaussian Mixture Model</h1>
+<p>Now we attempt the same strategy for deriving the MLE of the Gaussian mixture model. Our unknown parameters are <span class="math inline">\(\theta = \{\mu_1,\ldots,\mu_K,\sigma_1,\ldots,\sigma_K,\pi_1,\ldots,\pi_K\}\)</span>, and so from the first section of this note, our likelihood is: <span class="math display">\[L(\theta | X_1,\ldots,X_n) = \prod_{i=1}^n \sum_{k=1}^K \pi_k N(x_i;\mu_k, \sigma_k^2)\]</span> So our log-likelihood is: <span class="math display">\[\ell(\theta) = \sum_{i=1}^n \log \left( \sum_{k=1}^K \pi_k N(x_i;\mu_k, \sigma_k^2) \right )\]</span></p>
+<p>Taking a look at the expression above, we already see a difference between this scenario and the simple setup in the previous section. We see that the summation over the <span class="math inline">\(K\)</span> components “blocks” our log function from being applied to the normal densities. If we were to follow the same steps as above and differentiate with respect to <span class="math inline">\(\mu_k\)</span> and set the expression equal to zero, we would get: <span class="math display">\[\sum_{i=1}^n \frac{1}{\sum_{k=1}^K\pi_k N(x_i;\mu_k, \sigma_k)}\pi_k N(x_i;\mu_k,\sigma_k) \frac{(x_i-\mu_k)}{\sigma_k^2} = 0 \tag{1}\]</span></p>
+<p>Now we’re stuck because we can’t analytically solve for <span class="math inline">\(\mu_k\)</span>. However, we make one important observation which provides intuition for whats to come: if we knew the latent variables <span class="math inline">\(Z_i\)</span>, then we could simply gather all our samples <span class="math inline">\(X_i\)</span> such that <span class="math inline">\(Z_i=k\)</span> and simply use the estimate from the previous section to estimate <span class="math inline">\(\mu_k\)</span>.</p>
+<div id="em-informally" class="section level2">
+<h2>EM, informally</h2>
+<p>Intuitively, the latent variables <span class="math inline">\(Z_i\)</span> should help us find the MLEs. We first attempt to compute the posterior distribution of <span class="math inline">\(Z_i\)</span> given the observations: <span class="math display">\[P(Z_i=k|X_i) = \frac{P(X_i|Z_i=k)P(Z_i=k)}{P(X_i)} = \frac{\pi_k N(\mu_k,\sigma_k^2)}{\sum_{k=1}^K\pi_k N(\mu_k, \sigma_k)} = \gamma_{Z_i}(k) \tag{2}\]</span></p>
+<p>Now we can rewrite equation (1), the derivative of the log-likelihood with respect to <span class="math inline">\(\mu_k\)</span>, as follows: <span class="math display">\[\sum_{i=1}^n \gamma_{Z_i}(k) \frac{(x_i-\mu_k)}{\sigma_k^2} = 0 \]</span></p>
+<p>Even though <span class="math inline">\(\gamma_{Z_i}(k)\)</span> depends on <span class="math inline">\(\mu_k\)</span>, we can cheat a bit and pretend that it doesn’t. Now we can solve for <span class="math inline">\(\mu_k\)</span> in this equation to get: <span class="math display">\[\hat{\mu_k} = \frac{\sum_{i=1}^n \gamma_{z_i}(k)x_i}{\sum_{i=1}^n \gamma_{z_i}(k)} = \frac{1}{N_k} \sum_{i=1}^n \gamma_{z_i}(k)x_i \tag{3}\]</span>.</p>
+<p>Where we set <span class="math inline">\(N_k = \sum_{i=1}^n \gamma_{z_i}(k)\)</span>. We can think of <span class="math inline">\(N_k\)</span> as the effective number of points assigned to component <span class="math inline">\(k\)</span>. We see that <span class="math inline">\(\hat{\mu_k}\)</span> is therefore a weighted average of the data with weights <span class="math inline">\(\gamma_{z_i}(k)\)</span>. Similarly, if we apply a similar method to finding <span class="math inline">\(\hat{\sigma_k^2}\)</span> and <span class="math inline">\(\hat{\pi_k}\)</span>, we find that: <span class="math display">\[\begin{align}
+\hat{\sigma_k^2} &amp;= \frac{1}{N_k}\sum_{i=1}^n \gamma_{z_i}(k) (x_i - \mu_k)^2 \tag{4} \\
+\hat{\pi_k} &amp;= \frac{N_k}{n} \tag{5}
+\end{align}\]</span></p>
+<p>Again, remember that <span class="math inline">\(\gamma_{Z_i}(k)\)</span> depends on the unknown parameters, so these equations are not closed-form expressions. This looks like a vicious circle. But, as <a href="https://en.wikipedia.org/wiki/Cosma_Shalizi">Cosma Shalizi</a> says, “one man’s vicious circle is another man’s successive approximation procedure.”</p>
+<p>We are now in the following situation:</p>
+<ol style="list-style-type: decimal">
+<li>If we knew the parameters, we could compute the posterior probabilities <span class="math inline">\(\gamma_{Z_i}(k)\)</span></li>
+<li>If we knew the posteriors <span class="math inline">\(\gamma_{Z_i}(k)\)</span>, we could easily compute the parameters</li>
+</ol>
+<p>The EM algorithm, motivated by the two observations above, proceeds as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Initialize the <span class="math inline">\(\mu_k\)</span>’s, <span class="math inline">\(\sigma_k\)</span>’s and <span class="math inline">\(\pi_k\)</span>’s and evaluate the log-likelihood with these parameters.<br />
+</li>
+<li><strong>E-step:</strong> Evaluate the posterior probabilities <span class="math inline">\(\gamma_{Z_i}(k)\)</span> using the current values of the <span class="math inline">\(\mu_k\)</span>’s and <span class="math inline">\(\sigma_k\)</span>’s with equation (2)</li>
+<li><strong>M-step:</strong> Estimate new parameters <span class="math inline">\(\hat{\mu_k}\)</span>, <span class="math inline">\(\hat{\sigma_k^2}\)</span> and <span class="math inline">\(\hat{\pi_k}\)</span> with the current values of <span class="math inline">\(\gamma_{Z_i}(k)\)</span> using equations (3), (4) and (5).</li>
+<li>Evaluate the log-likelihood with the new parameter estimates. If the log-likelihood has changed by less than some small <span class="math inline">\(\epsilon\)</span>, stop. Otherwise, go back to step 2.</li>
+</ol>
+<p>The EM algorithm is sensitive to the initial values of the parameters, so care must be taken in the first step. However, assuming the initial values are “valid,” one property of the EM algorithm is that the log-likelihood increases at every step. This invariant proves to be useful when debugging the algorithm in practice.</p>
+</div>
+</div>
+<div id="em-formally" class="section level1">
+<h1>EM, formally</h1>
+<p>The EM algorithm attempts to find maximum likelihood estimates for models with latent variables. In this section, we describe a more abstract view of EM which can be extended to other latent variable models.</p>
+<p>Let <span class="math inline">\(X\)</span> be the entire set of observed variables and <span class="math inline">\(Z\)</span> the entire set of latent variables. The log-likelihood is therefore: <span class="math display">\[\log \left( P(X|\Theta)\right ) = \log \left ( \sum_{Z} P(X,Z|\Theta) \right )\]</span></p>
+<p>where we’ve simply marginalized <span class="math inline">\(Z\)</span> out of the joint distribution.</p>
+<p>As we noted above, the existence of the sum inside the logarithm prevents us from applying the log to the densities which results in a complicated expression for the MLE. Now suppose that we observed both <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>. We call <span class="math inline">\(\{X,Z\}\)</span> the <strong>complete</strong> data set, and we say <span class="math inline">\(X\)</span> is <strong>incomplete</strong>. As we noted previously, if we knew <span class="math inline">\(Z\)</span>, the maximization would be easy.</p>
+<p>We typically don’t know <span class="math inline">\(Z\)</span>, but the information we do have about <span class="math inline">\(Z\)</span> is contained in the posterior <span class="math inline">\(P(Z|X,\Theta)\)</span>. Since we don’t know the complete log-likelihood, we consider its expectation under the posterior distribution of the latent variables. This corresponds to the <strong>E-step</strong> above. In the <strong>M-step</strong>, we maximize this expectation to find a new estimate for the parameters.</p>
+<p>In the <strong>E-step</strong>, we use the current value of the parameters <span class="math inline">\(\theta^0\)</span> to find the posterior distribution of the latent variables given by <span class="math inline">\(P(Z|X, \theta^0)\)</span>. This corresponds to the <span class="math inline">\(\gamma_{Z_i}(k)\)</span> in the previous section. We then use this to find the expectation of the complete data log-likelihood, with respect to this posterior, evaluated at an arbitrary <span class="math inline">\(\theta\)</span>. This expectation is denoted <span class="math inline">\(Q(\theta, \theta^0)\)</span> and it equals: <span class="math display">\[Q(\theta, \theta^0) = E_{Z|X,\theta^0}\left [\log (P(X,Z|\theta)) \right] =\sum_Z P(Z|X,\theta^0) \log (P(X,Z|\theta))\]</span></p>
+<p>In the M-step, we determine the new parameter <span class="math inline">\(\hat{\theta}\)</span> by maximizing Q: <span class="math display">\[\hat{\theta} = \text{argmax}_{\theta} Q(\theta, \theta^0)\]</span></p>
+<div id="gaussian-mixture-models" class="section level2">
+<h2>Gaussian Mixture Models</h2>
+<p>Now we derive the relevant quantities for Gaussian mixture models and compare it to our “informal” derivation above. The complete likelihood takes the form <span class="math display">\[P(X, Z|\mu, \sigma, \pi) = \prod_{i=1}^n \prod_{k=1}^K \pi_k^{I(Z_i = k)} N(x_i|\mu_k, \sigma_k)^{I(Z_i = k)}\]</span> so the complete log-likelihood takes the form: <span class="math display">\[\log \left(P(X, Z|\mu, \sigma, \pi) \right) = \sum_{i=1}^n \sum_{k=1}^K I(Z_i = k)\left( \log (\pi_k) + \log (N(x_i|\mu_k, \sigma_k) )\right)\]</span></p>
+<p>Note that for the complete log-likelihood, the logarithm acts directly on the normal density which leads to a simpler solution for the MLE. As we said, in practice, we do not observe the latent variables, so we consider the expectation of the complete log-likelihood with respect to the posterior of the latent variables.</p>
+<p>The expected value of the complete log-likelihood is therefore: <span class="math display">\[\begin{align}
+E_{Z|X}[\log (P(X,Z|\mu,\sigma,\pi))] &amp;= E_{Z|X} \left [ \sum_{i=1}^n \sum_{k=1}^K I(Z_i = k)\left( \log (\pi_k) + \log (N(x_i|\mu_k, \sigma_k) )\right) \right ] \\
+&amp;= \sum_{i=1}^n \sum_{k=1}^K E_{Z|X}[I(Z_i = k)]\left( \log (\pi_k) + \log (N(x_i|\mu_k, \sigma_k) )\right) 
+\end{align}
+\]</span> Since <span class="math inline">\(E_{Z|X}[I(Z_i = k)] = P(Z_i=k |X)\)</span>, we see that this is simply <span class="math inline">\(\gamma_{Z_i}(k)\)</span> which we computed in the previous section. Hence, we have</p>
+<p><span class="math display">\[
+E_{Z|X}[\log (P(X,Z|\mu,\sigma,\pi))]=  \sum_{i=1}^n \sum_{k=1}^K \gamma_{Z_i}(k)\left(\log (\pi_k) + \log (N(x_i|\mu_k, \sigma_k)) \right)
+\]</span></p>
+<p>EM proceeds as follows: first choose initial values for <span class="math inline">\(\mu,\sigma,\pi\)</span> and use these in the E-step to evaluate the <span class="math inline">\(\gamma_{Z_i}(k)\)</span>. Then, with <span class="math inline">\(\gamma_{Z_i}(k)\)</span> fixed, maximize the expected complete log-likelihood above with respect to <span class="math inline">\(\mu_k,\sigma_k\)</span> and <span class="math inline">\(\pi_k\)</span>. This leads to the closed form solutions we derived in the previous section.</p>
+</div>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>In this example, we will assume our mixture components are fully specified Gaussian distributions (i.e the means and variances are known), and we are interested in finding the maximum likelihood estimates of the <span class="math inline">\(\pi_k\)</span>’s.</p>
+<p>Assume we have <span class="math inline">\(K=2\)</span> components, so that: <span class="math display">\[\begin{align}
+X_i | Z_i = 0 &amp;\sim N(5, 1.5) \\
+X_i | Z_i = 1 &amp;\sim N(10, 2) \\
+\end{align}\]</span></p>
+<p>The true mixture proportions will be <span class="math inline">\(P(Z_i = 0) = 0.25\)</span> and <span class="math inline">\(P(Z_i = 1) = 0.75\)</span>. First we simulate data from this mixture model:</p>
+<pre class="r"><code># mixture components
+mu.true    = c(5, 10)
+sigma.true = c(1.5, 2)
+
+# determine Z_i
+Z = rbinom(500, 1, 0.75)
+# sample from mixture model
+
+X &lt;- rnorm(10000, mean=mu.true[Z+1], sd=sigma.true[Z+1])
+hist(X,breaks=15)</code></pre>
+<p><img src="figure/intro_to_em.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now we write a function to compute the log-likelihood for the incomplete data, assuming the parameters are known. This will be used to determine convergence: <span class="math display">\[\ell(\theta) = \sum_{i=1}^n \log \left( \sum_{k=1}^2 \pi_k \underbrace{N(x_i;\mu_k, \sigma_k^2)}_{L[i,k]} \right )\]</span></p>
+<pre class="r"><code>compute.log.lik &lt;- function(X, L, w) {
+  L[,1] = L[,1]*w[1]
+  L[,2] = L[,2]*w[2]
+  return(sum(log(rowSums(L))))
+}</code></pre>
+<p>Since the mixture components are fully specified, for each sample <span class="math inline">\(X_i\)</span> we can compute the likelihood <span class="math inline">\(P(X_i | Z_i=0)\)</span> and <span class="math inline">\(P(X_i | Z_i=1)\)</span>. We store these values in the columns of L:</p>
+<pre class="r"><code>L = matrix(NA, nrow=length(X), ncol= 2)
+L[, 1] = dnorm(X, mean=mu.true[1], sd = sigma.true[1])
+L[, 2] = dnorm(X, mean=mu.true[2], sd = sigma.true[2])</code></pre>
+<p>Finally, we implement the E and M step in the <code>EM.iter</code> function below. The <code>mixture.EM</code> function is the driver which checks for convergence by computing the log-likelihoods at each step.</p>
+<pre class="r"><code>mixture.EM &lt;- function(w.init, L, X) {
+  
+  w.curr &lt;- w.init
+  
+  # store log-likehoods for each iteration
+  log_liks &lt;- c()
+  ll       &lt;- compute.log.lik(X, L, w.curr)
+  log_liks &lt;- c(log_liks, ll)
+  delta.ll &lt;- 1
+  
+  while(delta.ll &gt; 1e-5) {
+    w.curr   &lt;- EM.iter(w.curr, L)
+    ll       &lt;- compute.log.lik(X, L, w.curr)
+    log_liks &lt;- c(log_liks, ll)
+    delta.ll &lt;- log_liks[length(log_liks)]  - log_liks[length(log_liks)-1]
+  }
+  return(list(w.curr, log_liks))
+}
+
+EM.iter &lt;- function(w.curr, L, ...) {
+  
+  # E-step: compute E_{Z|X,w0}[I(Z_i = k)]
+  z_ik &lt;- L
+  for(i in seq_len(ncol(L))) {
+    z_ik[,i] &lt;- w.curr[i]*z_ik[,i]
+  }
+  z_ik     &lt;- z_ik / rowSums(z_ik)
+  
+  # M-step
+  w.next   &lt;- colSums(z_ik)/sum(z_ik)
+  return(w.next)
+}</code></pre>
+<pre class="r"><code>#perform EM
+ee &lt;- mixture.EM(w.init=c(0.5,0.5), L, X)
+print(paste(&quot;Estimate = (&quot;, round(ee[[1]][1],2), &quot;,&quot;, round(ee[[1]][2],2), &quot;)&quot;, sep=&quot;&quot;))</code></pre>
+<pre><code>[1] &quot;Estimate = (0.29,0.71)&quot;</code></pre>
+<p>Finally, we inspect the evolution of the log-likelihood and note that it is strictly increases:</p>
+<pre class="r"><code>plot(ee[[2]], ylab=&#39;incomplete log-likelihood&#39;, xlab=&#39;iteration&#39;)</code></pre>
+<p><img src="figure/intro_to_em.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] gtools_3.5.0    evaluate_0.10  </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -4,12 +4,23 @@ author: "Matt Bonakdarpour"
 date: 2016-01-21
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Pre-requisites
@@ -64,7 +75,7 @@ $$\underbrace{\begin{bmatrix}
 \end{bmatrix}}_b \\
 A\pi = b$$
 
-Since this linear system has more equations than unknowns, it is an overdeterminted system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for $\pi$ exactly) when $b$ is in the column space of $A$. We can check this numerically by obtaining the rank of $A$, then obtaining the rank of an augmented matrix with $b$ appended as a column of $A$. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, espeically for large matrices. But for our small example, we are safe.)
+Since this linear system has more equations than unknowns, it is an overdetermined system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for $\pi$ exactly) when $b$ is in the column space of $A$. We can check this numerically by obtaining the rank of $A$, then obtaining the rank of an augmented matrix with $b$ appended as a column of $A$. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, especially for large matrices. But for our small example, we are safe.)
 
 ```{r}
 library(Matrix)
@@ -103,8 +114,9 @@ $$\begin{align}
 
 One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row of all 1's to our $(I-P)$ (call this new matrix $A$) and a 1 to the last element of the zero vector on the right hand side (call this new vector $b$). Now we want to solve $A\pi = b$ which is overdetermined, so we solve the normal equations $A^TA\pi = A^Tb$. 
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

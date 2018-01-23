@@ -4,12 +4,23 @@ author: "Matt Bonakdarpour"
 date: 2016-01-22
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Pre-requisites
@@ -67,7 +78,7 @@ $$\begin{align}
 \end{align}$$
 
 
-Again, remember that $\gamma_{Z_i}(k)$ depends on the unknown parameters, so these equations are not closed-form expressions. This looks like a vicious circle. But, as Cosma Shalizi says, "one man’s vicious circle is another man’s successive approximation procedure."  
+Again, remember that $\gamma_{Z_i}(k)$ depends on the unknown parameters, so these equations are not closed-form expressions. This looks like a vicious circle. But, as [Cosma Shalizi](https://en.wikipedia.org/wiki/Cosma_Shalizi) says, "one man’s vicious circle is another man’s successive approximation procedure."
 
 We are now in the following situation:  
 
@@ -93,7 +104,7 @@ where we've simply marginalized $Z$ out of the joint distribution.
 
 As we noted above, the existence of the sum inside the logarithm prevents us from applying the log to the densities which results in a complicated expression for the MLE. Now suppose that we observed both $X$ and $Z$. We call $\{X,Z\}$ the **complete** data set, and we say $X$ is **incomplete**. As we noted previously, if we knew $Z$, the maximization would be easy.
 
-We typically don't know $Z$, but the information we do have about $Z$ is contained in the posterior $P(Z|X,\Theta)$. Since we don't know the complete log-likelhood, we consider its expectation under the posterior distribution of the latent variables. This corresponds to the **E-step** above. In the **M-step**, we maximize this expectation to find a new estimate for the parameters. 
+We typically don't know $Z$, but the information we do have about $Z$ is contained in the posterior $P(Z|X,\Theta)$. Since we don't know the complete log-likelihood, we consider its expectation under the posterior distribution of the latent variables. This corresponds to the **E-step** above. In the **M-step**, we maximize this expectation to find a new estimate for the parameters.
 
 In the **E-step**, we use the current value of the parameters $\theta^0$ to find the posterior distribution of the latent variables given by $P(Z|X, \theta^0)$. This corresponds to the $\gamma_{Z_i}(k)$ in the previous section. We then use this to find the expectation of the complete data log-likelihood, with respect to this posterior, evaluated at an arbitrary $\theta$. This expectation is denoted $Q(\theta, \theta^0)$ and it equals:
 $$Q(\theta, \theta^0) = E_{Z|X,\theta^0}\left [\log (P(X,Z|\theta)) \right] =\sum_Z P(Z|X,\theta^0) \log (P(X,Z|\theta))$$
@@ -166,7 +177,7 @@ L[, 1] = dnorm(X, mean=mu.true[1], sd = sigma.true[1])
 L[, 2] = dnorm(X, mean=mu.true[2], sd = sigma.true[2])
 ```
 
-Finally, we implement the E and M step in the EM.iter function below. The mixture.EM function is the driver which checks for convergence by computing the log-likelihoods at each step. 
+Finally, we implement the E and M step in the `EM.iter` function below. The `mixture.EM` function is the driver which checks for convergence by computing the log-likelihoods at each step.
 
 ```{r}
 mixture.EM <- function(w.init, L, X) {
@@ -214,8 +225,9 @@ Finally, we inspect the evolution of the log-likelihood and note that it is stri
 plot(ee[[2]], ylab='incomplete log-likelihood', xlab='iteration')
 ```
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

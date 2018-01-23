@@ -4,12 +4,23 @@ author: "Matthew Stephens"
 date: 2016-01-23
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Pre-requisites
@@ -32,7 +43,7 @@ X \\ Y | 0 | 1 |
 
 That is, for example, $p_{X,Y}(0,0)=0.6$. 
 
-The conditional distribution of $X$ given any given value is easy to compute by the usual formula for conditional probability, $\Pr(A | B) = \Pr(A and B)/\Pr(B)$. For example:
+The conditional distribution of $X$ given any given value is easy to compute by the usual formula for conditional probability, $\Pr(A | B) = \Pr(A \cap B)/\Pr(B)$. For example:
 $$\Pr(X=0 | Y=0) = \Pr(X=0 \cap Y=0)/Pr(Y=0) = 0.6/0.75 = 0.8$$
 and so
 $$\Pr(X=1 | Y=0) = 1-0.8 = 0.2.$$
@@ -143,8 +154,9 @@ result.
 
 
 
+
 ## Session information
 
-```{r info}
-sessionInfo()
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

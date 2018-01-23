@@ -1,0 +1,106 @@
+---
+title: "Bayesian inference for multiple parameters under independence"
+author: "Matthew Stephens"
+date: 2017-02-19
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+
+# Pre-requisites
+
+You should be familiar with [Bayesian inference for a continuous parameter](bayes_beta_binomial.html).
+
+
+# Summary
+
+Suppose we want to do inference for multiple parameters, and suppose that the data that are informative for each parameter are independent. Then provided the prior distributions on these parameters are independent, the posterior distributions are also independent. This is useful as it essentially means we can do Bayesian inference
+for all the parameters by doing the inference for each parameter separately.
+
+
+# Overview
+
+Suppose we have data $D_1$ that depend on parameter $\theta_1$, and independent data $D_2$ that depend on a second parameter $\theta_2$.
+That is, suppose that the joint distribution of the data $(D_1,D_2)$ factorizes as
+$$p(D_1,D_2 | \theta_1, \theta_2) = p(D_1 | \theta_1)p(D_2 | \theta_2).$$
+
+Now assume that our prior distribution on $(\theta_1,\theta_2)$ has the property that $\theta_1, \theta_2$ are independent. (This is sometimes said "$\theta_1$ and $\theta_2$ are *a priori* independent".) Intuitively this independence assumption means that telling you $\theta_1$ would not tell you anything about $\theta_2$. Mathematically, the independence assumption means that the prior distribution for $\theta_1,\theta_2$ factorizes as 
+$$p(\theta_1,\theta_2) = p(\theta_1)p(\theta_2).$$
+
+Applying Bayes theorem we have
+
+\begin{align}
+p(\theta_1, \theta_2 | D_1,D_2) & \propto p(D_1, D_2 | \theta_1, \theta_2) p(\theta_1, \theta_2) \\
+& \propto p(D_1 | \theta_1) p(D_2 | \theta_2) p(\theta_1) p(\theta_2) \\
+&  = p(D_1 | \theta_1)p(\theta_1) \, p(D_2 | \theta_2) p(\theta_2) \\
+& \propto p(\theta_1 | D_1) \, p(\theta_2 | D_2)
+\end{align}
+
+That is, the posterior distribution on $\theta_1,\theta_2$ factorizes into independent parts $p(\theta_1 | D_1)$ and $p(\theta_2 | D_2)$. We say "$\theta_1$ and $\theta_2$ are *a posteriori* independent".
+
+# Generalization
+
+This result extends naturally from 2 parameters to $J$ parameters. 
+That is, if we have independent data sets $D_1,\dots,D_J$ that depend on parameters $\theta_1,\dots,\theta_J$, with 
+$$p(D_1,\dots, D_J | \theta_1,\dots,\theta_J) = \prod_{j=1}^J p(D_j | \theta_j)$$
+and we assume independent priors 
+$$p(\theta_1,\dots,\theta_J) = \prod_{j=1}^J p(\theta_j)$$
+then the posteriors also factorize
+$$p(\theta_1,\dots, \theta_J | D_1,\dots, D_J) = \prod_{j=1}^J p(\theta_j | D_j).$$
+
+
+# Example
+
+Suppose we collect genetic data on $n$ elephants at $J$ locations along the genome ("loci"). Suppose that at each location there are two genetic types ("alleles")
+that we label "0" and "1". Our goal is to estimate the frequency of the "1" allele, $q_j$, at each locus $j=1,\dots,J$.
+
+Let $n_{ja}$ denote the number of alleles of type $a$ observed at locus $j$ ($a \in \{0,1\}$, $j \in \{1,2,\dots,J\}$). Let $n_j$ denote the data at locus $j$ (so $n_j = (n_{j0},n_{j1})$) and $n$ denote the data at all $J$ loci.
+
+Also let $q$ denote the vector $(q_1,\dots,q_J)$.
+
+Thus, $n$ denotes the data and $q$ denotes the unknown parameters. To do Bayesian inference for $q$ we want to compute the posterior distribution $p(q | n)$. 
+
+To apply the above results we must assume that 
+  
+  i) data at different loci are independent, so 
+$$p(n | q) = \prod p(n_j | q_j),$$ and 
+
+  ii) the $q_j$ are *a priori* independent. This would imply, for example, that telling you $q_1$ (the frequency of the 1 allele at locus 1) would not tell  
+you anything about $q_2$ (the frequency of the 1 allele at locus 2). 
+
+In practice these are reasonable assumptions
+provided that the loci are well separated along the genome and the samples are
+taken from a well-mixing ("random-mating") population of elephants without substructure.
+
+Under these assumptions we have that the $q_j$ are *a posteriori* independent,
+with 
+$$p(q | n ) = \prod_j p(q_j | n_j).$$
+
+Furthermore, we know from [conjugacy](bayes_conjugate.html) that if the prior distribution on $q_j$ is a Beta distribution, say $q_j \sim \text{Beta}(a_j,b_j)$, then the posterior $p(q_j | n_j)$
+is also a Beta distribution, with
+$q_j | n_j \sim \text{Beta}(a_j + n_{j1}, b_j + n_{j0})$.
+
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

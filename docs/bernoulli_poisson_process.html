@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-02-05" />
+
+<title>Poisson Process: The Limiting Case of the Bernoulli Process</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Poisson Process: The Limiting Case of the Bernoulli Process</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-02-05</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc # Pre-requisites</p>
+<p>This document assumes basic familiarity with the Poisson process.</p>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>To gain intuition about the Poisson process, it is useful think of it as a continuous time version of the Bernoulli process. We first review some basics about the Poisson process and settle on notation before moving on to an illustrative example.</p>
+<p>For a Poisson process, arrivals may occur at any arbitrary time <span class="math inline">\(t \geq 0\)</span>. One way to specify a Poisson process is by the counting process <span class="math inline">\(N_t\)</span> denoting the number of arrivals up to and including time <span class="math inline">\(t\)</span>. For a Poisson process with rate parameters <span class="math inline">\(\lambda\)</span>, we have that <span class="math display">\[N_t \sim \text{Poisson}(\lambda t)\]</span></p>
+<p>Therefore, the expected number of time arrivals up to and including <span class="math inline">\(t\)</span> is equal to <span class="math inline">\(E[N_t] = \lambda t\)</span>. In the examples that follow, we will assume our rate parameter <span class="math inline">\(\lambda\)</span> is <span class="math inline">\(0.75\)</span> arrivals per second, and we are interested in the number of arrivals after 10 seconds, <span class="math inline">\(N_{10}\)</span>. In this example, we expect and average of <span class="math inline">\(10\times\lambda = 7.5\)</span> arrivals after <span class="math inline">\(10\)</span> seconds.</p>
+<p>Now we will describe the discrete-time analog of the Poisson process, the Bernoulli process. Throughout the next section, our aim is to construct a Bernoulli process so that the expected number of arrivals after <span class="math inline">\(10\)</span> seconds matches the Poisson process above. We will then investigate what happens to the Bernoulli process as we increase the number of discrete events within the <span class="math inline">\(10\)</span> seconds while maintaining the expected number of arrivals at <span class="math inline">\(7.5\)</span>.</p>
+</div>
+<div id="bernoulli-process" class="section level1">
+<h1>Bernoulli Process</h1>
+<p>The <strong>Bernoulli process</strong> is a sequence of independent random variables <span class="math inline">\(X_1,X_2,X_3,\ldots\)</span> where <span class="math inline">\(X_i\)</span> is <span class="math inline">\(1\)</span> with probability <span class="math inline">\(p\)</span> and <span class="math inline">\(0\)</span> with probability <span class="math inline">\(1-p\)</span>. This is the mathematical abstraction of coin tossing.</p>
+<p>Assume that we perform a Bernoulli trial every second for 10 seconds. We will think of each <span class="math inline">\(X_i=1\)</span> as an <strong>arrival</strong>. Recall that since our random variables <span class="math inline">\(X_i\)</span> are Bernoulli(<span class="math inline">\(p\)</span>), the sum <span class="math inline">\(S_{10} = \sum_{i=1}^{10} X_i\)</span> is Binomial(10, <span class="math inline">\(p\)</span>). The expected value of <span class="math inline">\(S_{10}\)</span> is therefore <span class="math inline">\(10p\)</span> arrivals in <span class="math inline">\(10\)</span> seconds. To match the Poisson process above, we set <span class="math inline">\(p=0.75\)</span> so that <span class="math inline">\(E[S_{10}] = 7.5\)</span>.</p>
+<p>Below we simulate this process with <span class="math inline">\(p=0.75\)</span>, drawing a red line at time point <span class="math inline">\(i\)</span> if <span class="math inline">\(X_i = 1\)</span>:</p>
+<pre class="r"><code>X = rbinom(10, 1, 0.75)
+plot(X, xaxt=&#39;n&#39;, yaxt=&#39;n&#39;, type=&#39;h&#39;, ylim=c(0,1), 
+     col=&#39;red&#39;, lwd=2, ylab=&#39;&#39;, xlab=&#39;time&#39;, main=&#39;Simple Bernoulli Process&#39;)
+axis(1, at = 1:10, labels=as.character(1:10))</code></pre>
+<p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>There are <span class="math inline">\(\sum_{i=1}^{10} X_i =\)</span> 6 arrivals in our experiment above. We simulate this Bernoulli process 1000 times below, and a plot a histogram of the <span class="math inline">\(S_{10}\)</span>’s obtained from each trial. We draw a red line at the expected number of arrivals, 7.5.</p>
+<pre class="r"><code>hist(sapply(1:1000, function(x) sum(rbinom(10,1,0.75))), xlab=&#39;number of arrivals&#39;, main=&#39;Number of Arrivals in Bernoulli Process after 10 seconds&#39;)
+abline(v=7.5, col=&#39;red&#39;)</code></pre>
+<p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Note that for this process, time is <strong>discrete</strong> – events only happen at the integers <span class="math inline">\(1,2,\ldots 10\)</span>, while the Poisson process models events happening at any time <span class="math inline">\(t \in [0,10]\)</span>. We could next think of performing a Bernoulli trial more rapidly, like every 0.5 seconds, or every 0.01 seconds, and so on. Continuing in this fashion, we would eventually (in the limit) have a continuous time process where arrivals could happen at any moment in time. We will now investigate what happens as we “shrink” the Bernoulli process in this way, allowing for more trials within the <span class="math inline">\(10\)</span> seconds.</p>
+<p>Instead of performing a Bernoulli trial at every second, assume we perform one at every <span class="math inline">\(\delta\)</span> seconds where, in this example, <span class="math inline">\(\delta &lt; 1\)</span>. This would make the total of trials <span class="math inline">\(n = \frac{10}{\delta}\)</span>. Without making any other changes, <span class="math inline">\(S_{10}\)</span> would be a Binomial(<span class="math inline">\(10 /\delta\)</span>, <span class="math inline">\(0.75\)</span>) random variable with the expected number of arrivals equal to: <span class="math display">\[E[S_{10}] = \frac{p\times 10}{\delta} = \frac{0.75\times 10}{\delta}\]</span></p>
+<p>To maintain the average of <span class="math inline">\(7.5\)</span> arrivals in <span class="math inline">\(10\)</span> second, we would need to shrink the probability so that <span class="math display">\[\begin{align*}
+E[N_{10}] &amp;= E[S_{10}] \\
+10 \lambda &amp;= \frac{10\times p}{\delta} \\
+\Rightarrow p &amp;= \lambda \delta \\
+&amp;= 0.75\delta
+\end{align*}\]</span></p>
+<p>where we substituted <span class="math inline">\(\lambda = 0.75\)</span> in the last line. Continuing our example, instead of every 1 second, supposed we perform a Bernoulli trial every <span class="math inline">\(\delta = 0.5\)</span> seconds for <span class="math inline">\(10\)</span> seconds. Then, to maintain the expected number of arrivals, we set <span class="math inline">\(p = 0.75\times 0.5 = 0.375\)</span>. We plot this process below:</p>
+<pre class="r"><code>X = rbinom(20, 1, 0.375)
+plot(X, xaxt=&#39;n&#39;, yaxt=&#39;n&#39;, type=&#39;h&#39;, ylim=c(0,1), 
+     col=&#39;red&#39;, lwd=2, ylab=&#39;&#39;, xlab=&#39;time&#39;, main=&#39;Simple Bernoulli Process&#39;)
+axis(1, at = 0:20, labels=as.character(seq(0, 10, by=0.5)), cex.axis=0.5)</code></pre>
+<p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>and show the histogram of 1000 simulations of <span class="math inline">\(S_{10}\)</span> for this process:</p>
+<pre class="r"><code>hist(sapply(1:1000, function(x) sum(rbinom(20,1,0.375))), xlab=&#39;number of arrivals&#39;, main=&#39;Number of Arrivals in Bernoulli Process after 10 seconds&#39;)
+abline(v=7.5, col=&#39;red&#39;)</code></pre>
+<p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="discrete-to-continuous" class="section level1">
+<h1>Discrete to Continuous</h1>
+<p>In the previous section we saw that as we perform more Bernoulli trials in the same <span class="math inline">\(10\)</span> seconds (i.e. a trial every <span class="math inline">\(\delta = 0.5\)</span> seconds), we had to decrease the success probability <span class="math inline">\(p\)</span> to maintain <span class="math inline">\(E[S_t] = E[N_t]\)</span>, where <span class="math inline">\(N_t\)</span> was the number of arrivals from the Poisson process from the first section of this note.</p>
+<p>The key result is this: as <span class="math inline">\(\delta \rightarrow 0\)</span>, we have that the <span class="math inline">\(P(S_t = k) = P(N_t = k)\)</span> and, in this sense, the Bernoulli process converges to the Poisson process. We illustrate this in the plots below. Recall that <span class="math inline">\(N_t \sim \text{Poisson}(\lambda t)\)</span>.</p>
+<p>As we set <span class="math inline">\(\delta\)</span> to smaller and smaller values, in each plot we show a histogram of 5000 simulated <span class="math inline">\(S_{10}\)</span>’s along with the Poisson density of <span class="math inline">\(N_{10}\)</span>. We see that as <span class="math inline">\(\delta\)</span> gets smaller, the histogram converges to the Poisson density.</p>
+<p>In the simulation above, we perform Bernoulli trials every <span class="math inline">\(\delta = 2^{-j}\)</span> seconds for increasing values of <span class="math inline">\(j\)</span>. This characterizes how fast we “shrink” the Bernoulli process.</p>
+<pre class="r"><code>TOTAL.TIME   &lt;- 10   
+lambda       &lt;- 0.75 # poisson rate paramter
+shrink.vec   &lt;- 0:10
+bern.process &lt;- vector(&quot;list&quot;, length(shrink.vec))
+
+for(idx in seq_along(shrink.vec)) {
+  j                   &lt;- shrink.vec[idx]
+  p                   &lt;- lambda*2^(-j) # bernoulli parameter
+  time                &lt;- seq(0, TOTAL.TIME, by=2^(-j)) # time steps
+  bern.process[[idx]] &lt;- sapply(1:5000, function(x) rbinom(length(time), 1, p))
+}
+
+# compare Bernoulli histogram to Poisson density
+compare.density &lt;- function(b.process, delta, inspect.at=10) {
+  num.row &lt;- dim(b.process)[1]
+  
+  # compute bernoulli counts
+  tt      &lt;- table(apply(b.process, 2, cumsum)[num.row,])
+  
+  # compute poisson density
+  pois.density &lt;- dpois(0:80, inspect.at*lambda)
+  
+  # plot
+  plot(tt/sum(tt), main=paste(&quot;trial every&quot;, round(delta,4), &quot;seconds&quot;), xlab=&#39;number of arrivals after 10 seconds&#39;, ylab=&#39;density&#39;, xlim=c(0,15), ylim=range(c(tt/sum(tt), pois.density)))
+  lines(0:80,pois.density, &#39;b&#39;)
+}
+
+par(mfrow=c(2,2))
+compare.density(bern.process[[1]], 2^(-shrink.vec[1]))
+compare.density(bern.process[[2]], 2^(-shrink.vec[2]))
+compare.density(bern.process[[3]], 2^(-shrink.vec[3]))
+compare.density(bern.process[[11]], 2^(-shrink.vec[11]))</code></pre>
+<p><img src="figure/bernoulli_poisson_process.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] evaluate_0.10  </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

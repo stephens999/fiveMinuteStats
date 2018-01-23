@@ -4,12 +4,23 @@ author: "Matthew Stephens"
 date: 2016-01-07
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Summary
@@ -103,8 +114,8 @@ Note that the "Odds" of an event $E_1$ vs an event $E_2$ means the ratio of thei
 
 # Example
 
-Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/20.
-And a LR of 14 in favor of disease yields a posterior odds of 14/20 (or "14 to 20", or "7 to 10").
+Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/19.
+And a LR of 14 in favor of disease yields a posterior odds of 14/19 (or "14 to 19").
 
 Suppose that 50% of screened people have the disease. Then the prior odds for disease is 1.
 And a LR of 14 in favor of disease yields a posterior odds of 14 (or "14 to 1").
@@ -126,8 +137,9 @@ e) Repeat the above, but in the case where only 2% of the screened population ar
 
 
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

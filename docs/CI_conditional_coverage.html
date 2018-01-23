@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2017-04-17" />
+
+<title>Conditional coverage of a frequentist CI</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Conditional coverage of a frequentist CI</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2017-04-17</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-04-17</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> 73bf57d</p>
+<div id="pre-requisite" class="section level1">
+<h1>Pre-requisite</h1>
+<p>You should be familiar with the result that if <span class="math inline">\(X \sim N(\theta,\sigma^2)\)</span> then <span class="math inline">\(X \pm 1.96\sigma\)</span> is a 95% Confidence Interval (CI) for <span class="math inline">\(\theta\)</span>.</p>
+</div>
+<div id="coverage-vs-conditional-coverage" class="section level1">
+<h1>Coverage vs Conditional Coverage</h1>
+<p>Suppose we consider going through life computing normal 95% CIs in lots of different situations.</p>
+<p>That is, on occassion <span class="math inline">\(j\)</span> (<span class="math inline">\(j=1,2,3,\dots\)</span>) we observe data <span class="math display">\[X_j | \theta_j, \sigma_j \sim N(\theta_j, \sigma_j),\]</span> where <span class="math inline">\(\theta_j\)</span> is unknown to us. For simplicity let us further assume that in each case the measurement error standard deviation, <span class="math inline">\(\sigma_j=1\)</span>, and is known to us.) Then we compute the standard 95% CI for <span class="math inline">\(\theta_j\)</span>: <span class="math display">\[CI_j = [X_j -1.96, X_j + 1.96].\]</span></p>
+<p>Consider now two questions:</p>
+<ol style="list-style-type: lower-roman">
+<li><p>What proportion of our intervals <span class="math inline">\(CI_j\)</span> cover (contain) the true value of <span class="math inline">\(\theta_j\)</span>?</p></li>
+<li><p>Of the occasions when our interval <span class="math inline">\(CI_j\)</span> excludes 0, what proportion will our interval cover the true value of <span class="math inline">\(\theta\)</span>?</p></li>
+</ol>
+<p>It is important to recognize that the answers to these two questions will be different.</p>
+<p>The answer to i) is 95% because the definition of a 95% CI ensures this. This corresponds to the usual notion of the “coverage” of the CIs.</p>
+<p>However, the answer to ii) will not generally be 95%. To see this, consider the extreme case where the <span class="math inline">\(\theta_j\)</span> we consider over our life are all actually exactly equal to 0. Then the answer to the second question will be “never”!. More generally, the answer to ii) depends on the distribution of the actual <span class="math inline">\(\theta_j\)</span> values that we consider during our life.</p>
+<div id="illustration" class="section level2">
+<h2>Illustration</h2>
+<p>Before setting out the analytic calculation, we will illustrate by simulation. Suppose first that the distribution of <span class="math inline">\(\theta_j\)</span> we encounter over our life is <span class="math inline">\(N(0,s^2)\)</span>. Let us see by simulation how our answer to ii) depends on <span class="math inline">\(s\)</span>:</p>
+<pre class="r"><code>s = c(0.01,0.1,0.5,1,2,10,100)
+nsim = 10000
+coverage = rep(0,length(s))
+cond_coverage = rep(0,length(s))
+for(i in 1:length(s)){
+  theta = rnorm(nsim, 0, s[i])
+  X = rnorm(nsim, theta, 1)
+  A = X-1.96
+  B = X+1.96
+  coverage[i] = mean(theta&gt;A &amp; theta&lt; B)
+  subset = (A&gt;0 | B&lt;0)
+  cond_coverage[i] = mean(theta[subset]&gt;A[subset] &amp; theta[subset]&lt;B[subset])
+}
+plot(log10(s),coverage,main=&quot;Coverage (black) and conditional coverage (red)&quot;, ylim=c(0,1), xlab=&quot;log_10(s)&quot;)
+points(log10(s),cond_coverage,col=&quot;red&quot;)
+abline(h=0.95,lty=2)</code></pre>
+<p><img src="figure/CI_conditional_coverage.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>What one can see here is that for very small <span class="math inline">\(s\)</span> we get an answer close to the “never” answer that we discussed above (when <span class="math inline">\(\theta_j\)</span> are identically 0).</p>
+<p>And for large <span class="math inline">\(s\)</span> we get the conditional coverage equal to 0.95. (This essentially follows from the result that in the limit <span class="math inline">\(s \rightarrow \infty\)</span> the posterior distribution on <span class="math inline">\(\theta | X_j\)</span> is <span class="math inline">\(N(X_j, 1)\)</span>.)</p>
+</div>
+<div id="analytic-calculations" class="section level2">
+<h2>Analytic calculations</h2>
+<p>Actually computing the answer analytically here is not possible, but it is perhaps instructive to at least write out what we are (approximately) computing in the above simulation.</p>
+<p>First, note that <span class="math inline">\(CI_j\)</span> excludes 0 if and only if <span class="math inline">\(|X_j|&gt;1.96\)</span>. So the probability we are asked to compute in ii) is <span class="math display">\[\Pr( X_j - 1.96 &lt; \theta_j &lt; X_j + 1.96 | |X_j|&gt;1.96).\]</span> Computing this conditional distribution analytically leads to integrals of bivariate normal densities. The simulation above approximates this calculation (with error going to 0 as <code>nsamp</code> increases to infinity.)</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_0.4.0 rmarkdown_1.4  
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rsconnect_0.7   rprojroot_1.2  
+ [5] htmltools_0.3.5 tools_3.3.2     rstudioapi_0.6  yaml_2.1.14    
+ [9] Rcpp_0.12.10    stringi_1.1.2   knitr_1.15.1    git2r_0.18.0   
+[13] stringr_1.2.0   digest_0.6.12   evaluate_0.10  </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

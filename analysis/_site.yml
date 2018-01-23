@@ -1,0 +1,24 @@
+name: fiveMinuteStats
+output_dir: "../docs"
+include: [".nojekyll"]
+exclude: ["include"]
+navbar:
+  title: fiveMinuteStats
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "License"
+      href: license.html
+  right:
+    - icon: fa-github
+      href: https://github.com/stephens999/fiveMinuteStats
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: textmate
+    include:
+      after_body: include/footer.html

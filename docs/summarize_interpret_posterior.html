@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2017-01-28" />
+
+<title>Summarizing and Interpreting the Posterior (analytic)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Summarizing and Interpreting the Posterior (analytic)</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2017-01-28</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This vignette illustrates how to summarize and interpret a posterior distribution that has been computed analytically.</p>
+<p>You should be familiar with simple analytic calculations of the posterior distribution of a parameter, such as for a <a href="bayes_beta_binomial.html">binomial proportion</a>.</p>
+</div>
+<div id="summarising-and-interpreting-a-posterior" class="section level1">
+<h1>Summarising and interpreting a posterior</h1>
+<p>Suppose we have a parameter <span class="math inline">\(q\)</span>, whose posterior distribution we have computed to be Beta(31, 71) (as <a href="bayes_beta_bimomial.html">here</a> for example). What does this mean? What statements can we make about <span class="math inline">\(q\)</span>? How do we obtain interval estimates and point estimates for <span class="math inline">\(q\)</span>?</p>
+<p>Remember that the posterior distribution represents our uncertainty (or certainty) in <span class="math inline">\(q\)</span>, after combining the information in the data (the likelihood) with what we knew before collecting data (the prior).</p>
+<p>To get some intuition, we could plot the posterior distribution so we can see what it looks like.</p>
+<pre class="r"><code>q = seq(0,1,length=100)
+plot(q, dbeta(q, 31,71), main=&quot;Posterior for $q$&quot;, ylab=&quot;density&quot;, type=&quot;l&quot;)</code></pre>
+<p><img src="figure/summarize_interpret_posterior.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Based on this plot we can visually see that this posterior distribution has the property that <span class="math inline">\(q\)</span> is highly likely to be less than 0.4 (say) because most of the mass of the distribution lies below 0.4. In Bayesian inference we quantify statements like this – that a particular event is “highly likely” – by computing the “posterior probability” of the event, which is the probability of the event under the posterior distribution.</p>
+<p>For example, in this case we can compute the (posterior) probability that <span class="math inline">\(q&lt;0.4\)</span>, or <span class="math inline">\(\Pr(q &lt;0.4 | D)\)</span>. Since we know the posterior distribution is a Be(31,71) distribution, this probability is easy to compute using the <code>pbeta</code> function:</p>
+<pre class="r"><code>pbeta(0.4,31,71)</code></pre>
+<pre><code>[1] 0.9792202</code></pre>
+<p>So we would say “The posterior probability that <span class="math inline">\(q&lt;0.4\)</span> is 0.98”.</p>
+<div id="interval-estimates" class="section level2">
+<h2>Interval estimates</h2>
+<p>We can extend this idea to assess the certainty (or confidence) that <span class="math inline">\(q\)</span> lies in any interval. For example, from the plot it looks like <span class="math inline">\(q\)</span> will very likely lie in the interval [0.2,0.4] because most of the posterior distribution mass lies between these two numbers. To quantify <em>how</em> likely we compute the (posterior) probability that <span class="math inline">\(q\)</span> lies in the interval <span class="math inline">\([0.2,0.4]\)</span>, <span class="math inline">\(\Pr(q \in [0.2,0.4] | D)\)</span>. Again, this can be computed using the <code>pbeta</code> function:</p>
+<pre class="r"><code>pbeta(0.4,31,71) - pbeta(0.2,31,71)</code></pre>
+<pre><code>[1] 0.9721229</code></pre>
+<p>Thus, based on our prior and the data, we would be highly confident (probability approximately 97%) that <span class="math inline">\(q\)</span> lies between 0.2 and 0.4. That is, <span class="math inline">\([0.2,0.4]\)</span> is a 97% Bayesian Confidence Interval for <span class="math inline">\(q\)</span>. (Bayesian Confidence Intervals are often referred to as “Credible Intervals”, and also often abbreviated to CI.)</p>
+<p>In practice, it is more common to compute Bayesian Confidence Intervals the other way around: specify the level of confidence we want to achieve and find an interval that achieves that level of confidence. This can be done by computing the quantiles of the posterior distribution. For example, the 0.05 and 0.95 quantiles of the posterior would define a 90% Bayesian Confidence Interval.</p>
+<p>In our example, these quantiles of the Beta distribution can be computed using the <code>qbeta</code> function, like this:</p>
+<pre class="r"><code>qbeta(0.05,31,71)</code></pre>
+<pre><code>[1] 0.2315858</code></pre>
+<pre class="r"><code>qbeta(0.95,31,71)</code></pre>
+<pre><code>[1] 0.38065</code></pre>
+<p>So [0.23, 0.38] is a 90% Bayesian Confidence Interval for <span class="math inline">\(q\)</span>. (It is 90% because there is a 5% chance of it being above 0.23 and 5% of it being above 0.38).</p>
+</div>
+<div id="point-estimates" class="section level2">
+<h2>Point Estimates</h2>
+<p>In some cases we might be happy to give our “best guess” for <span class="math inline">\(q\)</span>, rather than worrying about our uncertainty. That is, we might be interested in giving a “point estimate” for <span class="math inline">\(q\)</span>. Essentially this boils down to summarizing the posterior distribution by a single number.</p>
+<p>When <span class="math inline">\(q\)</span> is a continuous-valued variable, as here, the most common Bayesian point estimate is the <em>mean</em> (or expectation) of the posterior distribution, which is called the “posterior mean”. The mean of the Beta(31,71) distribution is 31/(31+71) = 0.3. So we would say “The posterior mean for <span class="math inline">\(q\)</span> is 0.3.”</p>
+<p>An alternative to the mean is the median. The median of the Beta(31,71) distribution can be found using <code>qbeta</code>:</p>
+<pre class="r"><code>qbeta(0.5, 31,71)</code></pre>
+<pre><code>[1] 0.3026356</code></pre>
+<p>So we would say “The posterior median for <span class="math inline">\(q\)</span> is 0.3”.</p>
+<p>The mode of the posterior (“posterior mode”) is another possible summary, although this perhaps makes more sense in settings where <span class="math inline">\(q\)</span> is a discrete variable rather than a continuous variable as here.</p>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<ul>
+<li><p>The most common summaries of a posterior distribution are interval estimates and point estimates.</p></li>
+<li><p>Interval estimates can be obtained by computing quantiles of the posterior distribution. Bayesian Confidence intervals are often called “Credible Intervals”.</p></li>
+<li><p>Point estimates are typically obtained by computing the mean or median (or mode) of the posterior distribution. These are called the “posterior mean” or the “posterior median” (or “posterior mode”).</p></li>
+</ul>
+</div>
+</div>
+<div id="exercise" class="section level1">
+<h1>Exercise</h1>
+<p>Suppose you are interested in a parameter <span class="math inline">\(\theta\)</span> and obtain a posterior distribution for <span class="math inline">\(\theta\)</span> to be normal with mean 0.2 and standard deviation 0.4. Find</p>
+<ol style="list-style-type: lower-alpha">
+<li>a 90% Credible Interval for <span class="math inline">\(\theta\)</span>.</li>
+<li>a 95% Credible Interval for <span class="math inline">\(\theta\)</span>.</li>
+<li>a point estimate for <span class="math inline">\(\theta\)</span>.</li>
+</ol>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.15.1       MASS_7.3-45        expm_0.999-0      
+[4] Matrix_1.2-8       workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.9     lattice_0.20-34 gtools_3.5.0    digest_0.6.12  
+ [5] rprojroot_1.2   mime_0.5        R6_2.2.0        grid_3.3.2     
+ [9] xtable_1.8-2    backports_1.0.5 git2r_0.18.0    magrittr_1.5   
+[13] evaluate_0.10   stringi_1.1.2   tools_3.3.2     stringr_1.2.0  
+[17] shiny_1.0.0     httpuv_1.3.3    yaml_2.1.14     htmltools_0.3.5</code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

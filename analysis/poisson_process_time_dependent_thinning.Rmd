@@ -4,14 +4,25 @@ author: "John Novembre"
 date: 2016-01-31
 ---
 
-**Last updated:** `r Sys.Date()`
-
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
-
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
-library(expm)
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
 ```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
 
 # Pre-requisites
 
@@ -188,8 +199,9 @@ As a practical application of the model, try to answer these questions: 1) What 
 ## Challenge Problem 3
 A further challenge: Consider each arrival is initially of type 0 and that the probabiity an item arriving at time $s$ is of type $i$ at time $t$ is determined by a continous time Markov transition probability matrix $P_{0i}(t-s)$.  For a simple transition matrix of your choice, work out a simulation and check against the theory. 
 
+
 ## Session information
 
-```{r info}
-sessionInfo()
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

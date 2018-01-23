@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2016-01-07" />
+
+<title>Likelihood Ratio: how big is convincing?</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Likelihood Ratio: how big is convincing?</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2016-01-07</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>This document introduces the idea that drawing conclusions from likelihood ratios (or Bayes Factors) from fully specified models is context dependent. In particular, it involves weighing the information in the data against the relative (prior) plausibility of the models.</p>
+</div>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>You should understand the concept of using likelihood ratio for <a href="likelihood_ratio_simple_models.html">discrete data</a> and <a href="likelihood_ratio_simple_continuous_data.html">continuous data</a> to compare support for two fully specified models.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Recall that a fully specified model is one with no free parameters. So a fully specified model for <span class="math inline">\(X\)</span> is simply a probability distribution <span class="math inline">\(p(x|M)\)</span>. And, given observed data <span class="math inline">\(X=x\)</span> the Likelihood Ratio for comparing two fully specified models, <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span>, is defined as the ratio of the probabilities of the observed data under each model:</p>
+<p><span class="math display">\[LR(M_1,M_0) := p(x | M_1) / p(x | M_0).\]</span></p>
+<p>For fully specified models, the likelihood ratio is also known as the “Bayes Factor” (BF), so we could also define the Bayes Factor for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> as <span class="math display">\[BF(M_1,M_0) :=   p(x | M_1) / p(x | M_0).\]</span> When comparing fully specified models the LR and BF are just two different names for the same thing.</p>
+<p>In the example <a href="likelihood_ratio_simple_models.html">here</a> we considered the problem of determining whether an elephant tusk came from a savanna elephant or a forest elephant, based on examining DNA data. Specifically we computed the LR (or BF) comparing two models, <span class="math inline">\(M_S\)</span> and <span class="math inline">\(M_F\)</span>, where <span class="math inline">\(M_S\)</span> denotes the model that the tusk came from a savanna elephant and <span class="math inline">\(M_F\)</span> denotes the model that the tusk came from a forest elephant. In our example we found LR=1.8, so the data favor <span class="math inline">\(M_S\)</span> by a factor of 1.8. We commented that a factor of 1.8 is relatively modest, and not sufficient to convince that the tusk definitely came from a savanna elephant.</p>
+<p>In the example <a href="likelihood_ratio_simple_continuous_data.html">here</a> we considered the problem of testing a patient for a disease based on measuring the concentration of a particular diagnostic protein in the blood. Specifically we computed the LR (or BF) comparing two models, <span class="math inline">\(M_n\)</span> and <span class="math inline">\(M_d\)</span>, where <span class="math inline">\(M_S\)</span> denotes the model that the patient is normal and <span class="math inline">\(M_d\)</span> denotes the model that the patient has the disease. In our example we found LR for <span class="math inline">\(M_n\)</span> vs <span class="math inline">\(M_d\)</span> to be approximately 0.07, so the data favor <span class="math inline">\(M_d\)</span> by a factor of 14. This is a much larger LR than in the first case, but is it convincing? Can we confidently conclude that the patient has the disease?</p>
+<p>More generally, we would like to address the question: what value of the LR should we treat as<br />
+“convincing” evidence for one model vs another?</p>
+<p>It is crucial to recognize that the answer to this question has to be context dependent. In particular, the extent to which we should be “convinced” by a particular LR value has to depend on the relative plausibility of the models we are comparing. For example, in statistics there are many situations where we want to compare models that are not equally plausible. Suppose that model <span class="math inline">\(M_1\)</span> is much less plausible than <span class="math inline">\(M_0\)</span>. Then we must surely demand stronger evidence from the data (larger LR) to be “convinced” that it arose from model <span class="math inline">\(M_1\)</span> rather than <span class="math inline">\(M_0\)</span>, than in contexts where <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_0\)</span> are equally plausible.</p>
+<p>In the disease screening example, the interpretation depends on the frequency of the disease in the population being screened. For example, suppose that only 5% of people screened actually have the disease. Then to outweigh that fact, we would have to demand a high LR to “convince” us that a particular person has the disease. In contrast, if 50% of people screened have the disease then we might be convinced by a much smaller LR.</p>
+</div>
+<div id="calculations-using-bayes-theorem" class="section level1">
+<h1>Calculations using Bayes Theorem</h1>
+<p>The following calculation formalizes this intuition. Suppose we are presented with a series of observations <span class="math inline">\(x_1,\dots,x_n\)</span>, some of which are generated from model <span class="math inline">\(M_0\)</span> and the others of which are generated from model <span class="math inline">\(M_1\)</span>. Let <span class="math inline">\(Z_i\in {0,1}\)</span> denote whether <span class="math inline">\(x_i\)</span> was generated from model <span class="math inline">\(M_0\)</span> or <span class="math inline">\(M_1\)</span>, and let <span class="math inline">\(\pi_j\)</span> denote the proportion of the observations that came from model <span class="math inline">\(M_j\)</span> (<span class="math inline">\(j=0,1\)</span>). So in the disease screening example, <span class="math inline">\(\pi_1\)</span> would be the proportion of screened individuals who have the disease. That is, <span class="math inline">\(\pi_j = \Pr(Z_i=j)\)</span>.</p>
+<p>Bayes Theorem says that <span class="math display">\[\Pr(Z_i = 1 | x_i) = \Pr(x_i | Z_i = 1) \Pr(Z_i=1)/ \Pr(x_i).\]</span> Also, <span class="math display">\[\Pr(x_i) = \Pr(x_i | Z_i=0)\Pr(Z_i=0) + \Pr(x_i | Z_i=1)\Pr(Z_i=1).\]</span></p>
+<p>Putting these together, substituting <span class="math inline">\(\pi_j\)</span> for <span class="math inline">\(\Pr(Z_i=j)\)</span>, and dividing numerator and denominator by <span class="math inline">\(\Pr(x_i | Z_i=0)\)</span> yields:</p>
+<p><span class="math display">\[\Pr(Z_i = 1 | x_i) = \pi_1 LR_i / (\pi_0 + \pi_1 LR_i)\]</span></p>
+<p>where <span class="math inline">\(LR_i\)</span> denotes the likelihood ratio for <span class="math inline">\(M_1\)</span> vs <span class="math inline">\(M_0\)</span> computed for observation <span class="math inline">\(x_i\)</span>.</p>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>Suppose that only 5% of screened people have the disease. Then a LR of 14 in favor of disease yields: <span class="math display">\[\Pr(Z_i=1 | x_i) = 0.05*14/(0.95 + 0.05* 14)\]</span> = <code>0.4242424</code>.</p>
+<p>In contrast, if 50% of screened people have the disease then the LR of 14 yields <span class="math display">\[\Pr(Z_i=1 | x_i) = 0.5*14/(0.5 + 0.5* 14)\]</span> = <code>0.9333333</code>.</p>
+<p>Thus in the first case, of patients with <span class="math inline">\(LR=14\)</span>, less than half would actually have the disease. In the second case, of patients with <span class="math inline">\(LR=14\)</span>, more than 90% would have the disease!</p>
+</div>
+<div id="a-useful-formula" class="section level1">
+<h1>A useful formula</h1>
+<p>There is another way of laying out this kind of calculation, which may be slightly easier to interpret and remember, and also has the advantage of holding even when more than two models are under consideration. From Bayes theorem we have</p>
+<p><span class="math display">\[\Pr(Z_i = 1 | x_i) = \Pr(x_i | Z_i = 1) \Pr(Z_i=1)/ \Pr(x_i).\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\Pr(Z_i = 0 | x_i) = \Pr(x_i | Z_i = 0) \Pr(Z_i=0)/ \Pr(x_i).\]</span></p>
+<p>Taking the ratio of these gives <span class="math display">\[\Pr(Z_i = 1 | x_i)/\Pr(Z_i = 0 | x_i) = [\Pr(Z_i=1)/\Pr(Z_i=0)] \times [\Pr(x_i | Z_i = 1)/\Pr(x_i | Z_i = 0)].\]</span></p>
+<p>This formula can be conveniently stated in words, using the notion of ``odds“, as follows: <span class="math display">\[\text{Posterior Odds = Prior Odds x LR}\]</span> or, recalling that the LR is sometimes referred to as the Bayes Factor (BF), we have <span class="math display">\[\text{Posterior Odds = Prior Odds x BF}.\]</span></p>
+<p>Note that the “Odds” of an event <span class="math inline">\(E_1\)</span> vs an event <span class="math inline">\(E_2\)</span> means the ratio of their probabilities. So <span class="math inline">\(\Pr(Z_i=1)/\Pr(Z_i=0)\)</span> is the “Odds” of <span class="math inline">\(Z_i=1\)</span> vs <span class="math inline">\(Z_i=0\)</span>. It is referred to as the “Prior Odds”, because it is the odds prior to seeing the data <span class="math inline">\(x\)</span>. Similarly the Posterior Odds refers to the Odds of <span class="math inline">\(Z_i=1\)</span> vs <span class="math inline">\(Z_i=0\)</span> “posterior to” (after) seeing the data <span class="math inline">\(x\)</span>.</p>
+</div>
+<div id="example-1" class="section level1">
+<h1>Example</h1>
+<p>Suppose that only 5% of screened people have the disease. Then the prior odds for disease is 1/20. And a LR of 14 in favor of disease yields a posterior odds of 14/20 (or “14 to 20”, or “7 to 10”).</p>
+<p>Suppose that 50% of screened people have the disease. Then the prior odds for disease is 1. And a LR of 14 in favor of disease yields a posterior odds of 14 (or “14 to 1”).</p>
+<p>In cases where there are only two possibilities, as here, then the posterior odds determines the posterior probabilities.</p>
+</div>
+<div id="exercise" class="section level1">
+<h1>Exercise</h1>
+<ol style="list-style-type: decimal">
+<li><ol style="list-style-type: lower-alpha">
+<li>Write a function to simulate data for the medical screening example above. The function should take as input the proportion of individuals who have the disease, and the number of individuals to simulate. It should output a table, one row for each individual, with two columns: the first column (x) is the protein concentration for that individual, the second column (z) is an indicator of disease status (1=disease, 0=normal).</li>
+</ol></li>
+</ol>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><p>Write a function to compute the likelihood ratio in the medical screening example.</p></li>
+<li><p>Use the above functions to answer the following question <em>by simulation</em>. Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. Among individuals with an LR “near” c, what proportion are truly diseased? Denoting this proportion <span class="math inline">\(q_D(c)\)</span>, make a plot of <span class="math inline">\(\log_{10}(c)\)</span> [<span class="math inline">\(x\)</span> axis] vs <span class="math inline">\(q_D(c)\)</span> [<span class="math inline">\(y\)</span> axis], with <span class="math inline">\(c\)</span> varying from <span class="math inline">\(1/10\)</span> to <span class="math inline">\(10\)</span> say (<span class="math inline">\(log_{10}(c)\)</span> varies from -1 to 1.) Or maybe a wider range if you like (the wider the range, the larger the simulation study you will need to get reliable results).</p></li>
+<li><p>Use the computations introduced in this vignette to compute the theoretical value for <span class="math inline">\(q_D(c)\)</span>, and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.]</p></li>
+<li><p>Repeat the above, but in the case where only 2% of the screened population are diseased.</p></li>
+</ol>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
+ [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
+ [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
+[13] gtools_3.5.0    evaluate_0.10  </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

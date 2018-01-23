@@ -1,0 +1,90 @@
+---
+title: "Example of difficulty of calibrating p values"
+author: "Matthew Stephens"
+date: 2017-04-17
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+# Pre-requisite 
+
+You should know what a $p$ value is.
+
+
+# Background
+
+A key problem with $p$ values, when testing null hypotheses, is that they
+can be difficult to calibrate. That is, it is hard to answer the question
+"If I get a $p$-value of 0.01 (or any other number) how strong is the evidence against the null hypothesis?"
+
+## Example
+
+Here we just give a simple (but artificial) example of an test in which a $p$ value
+of 0.01 actually corresponds to evidence *for* the null, even though 0.01 is usually
+considered to be strong evidence *against* the null. 
+(This example is modified from the book Bayesian Analysis, by J Berger, p25.) 
+
+Suppose $x \in \{1,2,3\}$ and $\theta \in \{0,1\}$
+with 
+
+```{r table, echo=FALSE}
+df = rbind(c("$p(x | \\theta=0)$", 0.005,0.005,0.99),c("$p(x | \\theta=1)$", 0.999,0.001,0))
+knitr::kable(df,col.names=c("x","1","2","3"))
+```
+
+Note that the [likelihood ratios](likelihood_ratio_simple_models.html) 
+for $H_1$ vs $H_0$ for $x=1,2,3$ are $999/5, 1/5$ and $0$ respectively. So as $x$ increases the evidence against $H_0$ decreases.
+
+
+Now, let us suppose that we observe $x=2$.
+Then by definition the $p$ value for this observation is
+$$p:= \Pr(\text{we would see evidence as strong or stronger against $H_0$ than $x=2$} | \theta=0).$$
+
+Here "evidence as strong or stronger against $H_0$ than $x=2$" is $x \in \{1,2\}$.  And the probability of this under $H_0$ is 
+$$\Pr(x \in \{1,2\} | H_0) = 0.005+0.005 = 0.01.$$
+
+So the $p$ value for $x=2$ is 0.01.
+
+And yet, the observation $x=2$ is 5 times more probable under $H_0$ than under $H_1$! So
+$x=2$ has $p$ value 0.01 but is actually evidence *for* $H_0$.
+
+
+## Discussion
+
+This example is obviously contrived to make a point: so it only demonstrates
+that it is possible to contrive a situation
+where $p=0.01$ corresponds to evidence *for* $H_0$. 
+
+However, given this it seems natural to ask: in "typical" situations, does $p=0.01$ correspond
+to evidence for or against $H_0$? Of course, the answer to this depends on what
+one views as "typical". For a start towards answering this question see 
+[here](BF_and_pvalue.html).
+
+
+
+
+
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

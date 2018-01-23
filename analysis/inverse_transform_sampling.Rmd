@@ -4,12 +4,23 @@ author: "Matt Bonakdarpour"
 date: 2016-02-02
 ---
 
-**Last updated:** `r Sys.Date()`
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
 
-**Code version:** `r system("git log -1 --format='%H'", intern = TRUE)`
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
 
-```{r chunk-options, include=FALSE}
-source("chunk-options.R")
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
 ```
 
 # Pre-requisites
@@ -37,7 +48,7 @@ Now we will consider the discrete version of the inverse transform method. Assum
 
 Notice that the second step requires a *search*. 
 
-Assume our random variable $X$ can take on any one of $K$ values with probabilities $\{p_1, \ldots, p_K\}$. We implement the algorithm below, assuming these probabilities are stored in a vector called "p.vec."
+Assume our random variable $X$ can take on any one of $K$ values with probabilities $\{p_1, \ldots, p_K\}$. We implement the algorithm below, assuming these probabilities are stored in a vector called `p.vec.`
 
 ```{r}
 # note: this inefficient implementation is for pedagogical purposes
@@ -56,7 +67,7 @@ discrete.inv.transform.sample <- function( p.vec ) {
 ```
 
 # Continuous Example: Exponential Distribution
-Assume $Y$ is an exponential random variable with rate paramter $\lambda = 2$. Recall that the probability density function is $p(y) = 2e^{-2y}$, for $y > 0$. First, we compute the CDF:
+Assume $Y$ is an exponential random variable with rate parameter $\lambda = 2$. Recall that the probability density function is $p(y) = 2e^{-2y}$, for $y > 0$. First, we compute the CDF:
 $$F_Y(x) = P(Y\leq x) = \int_0^x 2e^{-2y} dy = 1 - e^{-2x}$$
 
 Solving for the inverse CDF, we get that
@@ -104,8 +115,9 @@ barplot(table(samples), main='Empirical Probability Mass Function')
 Again, the plot supports our claim that we are drawing from the true probability distribution 
 
 
-# Session information
 
-```{r info}
-sessionInfo()
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
 ```

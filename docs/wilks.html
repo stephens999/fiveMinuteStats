@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matt Bonakdarpour" />
+
+<meta name="date" content="2016-01-14" />
+
+<title>Likelihood Ratio: Wilks’s Theorem</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Likelihood Ratio: Wilks’s Theorem</h1>
+<h4 class="author"><em>Matt Bonakdarpour</em></h4>
+<h4 class="date"><em>2016-01-14</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-03-06</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> c7339fc</p>
+<div id="pre-requisites" class="section level2">
+<h2>Pre-requisites</h2>
+<p>This document assumes familiarity with the concepts of likelihoods, <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, and hypothesis testing.</p>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>When performing a statistical hypothesis test, like comparing two models, if the hypotheses completely specify the probability distributions, these hypotheses are called <strong>simple hypotheses</strong>. For example, suppose we observe <span class="math inline">\(X_1,\ldots,X_n\)</span> from a normal distribution with known variance and we want to test whether the true mean is equal to <span class="math inline">\(\mu_0\)</span> or <span class="math inline">\(\mu_1\)</span>. One hypothesis <span class="math inline">\(H_0\)</span> might be that the distribution has mean <span class="math inline">\(\mu_0\)</span>, and <span class="math inline">\(H_1\)</span> might be that the mean is <span class="math inline">\(\mu_1\)</span>. Since these hypotheses completely specify the distribution of the <span class="math inline">\(X_i\)</span>, they are called simple hypotheses.</p>
+<p>Now suppose <span class="math inline">\(H_0\)</span> is again that the true mean, <span class="math inline">\(\mu\)</span>, is equal to <span class="math inline">\(\mu_0\)</span>, but <span class="math inline">\(H_1\)</span> was that <span class="math inline">\(\mu &gt; \mu_0\)</span>. In this case, the <span class="math inline">\(H_0\)</span> is still simple, but <span class="math inline">\(H_1\)</span> does not completely specify a single probability distribution. It specifies a set of distributions, and is therefore an example of a <strong>composite hypothesis</strong>. In most practical scenarios, both hypotheses are rarely simple.</p>
+<p>As seen in the <a href="https://github.com/stephens999/fiveMinuteStats">fiveMinuteStats</a> on <a href="likelihood_ratio_simple_models.html">likelihood ratios</a>, given the observed data <span class="math inline">\(X_1\ldots,X_n\)</span>, we can measure the relative plausibility of <span class="math inline">\(H_1\)</span> to <span class="math inline">\(H_0\)</span> by the log-likelihood ratio: <span class="math display">\[\log\left(\frac{f(X_1,\ldots,X_n|H_1)}{f(X_1,\ldots,X_n|H_0)}\right)\]</span></p>
+<p>The log-likelihood ratio could help us choose which model (<span class="math inline">\(H_0\)</span> or <span class="math inline">\(H_1\)</span>) is a more likely explanation for the data. One common question is this: what constitutes are <strong>large</strong> likelihood ratio? Wilks’s Theorem helps us answer this question – but first, we will define the notion of a <strong>generalized log-likelihood ratio</strong>.</p>
+</div>
+<div id="generalized-log-likelihood-ratios" class="section level2">
+<h2>Generalized Log-Likelihood Ratios</h2>
+<p>Let’s assume we are dealing with distributions parameterized by <span class="math inline">\(\theta\)</span>. To generalize the case of simple hypotheses, let’s assume that <span class="math inline">\(H_0\)</span> specifies that <span class="math inline">\(\theta\)</span> lives in some set <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(H_1\)</span> specifies that <span class="math inline">\(\theta \in \Theta_1\)</span>. Let <span class="math inline">\(\Omega = \Theta_0 \cup \Theta_1\)</span>. A somewhat natural extension to the likelihood ratio test statistic we discussed above is the generalized log-likelihood ratio: <span class="math display">\[\Lambda^* = \log{\frac{\max_{\theta \in \Theta_1}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
+<p>For technical reasons, it is preferable to use the following related quantity:</p>
+<p><span class="math display">\[\Lambda_n = 2\log{\frac{\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)}{\max_{\theta \in \Theta_0}f(X_1,\ldots,X_n|\theta)}}\]</span></p>
+<p>Just like before, larger values of <span class="math inline">\(\Lambda_n\)</span> provide stronger evidence against <span class="math inline">\(H_0\)</span>.</p>
+</div>
+<div id="wilkss-theorem" class="section level2">
+<h2>Wilks’s Theorem</h2>
+<p>Suppose that the dimension of <span class="math inline">\(\Omega = v\)</span> and the dimension of <span class="math inline">\(\Theta_0 = r\)</span>. Under regularity conditions and assuming <span class="math inline">\(H_0\)</span> is true, the distribution of <span class="math inline">\(\Lambda_n\)</span> tends to a chi-squared distribution with degrees of freedom equal to <span class="math inline">\(v-r\)</span> as the sample size tends to infinity.</p>
+<p>With this theorem in hand (and for <span class="math inline">\(n\)</span> large), we can compare the value of our log-likehood ratio to the expected values from a <span class="math inline">\(\chi^2_{v-r}\)</span> distribution.</p>
+</div>
+<div id="example-poisson-distribution" class="section level2">
+<h2>Example: Poisson Distribution</h2>
+<p>Assume we observe data <span class="math inline">\(X_1,\ldots X_n\)</span> and consider the hypotheses <span class="math inline">\(H_0: \lambda = \lambda_0\)</span> and <span class="math inline">\(H_1: \lambda \neq \lambda_0\)</span>. The likelihood is: <span class="math display">\[L(\lambda|X_1,\ldots,X_n) = \frac{\lambda^{\sum X_i}e^{-n\lambda}}{\prod_i^n X_i!}\]</span></p>
+<p>Note that <span class="math inline">\(\Theta_1\)</span> in this case is the set of all <span class="math inline">\(\lambda \neq \lambda_0\)</span>. In the numerator of the expression for <span class="math inline">\(\Lambda_n\)</span>, we seek <span class="math inline">\(\max_{\theta \in \Omega}f(X_1,\ldots,X_n|\theta)\)</span>. This is just the maximum likelihood estimate of <span class="math inline">\(\lambda\)</span> which we derived in <a href="asymptotic_normality_mle.html">this note</a>. The MLE is simply the sample average <span class="math inline">\(\bar{X}\)</span>. The likelihood ratio is therefore: <span class="math display">\[\frac{L(\lambda=\bar{X}|X_1,\ldots,X_n)}{L(\lambda=\lambda_0|X_1,\ldots,X_n)} = \frac{\bar{X}^{\sum X_i}e^{-n\bar{X}}}{\prod_i^n X_i!}\frac{\prod_i^n X_i!}{\lambda_0^{\sum X_i}e^{-n\lambda_0}} = \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})}\]</span></p>
+<p>which means that <span class="math inline">\(\Lambda_n\)</span> is <span class="math display">\[ \Lambda_n = 2\log{\left( \big ( \frac{\bar{X}}{\lambda_0}\big )^{\sum_i X_i}e^{n(\lambda_0 - \bar{X})} \right )} = 2n \left ( \bar{X}\log{\left(\frac{\bar{X}}{\lambda_0}\right)} + \lambda_0 - \bar{X} \right )\]</span></p>
+<p>In this example we have that <span class="math inline">\(v\)</span>, the dimension of <span class="math inline">\(\Omega\)</span>, is 1 (any positive real number) and <span class="math inline">\(r\)</span>, the dimension of <span class="math inline">\(\Theta_0\)</span> is 0 (it’s just a single point). Hence, the degrees of freedom of the asymptotic <span class="math inline">\(\chi^2\)</span> distribution is <span class="math inline">\(v-r = 1\)</span>. Therefore, Wilk’s Theorem tells us that <span class="math inline">\(\Lambda_n\)</span> tends to a <span class="math inline">\(\chi^2_1\)</span> distribution as <span class="math inline">\(n\)</span> tends to infinity.</p>
+<p>Below we simulate computing <span class="math inline">\(\Lambda_n\)</span> over 5000 experiments. In each experiment, we observe 500 random variables distributed as Poisson(<span class="math inline">\(0.4\)</span>). We then plot the histogram of the <span class="math inline">\(\Lambda_n\)</span>s and overlay the <span class="math inline">\(\chi^2_1\)</span> density with a solid line.</p>
+<pre class="r"><code>num.iterations         &lt;- 5000
+lambda.truth           &lt;- 0.4
+num.samples.per.iter   &lt;- 500
+samples                &lt;- numeric(num.iterations)
+for(iter in seq_len(num.iterations)) {
+  data            &lt;- rpois(num.samples.per.iter, lambda.truth)
+  samples[iter]   &lt;- 2*num.samples.per.iter*(mean(data)*log(mean(data)/lambda.truth) + lambda.truth - mean(data))
+}
+hist(samples, freq=F, main=&#39;Histogram of LLR&#39;, xlab=&#39;sampled values of LLR values&#39;)
+curve(dchisq(x, 1), 0, 20, lwd=2, xlab = &quot;&quot;, ylab = &quot;&quot;, add = T)</code></pre>
+<p><img src="figure/wilks.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] knitr_1.15.1       MASS_7.3-45        expm_0.999-0      
+[4] Matrix_1.2-8       workflowr_0.4.0    rmarkdown_1.3.9004
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.9     lattice_0.20-34 gtools_3.5.0    digest_0.6.12  
+ [5] rprojroot_1.2   mime_0.5        R6_2.2.0        grid_3.3.2     
+ [9] xtable_1.8-2    backports_1.0.5 git2r_0.18.0    magrittr_1.5   
+[13] evaluate_0.10   stringi_1.1.2   tools_3.3.2     stringr_1.2.0  
+[17] shiny_1.0.0     httpuv_1.3.3    yaml_2.1.14     htmltools_0.3.5</code></pre>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
