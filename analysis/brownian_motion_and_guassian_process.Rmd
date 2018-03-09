@@ -120,7 +120,7 @@ Making use of the definition of MVN (see [post](mvnorm.html#definition)), we can
 
 # Gaussian process in brief
 
-Formally, a stochastic process $\{X(t): t \ge 0\}$ is Gaussian process if
+Formally, a stochastic process $\{X(t): t \ge 0\}$ is Gaussian process if 
 \begin{align*}
   \forall t_1, \cdots, t_n: X(t_1), \cdots, X(t_n) \sim MVN
 \end{align*}
