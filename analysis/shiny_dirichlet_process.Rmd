@@ -2,7 +2,7 @@
 title: "Introduction to Dirichlet Process"
 author: "Kaiqian Zhang"
 date: "3/6/2018"
-output: html_document
+output: html_notebook
 runtime: shiny
 ---
 
@@ -119,7 +119,7 @@ We simulate a Chinese restaurant process as follows:
 **The nth customer chooses a new table with probability $\frac{\alpha}{n-1+\alpha}$, and an occupied table with probability $\frac{c}{n-1+\alpha}$, where c is the number of people sitting at that table.
 
 ```{r}
-Chinese.resturant.simulation = function(num_customers, alpha, H){
+Chinese.restaurant.simulation = function(num_customers, alpha, H){
   #assign each customer to tables
   table=c()
   table[1]=1
@@ -159,7 +159,7 @@ inputPanel(
 )
 
 renderPlot({
-  Chinese.resturant.simulation(as.numeric(input$num_customers),as.numeric(input$alpha),toString(input$base_dist))
+  Chinese.restaurant.simulation(as.numeric(input$num_customers),as.numeric(input$alpha),toString(input$base_dist))
 }, height=600,width=1000)
 ```
 
@@ -170,6 +170,10 @@ renderPlot({
 (2) The concentration parameter $\alpha$ can also be treated as an inverse variance. $\text{Var}[G(A)] = \frac{H(A)(1-H(A))}{\alpha+1}$. The larger $\alpha$ is, the samller the variance, and the DP will concentrate more of its mass around the mean.
 
 (3) The base distribution $H$ is essentially the mean of DP(Dirichlet process). We can think that when a DP draws a random distribution around $H$, it is the same as a normal distribution draws a random number around its mean.
+
+## Blocked Gibbs Sampling
+
+Let's consider a gibbs sampling from a DP model.
 
 ## Citations:
 
