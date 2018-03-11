@@ -26,6 +26,12 @@ knitr::read_chunk("chunks.R")
 
 <!-- Add your analysis here -->
 
+$$
+\newcommand\var{\text{Var}}
+\newcommand\cov{\text{Cov}}
+\newcommand\E{\text{E}}
+$$
+
 # Pre-requisites
 
 This section is build upon the introduction of [Brownian motion](brownian_motion_and_guassian_process.html) and [Orstein-Uhlenbeck process](ornstein_uhlenbeck_process1.html)
@@ -36,8 +42,9 @@ Here, phylogeny data is referred to some quantative traits/measurements we colle
 
 With these data in hand, one biologically interesting question immediately comes, that is how these traits change (evolve) along the tree of life. In particular, this section presents how we can make use of Brownian motion and OU process to tackle two problems along this line. They are
 
-Q1. How do two traits correlate with each other? (*e.g.* Is body weight always correlated with body size?)
-Q2. What causes the variation of a trait, drift or selection? (*e.g.* Does some gene undergo adaptive selection?)
+**Q1:** How do two traits correlate with each other? (*e.g.* Is body weight always correlated with body size?)
+
+**Q2:** What causes the variation of a trait, drift or selection? (*e.g.* Does some gene undergo adaptive selection?)
 
 Here, one thing to clarify is that the goal of this section is NOT to infer phylogeny itself. Instead, it utilizes known phylogenies and try to answer the questions raised above. For phylogeny inference, it can be inferred from sequence data ([an example](http://onlinelibrary.wiley.com/doi/10.1111/j.0006-341X.1999.00001.x/abstract)) or fossil record. 
 
@@ -45,7 +52,7 @@ One special feature of phylogeny data is that the observations are not independe
 
 # Using BM for comparative analysis
 
-Let's consider a case of Q1 where we are interested in whether body weight, $Y$, is related to height, $X$, across a given set of species. Namely, the null hypothesis is that there is no correlation. Naively, we can perform an ordinary least-squared regression and test whether the coefficient is significantly deviate from zero. However, this approach requires independent observations, which does not hold for phylogeny data since the specie height is correlated by sharing the same common ancestor. Suppose the phylogeny is 
+Let's consider a case of Q1 where we are interested in whether body weight, $Y$, is related to height, $X$, across a given set of species. Namely, the null hypothesis is that there is no correlation between $X$ and $Y$. Naively, we can perform an ordinary least-squared regression and test whether the coefficient is significantly deviated from zero. However, this approach requires independent observations, which does not hold for phylogeny data since the species' height is correlated by sharing the same common ancestor. Suppose the phylogeny is 
 
 ```{r,engine='tikz', fig.ext='svg', fig.width=3, echo=FALSE}
 \begin{tikzpicture}[auto]
@@ -67,7 +74,7 @@ Let's consider a case of Q1 where we are interested in whether body weight, $Y$,
 \end{tikzpicture}
 ```
 
-Note that $t_2 + t_4 = t_3 + t_5$. Let's simulate data under the null model. 
+Note that $t_2 + t_4 = t_3 + t_5$. Let's simulate data under the null model and perform linear regression to test the correlation.
 
 ```{r}
 simulateBM <- function(t1, t2, t3, t4, t5, n1, n2, sigma = 1) {
@@ -98,7 +105,7 @@ pander(summary(model)$coefficients)
 
 Though this is an extreme case of phylogeny, but it illustrates that to treat observations as independent samples may introduce false positive because of the underlying correlation within data. 
 
-From what we have discussed about [Brownian motion on tree](brownian_motion_and_guassian_process.html#gaussian_process_in_brief), the correlation comes from sharing ancestry, whereas the increment is always independent. Therefore, to remove correlation, instead of using $X$ and $Y$ directly, we can use the increment. For instance, let $\Delta X_i = X_{1, i} - X_{2, i}$ and $\Delta Y_i = Y_{1, i} - Y_{2, i}$. Then $\Delta X_i$ is independent and ordinary least squared approach should be valid.
+From what we have discussed about [Brownian motion on tree](brownian_motion_and_guassian_process.html#gaussian_process_in_brief), the correlation comes from sharing ancestry, whereas the increment is always independent. Therefore, to remove correlation, instead of using $X$ and $Y$ directly, we can use the increment. For instance, let $\Delta X_i = X_{1, i} - X_{2, i}$ and $\Delta Y_i = Y_{1, i} - Y_{2, i}$. Then $\Delta X_i$ is independent and ordinary least squared approach becomes valid.
 
 ```{r}
 # n1 = n2 = n
@@ -109,12 +116,45 @@ model.delta <- lm(body.weight ~ height, data = df.delta)
 pander(summary(model.delta)$coefficients)
 ```
 
-The result becomes less significant. By taking increment, the sample size is shrinked to a half, but the estimate is more robust. Note that there is more sophisticated way to obtain more independent increments from the data (see [paper](https://www.journals.uchicago.edu/doi/abs/10.1086/284325) for your interest). 
+The result becomes less significant. Note that by taking increment, the sample size is shrinked to a half, but the estimate is more robust. In practice, there is more sophisticated way to obtain more independent increments from the data under Brownian motion assumption (see [paper](https://www.journals.uchicago.edu/doi/abs/10.1086/284325) for your interest). 
 
 # Using OU process to infer adaptive evolution
 
+Brownian motion can capture the underlying dependency caused by shared ancestry but it also has some undesired properties. Such as
 
+1. The variance of the trait keep growing up linearly in time
+2. Change of trait is purely driven by drift with no notion to incorporate selection
 
+Ornstein-Uhlenbeck process introduces a trapping force on top of Brownian motion (as what we discussed [here](ornstein_uhlenbeck_process1.html)) which fixes these undesired properties in a simple way. When $t \rightarrow +\infty$, $X(t)|X(0) = x_0 \approx N(\mu, \frac{\sigma^2}{2\alpha})$, so the trait variation is bounded. Moreover, the SDE definition of OU process provides neat interpretations about model parameters. Recall that OU process has SDE
+\begin{align*}
+  dX(t) &= \alpha(\mu - X(t))dt + \sigma dW_t
+\end{align*}
+Then, $\mu$ represents the optimal value of the quantitative trait and $\alpha$ represents the effect of selection which pushes the species to move towards optimal trait value. The relative strength of $\alpha$ and $\sigma$ represents how genetic drift and natural selection are balanced during the trait evolution.
+
+On the basis of OU process assumption, Q2 is somewhat reduced to an inference problem. In other word, the contributions of genetic drift and selection are embeded in the underlying correlation of the observed traits among species. And furthermore, such embedding is parametrized by OU process explicitly.
+
+Specifically, similar to Brownian motion on tree, $\cov(X(t_1), X(t_2))$ in OU process on tree also results from shared ancestry. Suppose the closest common ancestor of $t_1$ and $t_2$ is $s$, then we have (analogous to [ordinary OU process](ornstein_uhlenbeck_process1.html#mathematical_formalism_of_ornstein-uhlenbeck_process))
+\begin{align*}
+  X(t_1) &= X(s) g(t_1 - s) + f(t_1 - s) Z_1 + const. \\
+  X(t_2) &= X(s) g(t_2 - s) + f(t_2 - s) Z_2 + const. \\
+  \cov(X(t_1), X(t_2)) &= g(t_1 - s)g(t_2 - s) \var(X(s)) \quad\text{, since $Z_1, Z_2$ are independent} \\
+  &= e^{-\alpha (t_1 + t_2 - s2)}(1 - e^{-2\alpha s})
+\end{align*}
+In particular, if the observables are all present species (denoted as $X_i(t)$ for the $i$th species), then $t_1 = t_2 := t$. We have
+\begin{align*}
+  \cov(X_i(t), X_j(t)) &= e^{-2\alpha (t - t_c(i, j))}(1 - e^{-2\alpha t_c(i, j)})
+\end{align*}
+, where $t_c(i, j)$ is the time when the closest common ancestor of $i$th and $j$th species branches.
+
+Moreover, the expected value of $X(t)$ is kept the same as before, *i.e.* $\E(X(t)) = \mu + (x_0 - \mu)e^{-\alpha t}$. Therefore, $X_1(t), \cdots, X_n(t)$ has been casted as MVN with OU process parameterization so the maximum likelihood estimates can be obtained.
+
+T. F. Hansen (1997) generalized OU process to handle the a more realistic case where different parts of the phylogeny may have different optimal values (see [paper](http://onlinelibrary.wiley.com/doi/10.1111/j.1558-5646.1997.tb01457.x/full) for your interest). For instance, even within primates, depending on the environments, different lineages may have different optimal body size. It turns out that this generalization affects expected value only (since in the derivation of covariance, the contribution of $\mu$ is in $const.$ term). The revised expected $X(t)$ is 
+\begin{align*}
+  \E(X_i(t)) &= x_0 e^{-\alpha t} + \sum_k \mu_k e^{-\alpha (t - e_i(k)} (1 - e^{-\alpha l_i(k)})
+\end{align*}
+, where $\mu_k$ is the $k$th optimal value. $e_i(k)$ is the end time of the $mu_k$ on the lineage of $i$th species (if $\mu_k$ does not act on species $i$, $e_i(k) = 0$) and $l_i(k)$ is the elapsed time that $\mu_k$ acts on species $i$. 
+
+Under this framework, it is straight forward to construct likelihood ratio test to infer which model is favored by data and obtain biological insight. Recently, this framework has been used to infer genes that are under stablizing selection in mammalian species evolution which provides a formal way, beyond sample variation, to estimate expression variation ($\frac{\sigma^2}{2\alpha}$). It gives a more robust estimate from evolutionary perspective by borrowing information from other species (see the paper [here](https://www.biorxiv.org/content/early/2017/12/04/229096) for your interest).  
 
 ## Session information
 

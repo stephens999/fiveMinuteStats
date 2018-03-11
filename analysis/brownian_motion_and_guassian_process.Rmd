@@ -129,7 +129,7 @@ Formally, a stochastic process $\{X(t): t \ge 0\}$ is Gaussian process if
 
 From the previous subsection we can conclude that Brownian motion is one example of Gaussian process. 
 
-Intuitively, Gaussian process is a way to capture the linear dependency between $X(t)$'s so it can go beyond Markovian dependency. For instance, the Brownian motino on tree is a slightly more complicated Gaussian process than Brownian motion where the dependency is captured by tree, *i.e.* $X(t) - X(Pa(t)) \sim N(0, \sigma^2 (t - Pa(t)))$, where $Pa(t)$ is the parent of $t$ (see below tree as an example, where $t_1$ is parent of $t_3$ and $t_4$). 
+Intuitively, Gaussian process is a way to capture the linear dependency between $X(t)$'s so it can go beyond Markovian dependency. For instance, the Brownian motion on tree is a slightly more complicated Gaussian process than Brownian motion where the dependency is captured by tree, *i.e.* $X(t) - X(Pa(t)) \sim N(0, \sigma^2 (t - Pa(t)))$, where $Pa(t)$ is the parent of $t$ (see below tree as an example, where $t_1$ is parent of $t_3$ and $t_4$). 
 
 ```{r,engine='tikz', fig.ext='svg', fig.width=3, echo=FALSE}
 \begin{tikzpicture}[auto]

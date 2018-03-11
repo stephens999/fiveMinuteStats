@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Yanyu Liang" />
+
+<meta name="date" content="2018-03-08" />
+
+<title>Introduction to Ornstein-Uhlenbeck Process</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to Ornstein-Uhlenbeck Process</h1>
+<h4 class="author"><em>Yanyu Liang</em></h4>
+<h4 class="date"><em>2018-03-08</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2018-03-09</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> f6de2c0</p>
+<!-- Add your analysis here -->
+<p><span class="math display">\[
+\newcommand\var{\text{Var}}
+\newcommand\cov{\text{Cov}}
+\newcommand\E{\text{E}}
+\]</span></p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Please read <a href="brownian_motion_and_guassian_process.html">Brownian motion</a> beforehand.</p>
+</div>
+<div id="motivation" class="section level1">
+<h1>Motivation</h1>
+<p>Consider the drunk person sernario again but now instead of walking along a flat land, the guy is walking on a convex one (see figure below).</p>
+<div class="figure">
+<img src="/home/yanyul/Desktop/trapped_random_walk.png" />
+
+</div>
+<p>Although he/she still tends to walk in random direction but the curvature of the line traps him/her because of gravity (keeping the person not far from the minimum point, <span class="math inline">\(\mu\)</span>). Suppose the trapping force gets bigger proportionally to the distance to <span class="math inline">\(\mu\)</span>. Namely, for an time interval <span class="math inline">\(t_i \rightarrow t_i + \Delta t = t_{i + 1}\)</span>, <span class="math inline">\(\Delta_{\text{force}} x = \alpha (\mu - x(t_i)) = \alpha (\mu - x_i)\)</span>, where <span class="math inline">\(\alpha\)</span> controls how strong the force can be. Then, we can simulate the process as follow.</p>
+<pre class="r"><code>trappedRandomWalk &lt;- function(nsteps, initial.pos, alpha, mu, sigma = 1) {
+  pos &lt;- rep(NA, nsteps + 1)  # generate a vector to record the positions as time goes
+  pos[1] &lt;- initial.pos  # set initial position
+  for(i in 2 : (nsteps + 1)) {  # loop over time points
+    delta.force &lt;- alpha * (mu - pos[i - 1])  # compute how force affects the update
+    delta.random &lt;- rnorm(1, mean = 0, sd = sigma)  # compute how random walk affects the update
+    delta.x &lt;- delta.force + delta.random
+    pos[i] &lt;- pos[i - 1] + delta.x
+  }
+  return(pos)
+}</code></pre>
+<p>Perform the simulation under <span class="math inline">\(\alpha = 0.1, 0.01, 0\)</span> with <span class="math inline">\(\mu = 0, \sigma = 1, x(0) = 200\)</span>. Note that when <span class="math inline">\(\alpha = 0\)</span>, the process is equivalent to random walk since force has no contribution. Red line is the average of <span class="math inline">\(x_i\)</span>.</p>
+<p><img src="figure/ornstein_uhlenbeck_process1.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>As you can see, when the force is big, the person goes to <span class="math inline">\(\mu\)</span> fairly quickly and if <span class="math inline">\(\alpha\)</span> is close to zero, the process behaves more like random walk. Note that even when the drunk person has already close to <span class="math inline">\(\mu\)</span>, the variance of the walk afterward is still smaller than pure random walk. This is because the random effect is not completely cummulated as in random walk case. In other word, any random effect is damped by force and the bigger the force the smaller the variance would be.</p>
+</div>
+<div id="mathematical-formalism-of-ornstein-uhlenbeck-process" class="section level1">
+<h1>Mathematical formalism of Ornstein-Uhlenbeck process</h1>
+Ornstein-Uhlenbeck (OU) process can be seen as a continuous-time version of the random walk with trapping force as above. Mathematically, <span class="math inline">\(\forall 0 &lt; s &lt; t\)</span>, OU process follows
+<span class="math display">\[\begin{align}
+  X(t) | X(s) = x_s \sim N(\mu + (x_s - \mu)e^{-\alpha (t - s)}, \frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha (t - s)})) \label{eq:ou}
+\end{align}\]</span>
+<p>, where <span class="math inline">\(\mu\)</span> is the position to which the force traps, <span class="math inline">\(\alpha\)</span> controls the strength of the force, and <span class="math inline">\(\sigma^2\)</span> is the strength of random noise.</p>
+By rearranging , we have
+<span class="math display">\[\begin{align*}
+  X(t) - X(s) &amp;= (1 - e^{-\alpha (t - s)})(\mu - X(s)) + \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha(t-s)})}Z \\
+  Z &amp;\sim N(0, 1)
+\end{align*}\]</span>
+Therefore, the increment of OU process is not stationary or independent. But since <span class="math inline">\(X(t_{i + 1})\)</span> is linear combination of <span class="math inline">\(X(t_i)\)</span> and <span class="math inline">\(Z\)</span> with some fixed coefficients, <em>i.e.</em>
+<span class="math display">\[\begin{align*}
+  X(t_{i + 1}) &amp;= e^{-\alpha (t_{i + 1} - t_i)} X(t_i) + \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha(t_{i + 1} - t_i)})}Z + const. \\
+  X(t_1) | X(0) = x_0 &amp;\sim N(\mu + (x_0 - \mu)e^{-\alpha t_1}, \frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha t_1}))
+\end{align*}\]</span>
+we can conclude that <span class="math inline">\(\forall 0 &lt; t_1 &lt; \cdots &lt; t_n: X(t_1), \cdots, X(t_n) | X(0) = x_0 \sim MVN\)</span> with <span class="math inline">\(\E(X(t_i) | X(0) = x_0) = \mu + (x_0 - \mu)e^{-\alpha t_i}\)</span> and <span class="math inline">\(\cov(X(t_i), X(t_j)) = \frac{\sigma^2}{2 \alpha}(e^{-\alpha(t_j - t_i)} - e^{-\alpha(t_i + t_j)}), \forall j &gt; i\)</span>. The result becomes clear if we write down the corresponding <span class="math inline">\(A\)</span> as what we did for <a href="brownian_motion_and_guassian_process.html#casting_brownian_motion_as_mvn">Brownian motion</a>.
+<span class="math display">\[\begin{align*}
+  A = \begin{bmatrix}
+    f(t_1) &amp; 0 &amp; 0 &amp; 0 &amp; \cdots \\
+    g(t_2 - t_1) f(t_1) &amp; f(t_2 - t_1) &amp; 0 &amp; 0 &amp; \cdots \\
+    g(t_3 - t_2) g(t_2 - t_1) f(t_1) &amp; g(t_3 - t_2) f(t_2 - t_1) &amp; f(t_3) - f(t_2) &amp; 0 &amp; \cdots \\
+    \cdots
+  \end{bmatrix}
+\end{align*}\]</span>
+<p>, where <span class="math inline">\(f(t) = \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha t})}\)</span> and <span class="math inline">\(g(t) = e^{-\alpha t}\)</span>. To obtain covariance, it’s just a matter of rearranging <span class="math inline">\(f\)</span>’s and <span class="math inline">\(g\)</span>’s.</p>
+</div>
+<div id="addendum-defining-ou-process-with-sde" class="section level1">
+<h1>Addendum: defining OU process with SDE</h1>
+An alternative way (also more common way, see <a href="https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process#Representation_via_a_stochastic_differential_equation">wikipedia</a>) to define OU process is using stochastic differential equation
+<span class="math display">\[\begin{align*}
+  dX(t) =  \underbrace{\alpha(\mu - X(t)) dt}_{\text{trapping force}} + \underbrace{\sigma dW_t}_{\text{random walk}}
+\end{align*}\]</span>
+, where <span class="math inline">\(W_t\)</span> is a standard Brownian motion. Note that this equation is very similar to what we have used to simulate random walk with trapping force. With <span class="math inline">\(X(0) = x_0\)</span>, the integration of the SDE takes the form
+<span class="math display">\[\begin{align*}
+  X(t) &amp;= \mu + (x_0 - \mu) e^{-\alpha t} + \sigma \int_0^t e^{-\alpha (t - s)} dW_s
+\end{align*}\]</span>
+<p>From the second term on the right hand side, it is clear that noise term is also damped with exponential decay.</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.2.3 (2015-12-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.3 LTS
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] stringr_1.3.0  reshape2_1.4.2 ggplot2_2.2.1 
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.13     digest_0.6.12    rprojroot_1.3-2  plyr_1.8.4      
+ [5] grid_3.2.3       gtable_0.2.0     backports_1.1.2  git2r_0.21.0    
+ [9] magrittr_1.5     evaluate_0.10.1  scales_0.5.0     pillar_1.1.0    
+[13] rlang_0.2.0      stringi_1.1.6    lazyeval_0.2.0   rmarkdown_1.9   
+[17] labeling_0.3     tools_3.2.3      munsell_0.4.3    yaml_2.1.17     
+[21] colorspace_1.3-2 htmltools_0.3.6  knitr_1.20       tibble_1.4.2    </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

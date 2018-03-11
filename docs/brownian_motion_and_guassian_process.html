@@ -11,6 +11,7 @@
 
 <meta name="author" content="Yanyu Liang" />
 
+<meta name="date" content="2018-03-08" />
 
 <title>Brownian Motion and Gaussian Process</title>
 
@@ -24,8 +25,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -35,10 +36,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -303,7 +306,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Brownian Motion and Gaussian Process</h1>
 <h4 class="author"><em>Yanyu Liang</em></h4>
-<h4 class="date"><em>YYYY-MM-DD</em></h4>
+<h4 class="date"><em>2018-03-08</em></h4>
 
 </div>
 
@@ -312,67 +315,133 @@ div.tocify {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-03-08</p>
+<p><strong>Last updated:</strong> 2018-03-10</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> ebe1f3c</p>
+<p><strong>Code version:</strong> 1e98d66</p>
 <!-- Add your analysis here -->
 <p><span class="math display">\[
 \newcommand\var{\text{Var}}
+\newcommand\cov{\text{Cov}}
 \newcommand\E{\text{E}}
 \]</span></p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This section is built on the top of <a href="mvnorm.html">multivariate normal</a> and <a href="normal_markov_chain.html">normal Markov chain</a>, so it is better to read them beforehand.</p>
+</div>
 <div id="constructing-a-continuous-time-random-walk" class="section level1">
 <h1>Constructing a continuous time ‘random walk’</h1>
 <p>Random walk describes the process that</p>
 <blockquote>
-<p>Consider a drunk person walk along a line and let’s record the position of he/she as time goes. Suppose the person can either go right/left for <span class="math inline">\(\Delta x\)</span> meters after one second. To record, we can simply write down the position at time <span class="math inline">\(t = 1, 2, ...\)</span> seconds (or take picture every second). At time <span class="math inline">\(t = k\)</span> seconds, let the position to be <span class="math inline">\(X_k\)</span>. Initially, the person is at position 0 (<span class="math inline">\(X_0 = 0\)</span>).</p>
+<p>Consider a drunk person walk along a line and let’s record the position of he/she as time goes. Suppose the person can either go right/left for <span class="math inline">\(\Delta x\)</span> meters after one second. To record, we can simply write down the position at time <span class="math inline">\(t = 1, 2, \cdots\)</span> seconds (or take picture every second). At time <span class="math inline">\(t = k\)</span> seconds, let the position to be <span class="math inline">\(X_k\)</span>. Initially, the person is at position 0 (<span class="math inline">\(X_0 = 0\)</span>).</p>
 </blockquote>
 <span class="math display">\[\begin{align*}
-  X_k | X_{k - 1} = x_k &amp;= \begin{cases}
-    x_k + \Delta x &amp; \text{, with probability $\frac{1}{2}$} \\
-    x_k - \Delta x &amp; \text{, with probability $\frac{1}{2}$}
+  Z_k &amp;:= X_k - X_{k - 1} \\
+  &amp;= \begin{cases}
+    \Delta x &amp; \text{, with probability $\frac{1}{2}$} \\
+    -\Delta x &amp; \text{, with probability $\frac{1}{2}$}
   \end{cases}
 \end{align*}\]</span>
 In this process,
 <span class="math display">\[\begin{align*}
-  \E(X_k) &amp;= \E(X_{k - 1}) = ... = 0 \\
+  \E(X_k) &amp;= \E(X_{k - 1}) = \cdots = 0 \\
   \var(X_k) &amp;= (\Delta x)^2 + \var(X_{k - 1}） \\
   &amp;= 2(\Delta x)^2 + \var(X_{k - 2}）\\
-  &amp;= ... = k (\Delta x)^2
+  &amp;= \cdots = k (\Delta x)^2
 \end{align*}\]</span>
 <p>Suppose instead of recording position every second, we do this every <span class="math inline">\(\Delta t\)</span>. Then <span class="math inline">\(\Delta x\)</span> changes accordingly. Ideally, if <span class="math inline">\(\Delta t\)</span> is infinitely small, it becomes a continous time Markov chain since we have the access to the position at any time point. If we keep the total recording time (<span class="math inline">\(T\)</span>) the same, now we have <span class="math inline">\(\var(X_{\frac{T}{\Delta t}}) = (\Delta x)^2 \frac{T}{\Delta t}\)</span>.</p>
 <p>If <span class="math inline">\(\Delta t \rightarrow 0\)</span> and <span class="math inline">\(\Delta x \rightarrow 0\)</span> independently, the variance goes to zero which is not an interesting process any more. To ensure the process to have finite non-zero variance at the end (<em>i.e.</em> go to somewhere but not impractically far away), we need <span class="math inline">\(\Delta x = \sigma \sqrt{\Delta t}\)</span>. Note that this requirement implies that <span class="math inline">\(\var(X_{\frac{T}{\Delta t}}) = \sigma^2 T\)</span>.</p>
 </div>
 <div id="brownian-motion---definition-and-simulation" class="section level1">
 <h1>Brownian motion - definition and simulation</h1>
+<p>Brownian motion is what we have described above, namely the continous version of random walk, which should satisfy the same properties as random walk. Namely,</p>
+<ol style="list-style-type: decimal">
+<li>The increment of an interval <span class="math inline">\(s \rightarrow t\)</span>, <span class="math inline">\(X(t) - X(s)\)</span> is independent to each other if the interval is non-overlapping (independent)</li>
+<li><span class="math inline">\(X(t + s) - X(s)\)</span> does not depend on <span class="math inline">\(t\)</span> (stationary)</li>
+</ol>
+<p>Formally, a stochastic process <span class="math inline">\(\{X(t), t \ge 0\}\)</span> is Brownian motion if</p>
+<ol style="list-style-type: lower-roman">
+<li><span class="math inline">\(X(0) = 0\)</span></li>
+<li><span class="math inline">\(\{X(t), t \ge 0\}\)</span> has stationary and independent increments</li>
+<li><span class="math inline">\(\forall t &gt; 0, X(t) \sim N(0, \sigma^2 t)\)</span></li>
+</ol>
+<p>Note that <span class="math inline">\(X(t)\)</span> marginally is univariate normal, but it also correlated with <span class="math inline">\(X(t&#39;)\)</span> by Makovian property. Property ii is analogous to random walk but needs to be scaled properly to make the process non-trivil (see property iii). Also, the normality of <span class="math inline">\(X(t)\)</span> can be induced by property ii with central limit theorem since intuitively increment is the accumulation of many (infinite) random walk steps.</p>
+<p>Regarding the simulation, we are interested in how the value change among a set of time points, <span class="math inline">\(t_1 &lt; t_2 &lt; \cdots &lt; t_n\)</span>. Making use of stationary and independent increments and Markovian property, the procedure is</p>
+<pre><code># Initialization
+Set t_0 = 0 and X(t_0) = 0
+
+# Simulate t_1, ..., t_n in order
+For i = 1, ..., n
+  
+  # Draw increment 
+  Draw Z from N(0, \sigma^2 \times t_i - t_{i - 1})
+  
+  # Update
+  X(t_i) = X(t_{i - 1}) + Z
+  
+End for</code></pre>
+<p>Note that <a href="normal_markov_chain.html#example:_a_normal_markov_chain">this post</a> has implemented a simpler version of the above pseudocode. The only difference is that it is realizing a time series with equal interval length.</p>
 </div>
 <div id="casting-brownian-motion-as-mvn" class="section level1">
 <h1>Casting Brownian motion as MVN</h1>
+<p>As <a href="normal_markov_chain.html#the_normal_markov_chain_as_a_multivariate_normal">this post</a> has pointed out, under such simulation scheme, <span class="math inline">\(X(t_1), \cdots, X(t_n)\)</span> can be written as <span class="math inline">\(X = AZ\)</span> with proper scaling (let <span class="math inline">\(Z_i\)</span> be standard normal)</p>
+<span class="math display">\[\begin{align*}
+  X(t_1) &amp;= \sqrt{t_1} Z_1 \\
+  X(t_2) &amp;= X(t_1) + \sqrt{t_2 - t_1} Z_2 \\
+  &amp;= \sqrt{t_1} Z_1 + \sqrt{t_2 - t_1} Z_2 \\
+  \vdots
+\end{align*}\]</span>
+Then is <span class="math inline">\(n\)</span> by <span class="math inline">\(n\)</span> matrix
+<span class="math display">\[\begin{align*}
+  A = \begin{bmatrix}
+    \sqrt{t_1} &amp; 0 &amp; 0 &amp; 0 &amp; \cdots \\
+    \sqrt{t_1} &amp; \sqrt{t_2 - t_1} &amp; 0 &amp; 0 &amp; \cdots \\
+    \sqrt{t_1} &amp; \sqrt{t_2 - t_1} &amp; \sqrt{t_3 - t_2} &amp; 0 &amp; \cdots \\
+    \cdots
+  \end{bmatrix}
+\end{align*}\]</span>
+<p>Making use of the definition of MVN (see <a href="mvnorm.html#definition">post</a>), we can conclude that <span class="math inline">\(X(t_1), \cdots, X(t_n) \sim N(0, AA&#39;)\)</span>. It suggests an alternative way to simulate Brownian motion but more importantly it provides a simpler way to write likelihood beyond the one based on Markovian property.</p>
+<p>More specifically, from the form of <span class="math inline">\(A\)</span> presented above, we can conclude that <span class="math inline">\(\cov(X(s), X(t)) = s, \forall 0 &lt; s &lt; t\)</span>.</p>
 </div>
 <div id="gaussian-process-in-brief" class="section level1">
 <h1>Gaussian process in brief</h1>
+Formally, a stochastic process <span class="math inline">\(\{X(t): t \ge 0\}\)</span> is Gaussian process if
+<span class="math display">\[\begin{align*}
+  \forall t_1, \cdots, t_n: X(t_1), \cdots, X(t_n) \sim MVN
+\end{align*}\]</span>
+<p>From the previous subsection we can conclude that Brownian motion is one example of Gaussian process.</p>
+<p>Intuitively, Gaussian process is a way to capture the linear dependency between <span class="math inline">\(X(t)\)</span>’s so it can go beyond Markovian dependency. For instance, the Brownian motion on tree is a slightly more complicated Gaussian process than Brownian motion where the dependency is captured by tree, <em>i.e.</em> <span class="math inline">\(X(t) - X(Pa(t)) \sim N(0, \sigma^2 (t - Pa(t)))\)</span>, where <span class="math inline">\(Pa(t)\)</span> is the parent of <span class="math inline">\(t\)</span> (see below tree as an example, where <span class="math inline">\(t_1\)</span> is parent of <span class="math inline">\(t_3\)</span> and <span class="math inline">\(t_4\)</span>).</p>
+<p><img src="figure/brownian_motion_and_guassian_process.Rmd/unnamed-chunk-1-1.svg" width="288" style="display: block; margin: auto;" /></p>
+<p>More closely related nodes share more <span class="math inline">\(Z_i\)</span>’s so ends up with higher correlation. Or more precisely, analogous to regular Brownian motion, <span class="math inline">\(\cov(X(s), X(t)) = \text{closest common ancestor}(s, t), \forall s, t \in \text{tree}\)</span>. For the tree shown in the figure, ultimately, we get to see <span class="math inline">\(X(t_3), X(t_4), X(t_2)\)</span> only but the covariance matrix is captured by tree structure already.</p>
+<p>Spatial Gaussian process is another example. Instead of interpreting <span class="math inline">\(t\)</span> as time, here it is interpreted as position. Then, under Gaussian process framework, we want to come up with mean and covariance for any set of spatial positions. Note that valid MVN needs covariance matrix to be positive semi-definite. To ensure that <span class="math inline">\(\cov(X(t_i), X(t_j)) = k(X(t_i), X(t_j))\)</span> where <span class="math inline">\(k(\cdot, \cdot)\)</span> is kernel function (see <a href="https://en.wikipedia.org/wiki/Kernel_method#Mathematics:_the_kernel_trick">wikipedia</a> for an explanation of why). Intuitively, kernel assigns bigger covariance to spatially close pair and in practice, you get to decide how covariance is related to ‘spatial distance’ by picking kernel (see an incomplete list of kernels <a href="http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/#kernel_functions">here</a>) and even estimating the parameters in kernel function based on the how good it fits data.</p>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.3 (2017-03-06)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.3 LTS
+
+Matrix products: default
+BLAS: /usr/lib/libblas/libblas.so.3.6.0
+LAPACK: /usr/lib/lapack/liblapack.so.3.6.0
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] workflowr_0.4.0 rmarkdown_1.6  
-
 loaded via a namespace (and not attached):
- [1] backports_1.1.0 magrittr_1.5    rprojroot_1.2   htmltools_0.3.6
- [5] tools_3.3.3     rstudioapi_0.7  yaml_2.1.14     Rcpp_0.12.12   
- [9] stringi_1.1.5   knitr_1.17      git2r_0.19.0    stringr_1.2.0  
-[13] digest_0.6.12   evaluate_0.10.1</code></pre>
+ [1] compiler_3.4.3  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
+ [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.18     Rcpp_0.12.15   
+ [9] stringi_1.1.6   rmarkdown_1.9   knitr_1.20      git2r_0.21.0   
+[13] stringr_1.3.0   digest_0.6.15   evaluate_0.10.1</code></pre>
 </div>
 </div>
 
