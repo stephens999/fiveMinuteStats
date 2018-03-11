@@ -1,0 +1,123 @@
+---
+title: "Applications of BM and OU Process"
+author: "Yanyu Liang"
+date: 2018-03-10
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+<!-- Add your analysis here -->
+
+# Pre-requisites
+
+This section is build upon the introduction of [Brownian motion](brownian_motion_and_guassian_process.html) and [Orstein-Uhlenbeck process](ornstein_uhlenbeck_process1.html)
+
+# What can we do with phylogeny data?
+
+Here, phylogeny data is referred to some quantative traits/measurements we collect from a wide range of species. For instance, it can be some phenotypic measurements, such as body weight, darkness of coat, metabolism rate, and etc. Besides, thanks to next-generation sequencing technology, gene expression level is also an observable quantative trait. 
+
+With these data in hand, one biologically interesting question immediately comes, that is how these traits change (evolve) along the tree of life. In particular, this section presents how we can make use of Brownian motion and OU process to tackle two problems along this line. They are
+
+Q1. How do two traits correlate with each other? (*e.g.* Is body weight always correlated with body size?)
+Q2. What causes the variation of a trait, drift or selection? (*e.g.* Does some gene undergo adaptive selection?)
+
+Here, one thing to clarify is that the goal of this section is NOT to infer phylogeny itself. Instead, it utilizes known phylogenies and try to answer the questions raised above. For phylogeny inference, it can be inferred from sequence data ([an example](http://onlinelibrary.wiley.com/doi/10.1111/j.0006-341X.1999.00001.x/abstract)) or fossil record. 
+
+One special feature of phylogeny data is that the observations are not independent. More importantly, the underlying structure of the data is the key to tackle the problems we just asked. From this persecptive, both Brownian motion and Ornstein-Uhlenbeck process provide a straight-forward way to model such underlying dependencies.
+
+# Using BM for comparative analysis
+
+Let's consider a case of Q1 where we are interested in whether body weight, $Y$, is related to height, $X$, across a given set of species. Namely, the null hypothesis is that there is no correlation. Naively, we can perform an ordinary least-squared regression and test whether the coefficient is significantly deviate from zero. However, this approach requires independent observations, which does not hold for phylogeny data since the specie height is correlated by sharing the same common ancestor. Suppose the phylogeny is 
+
+```{r,engine='tikz', fig.ext='svg', fig.width=3, echo=FALSE}
+\begin{tikzpicture}[auto]
+  \usetikzlibrary{bayesnet}
+  \tikzstyle{line} = [draw, -latex']
+  \node [latent] (x0) {$S_0$};
+  \node [latent, below =of x0] (x1) {$S_1$};
+  \node [latent, below right=of x1] (x2) {$S_2$};
+  \node [latent, below left=of x1] (x3) {$S_3$};
+  \node [obs, below=of x2] (x4) {$S_{2,i}$};
+  \node [obs, below=of x3] (x5) {$S_{3,j}$};
+  \path [line] (x0) -- node [text width=.1cm,midway,right,align=center ] {$t_1$} (x1);
+  \path [line] (x1) -- node [text width=.1cm,midway,right,align=center ] {$t_2$} (x2);
+  \path [line] (x1) -- node [text width=.1cm,midway,right,align=center ] {$t_3$} (x3);
+  \path [line] (x2) -- node [text width=.1cm,midway,right,align=center ] {$t_4$} (x4);
+  \path [line] (x3) -- node [text width=.1cm,midway,right,align=center ] {$t_5$} (x5);
+  \plate {x2} {(x4)} {$i = 1, ..., N_2$};
+  \plate {x3} {(x5)} {$j = 1, ..., N_3$};
+\end{tikzpicture}
+```
+
+Note that $t_2 + t_4 = t_3 + t_5$. Let's simulate data under the null model. 
+
+```{r}
+simulateBM <- function(t1, t2, t3, t4, t5, n1, n2, sigma = 1) {
+  v1 <- rnorm(1, mean = 0, sd = sqrt(t1) * sigma)
+  v2 <- v1 + rnorm(1, mean = 0, sd = sqrt(t2) * sigma)
+  v3 <- v1 + rnorm(1, mean = 0, sd = sqrt(t3) * sigma)
+  v4 <- v2 + rnorm(n1, mean = 0, sd = sqrt(t4) * sigma)
+  v5 <- v3 + rnorm(n2, mean = 0, sd = sqrt(t4) * sigma)
+  return(c(v4, v5))
+}
+
+# simulation
+library(pander)
+set.seed(2018)
+t1 <- 100
+t2 <- 1200
+t3 <- 1300
+t4 <- 500
+n <- 15
+t5 <- t2 + t4 - t3
+x <- simulateBM(t1, t2, t3, t4, t5, n, n)
+y <- simulateBM(t1, t2, t3, t4, t5, n, n)
+df <- data.frame(height = x, body.weight = y)
+plot(x, y, xlab = 'Height', ylab = 'Body weight', main = 'Simulated data under the null \n using the above phylogeny')
+model <- lm(body.weight ~ height, data = df)
+pander(summary(model)$coefficients)
+```
+
+Though this is an extreme case of phylogeny, but it illustrates that to treat observations as independent samples may introduce false positive because of the underlying correlation within data. 
+
+From what we have discussed about [Brownian motion on tree](brownian_motion_and_guassian_process.html#gaussian_process_in_brief), the correlation comes from sharing ancestry, whereas the increment is always independent. Therefore, to remove correlation, instead of using $X$ and $Y$ directly, we can use the increment. For instance, let $\Delta X_i = X_{1, i} - X_{2, i}$ and $\Delta Y_i = Y_{1, i} - Y_{2, i}$. Then $\Delta X_i$ is independent and ordinary least squared approach should be valid.
+
+```{r}
+# n1 = n2 = n
+delta.x <- x[1 : n] - x[n + 1: (n + n)]  
+delta.y <- y[1 : n] - y[n + 1: (n + n)]
+df.delta <- data.frame(height = delta.x, body.weight = delta.y)
+model.delta <- lm(body.weight ~ height, data = df.delta)
+pander(summary(model.delta)$coefficients)
+```
+
+The result becomes less significant. By taking increment, the sample size is shrinked to a half, but the estimate is more robust. Note that there is more sophisticated way to obtain more independent increments from the data (see [paper](https://www.journals.uchicago.edu/doi/abs/10.1086/284325) for your interest). 
+
+# Using OU process to infer adaptive evolution
+
+
+
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```
