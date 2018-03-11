@@ -23,8 +23,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -34,10 +34,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -411,6 +413,14 @@ div.tocify {
 <li><a href="normal_markov_chain.html">Normal Markov Chain</a></li>
 </ul>
 </div>
+<div id="brownian-motion-and-ornstein-uhlenbeck-process" class="section level3">
+<h3>Brownian Motion and Ornstein-Uhlenbeck Process</h3>
+<ul>
+<li><a href="brownian_motion_and_guassian_process.html">Introduction to Brownian Motion and Gaussian Process</a></li>
+<li><a href="ornstein_uhlenbeck_process1.html">Introduction to Ornstein-Uhlenbeck Process</a></li>
+<li><a href="ornstein_uhlenbeck_process2.html">Applications of Brownian Motion and Ornstein-Uhlenbeck Process in Phylogeny Data</a></li>
+</ul>
+</div>
 </div>
 <div id="population-genetics" class="section level2">
 <h2>Population Genetics</h2>
@@ -469,7 +479,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
