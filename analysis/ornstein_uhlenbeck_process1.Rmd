@@ -1,5 +1,5 @@
 ---
-title: "Ornstein-Uhlenbeck Process"
+title: "Introduction to Ornstein-Uhlenbeck Process"
 author: "Yanyu Liang"
 date: 2018-03-08
 output: html_document
@@ -26,20 +26,30 @@ knitr::read_chunk("chunks.R")
 
 <!-- Add your analysis here -->
 
+$$
+\newcommand\var{\text{Var}}
+\newcommand\cov{\text{Cov}}
+\newcommand\E{\text{E}}
+$$
+
 # Pre-requisites
 
 Please read [Brownian motion](brownian_motion_and_guassian_process.html) beforehand.
 
 # Motivation
 
-Consider the drunk person sernario again but now instead of walking along a flat land, the guy is walking a convex one. Although he still tends to walk in random direction but the curvature of the line traps him/her because of gravity (keeping the person not far from the minimum point, $x_0$). Suppose the trapping force gets bigger proportionally to the distance to $x_0$. Namely, for an time interval $t_i \rightarrow t_i + \Delta t = t_{i + 1}$, $\Delta_{\text{force}} x = -\alpha (x(t_i) - x_0) = -\alpha (x_i - x_0)$, where $\alpha$ controls how strong the force can be. Then, we can simulate the process as follow.
+Consider the drunk person sernario again but now instead of walking along a flat land, the guy is walking on a convex one (see figure below). 
+
+![](~/Desktop/trapped_random_walk.png)
+
+Although he/she still tends to walk in random direction but the curvature of the line traps him/her because of gravity (keeping the person not far from the minimum point, $\mu$). Suppose the trapping force gets bigger proportionally to the distance to $\mu$. Namely, for an time interval $t_i \rightarrow t_i + \Delta t = t_{i + 1}$, $\Delta_{\text{force}} x = \alpha (\mu - x(t_i)) = \alpha (\mu - x_i)$, where $\alpha$ controls how strong the force can be. Then, we can simulate the process as follow.
 
 ```{r}
-trappedRandomWalk <- function(nsteps, initial.pos, alpha, x0, sigma = 1) {
+trappedRandomWalk <- function(nsteps, initial.pos, alpha, mu, sigma = 1) {
   pos <- rep(NA, nsteps + 1)  # generate a vector to record the positions as time goes
   pos[1] <- initial.pos  # set initial position
   for(i in 2 : (nsteps + 1)) {  # loop over time points
-    delta.force <- - alpha * (pos[i - 1] - x0)  # compute how force affects the update
+    delta.force <- alpha * (mu - pos[i - 1])  # compute how force affects the update
     delta.random <- rnorm(1, mean = 0, sd = sigma)  # compute how random walk affects the update
     delta.x <- delta.force + delta.random
     pos[i] <- pos[i - 1] + delta.x
@@ -49,8 +59,8 @@ trappedRandomWalk <- function(nsteps, initial.pos, alpha, x0, sigma = 1) {
 ```
 
 ```{r, echo=FALSE}
-simulationWrapper <- function(nrepeat, sim.name, nsteps, initial.pos, alpha, x0) {
-  sim <- lapply(1 : nrepeat, trappedRandomWalk, nsteps = nsteps, initial.pos = initial.pos, alpha = alpha, x0 = x0)
+simulationWrapper <- function(nrepeat, sim.name, nsteps, initial.pos, alpha, mu) {
+  sim <- lapply(1 : nrepeat, trappedRandomWalk, nsteps = nsteps, initial.pos = initial.pos, alpha = alpha, mu = mu)
   sim <- data.frame(sim)
   colnames(sim) <- paste0(sim.name, 1 : nrepeat)
   sim$time <- 1 : nrow(sim)
@@ -65,23 +75,23 @@ set.seed(2018)
 nrepeat <- 10
 # perform the simulation 
 # with parameters as follow
-# x0 = 0, alpha = 0.1, sigma = 1, initial.pos = 100
-x0 <- 0
+# mu = 0, alpha = 0.1, sigma = 1, initial.pos = 100
+mu <- 0
 initial.pos <- 200
 nsteps <- 200
 
-sim0 <- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim0', nsteps = nsteps, initial.pos = initial.pos, alpha = 1, x0 = x0)
+sim0 <- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim0', nsteps = nsteps, initial.pos = initial.pos, alpha = 1, mu = mu)
 
-sim1 <- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim1', nsteps = nsteps, initial.pos = initial.pos, alpha = 0.1, x0 = x0)
+sim1 <- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim1', nsteps = nsteps, initial.pos = initial.pos, alpha = 0.1, mu = mu)
 
 # simulate under alpha = 0.01
-sim2 <- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim2', nsteps = nsteps, initial.pos = initial.pos, alpha = 0.01, x0 = x0)
+sim2 <- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim2', nsteps = nsteps, initial.pos = initial.pos, alpha = 0.01, mu = mu)
 
 # compare with a pure random walk (w/o) trapping (alpha = 0)
-sim3<- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim3', nsteps = nsteps, initial.pos = initial.pos, alpha = 0, x0 = x0)
+sim3<- simulationWrapper(nrepeat = nrepeat, sim.name = 'sim3', nsteps = nsteps, initial.pos = initial.pos, alpha = 0, mu = mu)
 ```
 
-Perform the simulation under $\alpha = 0.1, 0.01, 0$ with $x_0 = `r x0`, \sigma = 1, x(0) = `r initial.pos`$. Note that when $\alpha = 0$, the process is equivalent to random walk since force has not contribution. Red line is the average $x_i$.
+Perform the simulation under $\alpha = 0.1, 0.01, 0$ with $\mu = `r mu`, \sigma = 1, x(0) = `r initial.pos`$. Note that when $\alpha = 0$, the process is equivalent to random walk since force has no contribution. Red line is the average of $x_i$.
 
 ```{r, echo=FALSE}
 # plot trajectories
@@ -89,9 +99,48 @@ df.plot <- rbind(sim0, sim1, sim2, sim3)
 ggplot(df.plot, aes(x = time, y = value, group = variable)) + geom_line() + stat_summary(fun.y = mean, geom = "line", lwd = .5, aes(group = 1), color = 'red')+ facet_grid(alpha ~ ., labeller = label_both) + ylab('X(time)')
 ```
 
-As you can see, when the force is big, the person goes to $x_0$ fairly quickly and if $\alpha$ is close to zero, the process behaves more like random walk. Note that even when the drunk person has already close to $x_0$, the variance of the walk afterward is still smaller than pure random walk. This is because the random effect is not completely cummulated as in random walk case. In other word, any random effect is dumped by force and the bigger the force the smaller the variance would be.
+As you can see, when the force is big, the person goes to $\mu$ fairly quickly and if $\alpha$ is close to zero, the process behaves more like random walk. Note that even when the drunk person has already close to $\mu$, the variance of the walk afterward is still smaller than pure random walk. This is because the random effect is not completely cummulated as in random walk case. In other word, any random effect is damped by force and the bigger the force the smaller the variance would be.
 
-# 
+# Mathematical formalism of Ornstein-Uhlenbeck process
+
+Ornstein-Uhlenbeck (OU) process can be seen as a continuous-time version of the random walk with trapping force as above. Mathematically, $\forall 0 < s < t$, OU process follows
+\begin{align}
+  X(t) | X(s) = x_s \sim N(\mu + (x_s - \mu)e^{-\alpha (t - s)}, \frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha (t - s)})) \label{eq:ou}
+\end{align}
+, where $\mu$ is the position to which the force traps, $\alpha$ controls the strength of the force, and $\sigma^2$ is the strength of random noise.
+
+By rearranging \eqref{eq:ou}, we have
+\begin{align*}
+  X(t) - X(s) &= (1 - e^{-\alpha (t - s)})(\mu - X(s)) + \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha(t-s)})}Z \\
+  Z &\sim N(0, 1)
+\end{align*}
+Therefore, the increment of OU process is not stationary or independent. But since $X(t_{i + 1})$ is linear combination of $X(t_i)$ and $Z$ with some fixed coefficients, *i.e.*
+\begin{align*}
+  X(t_{i + 1}) &= e^{-\alpha (t_{i + 1} - t_i)} X(t_i) + \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha(t_{i + 1} - t_i)})}Z + const. \\
+  X(t_1) | X(0) = x_0 &\sim N(\mu + (x_0 - \mu)e^{-\alpha t_1}, \frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha t_1}))
+\end{align*}
+we can conclude that $\forall 0 < t_1 < \cdots < t_n: X(t_1), \cdots, X(t_n) | X(0) = x_0 \sim MVN$ with $\E(X(t_i) | X(0) = x_0) = \mu + (x_0 - \mu)e^{-\alpha t_i}$ and $\cov(X(t_i), X(t_j)) = \frac{\sigma^2}{2 \alpha}(e^{-\alpha(t_j - t_i)} - e^{-\alpha(t_i + t_j)}), \forall j > i$. The result becomes clear if we write down the corresponding $A$ as what we did for [Brownian motion](brownian_motion_and_guassian_process.html#casting_brownian_motion_as_mvn).
+\begin{align*}
+  A = \begin{bmatrix}
+    f(t_1) & 0 & 0 & 0 & \cdots \\
+    g(t_2 - t_1) f(t_1) & f(t_2 - t_1) & 0 & 0 & \cdots \\
+    g(t_3 - t_2) g(t_2 - t_1) f(t_1) & g(t_3 - t_2) f(t_2 - t_1) & f(t_3) - f(t_2) & 0 & \cdots \\
+    \cdots
+  \end{bmatrix}
+\end{align*}
+, where $f(t) = \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha t})}$ and $g(t) = e^{-\alpha t}$. To obtain covariance, it's just a matter of rearranging $f$'s and $g$'s. 
+
+# Addendum: defining OU process with SDE
+
+An alternative way (also more common way, see [wikipedia](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process#Representation_via_a_stochastic_differential_equation)) to define OU process is using stochastic differential equation
+\begin{align*}
+  dX(t) =  \underbrace{\alpha(\mu - X(t)) dt}_{\text{trapping force}} + \underbrace{\sigma dW_t}_{\text{random walk}}
+\end{align*}
+, where $W_t$ is a standard Brownian motion. Note that this equation is very similar to what we have used to simulate random walk with trapping force. With $X(0) = x_0$, the integration of the SDE takes the form
+\begin{align*}
+  X(t) &= \mu + (x_0 - \mu) e^{-\alpha t} + \sigma \int_0^t e^{-\alpha (t - s)} dW_s
+\end{align*}
+From the second term on the right hand side, it is clear that noise term is also damped with exponential decay. 
 
 ## Session information
 

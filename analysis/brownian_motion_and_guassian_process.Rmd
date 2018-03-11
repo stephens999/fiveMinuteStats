@@ -118,6 +118,8 @@ Then is $n$ by $n$ matrix
 
 Making use of the definition of MVN (see [post](mvnorm.html#definition)), we can conclude that $X(t_1), \cdots, X(t_n) \sim N(0, AA')$. It suggests an alternative way to simulate Brownian motion but more importantly it provides a simpler way to write likelihood beyond the one based on Markovian property.
 
+More specifically, from the form of $A$ presented above, we can conclude that $\cov(X(s), X(t)) = s, \forall 0 < s < t$. 
+
 # Gaussian process in brief
 
 Formally, a stochastic process $\{X(t): t \ge 0\}$ is Gaussian process if 
@@ -127,7 +129,7 @@ Formally, a stochastic process $\{X(t): t \ge 0\}$ is Gaussian process if
 
 From the previous subsection we can conclude that Brownian motion is one example of Gaussian process. 
 
-Intuitively, Gaussian process is a way to capture the linear dependency between $X(t)$'s so it can go beyond Markovian dependency. For instance, the Brownian motino on tree is a slightly more complicated Gaussian process than Brownian motion where the dependency is captured by tree, *i.e.* $X(t) - X(Pa(t)) \sim N(0, \sigma^2 (t - Pa(t)))$, where $Pa(t)$ is the parent of $t$ (see below tree as an example). And more closely related nodes share more $Z_i$'s so ends up with higher correlation. 
+Intuitively, Gaussian process is a way to capture the linear dependency between $X(t)$'s so it can go beyond Markovian dependency. For instance, the Brownian motino on tree is a slightly more complicated Gaussian process than Brownian motion where the dependency is captured by tree, *i.e.* $X(t) - X(Pa(t)) \sim N(0, \sigma^2 (t - Pa(t)))$, where $Pa(t)$ is the parent of $t$ (see below tree as an example, where $t_1$ is parent of $t_3$ and $t_4$). 
 
 ```{r,engine='tikz', fig.ext='svg', fig.width=3, echo=FALSE}
 \begin{tikzpicture}[auto]
@@ -142,7 +144,7 @@ Intuitively, Gaussian process is a way to capture the linear dependency between 
 \end{tikzpicture}
 ```
 
-Ultimately, we get to see $X(t_3), X(t_4), X(t_2)$ only but the covariance matrix is captured by tree structure already.
+More closely related nodes share more $Z_i$'s so ends up with higher correlation. Or more precisely, analogous to regular Brownian motion, $\cov(X(s), X(t)) = \text{closest common ancestor}(s, t), \forall s, t \in \text{tree}$. For the tree shown in the figure, ultimately, we get to see $X(t_3), X(t_4), X(t_2)$ only but the covariance matrix is captured by tree structure already.
 
 Spatial Gaussian process is another example. Instead of interpreting $t$ as time, here it is interpreted as position. Then, under Gaussian process framework, we want to come up with mean and covariance for any set of spatial positions. Note that valid MVN needs covariance matrix to be positive semi-definite. To ensure that $\cov(X(t_i), X(t_j)) = k(X(t_i), X(t_j))$ where $k(\cdot, \cdot)$ is kernel function (see [wikipedia](https://en.wikipedia.org/wiki/Kernel_method#Mathematics:_the_kernel_trick) for an explanation of why). Intuitively, kernel assigns bigger covariance to spatially close pair and in practice, you get to decide how covariance is related to 'spatial distance' by picking kernel (see an incomplete list of kernels [here](http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/#kernel_functions)) and even estimating the parameters in kernel function based on the how good it fits data.
 
