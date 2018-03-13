@@ -315,10 +315,10 @@ div.tocify {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-03-09</p>
+<p><strong>Last updated:</strong> 2018-03-12</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> f6de2c0</p>
+<p><strong>Code version:</strong> 39e281c</p>
 <!-- Add your analysis here -->
 <p><span class="math display">\[
 \newcommand\var{\text{Var}}
@@ -333,7 +333,7 @@ shared across the workflowr files. -->
 <h1>Motivation</h1>
 <p>Consider the drunk person sernario again but now instead of walking along a flat land, the guy is walking on a convex one (see figure below).</p>
 <div class="figure">
-<img src="/home/yanyul/Desktop/trapped_random_walk.png" />
+<img src="trapped_random_walk.png" />
 
 </div>
 <p>Although he/she still tends to walk in random direction but the curvature of the line traps him/her because of gravity (keeping the person not far from the minimum point, <span class="math inline">\(\mu\)</span>). Suppose the trapping force gets bigger proportionally to the distance to <span class="math inline">\(\mu\)</span>. Namely, for an time interval <span class="math inline">\(t_i \rightarrow t_i + \Delta t = t_{i + 1}\)</span>, <span class="math inline">\(\Delta_{\text{force}} x = \alpha (\mu - x(t_i)) = \alpha (\mu - x_i)\)</span>, where <span class="math inline">\(\alpha\)</span> controls how strong the force can be. Then, we can simulate the process as follow.</p>
@@ -395,9 +395,13 @@ An alternative way (also more common way, see <a href="https://en.wikipedia.org/
 <h2>Session information</h2>
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.2.3 (2015-12-10)
+<pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.3 LTS
+
+Matrix products: default
+BLAS: /usr/lib/libblas/libblas.so.3.6.0
+LAPACK: /usr/lib/lapack/liblapack.so.3.6.0
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -411,15 +415,16 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] stringr_1.3.0  reshape2_1.4.2 ggplot2_2.2.1 
+[1] stringr_1.3.0  reshape2_1.4.3 ggplot2_2.2.1 
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.13     digest_0.6.12    rprojroot_1.3-2  plyr_1.8.4      
- [5] grid_3.2.3       gtable_0.2.0     backports_1.1.2  git2r_0.21.0    
- [9] magrittr_1.5     evaluate_0.10.1  scales_0.5.0     pillar_1.1.0    
-[13] rlang_0.2.0      stringi_1.1.6    lazyeval_0.2.0   rmarkdown_1.9   
-[17] labeling_0.3     tools_3.2.3      munsell_0.4.3    yaml_2.1.17     
-[21] colorspace_1.3-2 htmltools_0.3.6  knitr_1.20       tibble_1.4.2    </code></pre>
+ [1] Rcpp_0.12.15     knitr_1.20       magrittr_1.5     munsell_0.4.3   
+ [5] colorspace_1.3-2 rlang_0.2.0      plyr_1.8.4       tools_3.4.3     
+ [9] grid_3.4.3       gtable_0.2.0     git2r_0.21.0     htmltools_0.3.6 
+[13] yaml_2.1.18      lazyeval_0.2.1   rprojroot_1.3-2  digest_0.6.15   
+[17] tibble_1.4.2     evaluate_0.10.1  rmarkdown_1.9    labeling_0.3    
+[21] stringi_1.1.6    compiler_3.4.3   pillar_1.2.1     scales_0.5.0    
+[25] backports_1.1.2 </code></pre>
 </div>
 </div>
 

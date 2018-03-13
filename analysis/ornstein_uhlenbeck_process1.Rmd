@@ -38,9 +38,9 @@ Please read [Brownian motion](brownian_motion_and_guassian_process.html) beforeh
 
 # Motivation
 
-Consider the drunk person sernario again but now instead of walking along a flat land, the guy is walking on a convex one (see figure below). 
+Consider the drunk person sernario again but now instead of walking along a flat land, the guy is walking on a convex one (see figure below).
 
-![](~/Desktop/trapped_random_walk.png)
+![](trapped_random_walk.png)
 
 Although he/she still tends to walk in random direction but the curvature of the line traps him/her because of gravity (keeping the person not far from the minimum point, $\mu$). Suppose the trapping force gets bigger proportionally to the distance to $\mu$. Namely, for an time interval $t_i \rightarrow t_i + \Delta t = t_{i + 1}$, $\Delta_{\text{force}} x = \alpha (\mu - x(t_i)) = \alpha (\mu - x_i)$, where $\alpha$ controls how strong the force can be. Then, we can simulate the process as follow.
 
@@ -73,7 +73,7 @@ library(reshape2)
 library(stringr)
 set.seed(2018)
 nrepeat <- 10
-# perform the simulation 
+# perform the simulation
 # with parameters as follow
 # mu = 0, alpha = 0.1, sigma = 1, initial.pos = 100
 mu <- 0
@@ -128,7 +128,7 @@ we can conclude that $\forall 0 < t_1 < \cdots < t_n: X(t_1), \cdots, X(t_n) | X
     \cdots
   \end{bmatrix}
 \end{align*}
-, where $f(t) = \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha t})}$ and $g(t) = e^{-\alpha t}$. To obtain covariance, it's just a matter of rearranging $f$'s and $g$'s. 
+, where $f(t) = \sqrt{\frac{\sigma^2}{2 \alpha}(1 - e^{-2\alpha t})}$ and $g(t) = e^{-\alpha t}$. To obtain covariance, it's just a matter of rearranging $f$'s and $g$'s.
 
 # Addendum: defining OU process with SDE
 
@@ -140,7 +140,7 @@ An alternative way (also more common way, see [wikipedia](https://en.wikipedia.o
 \begin{align*}
   X(t) &= \mu + (x_0 - \mu) e^{-\alpha t} + \sigma \int_0^t e^{-\alpha (t - s)} dW_s
 \end{align*}
-From the second term on the right hand side, it is clear that noise term is also damped with exponential decay. 
+From the second term on the right hand side, it is clear that noise term is also damped with exponential decay.
 
 ## Session information
 
