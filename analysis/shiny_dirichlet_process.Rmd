@@ -2,13 +2,11 @@
 title: "Introduction to Dirichlet Process"
 author: "Kaiqian Zhang"
 date: "3/6/2018"
-output: html_notebook
+output: 
+  html_notebook:
+    code_folding: hide
 runtime: shiny
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Pre-requisites
 
@@ -152,13 +150,13 @@ Chinese.restaurant.simulation = function(num_customers, alpha, H){
 inputPanel(
   selectInput("num_customers", label = "Number of customers:", choices = c(100, 500, 1000, 3000), selected=100),
   
-  selectInput("alpha", label="alpha:", choices=c(1,5,10,50,100),selected=100),
+  selectInput("alpha_1", label="alpha:", choices=c(1,5,10,50,100),selected=100),
   
-  selectInput("base_dist", label = "Base distribution H:", choices = c('Uniform(0,1)', 'Normal(0,1)', 'Exponential(1)'))
+  selectInput("base_dist_1", label = "Base distribution H:", choices = c('Uniform(0,1)', 'Normal(0,1)', 'Exponential(1)'))
 )
 
 renderPlot({
-  Chinese.restaurant.simulation(as.numeric(input$num_customers),as.numeric(input$alpha),toString(input$base_dist))
+  Chinese.restaurant.simulation(as.numeric(input$num_customers),as.numeric(input$alpha_1),toString(input$base_dist_1))
 }, height=600,width=1000)
 ```
 
@@ -166,200 +164,9 @@ renderPlot({
 
 (1) Each draw from a DP model is a discrete distribution. By our stick-breaking process simulation, we observe that the concetration parameter $\alpha$ describes this discreteness. As $\alpha \to 0$, the distributions drawn are concentrated on a single value. As $\alpha \to \infty$, the distributions drawn become continuous and $G \to H$.
 
-(2) The concentration parameter $\alpha$ can also be treated as an inverse variance. $\text{Var}[G(A)] = \frac{H(A)(1-H(A))}{\alpha+1}$. The larger $\alpha$ is, the samller the variance, and the DP will concentrate more of its mass around the mean.
+(2) The concentration parameter $\alpha$ can also be treated as an inverse variance. $\text{Var}[G(A)] = \frac{H(A)(1-H(A))}{\alpha+1}$. The larger $\alpha$ is, the smaller the variance is, and the DP will concentrate more of its mass around the mean.
 
 (3) The base distribution $H$ is essentially the mean of DP(Dirichlet process). We can think that when a DP draws a random distribution around $H$, it is the same as a normal distribution draws a random number around its mean.
-
-## Application: clustering Gaussian mixture data
-
-Suppose we have data $X = \{x_1,\dots,x_i\}$ from a 10-dimensional Gaussian mixture model. The $k$th component has two parameters $\boldsymbol{\mu}_k$ and $\sum_k$ since each component is multi-normal distributed. We do not know the number of clusters. We will use gibbs sampling (what we've learned before) to make inference on the number of clusters. 
-
-Since we do not know the number of mixtures, we use Dirichlet process as our prior model. Here is our prior setting:
-
-* $\beta_k \sim \text{Beta}(1,\alpha_0)$
-
-* $\boldsymbol{\pi_i} = \text{Stick-Breaking-Process}(\boldsymbol{\beta})$
-
-* $z_i | \boldsymbol{\pi}_i \sim \text{Multi}(\boldsymbol{\pi}_i)$
-
-* $\boldsymbol{\mu}_k \sim \text{Normal}(\boldsymbol{\mu}_0,\Sigma_0)$
-
-* $\sum_k \sim \text{Inverse-Wishart}(\nu_0, \boldsymbol{\psi}_0)$
-
-where $i=1\dots n$ and $k=1\dots$.
-
-The conditional posteriors are: for the $s+1$ iteration,
-
-* $\beta^{(s+1)}_k \sim \text{Beta}(1+n_k, \alpha_0+n_{k+})$ where $n_k$ denotes the number of data in the $k$th cluster and $n_{k+}$ is the sum of observations in the $k+1$, ..., up to $K$ cluster.
-
-* $\boldsymbol{\pi}_{i,k}^{(s+1)} \mid \boldsymbol{\mu}_k^{(s)}, \Sigma_k^{(s)}, x_i = P(x_i |{\boldsymbol{\mu}_k}^{(s)}, \Sigma_k)^{(s)}\cdot \boldsymbol{\pi}_{i,k}^{(s)}$ and then normalize $\boldsymbol{\pi}_{i}^{(s+1)}$.
-
-* $z_i^{(s+1)} \sim \text{Multi}(\boldsymbol{\pi}_{i}^{(s+1)})$.
-
-* $\boldsymbol{\mu}_k^{(s+1)} \sim \text{Normal}((\Sigma_0^{-1}+n_k(\Sigma_k^{(s)})^{-1})^{-1} (\Sigma_0^{-1}\boldsymbol{\mu}_0 + n_k(\Sigma_k^{(s)})^{-1}\overline{x}),(\Sigma_0^{-1}+n_k(\Sigma_k^{(s)})^{-1})^{-1})$
-
-* $\Sigma_k^{(s+1)} \sim \text{Inverse-Wishart}(n_k+\nu_0, \boldsymbol{\psi}_0+\sum_{i=1}^{n_k}(x_i-\boldsymbol{\mu}_k^{(s)})(x_i-\boldsymbol{\mu}_k^{(s)})^{T})$.
-
-We write a Gibbs sampling algorithm based on the outline above, and we will simulate data and test our Gibbs sampling to see whether it can help find the number of mixtures.
-
-We generate data from a 10-dimensional Gaussian mixture with six clusters. The proportion for this mixture is $50:25:100:50:50:25$. Here are our test data.
-
-```{r echo=FALSE}
-library(mvtnorm)
-library(MASS)
-library(MCMCpack)
-```
-
-```{r}
-set.seed(12345)
-mu1 = runif(10, -1, 0)
-mu2 = runif(10, 5, 7)
-mu3 = runif(10, 0, 5)
-mu4 = runif(10, -5, 0)
-mu5 = runif(10, 10, 15)
-mu6 = runif(10, 15, 20)
-Sigma1 = rWishart(1, 15, diag(1/15, 10))[,,1]
-Sigma2 = rWishart(1, 15, diag(1/15, 10))[,,1]
-Sigma3 = rWishart(1, 15, diag(1/15, 10))[,,1]
-Sigma4 = rWishart(1, 15, diag(1/15, 10))[,,1]
-Sigma5 = rWishart(1, 15, diag(1/15, 10))[,,1]
-Sigma6 = rWishart(1, 15, diag(1/15, 10))[,,1]
-Data = rbind(mvrnorm(50, mu1, Sigma1),
-          mvrnorm(25, mu2, Sigma2),
-          mvrnorm(100, mu3, Sigma3),
-          mvrnorm(50, mu4, Sigma4),
-          mvrnorm(50, mu5, Sigma5),
-          mvrnorm(25, mu6, Sigma6))
-```
-
-Now suppose we do not know the number of clusters in our data. We propose that the number of mixtures might be 20 and our Gibbs sampling function will help us find the true number. 
-
-```{r gibbs, echo=FALSE}
-stick <- function(activeK, alpha, N){
-  pi = rep(0, activeK)
-  beta_vec = rep(0, activeK)
-  for (k in 1:activeK){
-    beta_vec[k] = rbeta(1,1+N[k], alpha+sum(N[k:activeK])-N[k])
-  }
-  pi[1] = beta_vec[1]
-  for (i in 2:activeK){
-    pi[i] = beta_vec[i]*prod(1-beta_vec[1:(i-1)])
-  }
-  pi
-}
-
-postProb <- function(my_data, pi, mu_list, sigma_list){
-  activeK = length(mu_list)
-  temp = pi
-  post_pi = rep(0, length(pi))
-  class_assignments = matrix(0, activeK, dim(my_data)[1])
-  for (i in 1:dim(my_data)[1]){
-    for (k in 1:activeK){
-      mu_temp = mu_list[[k]]
-      sigma_temp = sigma_list[[k]]
-      temp[k] = pi[k]*dmvnorm(my_data[i,], mu_temp, sigma_temp)
-    }
-    post_pi = temp/sum(temp)
-    Z = match(1, rmultinom(1, 1, post_pi))
-    class_assignments[,i] = 0
-    class_assignments[Z,i] = 1
-  }
-  class_assignments
-}
-
-updateMu <- function(p, subsetData, n_k, mu_0, lambda, sigma_k){
-  if(length(subsetData)==p){
-    xbar = subsetData
-  }else{
-    xbar = colMeans(subsetData)
-  }
-  mumean = (mu_0*lambda+n_k*xbar)/(lambda+n_k)
-  muvar = 1/(lambda+n_k)*sigma_k
-  res = mvrnorm(1, mumean, muvar)
-  res
-}
-
-updateSigma <- function(p, subsetData, n_k, nu, psi, lambda, mu_0){
-  first = nu + n_k
-  if(length(subsetData)==p){
-    xbar = subsetData
-    second = psi + (lambda*n_k)/(lambda+n_k)*(xbar-mu_0)%*%t(xbar-mu_0)
-    riwish(first, second)
-  }else{
-    xbar = colMeans(subsetData)
-    ret = 0
-    for (i in 1:n_k){
-      temp = subsetData[i,]-xbar
-      ret = ret + temp %*% t(temp)
-    }
-    second = psi + ret + (lambda*n_k)/(lambda+n_k)*(xbar-mu_0)%*%t(xbar-mu_0)
-    riwish(first, second)
-  }
-}
-
-Gibbs <- function(my_data, activeK, rep, nu, psi, mu_0, sigma_0, lambda){
-  # Set-up
-  p = ncol(my_data)
-  pi = rep(1/activeK, activeK) # prior set-up
-  mu_list = vector('list', activeK) # likelihood set-up
-  sigma_list = vector('list', activeK)
-  # Initialization
-  kmeans_init = kmeans(my_data, activeK) # kmeans initialize mu and sigma
-  mu_init_Mat = kmeans_init$centers
-  for (i in 1:activeK){
-    cluster_index = which(kmeans_init$cluster == i)
-    cluster_index = as.vector(cluster_index)
-    kth_cluster_data = my_data[cluster_index,]
-    sigma_list[[i]] = cov(kth_cluster_data)
-    mu_list[[i]] = mu_init_Mat[i,]
-  }
-  # Initial posterior Z-label matrix
-  membership = postProb(my_data, pi, mu_list, sigma_list)
-  N = rowSums(membership) # record n_k in each cluster
-  print('Initial assignment:')
-  print(N)
-  
-  # Identify active clusters so far (i.e: which clusters have more than one element, update only those)
-  activeK_index = which(N>1)
-
-  for (s in 1:rep){
-    pi = stick(activeK,1,N) # prior
-    membership = postProb(my_data, pi, mu_list, sigma_list)
-    N = rowSums(membership)
-    for (k in 1:activeK){
-      if(N[k]>0){
-        k_cluster_index = which(membership[k,] %in% 1)
-        subsetData = my_data[k_cluster_index,]
-        mu_k = updateMu(p, subsetData, N[k], mu_0, lambda, sigma_list[[k]])
-        sigma_k = updateSigma(p, subsetData, N[k], nu, psi, lambda, mu_0)
-        mu_list[[k]] = mu_k
-        sigma_list[[k]] = sigma_k
-      }else{
-        mu_list[[k]] = mu_0
-        sigma_list[[k]] = sigma_0
-      }
-    }
-  }
-  valid_group_index = which(N>0)
-  final_mu_list = mu_list[valid_group_index]
-  final_sigma_list = sigma_list[valid_group_index]
-  groupings = c(1:activeK)%*%membership
-  print('Final assignment: ')
-  print(N)
-  return(list('mu'=final_mu_list, 'sigma' = final_sigma_list, 'pi' = pi, 'membership' = groupings))
-}
-```
-
-
-```{r}
-result = Gibbs(Data, activeK=20, rep=300, nu=12, psi=diag(10,10), mu_0=rep(0,10), sigma_0=diag(10,10), lambda=1)
-```
-
-Our Gibbs sampling algorithm also makes inference on the $\boldsymbol{\mu}$ and $\Sigma$ for each cluster and they are amazingly close to the actual $\boldsymbol{\mu}$ and $\Sigma$. We show our estimates on $\boldsymbol{\mu}$ here. 
-
-```{r}
-result$mu
-```
 
 ## Citations
 
