@@ -2,7 +2,9 @@
 title: "Application on Dirichlet Process Model"
 author: "Kaiqian Zhang"
 date: "3/13/2018"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 runtime: shiny
 ---
 

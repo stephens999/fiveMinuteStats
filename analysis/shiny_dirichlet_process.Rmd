@@ -3,14 +3,14 @@ title: "Introduction to Dirichlet Process"
 author: "Kaiqian Zhang"
 date: "3/6/2018"
 output: 
-  html_notebook:
+  html_document:
     code_folding: hide
 runtime: shiny
 ---
 
 ## Pre-requisites
 
-You need to know what a Dirichlet distribution is, and some basic knowledge about mixture models. 
+You need to know what a Dirichlet distribution is, and some introductory knowledge about mixture models. 
 
 ## Introduction
 
