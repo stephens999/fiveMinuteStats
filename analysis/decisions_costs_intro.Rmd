@@ -1,7 +1,7 @@
 ---
-title: "Untitled"
-author: "First Last"
-date: YYYY-MM-DD
+title: "Making decisions: utility/loss and the two class problem"
+author: "Matthew Stephens"
+date: 2018-04-24
 ---
 
 <!-- The file analysis/chunks.R contains chunks that define default settings
