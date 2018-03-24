@@ -4,15 +4,16 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="First Last" />
+<meta name="author" content="Matthew Stephens" />
 
+<meta name="date" content="2018-04-24" />
 
-<title>Untitled</title>
+<title>Making decisions: utility/loss and the two class problem</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,8 +25,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -35,10 +36,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -301,9 +304,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Untitled</h1>
-<h4 class="author"><em>First Last</em></h4>
-<h4 class="date"><em>YYYY-MM-DD</em></h4>
+<h1 class="title toc-ignore">Making decisions: utility/loss and the two class problem</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2018-04-24</em></h4>
 
 </div>
 
@@ -312,10 +315,10 @@ div.tocify {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2017-03-06</p>
+<p><strong>Last updated:</strong> 2018-03-24</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> c7339fc</p>
+<p><strong>Code version:</strong> 933a247</p>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
 <p>Understand the <a href="LR_and_BF.html">calculation of posterior probabilities for a simple two-class problem</a>.</p>
@@ -364,28 +367,20 @@ shared across the workflowr files. -->
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] workflowr_0.4.0    rmarkdown_1.3.9004
-
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
- [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
-[13] evaluate_0.10  </code></pre>
+ [1] backports_1.1.2 magrittr_1.5    rprojroot_1.3-2 tools_3.3.2    
+ [5] htmltools_0.3.6 yaml_2.1.16     Rcpp_0.12.14    stringi_1.1.6  
+ [9] rmarkdown_1.8   knitr_1.18      git2r_0.20.0    stringr_1.2.0  
+[13] digest_0.6.13   evaluate_0.10.1</code></pre>
 </div>
 </div>
 
@@ -438,7 +433,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
