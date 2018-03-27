@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -25,8 +25,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -36,10 +36,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -313,10 +315,10 @@ div.tocify {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2017-03-06</p>
+<p><strong>Last updated:</strong> 2018-03-27</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> c7339fc</p>
+<p><strong>Code version:</strong> e7cb742</p>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
 <p>This document introduces the concept of likelihood ratio for comparing two simple (“fully specified”) statistical models - one of the most fundamental concepts in statistical inference.</p>
@@ -409,7 +411,7 @@ shared across the workflowr files. -->
 <p>To get some intuition, let us examine the data at the first few markers. At marker 1 our tusk has the allele 1. This allele is less common in savanna elephants than forest elephants (40% of savanna elephants carry this allele, vs 80% of forest elephants), so this observation seems to support the sample coming from forest. However, at the same time 40% of savanna samples carry this allele, so it remains plausible that the sample came from savanna.</p>
 <p>Moving to marker 2, our tusk has the allele 0, which is more common in savanna (88%) than forest elephants (80%). And at marker 3 the tusk has allele 1 which is also more common in savanna (21% vs 11%). So, in contrast to marker 1, the data at these two markers are more consistent with the tusk coming from a savanna elephant than a forest elephant.</p>
 <p>We could continue in this way, but the point should be clear: each marker contains some information, but not a huge amount, and sometimes the information points in different directions. By taking a statistical approach to this problem we aim to quantify this kind of information, and to efficiently combine the information across markers to come to an overall conclusion.</p>
-<p>(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See <span class="citation">Samuel K. Wasser and Stephens (2007)</span> and <span class="citation">S K Wasser and Stephens (2008)</span> for more details.)</p>
+<p>(This is simplified version of a real problem: Interpol and other authorities want to know the origin of poached tusks to help focus efforts on curbing this illegal activity; in practice they are interested in much finer-level discrimination, and measure many genetic markers to get more information. See <span class="citation">Wasser et al. (2007)</span> and <span class="citation">Wasser et al. (2008)</span> for more details.)</p>
 </div>
 <div id="solution" class="section level1">
 <h1>Solution</h1>
@@ -500,37 +502,29 @@ simulation_study(nS, nF, fS, fF, lc, seed){
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.5 LTS
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] workflowr_0.4.0    rmarkdown_1.3.9004
-
 loaded via a namespace (and not attached):
- [1] backports_1.0.5 magrittr_1.5    rprojroot_1.2   htmltools_0.3.5
- [5] tools_3.3.2     yaml_2.1.14     Rcpp_0.12.9     stringi_1.1.2  
- [9] knitr_1.15.1    git2r_0.18.0    stringr_1.2.0   digest_0.6.12  
-[13] gtools_3.5.0    evaluate_0.10  </code></pre>
+ [1] backports_1.1.2 magrittr_1.5    rprojroot_1.3-2 tools_3.3.2    
+ [5] htmltools_0.3.6 yaml_2.1.16     Rcpp_0.12.14    stringi_1.1.6  
+ [9] rmarkdown_1.8   knitr_1.18      git2r_0.20.0    stringr_1.2.0  
+[13] digest_0.6.13   evaluate_0.10.1</code></pre>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
 <div id="refs" class="references">
 <div id="ref-wasser.etal.08">
-<p>S K Wasser, O Drori, W J Clark, and M Stephens. 2008. “Combating the Illegal Trade in African Elephat Ivory with Dna Forensics.” <em>Conservations Biology</em> 22 (4): 1065–71.</p>
+<p>Wasser, SK, WJ Clark, O Drori, ES Kisamo, C Mailand, B Mutayoba, and M Stephens. 2008. “Combating the Illegal Trade in African Elephat Ivory with Dna Forensics.” <em>Conservations Biology</em> 22 (4): 1065–71.</p>
 </div>
 <div id="ref-wasser.etal.07">
-<p>Samuel K. Wasser, Rebecca Booth, Celia Mailand, and Matthew Stephens. 2007. “Using Dna to Track the Origin of the Largest Ivory Seizure Since the 1989 Trade Ban.” <em>Proceedings of the National Academy of Sciences</em> 104 (10): 4228–33.</p>
+<p>Wasser, SK, C Mailand, R Booth, B Mutayoba, E Kisamo, B Clark, and M Stephens. 2007. “Using Dna to Track the Origin of the Largest Ivory Seizure Since the 1989 Trade Ban.” <em>Proceedings of the National Academy of Sciences</em> 104 (10): 4228–33.</p>
 </div>
 </div>
 </div>
@@ -585,7 +579,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
