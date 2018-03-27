@@ -1,0 +1,175 @@
+---
+title: "Bayes Decision Rule for prediction problems"
+author: "Matthew Stephens"
+date: 2018-03-27
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+# Overview
+
+The goal here is to introduce some basic ideas from decision theory,
+and particularly the notions of loss, decision rule, and integrated risk, 
+in the context of a simple prediction problem. 
+
+To understand this vignette you will need to be familiar with the concept of probability distributions and expectations.
+
+# The Prediction Problem
+
+Consider the problem of predicting an outcome $Y$ on the basis of inputs (or "features"
+or "predictors") $X$. Typically $Y$ might be a one-dimensional outcome (discrete or continuous) and $X$ a multi-dimensional input. If $Y$ is discrete then this is often referred to as a 
+"classification problem"; if $Y$ is continuous then this is often referred to as a
+"regression problem".
+
+As a concrete example, [here](likelihood_ratio_simple_models.html) we attempted to classify
+an elephant tusk as being from a forest or savanna elephant ($Y$) based on its genetic data ($X$).
+
+## Loss function
+
+To make a rational decision about what value $\hat{Y}$ to predict for $Y$
+we must specify how "bad" different types of errors are.
+
+That is, we must specify, for each possible value of $Y$, and each possible prediction $\hat{Y}$, a (real) value $L(\hat{Y},Y)$ that
+measures how "wrong" the prediction is. Big values of $L$ indicate worse predictions.
+$L$ is called the "loss function". 
+
+For example, if $Y$ is continuous and real-valued then some simple common loss functions are:
+
+- squared loss: $L(\hat{Y},Y) = (Y-\hat{Y})^2$
+- absolute loss: $L(\hat{Y},Y) = |Y-\hat{Y}|$
+
+If $Y$ is discrete then a simple common loss function is 0-1 loss, which
+is 0 if the prediction is correct and 1 otherwise: $L(\hat{Y},Y) = I(\hat{Y} \neq Y)$
+where $I$ denotes the indicator function.
+
+## Decision Rule
+
+In this context a decision rule is simply a way of predicting $Y$ from $X$. That
+is it is a function $\hat{Y}(X)$, which for any given $X$ produces a predicted
+value $\hat{Y}$ for $Y$.
+
+## Expected Loss (Integrated Risk)
+
+Now consider applying the decision rule $\hat{Y}(X)$ to a series
+of $(X,Y)$ pairs coming from some probability distribution $p(X,Y)$.
+A natural way to measure how good (or bad) the decision rule is, is to compute
+the expected loss (sometimes referred to as the Integrated Risk, and here denoted $r$):
+
+$$r(\hat{Y}) := \int \int L(\hat{Y}(X),Y) p(X,Y) \,dX \,dY.$$
+
+
+## The optimal decision rule
+
+So what decision rule $\hat{Y}$ is "optimal" in terms of minimizing the expected loss $r$?
+It is easy to show that the following decision rule minimizes $r$:
+
+*Optimal Decision Rule:*
+For each $X$ choose the prediction $\hat{Y}_\text{opt}(X)$ that minimizes
+the conditional expected loss: 
+$$\hat{Y}_\text{opt}(X) = \arg \min_a \int L(a, Y) \, p(Y | X) dY.$$
+
+
+The proof is straightforward.
+Since $p(X,Y)= p(Y|X) p(X)$, we can rewrite the expected loss for any decision rule $\hat{Y}$ as:
+$$r(\hat{Y}) = \int \biggl[ \int L(\hat{Y}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX$$
+Note that, by definition, $\hat{Y}_\text{opt}(X)$ minimizes the term inside $[]$.
+Thus
+$$r(\hat{Y}) \leq \int \biggl[ \int L(\hat{Y}_\text{opt}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX = r(\hat{Y}_\text{opt}).$$
+
+## Examples
+
+As defined above, finding $\hat{Y}_\text{opt}(X)$ requires solving an optimization problem.
+For the standard loss functions given above, solving this optimization problem
+is easy provided that the conditional distribution $p(Y|X)$ is easy to work with.
+
+### Squared loss:
+
+For example, using squared loss, the optimization problem becomes
+$$\hat{Y}_\text{opt}(X) = \arg \min_a f(a)$$ where
+$$f(a) = \int (a-Y)^2 \, p(Y | X) \, dY.$$
+We can optimize this by differentiating with respect to $a$ and setting the derivative to 0.
+Differentiating $f(a)$ gives
+$$f'(a) = 2 \int (a-Y) p(Y|X) \, dY = 2(a - E(Y|X)).$$
+which is zero at $a=E(Y|X)$. 
+
+Thus, for squared loss, the optimal decision rule is to predict $Y$ using
+its conditional mean given $X$: $\hat{Y}_\text{opt}(X) = E(Y | X)$.
+
+
+### Absolute loss:
+
+Although not quite as easy to show, under absolute loss the
+optimal decision rule is to set 
+$\hat{Y}$ to the median of the conditional distribution $Y|X$.
+
+### 0-1 loss:
+
+Under 0-1 loss, with $Y$ discrete,  
+the optimal decision rule is to set $\hat{Y}$ to the mode of the
+conditional distribution $p(Y|X)$. That is 
+$$\hat{Y}_\text{opt}(X) = \arg \max_a p(Y=a |X).$$
+Showing this is left as an Exercise.
+
+## Connection with Bayesian inference: Bayes risk and Bayes decision rules
+
+The conditional distribution $Y|X$ is sometimes be referred to as the "posterior" distribution of $Y$ given data $X$, and computing this 
+distribution is sometimes referred to as "performing Bayesian inference for $Y$". 
+
+Thus, the above 
+result ("Optimal Decision Rule" section) 
+can be thought of as characterizing
+the optimality of Bayesian inference in terms of a "frequentist" measure ($r$) which measures long-run performance across many samples $(X,Y)$ from $p(X,Y)$.
+For example, 
+predicting $Y$ by its posterior mean, $E(Y|X)$,
+is optimal in terms of expected squared loss
+(with expectation taken across $p(X,Y)$).
+
+Because of this connection with Bayesian inference,
+the optimal value $r(\hat{Y}_\text{opt})$ is sometimes referred to as the "Bayes risk", and $\hat{Y}_\text{opt}$ is referred to as a "Bayes decision rule".
+
+
+## Theory vs Practice
+
+Note that the optimal decision rule
+depends on the distribution $p(Y,X)$ -- or, more specifically, on the conditional distribution $p(Y|X)$. Typically one does not know
+this distribution exactly, and so one cannot
+implement the optimal decision rule. (An exception
+is in artificial simulation experiments, where the "true" distribution $p(Y,X)$ is known; in these
+cases the optimal rule can be computed, and may provide a useful yardstick against which other rules can be compared.)
+
+One way (but not the only way) to proceed in practice
+is to perform Bayesian inference for $Y$ anyway, by simpely positing (assuming) some "prior" distribution $p(Y)$, and a "likelihood" $p(X|Y)$, and using these to compute a posterior distribution $p(Y|X)$. The result above shows that inference based on this posterior will be optimal, on average, across large numbers of samples of $(X,Y)$ drawn from $p(X,Y)= p(Y)p(X|Y)$. But, of course, the result does not
+guarantee optimality, on average, across samples from some other distribution, $q(X,Y)$ say.  One might summarize this as "Bayesian inference is optimal, on average, if both the prior distribution and likelihood are `correct'".
+
+
+
+
+
+
+
+
+
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```
