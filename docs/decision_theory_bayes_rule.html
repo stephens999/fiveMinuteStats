@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2018-03-27" />
+
+<title>Bayes Decision Rule for prediction problems</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Bayes Decision Rule for prediction problems</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2018-03-27</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2018-03-27</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> f7bbf4f</p>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The goal here is to introduce some basic ideas from decision theory, and particularly the notions of loss, decision rule, and integrated risk, in the context of a simple prediction problem.</p>
+<p>To understand this vignette you will need to be familiar with the concept of probability distributions and expectations.</p>
+</div>
+<div id="the-prediction-problem" class="section level1">
+<h1>The Prediction Problem</h1>
+<p>Consider the problem of predicting an outcome <span class="math inline">\(Y\)</span> on the basis of inputs (or “features” or “predictors”) <span class="math inline">\(X\)</span>. Typically <span class="math inline">\(Y\)</span> might be a one-dimensional outcome (discrete or continuous) and <span class="math inline">\(X\)</span> a multi-dimensional input. If <span class="math inline">\(Y\)</span> is discrete then this is often referred to as a “classification problem”; if <span class="math inline">\(Y\)</span> is continuous then this is often referred to as a “regression problem”.</p>
+<p>As a concrete example, <a href="likelihood_ratio_simple_models.html">here</a> we attempted to classify an elephant tusk as being from a forest or savanna elephant (<span class="math inline">\(Y\)</span>) based on its genetic data (<span class="math inline">\(X\)</span>).</p>
+<div id="loss-function" class="section level2">
+<h2>Loss function</h2>
+<p>To make a rational decision about what value <span class="math inline">\(\hat{Y}\)</span> to predict for <span class="math inline">\(Y\)</span> we must specify how “bad” different types of errors are.</p>
+<p>That is, we must specify, for each possible value of <span class="math inline">\(Y\)</span>, and each possible prediction <span class="math inline">\(\hat{Y}\)</span>, a (real) value <span class="math inline">\(L(\hat{Y},Y)\)</span> that measures how “wrong” the prediction is. Big values of <span class="math inline">\(L\)</span> indicate worse predictions. <span class="math inline">\(L\)</span> is called the “loss function”.</p>
+<p>For example, if <span class="math inline">\(Y\)</span> is continuous and real-valued then some simple common loss functions are:</p>
+<ul>
+<li>squared loss: <span class="math inline">\(L(\hat{Y},Y) = (Y-\hat{Y})^2\)</span></li>
+<li>absolute loss: <span class="math inline">\(L(\hat{Y},Y) = |Y-\hat{Y}|\)</span></li>
+</ul>
+<p>If <span class="math inline">\(Y\)</span> is discrete then a simple common loss function is 0-1 loss, which is 0 if the prediction is correct and 1 otherwise: <span class="math inline">\(L(\hat{Y},Y) = I(\hat{Y} \neq Y)\)</span> where <span class="math inline">\(I\)</span> denotes the indicator function.</p>
+</div>
+<div id="decision-rule" class="section level2">
+<h2>Decision Rule</h2>
+<p>In this context a decision rule is simply a way of predicting <span class="math inline">\(Y\)</span> from <span class="math inline">\(X\)</span>. That is it is a function <span class="math inline">\(\hat{Y}(X)\)</span>, which for any given <span class="math inline">\(X\)</span> produces a predicted value <span class="math inline">\(\hat{Y}\)</span> for <span class="math inline">\(Y\)</span>.</p>
+</div>
+<div id="expected-loss-integrated-risk" class="section level2">
+<h2>Expected Loss (Integrated Risk)</h2>
+<p>Now consider applying the decision rule <span class="math inline">\(\hat{Y}(X)\)</span> to a series of <span class="math inline">\((X,Y)\)</span> pairs coming from some probability distribution <span class="math inline">\(p(X,Y)\)</span>. A natural way to measure how good (or bad) the decision rule is, is to compute the expected loss (sometimes referred to as the Integrated Risk, and here denoted <span class="math inline">\(r\)</span>):</p>
+<p><span class="math display">\[r(\hat{Y}) := \int \int L(\hat{Y}(X),Y) p(X,Y) \,dX \,dY.\]</span></p>
+</div>
+<div id="the-optimal-decision-rule" class="section level2">
+<h2>The optimal decision rule</h2>
+<p>So what decision rule <span class="math inline">\(\hat{Y}\)</span> is “optimal” in terms of minimizing the expected loss <span class="math inline">\(r\)</span>? It is easy to show that the following decision rule minimizes <span class="math inline">\(r\)</span>:</p>
+<p><em>Optimal Decision Rule:</em> For each <span class="math inline">\(X\)</span> choose the prediction <span class="math inline">\(\hat{Y}_\text{opt}(X)\)</span> that minimizes the conditional expected loss: <span class="math display">\[\hat{Y}_\text{opt}(X) = \arg \min_a \int L(a, Y) \, p(Y | X) dY.\]</span></p>
+<p>The proof is straightforward. Since <span class="math inline">\(p(X,Y)= p(Y|X) p(X)\)</span>, we can rewrite the expected loss for any decision rule <span class="math inline">\(\hat{Y}\)</span> as: <span class="math display">\[r(\hat{Y}) = \int \biggl[ \int L(\hat{Y}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX\]</span> Note that, by definition, <span class="math inline">\(\hat{Y}_\text{opt}(X)\)</span> minimizes the term inside <span class="math inline">\([]\)</span>. Thus <span class="math display">\[r(\hat{Y}) \leq \int \biggl[ \int L(\hat{Y}_\text{opt}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX = r(\hat{Y}_\text{opt}).\]</span></p>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>As defined above, finding <span class="math inline">\(\hat{Y}_\text{opt}(X)\)</span> requires solving an optimization problem. For the standard loss functions given above, solving this optimization problem is easy provided that the conditional distribution <span class="math inline">\(p(Y|X)\)</span> is easy to work with.</p>
+<div id="squared-loss" class="section level3">
+<h3>Squared loss:</h3>
+<p>For example, using squared loss, the optimization problem becomes <span class="math display">\[\hat{Y}_\text{opt}(X) = \arg \min_a f(a)\]</span> where <span class="math display">\[f(a) = \int (a-Y)^2 \, p(Y | X) \, dY.\]</span> We can optimize this by differentiating with respect to <span class="math inline">\(a\)</span> and setting the derivative to 0. Differentiating <span class="math inline">\(f(a)\)</span> gives <span class="math display">\[f&#39;(a) = 2 \int (a-Y) p(Y|X) \, dY = 2(a - E(Y|X)).\]</span> which is zero at <span class="math inline">\(a=E(Y|X)\)</span>.</p>
+<p>Thus, for squared loss, the optimal decision rule is to predict <span class="math inline">\(Y\)</span> using its conditional mean given <span class="math inline">\(X\)</span>: <span class="math inline">\(\hat{Y}_\text{opt}(X) = E(Y | X)\)</span>.</p>
+</div>
+<div id="absolute-loss" class="section level3">
+<h3>Absolute loss:</h3>
+<p>Although not quite as easy to show, under absolute loss the optimal decision rule is to set <span class="math inline">\(\hat{Y}\)</span> to the median of the conditional distribution <span class="math inline">\(Y|X\)</span>.</p>
+</div>
+<div id="loss" class="section level3">
+<h3>0-1 loss:</h3>
+<p>Under 0-1 loss, with <span class="math inline">\(Y\)</span> discrete,<br />
+the optimal decision rule is to set <span class="math inline">\(\hat{Y}\)</span> to the mode of the conditional distribution <span class="math inline">\(p(Y|X)\)</span>. That is <span class="math display">\[\hat{Y}_\text{opt}(X) = \arg \max_a p(Y=a |X).\]</span> Showing this is left as an Exercise.</p>
+</div>
+</div>
+<div id="connection-with-bayesian-inference-bayes-risk-and-bayes-decision-rules" class="section level2">
+<h2>Connection with Bayesian inference: Bayes risk and Bayes decision rules</h2>
+<p>The conditional distribution <span class="math inline">\(Y|X\)</span> is sometimes be referred to as the “posterior” distribution of <span class="math inline">\(Y\)</span> given data <span class="math inline">\(X\)</span>, and computing this distribution is sometimes referred to as “performing Bayesian inference for <span class="math inline">\(Y\)</span>”.</p>
+<p>Thus, the above result (“Optimal Decision Rule” section) can be thought of as characterizing the optimality of Bayesian inference in terms of a “frequentist” measure (<span class="math inline">\(r\)</span>) which measures long-run performance across many samples <span class="math inline">\((X,Y)\)</span> from <span class="math inline">\(p(X,Y)\)</span>. For example, predicting <span class="math inline">\(Y\)</span> by its posterior mean, <span class="math inline">\(E(Y|X)\)</span>, is optimal in terms of expected squared loss (with expectation taken across <span class="math inline">\(p(X,Y)\)</span>).</p>
+<p>Because of this connection with Bayesian inference, the optimal value <span class="math inline">\(r(\hat{Y}_\text{opt})\)</span> is sometimes referred to as the “Bayes risk”, and <span class="math inline">\(\hat{Y}_\text{opt}\)</span> is referred to as a “Bayes decision rule”.</p>
+</div>
+<div id="theory-vs-practice" class="section level2">
+<h2>Theory vs Practice</h2>
+<p>Note that the optimal decision rule depends on the distribution <span class="math inline">\(p(Y,X)\)</span> – or, more specifically, on the conditional distribution <span class="math inline">\(p(Y|X)\)</span>. Typically one does not know this distribution exactly, and so one cannot implement the optimal decision rule. (An exception is in artificial simulation experiments, where the “true” distribution <span class="math inline">\(p(Y,X)\)</span> is known; in these cases the optimal rule can be computed, and may provide a useful yardstick against which other rules can be compared.)</p>
+<p>One way (but not the only way) to proceed in practice is to perform Bayesian inference for <span class="math inline">\(Y\)</span> anyway, by simpely positing (assuming) some “prior” distribution <span class="math inline">\(p(Y)\)</span>, and a “likelihood” <span class="math inline">\(p(X|Y)\)</span>, and using these to compute a posterior distribution <span class="math inline">\(p(Y|X)\)</span>. The result above shows that inference based on this posterior will be optimal, on average, across large numbers of samples of <span class="math inline">\((X,Y)\)</span> drawn from <span class="math inline">\(p(X,Y)= p(Y)p(X|Y)\)</span>. But, of course, the result does not guarantee optimality, on average, across samples from some other distribution, <span class="math inline">\(q(X,Y)\)</span> say. One might summarize this as “Bayesian inference is optimal, on average, if both the prior distribution and likelihood are `correct’”.</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] backports_1.1.2 magrittr_1.5    rprojroot_1.3-2 tools_3.3.2    
+ [5] htmltools_0.3.6 yaml_2.1.16     Rcpp_0.12.14    stringi_1.1.6  
+ [9] rmarkdown_1.8   knitr_1.18      git2r_0.20.0    stringr_1.2.0  
+[13] digest_0.6.13   evaluate_0.10.1</code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
