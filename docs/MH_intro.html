@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2018-04-23" />
+
+<title>The Metropolis Hastings Algorithm</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">The Metropolis Hastings Algorithm</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>April 23, 2018</em></h4>
+
+</div>
+
+
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>You should be familiar with the concept of a <a href="markov_chains_discrete_intro.html">Markov chain</a> and its <a href="markov_chains_discrete_stationary_dist.html">stationary distribution</a>.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The Metropolis Hastings algorithm is a beautifully simple algorithm for producing samples from distributions that may otherwise be difficult to sample from.</p>
+<p>Suppose we want to sample from a distribution <span class="math inline">\(\pi\)</span>, which we will call the “target” distribution. For simplicity we assume that <span class="math inline">\(\pi\)</span> is a one-dimensional distribution on the real line, although it is easy to extend to more than one dimension (see below).</p>
+<p>The MH algorithm works by simulating a Markov Chain, whose stationary distribution is <span class="math inline">\(\pi\)</span>. This means that, in the long run, the samples from the Markov chain look like the samples from <span class="math inline">\(\pi\)</span>. As we will see, the algorithm is incredibly simple and flexible. Its main limitation is that, for difficult problems, “in the long run” may mean after a <em>very</em> long time. However, for simple problems the algorithm can work well.</p>
+</div>
+<div id="the-mh-algorithm" class="section level2">
+<h2>The MH algorithm</h2>
+<div id="the-transition-kernel" class="section level3">
+<h3>The transition kernel</h3>
+<p>To implement the MH algorithm, the user (you!) must provide a “transition kernel”, <span class="math inline">\(Q\)</span>. A transition kernel is simply a way of moving, randomly, to a new position in space (<span class="math inline">\(y\)</span> say), given a current position (<span class="math inline">\(x\)</span> say). That is, <span class="math inline">\(Q\)</span> is a distribution on <span class="math inline">\(y\)</span> given <span class="math inline">\(x\)</span>, and we will write it <span class="math inline">\(Q(y | x)\)</span>. In many applications <span class="math inline">\(Q\)</span> will be a continuous distribution, in which case <span class="math inline">\(Q(y|x)\)</span> will be a density on <span class="math inline">\(y\)</span>, and so <span class="math inline">\(\int Q(y|x) dy =1\)</span> (for all <span class="math inline">\(x\)</span>).</p>
+<p>For example, a very simple way to generate a new position <span class="math inline">\(y\)</span> from a current position <span class="math inline">\(x\)</span> is to add an <span class="math inline">\(N(0,1)\)</span> random number to <span class="math inline">\(x\)</span>. That is, set <span class="math inline">\(y = x + N(0,1)\)</span>, or <span class="math inline">\(y|x \sim N(x,1)\)</span>. So <span class="math display">\[Q(y | x) = 1/\sqrt{2\pi} \exp[-0.5(y-x)^2].\]</span> This kind of kernel, which adds some random number to the current position <span class="math inline">\(x\)</span> to obtain <span class="math inline">\(y\)</span>, is often used in practice and is called a “random walk” kernel.</p>
+<p>Because of the role <span class="math inline">\(Q\)</span> plays in the MH algorithm (see below), it is also sometimes called the “proposal distribution”. And the example given above would be called a “random walk proposal”.</p>
+</div>
+<div id="the-mh-algorithm-1" class="section level3">
+<h3>The MH algorithm</h3>
+<p>The MH algorithm for sampling from a target distribution <span class="math inline">\(\pi\)</span>, using transition kernel <span class="math inline">\(Q\)</span>, consists of the following steps:</p>
+<ul>
+<li>Initialize, <span class="math inline">\(X_1 = x_1\)</span> say.</li>
+<li><p>For <span class="math inline">\(t=1,2,\dots\)</span></p>
+<ul>
+<li>sample <span class="math inline">\(y\)</span> from <span class="math inline">\(Q(y | x_t)\)</span>. Think of <span class="math inline">\(y\)</span> as a “proposed” value for <span class="math inline">\(x_{t+1}\)</span>.</li>
+<li>Compute <span class="math display">\[A= \min \left( 1, \frac{\pi(y)Q(x_t | y)}{\pi(x_t)Q(y | x_t)} \right).\]</span> <span class="math inline">\(A\)</span> is often called the “acceptance probabilty”.</li>
+<li>with probability <span class="math inline">\(A\)</span> “accept” the proposed value, and set <span class="math inline">\(x_{t+1}=y\)</span>. Otherwise set <span class="math inline">\(x_{t+1}=x_{t}\)</span>.</li>
+</ul></li>
+</ul>
+</div>
+<div id="the-metropolis-algorithm" class="section level3">
+<h3>The Metropolis Algorithm</h3>
+<p>Notice that the example random walk proposal <span class="math inline">\(Q\)</span> given above satisfies <span class="math inline">\(Q(y|x)=Q(x|y)\)</span> for all <span class="math inline">\(x,y\)</span>. Any proposal that satisfies this is called “symmetric”. When <span class="math inline">\(Q\)</span> is symmetric the formula for <span class="math inline">\(A\)</span> in the MH algorithm simplifies to: <span class="math display">\[A= \min \left( 1, \frac{\pi(y)}{\pi(x_t)} \right).\]</span></p>
+<p>This special case of the algorithm, with <span class="math inline">\(Q\)</span> symmetric, was first presented by Metropolis et al, 1953, and for this reason it is sometimes called the “Metropolis algorithm”.</p>
+<p>In 1970 Hastings presented the more general version – now known as the MH algorithm – which allows that <span class="math inline">\(Q\)</span> may be assymmetric. Specifically Hastings modified the acceptance probability by introducing the term <span class="math inline">\(Q(x_t|y)/Q(y|x_t)\)</span>. This ratio is sometimes called the “Hastings ratio”.</p>
+</div>
+</div>
+<div id="toy-example" class="section level2">
+<h2>Toy Example</h2>
+<p>To help understand the MH algorithm we now do a simple example: we implement the algorithm to sample from an exponential distribution: <span class="math display">\[\pi(x) = \exp(-x) \qquad (x \geq 0).\]</span> Of course it would be much easier to sample from an exponential distribution in other ways; we are just using this to illustrate the algorithm.</p>
+<p>Remember that <span class="math inline">\(\pi\)</span> is called the “target” distribution, so we call our function to compute <span class="math inline">\(\pi\)</span> <code>target</code>:</p>
+<pre class="r"><code>target = function(x){
+  return(ifelse(x&lt;0,0,exp(-x)))
+}</code></pre>
+<p>Now we implement the MH algorithm, using the simple normal random walk transition kernel <span class="math inline">\(Q\)</span> mentioned above. Since this <span class="math inline">\(Q\)</span> is symmetric the Hastings ratio is 1, and we get the simpler form for the acceptance probability <span class="math inline">\(A\)</span> in the Metropolis algorithm.</p>
+<p>Here is the code:</p>
+<pre class="r"><code>x = rep(0,10000)
+x[1] = 3     #initialize; I&#39;ve set arbitrarily set this to 3
+for(i in 2:10000){
+  current_x = x[i-1]
+  proposed_x = current_x + rnorm(1,mean=0,sd=1)
+  A = target(proposed_x)/target(current_x) 
+  if(runif(1)&lt;A){
+    x[i] = proposed_x       # accept move with probabily min(1,A)
+  } else {
+    x[i] = current_x        # otherwise &quot;reject&quot; move, and stay where we are
+  }
+}</code></pre>
+<p>Having run this code we can plot the locations visited by the Markov chain <span class="math inline">\(x\)</span> (sometimes called a trace plot).</p>
+<pre class="r"><code>plot(x,main=&quot;values of x visited by the MH algorithm&quot;)</code></pre>
+<p><img src="MH_intro_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Remember that we designed this algorithm to sample from an exponential distribution. This means that (provided we ran the algorithm for long enough!) the histogram of <span class="math inline">\(x\)</span> should look like an exponential distribution. Here we check this:</p>
+<pre class="r"><code>hist(x,xlim=c(0,10),probability = TRUE, main=&quot;Histogram of values of x visited by MH algorithm&quot;)
+xx = seq(0,10,length=100)
+lines(xx,target(xx),col=&quot;red&quot;)</code></pre>
+<p><img src="MH_intro_files/figure-html/unnamed-chunk-4-1.png" width="672" /> So we see that, indeed, the histogram of the values in <span class="math inline">\(x\)</span> indeed provides a close fit to an exponential distribution.</p>
+</div>
+<div id="closing-remarks" class="section level2">
+<h2>Closing remarks</h2>
+<p>One particularly useful feature of the MH algorithm is that it can be implemented even when <span class="math inline">\(\pi\)</span> is known only up to a constant: that is, <span class="math inline">\(\pi(x) = c f(x)\)</span> for some known <span class="math inline">\(f\)</span>, but unknown constant <span class="math inline">\(c\)</span>. This is because the algorithm depends on <span class="math inline">\(\pi\)</span> only through the ratio <span class="math inline">\(\pi(y)/\pi(x_t)=cf(y)/cf(x_t) = f(y)/f(x_t)\)</span>.</p>
+<p>This issue arises in Bayesian applications, where the posterior distribution is proportional to the prior times the likelihood, but the constant of proportionality is often unknown. So the MH algorithm is particularly useful for sampling from posterior distributions to perform analytically-intractible Bayesian calculations.</p>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
