@@ -29,7 +29,10 @@ title: "Home"
 *  [Bayesian inference for multiple independent parameters](bayes_independent.html)
 
 
-*  [Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
+### Empirical Bayes
+
+* [The Empirical Bayes Normal Means problem](ebnm_normal.Rmd)
+
 
 
 ### Frequentist vs Bayesian Inference

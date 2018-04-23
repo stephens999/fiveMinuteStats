@@ -1,0 +1,108 @@
+---
+title: "The Empirical Bayes Normal Means problem"
+author: "Matthew Stephens"
+date: "April 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pre-requisites
+
+You  should be familiar with [Bayesian inference for a normal mean](bayes_conjugate_normal_mean.html).
+
+## The Normal Means problem
+
+The "Normal means" problem is as follows:
+assume we have data 
+$$X_j \sim N(\theta_j, s_j^2) \quad (j=1,\dots,n)$$
+where the standard deviations $s_j$ are known, and the means $\theta_j$ are to be estimated.
+
+It is easy to show that the maximum likelihood estimate of $\theta_j$ is $X_j$.
+
+The idea here is that we can do better than the maximum likelihood estimates, by combining information across $j=1,\dots,n$. 
+
+
+## The Empirical Bayes approach
+
+The Empirical Bayes (EB) 
+approach to this problem assumes
+that the $\theta_j$ come from some underlying distribution $g \in G$ where $G$ is some appropriate family  of distributions. Here, for simplicity, we will assume $G$ is the set of all normal distributions.
+That is, we assume
+$\theta_j \sim N(\mu, V)$
+for some mean $\mu$ and variance $V$.
+Of course this assumption is somewhat inflexible,
+but it is a starting point. More flexible assumptions
+are possible, but we will stick with the simple normal assumption for now.
+
+If we knew (or were willing to specify)
+$\mu,V$ then it would be easy to do Bayesian inference
+for $\theta_j | X_j, \mu, V$ [like this](bayes_inference_normal_mean.html).
+The idea behind the EB approach is to instead estimate $\mu,V$ from the data --
+specifically, by maximum likelihood estimation. It is called "Empirical Bayes"
+because you can think of estimating $\mu,V$ as "estimating the prior" on $\theta_j$ from the data.
+
+### The likelihood
+
+Notice that we can write 
+$X_j = \theta_j + N(0,s_j^2)$ and
+$\theta_j | \mu,V \sim N(\mu,V)$.
+So using the fact that the sum of two normal
+distributions is normal we have:
+$$X_j | \mu,V \sim N(\mu, V+ s_j^2).$$
+
+Assuming that the $X_j$ are independent,
+we can compute the log-likelihood using the following function. Notice that we parameterize
+in terms of $\log(V)$ rather than $V$ - this is to
+make the numerical optimization easier later. Specifically, the optimization over $\log(V)$ is  
+unconstrained, which is often easier to do than
+the constrained optimization ($V>0$).
+```{r}
+#' @title the loglikelihood for the EB normal means problem
+#' @param par a vector of parameters (mu,log(V))
+#' @param x the data vector
+#' @param s the vector of standard deviations 
+nm_loglik = function(par,x,s){
+  mu = par[1]
+  V = exp(par[2])
+  sum(dnorm(x,mu,sqrt(s^2+V),log=TRUE))
+}
+```
+
+
+### Optimizing the likelihood
+
+We use the R function `optim` to optimize this log-likelihood. (By default `optim` performs a minimization; here we set `fnscale=-1` so that
+it will maximize the log-likelihood.)
+If we wanted to make the optimization more reliable
+we should compute the gradient of the log likelihood, but for now we will try with 
+just providing it the function.
+```{r}
+ebnm_normal = function(x,s){
+  par_init = c(0,0)
+  res = optim(par=par_init,fn = nm_loglik,method="BFGS",control=list(fnscale=-1),x=x,s=s)
+  return(res$par)
+}
+```
+
+
+Here, to illustrate we run this on a simulated example with $\mu=1,V=7$.
+```{r}
+set.seed(1)
+mu = 1
+V = 7
+n = 1000
+t = rnorm(n,mu,sqrt(V))
+s = rep(1,n)
+x = rnorm(n,t,s)
+res = ebnm_normal(x,s)
+c(res[1],exp(res[2]))
+```
+
+
+TODO: complete this by computing the posterior distributions $\theta_j | \mu_j, X_j, \hat{V}$.
+
+
+
