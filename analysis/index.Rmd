@@ -40,6 +40,7 @@ title: "Home"
 ### Decision Theory
 
 *  [Making a decision under uncertainty: the two class problem](decisions_costs_intro.html)
+*  [Brief introduction to decision theory for prediction problems](decision_theory_bayes_rule.html)
 
 ### Mixture Models
 
