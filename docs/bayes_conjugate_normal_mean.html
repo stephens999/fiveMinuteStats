@@ -9,9 +9,11 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Matthew Stephens" />
 
+<meta name="date" content="2018-04-23" />
 
-<title>Home</title>
+<title>Bayesian computations for the mean of a normal distribution</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -302,127 +304,39 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">Bayesian computations for the mean of a normal distribution</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>April 23, 2018</em></h4>
 
 </div>
 
 
-<div id="inference" class="section level2">
-<h2>Inference</h2>
-<div id="likelihood-ratio-and-likelihood" class="section level3">
-<h3>Likelihood Ratio and Likelihood</h3>
-<ul>
-<li><a href="likelihood_ratio_simple_models.html">Likelihood Ratio for fully specified models, discrete data</a></li>
-<li><a href="likelihood_ratio_simple_continuous_data.html">Likelihood Ratio for fully specified models, continuous data</a></li>
-<li>Likelihood Ratios: Examples and Pitfalls
-<ul>
-<li><a href="likelihood_do_dont.html">Examples and Pitfalls</a></li>
-<li><a href="LR_error.html">Example: LRs must be computed on same data</a></li>
-</ul></li>
-<li><a href="LR_and_BF.html">Likelihood Ratios: how big is convincing?</a></li>
-<li><a href="wilks.html">Likelihood Ratios: Wilks’s Theorem</a></li>
-<li><a href="likelihood_function.html">The Likelihood Function</a></li>
-<li><a href="asymptotic_normality_mle.html">Asymptotic Normality of MLE</a></li>
-</ul>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>We consider computing the posterior distribution of <span class="math inline">\(\mu\)</span> given data <span class="math inline">\(X \sim N(\mu,\sigma^2)\)</span> where <span class="math inline">\(\sigma^2\)</span> is known. You should be familiar with the idea of a <a href="bayes_conjugate.html">conjugate prior</a>.</p>
 </div>
-<div id="bayesian-inference" class="section level3">
-<h3>Bayesian Inference</h3>
-<ul>
-<li><a href="LR_and_BF.html">Bayesian inference for comparing two fully-specified models</a></li>
-<li><a href="bayes_multiclass.html">Bayesian inference for comparing multiple fully-specified models</a></li>
-<li><a href="bayes_beta_binomial.html">Bayesian inference for a continuous parameter: analytic calculation</a></li>
-<li><a href="summarize_interpret_posterior.html">Bayesian inference for a continuous parameter: summarizing the posterior</a></li>
-<li><a href="bayes_conjugate.html">Bayesian inference for a continuous parameter: conjugacy</a></li>
-<li><a href="bayes_conjugate_normal_mean.html">Bayesian inference for a normal mean</a></li>
-<li><a href="shiny_normal_example.html">Bayesian inference for a normal mean (shiny app illustration)</a></li>
-<li><p><a href="bayes_independent.html">Bayesian inference for multiple independent parameters</a></p></li>
-<li><p><a href="shiny_normal_example.html">Bayesian inference for normal mean (known variance)</a></p></li>
-</ul>
+<div id="preliminaries" class="section level2">
+<h2>Preliminaries</h2>
+<p>This problem is really about algebraic manipulation.</p>
+<p>There are two tricks to making the algebra a bit simpler. The first is to work with the precision <span class="math inline">\(\tau=1/\sigma^2\)</span> instead of the variance <span class="math inline">\(\sigma^2\)</span>. So consider <span class="math inline">\(X \sim N(\mu,1/\tau)\)</span>.</p>
+<p>The second trick is to rewrite the normal density slightly. First, let us recall the usual form for the normal density. If <span class="math inline">\(Y \sim N(\mu, 1/\tau)\)</span> then it has density: <span class="math display">\[p(y) = (\tau/2\pi)^{0.5} \exp(-0.5\tau (y-\mu)^2)\]</span></p>
+<p>We can rewrite this: <span class="math display">\[p(y) \propto \exp(-0.5 \tau y^2 + \tau \mu y).\]</span> Or, equivalently: <span class="math display">\[p(y) \propto \exp(-0.5 A y^2 + B y)\]</span> where <span class="math inline">\(A = \tau\)</span> and <span class="math inline">\(B=\tau \mu\)</span>.</p>
+<p>Thus if <span class="math inline">\(p(y) \propto \exp(-0.5Ay^2 + By)\)</span> then <span class="math inline">\(Y\)</span> is normal with precision <span class="math inline">\(\tau= A\)</span> and mean <span class="math inline">\(\mu= B/A\)</span>.</p>
 </div>
-<div id="frequentist-vs-bayesian-inference" class="section level3">
-<h3>Frequentist vs Bayesian Inference</h3>
-<ul>
-<li><a href="pvalue_difficult_calibrate_example.html">The difficulty calibrating p values</a></li>
-<li><a href="BF_and_pvalue.html">Relationship between Bayes Factor and p value</a></li>
-<li><a href="CI_conditional_coverage.html">Conditional coverage of a standard normal CI</a></li>
-</ul>
+<div id="posterior-calculation" class="section level2">
+<h2>Posterior Calculation</h2>
+<p>Now, back to the problem. Assume we observe a single data point <span class="math inline">\(X \sim N(\mu,1/\tau)\)</span>, with <span class="math inline">\(\tau\)</span> known, and our goal is to do Bayesian inference for the mean <span class="math inline">\(\mu\)</span>.</p>
+<p>As we will see, the conjugate prior for the mean <span class="math inline">\(\mu\)</span> turns out to be a normal distribution. So we will assume a prior: <span class="math display">\[\mu \sim N(\mu_0, 1/\tau_0).\]</span> (Here the <span class="math inline">\(0\)</span> subscript is being used to indicate that <span class="math inline">\(\mu_0,\tau_0\)</span> are parameters in the prior.)</p>
+<p>Now we can compute the posterior density for <span class="math inline">\(\mu\)</span> using Bayes Theorem: <span class="math display">\[p(\mu | X) \propto p(X | \mu) p(\mu)\]</span> <span class="math display">\[\propto \exp[-0.5\tau(X-\mu)^2] \exp[-0.5 \tau_0 (\mu-\mu_0)^2]\]</span> <span class="math display">\[\propto \exp[-0.5(\tau+\tau_0)\mu^2 + (X\tau + \mu_0\tau_0)\mu]\]</span></p>
+<p>From the result in “Preliminaries” above we see that <span class="math display">\[\mu | X \sim N(\mu_1,1/\tau_1)\]</span> where <span class="math display">\[\tau_1 = \tau+\tau_0\]</span> and <span class="math display">\[\mu_1= (X\tau+\mu_0 \tau_0)/(\tau + \tau_0).\]</span></p>
 </div>
-<div id="decision-theory" class="section level3">
-<h3>Decision Theory</h3>
-<ul>
-<li><a href="decisions_costs_intro.html">Making a decision under uncertainty: the two class problem</a></li>
-<li><a href="decision_theory_bayes_rule.html">Brief introduction to decision theory for prediction problems</a></li>
-</ul>
-</div>
-<div id="mixture-models" class="section level3">
-<h3>Mixture Models</h3>
-<ul>
-<li><a href="intro_to_mixture_models.html">Introduction to Mixture Models</a></li>
-<li><a href="intro_to_em.html">Introduction to EM: Gaussian Mixture Models</a></li>
-</ul>
-</div>
-<div id="bayesian-computation" class="section level3">
-<h3>Bayesian Computation</h3>
-<ul>
-<li><a href="integral.html">Every Bayesian computation is an integral (or a sum)</a></li>
-<li><a href="Importance_sampling.html">Importance sampling</a></li>
-</ul>
-</div>
-<div id="markov-chain-monte-carlo" class="section level3">
-<h3>Markov Chain Monte Carlo</h3>
-<ul>
-<li><a href="gibbs1.html">Introduction to Gibbs Sampling</a></li>
-<li><p><a href="gibbs2.html">Gibbs Sampling for a univariate normal mixture</a></p></li>
-<li><p><a href="MH-examples1.html">Simple examples of Metropolis–Hastings algorithm</a></p></li>
-</ul>
-</div>
-</div>
-<div id="distributions" class="section level2">
-<h2>Distributions</h2>
-<ul>
-<li><a href="beta.html">The Beta Distribution</a></li>
-<li><a href="dirichlet.html">The Dirichlet Distribution</a></li>
-</ul>
-</div>
-<div id="stochastic-processes" class="section level2">
-<h2>Stochastic Processes</h2>
-<div id="discrete-time-markov-chains" class="section level3">
-<h3>Discrete-Time Markov Chains</h3>
-<ul>
-<li><p><a href="markov_chains_discrete_intro.html">Discrete-Time Markov Chains: Introduction</a></p></li>
-<li><p><a href="stationary_distribution.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></p></li>
-<li><p><a href="markov_chains_discrete_stationary_dist.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></p></li>
-<li><p><a href="simulating_discrete_chains_1.html">Simulating Discrete-Time Markov Chains: An Introduction</a></p></li>
-<li><p><a href="simulating_discrete_chains_2.html">Simulating Discrete-Time Markov Chains: Limiting Distributions</a></p></li>
-</ul>
-</div>
-<div id="poisson-processes" class="section level3">
-<h3>Poisson Processes</h3>
-<ul>
-<li><a href="poisson_process_time_dependent_thinning.html">Poisson Processes: Thinning with time-dependent probabilities</a></li>
-<li><a href="bernoulli_poisson_process.html">Poisson Process: The Limiting Case of the Bernoulli Process</a></li>
-</ul>
-</div>
-<div id="methods-for-sampling-non-standard-distributions" class="section level3">
-<h3>Methods for sampling non-standard distributions</h3>
-<ul>
-<li><a href="inverse_transform_sampling.html">Inverse Transform Sampling</a></li>
-</ul>
-</div>
-<div id="multivariate-normal" class="section level3">
-<h3>Multivariate Normal</h3>
-<ul>
-<li><a href="mvnorm.html">Multivariate Normal</a></li>
-<li><a href="normal_markov_chain.html">Normal Markov Chain</a></li>
-</ul>
-</div>
-</div>
-<div id="population-genetics" class="section level2">
-<h2>Population Genetics</h2>
-<ul>
-<li><a href="wright_fisher_model.html">Wright-Fisher Model</a></li>
-<li><a href="approx_wright_fisher_model.html">Wright-Fisher Model Approximations</a></li>
-</ul>
+<div id="interpretation" class="section level2">
+<h2>Interpretation</h2>
+<p>Although the algebra may look a little messy the first time you see this, in fact this result has some simple and elegant interpretations.</p>
+<p>First, let us deal with the precision. Note that the Posterior precision (<span class="math inline">\(\tau_1\)</span>) is the sum of the Data precision (<span class="math inline">\(\tau\)</span>) and the Prior precision (<span class="math inline">\(\tau_0\)</span>). This makes sense: the more precise your data, and the more precise your prior information, the more precise your posterior information. Also, this means that the data always improves your posterior precision compared with the prior: noisy data (small <span class="math inline">\(\tau\)</span>) improves it only a little, whereas precise data improves it a lot.</p>
+<p>Second, let us deal with the mean. We can rewrite the posterior mean as: <span class="math display">\[\mu_1 = w X + (1-w) \mu_0,\]</span> where <span class="math inline">\(w = \tau/(\tau+\tau_0)\)</span>. Thus <span class="math inline">\(\mu_1\)</span> is a <em>weighted average</em> of the data <span class="math inline">\(X\)</span> and the prior mean <span class="math inline">\(\mu_0\)</span>. And the weights depend on the relative precision of the data and the prior. If the data are precise compared with the prior (<span class="math inline">\(\tau &gt;&gt; \tau_0\)</span>) then the weight <span class="math inline">\(w\)</span> will be close to 1 and the posterior mean will be close to the data.</p>
+<p>In contrast, if the data are imprecise compared with the prior (<span class="math inline">\(\tau &lt;&lt; \tau_0\)</span>) then the weight <span class="math inline">\(w\)</span> will be close to 0 and the posterior mean will be close to the prior mean.</p>
+<p>You can see a visual illustration of this result in <a href="shiny_normal_example.html">this shiny app</a>.</p>
 </div>
 
 <hr>
