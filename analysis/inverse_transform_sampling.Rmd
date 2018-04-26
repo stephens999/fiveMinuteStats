@@ -76,7 +76,7 @@ $$F_Y^{-1}(y) = -\frac{\ln(1-y)}{2}$$
 Using our algorithm above, we first generate $U \sim \text{Unif}(0,1)$, then set $X = F_Y^{-1}(U) =  -\frac{\ln(1-U)}{2}$. We do this in the R code below and compare the histogram of our samples with the true density of $Y$. 
 
 ```{r}
-# inverse transfrom sampling
+# inverse transform sampling
 num.samples <-  1000
 U           <-  runif(num.samples)
 X           <- -log(1-U)/2
