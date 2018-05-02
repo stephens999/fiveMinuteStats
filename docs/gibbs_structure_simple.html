@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2017-02-20" />
+
+<title>Gibbs Sampling for clustering genetic data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Gibbs Sampling for clustering genetic data</h1>
+<h4 class="author"><em>Matthew Stephens</em></h4>
+<h4 class="date"><em>2017-02-20</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-05-02</p>
+<p><strong>Code version:</strong> 8183f19</p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>Be familiar with <a href="LR_and_BF.html">Bayesian inference for the two class problem</a> and <a href="simple_nonconjugate.html">conjugate Bayesian analysis for a binomial proportion</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Suppose we observe genetic data on a sample of <span class="math inline">\(n\)</span> elephants at <span class="math inline">\(R\)</span> locations in the genome (“loci”). For simplicity we will assume the elephants are haploid: that is they have just one copy of their genome. And we will assume that there are just two genetic types (“alleles”) at each locus, which we will label 0 and 1.</p>
+<p>We will further assume that there are two type of elephant: forest elephants and savanna elephants, and that the allele frequencies in forest elephants are different from those in savanna elephants, but that the allele frequencies for each of these two groups are unknown. Also, we do not know which samples are forest elephants and which are savanna elehants. Our goal is to infer both these sets of quantities: which individuals are forest vs savanna, and what are the allele frequencies in each group.</p>
+</div>
+<div id="notation" class="section level1">
+<h1>Notation</h1>
+<p>Let <span class="math inline">\(x_i\)</span> denote the genetic data for individual <span class="math inline">\(i\)</span> (<span class="math inline">\(i = 1,\dots, n\)</span>). Thus <span class="math inline">\(x_i\)</span> is a binary vector (a vector of 0s and 1s) of length <span class="math inline">\(R\)</span>. Let <span class="math inline">\(X\)</span> denote the combined genetic data, <span class="math inline">\(X=(x_1,\dots,x_n)\)</span>.</p>
+<p>Let <span class="math inline">\(z_i \in \{0,1\}\)</span> denote the group (forest vs savanna) of individual <span class="math inline">\(i\)</span>, and let <span class="math inline">\(Z\)</span> denote the vector <span class="math inline">\(Z=(z_1,\dots,z_n)\)</span>.</p>
+<p>Let <span class="math inline">\(P_{kj}\)</span> denote the frequency of the “1” allele at locus <span class="math inline">\(j\)</span> in group <span class="math inline">\(k\)</span> (<span class="math inline">\(j =1,\dots,R\)</span>; <span class="math inline">\(k=0,1\)</span>). (Here group 0 means forest and group 1 means savanna.) Let <span class="math inline">\(P_k\)</span> denote the vector <span class="math inline">\((P_{k1}, \dots, P_{kR})\)</span>, and <span class="math inline">\(P\)</span> denote all the unknown allele frequencies <span class="math inline">\(P=(P_0,P_1)\)</span>.</p>
+<p>With this notation in place, we can state the problem: infer the unknowns <span class="math inline">\(Z\)</span> and <span class="math inline">\(P\)</span> from the observations <span class="math inline">\(X\)</span>.</p>
+</div>
+<div id="model" class="section level1">
+<h1>Model</h1>
+<p>To perform Bayesian inference for <span class="math inline">\(Z\)</span> and <span class="math inline">\(P\)</span> we need to specify the likelihood <span class="math inline">\(p(X | Z, P)\)</span> and a prior distribution <span class="math inline">\(p(Z,P)\)</span>.</p>
+<div id="likelihood" class="section level2">
+<h2>Likelihood</h2>
+<p>For the likelihood, for each individual we will assume that if we knew its group of origin, and we knew the allele frequencies in each group, then the genetic data at different markers are independent draws from the relevant allele frequencies. This is exactly the model assumed <a href="likelihood_ratio_simple_models.html">here</a>. In mathematical notation, we assume: <span class="math display">\[p(x_i | z_i , P) = \prod_{j=1}^R P_{{z_i} j}^{x_{ij}}(1-P_{{z_i}j})^{(1-x_{ij})}.\]</span> All the subscripts here make this a bit difficult to read. To make things easier to read we can replace <span class="math inline">\(z_i\)</span> with <span class="math inline">\(k\)</span>, like this: <span class="math display">\[p(x_i | z_i=k , P) = \prod_{j=1}^R P_{k j}^{x_{ij}}(1-P_{kj})^{(1-x_{ij})}.\]</span></p>
+<p>We will further assume that the different individuals are independent: <span class="math display">\[p(X | Z, P) = \prod_i p(x_i | z_i, P).\]</span> This completes specification of the likelihood.</p>
+</div>
+<div id="prior" class="section level2">
+<h2>Prior</h2>
+<p>We will assume that <span class="math inline">\(P\)</span> and <span class="math inline">\(Z\)</span> are <em>a priori</em> independent, so <span class="math inline">\(p(P,Z) = p(P)p(Z)\)</span>. This assumption seems reasonable: before seeing the genetic data <span class="math inline">\(X\)</span>, telling you the allele frequencies in the two groups would not tell you anything about the group membership of each individual. (Of course, after seeing the genetic data <span class="math inline">\(X\)</span>, the allele frequencies would help classify the individuals, so <span class="math inline">\(P\)</span> and <span class="math inline">\(Z\)</span> are not going to be <em>a posteriori</em> independent. However, here we are concerned with the prior, not the posterior.)</p>
+<p>For the prior on <span class="math inline">\(P\)</span> we will further assume that the allele frequencies in each group at each locus are independent, so <span class="math inline">\(p(P) = \prod_k \prod_j p(P_{kj})\)</span>. This assumption could be improved, but at the cost of considerable extra complexity, and so we stick with independence for now. Also for simplicity we will assume a uniform prior distribution for <span class="math inline">\(P_{kj}\)</span>, so <span class="math inline">\(p(P_{kj})=1\)</span>.</p>
+<p>For <span class="math inline">\(Z\)</span> we will assume that the origin of each individual is independent, with an equal probability (0.5) of arising from each of the two groups. So <span class="math display">\[p(Z) = \prod_{i=1}^n p(z_i),\]</span> and <span class="math inline">\(p(z_i=k) = 0.5\)</span>. Again, this assumption could be improved, but we start here for simplicity.</p>
+</div>
+</div>
+<div id="computation" class="section level1">
+<h1>Computation</h1>
+<p>Our goal is to compute (or sample from) the posterior distribution <span class="math inline">\(p(Z,P | X)\)</span>, which by Bayes Theorem is given by <span class="math display">\[p(Z, P | X) \propto p(X | Z,P) p(Z,P).\]</span></p>
+<p><span class="math display">\[\Pr(X_{ij} = a | Z_i = k) = p^a_{kj} (1-p)^(1-a)_{kj}\]</span> where <span class="math inline">\(a \in \{0,1\}\)</span>.</p>
+<p>One way to sample from this distribution is to implement a Gibbs sampler. This requires us to be able to do two things:</p>
+<ol style="list-style-type: decimal">
+<li>sample from Z | P,X</li>
+<li>sample from P | Z,X</li>
+</ol>
+<p>These are called the “full conditional distributions” for Z and P respectively. The use of the word “full” here indicates that they are conditional on <em>everything else</em> (ie the data and all the other parameters).</p>
+<div id="full-conditional-for-z" class="section level2">
+<h2>Full conditional for Z</h2>
+<p>We know that: <span class="math display">\[p(Z| P,X) \propto p(Z,P,X) = \prod_i p(x_i | z_i, P) p(z_i) p(P)\]</span></p>
+<p>So we see that the full conditional for <span class="math inline">\(Z=(z_1,\dots,z_n)\)</span> factorizes over <span class="math inline">\(i\)</span> into terms that depend only on <span class="math inline">\(z_i\)</span> and not the other <span class="math inline">\(z\)</span>s. That is, <span class="math display">\[p(Z| P,X) \propto \prod_i f_i(z_i; x_i,P)\]</span></p>
+<p>for some functions <span class="math inline">\(f_i\)</span>.</p>
+<p>This implies that the <span class="math inline">\(z_i\)</span> are conditionally independent given <span class="math inline">\(X,P\)</span>, which is extremely convenient as it means we can compute their conditional distribution by just computing the marginals.</p>
+<p><span class="math display">\[p(Z_i = k | P,X) \propto p(x_i | z_i=k, P)\]</span></p>
+</div>
+<div id="todo-fill-in-derivation-of-the-conditional-for-p" class="section level2">
+<h2>TODO: fill in derivation of the conditional for P</h2>
+</div>
+</div>
+<div id="simulate-some-data" class="section level1">
+<h1>Simulate some data</h1>
+<p>To illustrate, let’s simulate data from this model:</p>
+<pre class="r"><code>set.seed(33)
+
+# generate from mixture of normals
+#&#39; @param n number of samples
+#&#39; @param P a 2 by R matrix of allele frequencies
+r_simplemix = function(n,P){
+  R = ncol(P)
+  z = sample(1:2,prob=c(0.5,0.5),size=n,replace=TRUE) #simulate z as 1 or 2
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),P[z[i],])
+  }
+  return(list(x=x,z=z))
+}
+P = rbind(c(0.5,0.5,0.5,0.5,0.5,0.5),c(0.001,0.999,0.001,0.999,0.001,0.999))
+sim = r_simplemix(n=50,P)
+x = sim$x</code></pre>
+</div>
+<div id="gibbs-sampler-code" class="section level1">
+<h1>Gibbs sampler code</h1>
+<pre class="r"><code>#&#39; @param x an R vector of data
+#&#39; @param P a K by R matrix of allele frequencies
+#&#39; @return the log-likelihood for each of the K populations
+log_pr_x_given_P = function(x,P){
+  tP = t(P) #transpose P so tP is R by K
+  return(colSums(x*log(tP)+(1-x)*log(1-tP)))
+}
+
+normalize = function(x){return(x/sum(x))} #used in sample_z below
+
+#&#39; @param x an n by R matrix of data
+#&#39; @param P a K by R matrix of allele frequencies
+#&#39; @return an n vector of group memberships
+sample_z = function(x,P){
+  K = nrow(P)
+  loglik_matrix = apply(x, 1, log_pr_x_given_P, P=P)
+  lik_matrix = exp(loglik_matrix) 
+  p.z.given.x = apply(lik_matrix,2,normalize) # normalize columns
+  z = rep(0, nrow(x))
+  for(i in 1:length(z)){
+    z[i] = sample(1:K, size=1,prob=p.z.given.x[,i],replace=TRUE)
+  }
+  return(z)
+}
+
+
+#&#39; @param x an n by R matrix of data
+#&#39; @param z an n vector of cluster allocations
+#&#39; @return a 2 by R matrix of allele frequencies
+sample_P = function(x, z){
+  R = ncol(x)
+  P = matrix(ncol=R,nrow=2)
+  for(i in 1:2){
+    sample_size = sum(z==i)
+    if(sample_size==0){
+      number_of_ones=rep(0,R) 
+    } else {
+      number_of_ones = colSums(x[z==i,])
+    }
+    P[i,] = rbeta(R,1+number_of_ones,1+sample_size-number_of_ones) 
+  }
+  return(P)
+}
+
+gibbs = function(x,niter = 100){
+  z = sample(1:2,nrow(x),replace=TRUE)
+  res = list(z = matrix(nrow=niter, ncol=nrow(x)))
+  res$z[1,]=z 
+  
+  for(i in 2:niter){
+    P = sample_P(x,z)
+    z = sample_z(x,P)
+    res$z[i,] = z
+  }
+  return(res)
+}</code></pre>
+<p>Try the Gibbs sampler on the data simulated above.</p>
+<pre class="r"><code>  res = gibbs(x,100)
+  table(res$z[1,],sim$z)</code></pre>
+<pre><code>   
+     1  2
+  1 13 14
+  2 11 12</code></pre>
+<pre class="r"><code>  table(res$z[100,],sim$z)</code></pre>
+<pre><code>   
+     1  2
+  1  4 26
+  2 20  0</code></pre>
+<pre class="r"><code>  image(t(res$z))</code></pre>
+<p><img src="figure/gibbs_structure_simple.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="session-information" class="section level2">
+<h2>Session Information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.0.1   Rcpp_0.12.16      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.1.7     R.oo_1.22.0       R.utils_2.6.0    
+[13] rmarkdown_1.9     tools_3.3.2       stringr_1.3.0    
+[16] yaml_2.1.18       htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
