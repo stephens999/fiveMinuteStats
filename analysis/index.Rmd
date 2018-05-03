@@ -65,6 +65,8 @@ title: "Home"
 
 * [Introduction to Gibbs Sampling](gibbs1.html)
 * [Gibbs Sampling for a univariate normal mixture](gibbs2.html)
+* [Gibbs Sampling for a mixture of product-bernoullis](gibbs_structure_simple.html)
+
 
 
 
