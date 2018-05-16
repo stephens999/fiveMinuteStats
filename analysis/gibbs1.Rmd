@@ -132,7 +132,7 @@ Now, what is $\Pr(X_2=x,Y_1=y)$? Well we know
 $$\Pr(X_2=x,Y_1=y) = \Pr(Y_1=y) \Pr(X_2=x| Y_1=y).$$
 And we know from above that 
 $$\Pr(Y_1=y) = p_{Y}(y).$$
-And we know that given $Y_1-y$, $X_2$ was simulated from
+And we know that given $Y_1=y$, $X_2$ was simulated from
 the conditional distribution $p_{X|Y}(x|y)$, so
 $$\Pr(X_2=x | Y_1=y) = p_{X|Y}(x|y).$$
 Putting these together we have
