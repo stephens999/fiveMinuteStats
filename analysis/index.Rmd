@@ -68,6 +68,9 @@ title: "Home"
 * [Gibbs Sampling for a mixture of product-bernoullis](gibbs_structure_simple.html)
 
 
+### Hidden Markov Models
+
+* [Forwards Backwards calculation example](hmm.html)
 
 
 ## Distributions
