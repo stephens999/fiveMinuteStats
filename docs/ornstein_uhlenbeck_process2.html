@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Yanyu Liang" />
+
+<meta name="date" content="2018-03-10" />
+
+<title>Applications of BM and OU Process</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Applications of BM and OU Process</h1>
+<h4 class="author"><em>Yanyu Liang</em></h4>
+<h4 class="date"><em>2018-03-10</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2018-03-10</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> 1e98d66</p>
+<!-- Add your analysis here -->
+<p><span class="math display">\[
+\newcommand\var{\text{Var}}
+\newcommand\cov{\text{Cov}}
+\newcommand\E{\text{E}}
+\]</span></p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This section is build upon the introduction of <a href="brownian_motion_and_guassian_process.html">Brownian motion</a> and <a href="ornstein_uhlenbeck_process1.html">Orstein-Uhlenbeck process</a></p>
+</div>
+<div id="what-can-we-do-with-phylogeny-data" class="section level1">
+<h1>What can we do with phylogeny data?</h1>
+<p>Here, phylogeny data is referred to some quantative traits/measurements we collect from a wide range of species. For instance, it can be some phenotypic measurements, such as body weight, darkness of coat, metabolism rate, and etc. Besides, thanks to next-generation sequencing technology, gene expression level is also an observable quantative trait.</p>
+<p>With these data in hand, one biologically interesting question immediately comes, that is how these traits change (evolve) along the tree of life. In particular, this section presents how we can make use of Brownian motion and OU process to tackle two problems along this line. They are</p>
+<p><strong>Q1:</strong> How do two traits correlate with each other? (<em>e.g.</em> Is body weight always correlated with body size?)</p>
+<p><strong>Q2:</strong> What causes the variation of a trait, drift or selection? (<em>e.g.</em> Does some gene undergo adaptive selection?)</p>
+<p>Here, one thing to clarify is that the goal of this section is NOT to infer phylogeny itself. Instead, it utilizes known phylogenies and try to answer the questions raised above. For phylogeny inference, it can be inferred from sequence data (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.0006-341X.1999.00001.x/abstract">an example</a>) or fossil record.</p>
+<p>One special feature of phylogeny data is that the observations are not independent. More importantly, the underlying structure of the data is the key to tackle the problems we just asked. From this persecptive, both Brownian motion and Ornstein-Uhlenbeck process provide a straight-forward way to model such underlying dependencies.</p>
+</div>
+<div id="using-bm-for-comparative-analysis" class="section level1">
+<h1>Using BM for comparative analysis</h1>
+<p>Let’s consider a case of Q1 where we are interested in whether body weight, <span class="math inline">\(Y\)</span>, is related to height, <span class="math inline">\(X\)</span>, across a given set of species. Namely, the null hypothesis is that there is no correlation between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Naively, we can perform an ordinary least-squared regression and test whether the coefficient is significantly deviated from zero. However, this approach requires independent observations, which does not hold for phylogeny data since the species’ height is correlated by sharing the same common ancestor. Suppose the phylogeny is</p>
+<p><img src="figure/ornstein_uhlenbeck_process2.Rmd/unnamed-chunk-1-1.svg" width="288" style="display: block; margin: auto;" /></p>
+<p>Note that <span class="math inline">\(t_2 + t_4 = t_3 + t_5\)</span>. Let’s simulate data under the null model and perform linear regression to test the correlation.</p>
+<pre class="r"><code>simulateBM &lt;- function(t1, t2, t3, t4, t5, n1, n2, sigma = 1) {
+  v1 &lt;- rnorm(1, mean = 0, sd = sqrt(t1) * sigma)
+  v2 &lt;- v1 + rnorm(1, mean = 0, sd = sqrt(t2) * sigma)
+  v3 &lt;- v1 + rnorm(1, mean = 0, sd = sqrt(t3) * sigma)
+  v4 &lt;- v2 + rnorm(n1, mean = 0, sd = sqrt(t4) * sigma)
+  v5 &lt;- v3 + rnorm(n2, mean = 0, sd = sqrt(t4) * sigma)
+  return(c(v4, v5))
+}
+
+# simulation
+library(pander)
+set.seed(2018)
+t1 &lt;- 100
+t2 &lt;- 1200
+t3 &lt;- 1300
+t4 &lt;- 500
+n &lt;- 15
+t5 &lt;- t2 + t4 - t3
+x &lt;- simulateBM(t1, t2, t3, t4, t5, n, n)
+y &lt;- simulateBM(t1, t2, t3, t4, t5, n, n)
+df &lt;- data.frame(height = x, body.weight = y)
+plot(x, y, xlab = &#39;Height&#39;, ylab = &#39;Body weight&#39;, main = &#39;Simulated data under the null \n using the above phylogeny&#39;)</code></pre>
+<p><img src="figure/ornstein_uhlenbeck_process2.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>model &lt;- lm(body.weight ~ height, data = df)
+pander(summary(model)$coefficients)</code></pre>
+<table style="width:86%;">
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="18%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Estimate</th>
+<th align="center">Std. Error</th>
+<th align="center">t value</th>
+<th align="center">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>(Intercept)</strong></td>
+<td align="center">-21.85</td>
+<td align="center">7.401</td>
+<td align="center">-2.952</td>
+<td align="center">0.00633</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>height</strong></td>
+<td align="center">0.4003</td>
+<td align="center">0.1609</td>
+<td align="center">2.488</td>
+<td align="center">0.01907</td>
+</tr>
+</tbody>
+</table>
+<p>Though this is an extreme case of phylogeny, but it illustrates that to treat observations as independent samples may introduce false positive because of the underlying correlation within data.</p>
+<p>From what we have discussed about <a href="brownian_motion_and_guassian_process.html#gaussian_process_in_brief">Brownian motion on tree</a>, the correlation comes from sharing ancestry, whereas the increment is always independent. Therefore, to remove correlation, instead of using <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> directly, we can use the increment. For instance, let <span class="math inline">\(\Delta X_i = X_{1, i} - X_{2, i}\)</span> and <span class="math inline">\(\Delta Y_i = Y_{1, i} - Y_{2, i}\)</span>. Then <span class="math inline">\(\Delta X_i\)</span> is independent and ordinary least squared approach becomes valid.</p>
+<pre class="r"><code># n1 = n2 = n
+delta.x &lt;- x[1 : n] - x[n + 1: (n + n)]  
+delta.y &lt;- y[1 : n] - y[n + 1: (n + n)]
+df.delta &lt;- data.frame(height = delta.x, body.weight = delta.y)
+model.delta &lt;- lm(body.weight ~ height, data = df.delta)
+pander(summary(model.delta)$coefficients)</code></pre>
+<table style="width:88%;">
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="18%" />
+<col width="13%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Estimate</th>
+<th align="center">Std. Error</th>
+<th align="center">t value</th>
+<th align="center">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>(Intercept)</strong></td>
+<td align="center">-66.67</td>
+<td align="center">14.18</td>
+<td align="center">-4.7</td>
+<td align="center">0.0004151</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>height</strong></td>
+<td align="center">-0.402</td>
+<td align="center">0.2372</td>
+<td align="center">-1.695</td>
+<td align="center">0.1139</td>
+</tr>
+</tbody>
+</table>
+<p>The result becomes less significant. Note that by taking increment, the sample size is shrinked to a half, but the estimate is more robust. In practice, there is more sophisticated way to obtain more independent increments from the data under Brownian motion assumption (see <a href="https://www.journals.uchicago.edu/doi/abs/10.1086/284325">paper</a> for your interest).</p>
+</div>
+<div id="using-ou-process-to-infer-adaptive-evolution" class="section level1">
+<h1>Using OU process to infer adaptive evolution</h1>
+<p>Brownian motion can capture the underlying dependency caused by shared ancestry but it also has some undesired properties. Such as</p>
+<ol style="list-style-type: decimal">
+<li>The variance of the trait keep growing up linearly in time</li>
+<li>Change of trait is purely driven by drift with no notion to incorporate selection</li>
+</ol>
+Ornstein-Uhlenbeck process introduces a trapping force on top of Brownian motion (as what we discussed <a href="ornstein_uhlenbeck_process1.html">here</a>) which fixes these undesired properties in a simple way. When <span class="math inline">\(t \rightarrow +\infty\)</span>, <span class="math inline">\(X(t)|X(0) = x_0 \approx N(\mu, \frac{\sigma^2}{2\alpha})\)</span>, so the trait variation is bounded. Moreover, the SDE definition of OU process provides neat interpretations about model parameters. Recall that OU process has SDE
+<span class="math display">\[\begin{align*}
+  dX(t) &amp;= \alpha(\mu - X(t))dt + \sigma dW_t
+\end{align*}\]</span>
+<p>Then, <span class="math inline">\(\mu\)</span> represents the optimal value of the quantitative trait and <span class="math inline">\(\alpha\)</span> represents the effect of selection which pushes the species to move towards optimal trait value. The relative strength of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\sigma\)</span> represents how genetic drift and natural selection are balanced during the trait evolution.</p>
+<p>On the basis of OU process assumption, Q2 is somewhat reduced to an inference problem. In other word, the contributions of genetic drift and selection are embeded in the underlying correlation of the observed traits among species. And furthermore, such embedding is parametrized by OU process explicitly.</p>
+Specifically, similar to Brownian motion on tree, <span class="math inline">\(\cov(X(t_1), X(t_2))\)</span> in OU process on tree also results from shared ancestry. Suppose the closest common ancestor of <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span> is <span class="math inline">\(s\)</span>, then we have (analogous to <a href="ornstein_uhlenbeck_process1.html#mathematical_formalism_of_ornstein-uhlenbeck_process">ordinary OU process</a>)
+<span class="math display">\[\begin{align*}
+  X(t_1) &amp;= X(s) g(t_1 - s) + f(t_1 - s) Z_1 + const. \\
+  X(t_2) &amp;= X(s) g(t_2 - s) + f(t_2 - s) Z_2 + const. \\
+  \cov(X(t_1), X(t_2)) &amp;= g(t_1 - s)g(t_2 - s) \var(X(s)) \quad\text{, since $Z_1, Z_2$ are independent} \\
+  &amp;= e^{-\alpha (t_1 + t_2 - s2)}(1 - e^{-2\alpha s})
+\end{align*}\]</span>
+In particular, if the observables are all present species (denoted as <span class="math inline">\(X_i(t)\)</span> for the <span class="math inline">\(i\)</span>th species), then <span class="math inline">\(t_1 = t_2 := t\)</span>. We have
+<span class="math display">\[\begin{align*}
+  \cov(X_i(t), X_j(t)) &amp;= e^{-2\alpha (t - t_c(i, j))}(1 - e^{-2\alpha t_c(i, j)})
+\end{align*}\]</span>
+<p>, where <span class="math inline">\(t_c(i, j)\)</span> is the time when the closest common ancestor of <span class="math inline">\(i\)</span>th and <span class="math inline">\(j\)</span>th species branches.</p>
+<p>Moreover, the expected value of <span class="math inline">\(X(t)\)</span> is kept the same as before, <em>i.e.</em> <span class="math inline">\(\E(X(t)) = \mu + (x_0 - \mu)e^{-\alpha t}\)</span>. Therefore, <span class="math inline">\(X_1(t), \cdots, X_n(t)\)</span> has been casted as MVN with OU process parameterization so the maximum likelihood estimates can be obtained.</p>
+T. F. Hansen (1997) generalized OU process to handle the a more realistic case where different parts of the phylogeny may have different optimal values (see <a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1558-5646.1997.tb01457.x/full">paper</a> for your interest). For instance, even within primates, depending on the environments, different lineages may have different optimal body size. It turns out that this generalization affects expected value only (since in the derivation of covariance, the contribution of <span class="math inline">\(\mu\)</span> is in <span class="math inline">\(const.\)</span> term). The revised expected <span class="math inline">\(X(t)\)</span> is
+<span class="math display">\[\begin{align*}
+  \E(X_i(t)) &amp;= x_0 e^{-\alpha t} + \sum_k \mu_k e^{-\alpha (t - e_i(k)} (1 - e^{-\alpha l_i(k)})
+\end{align*}\]</span>
+<p>, where <span class="math inline">\(\mu_k\)</span> is the <span class="math inline">\(k\)</span>th optimal value. <span class="math inline">\(e_i(k)\)</span> is the end time of the <span class="math inline">\(mu_k\)</span> on the lineage of <span class="math inline">\(i\)</span>th species (if <span class="math inline">\(\mu_k\)</span> does not act on species <span class="math inline">\(i\)</span>, <span class="math inline">\(e_i(k) = 0\)</span>) and <span class="math inline">\(l_i(k)\)</span> is the elapsed time that <span class="math inline">\(\mu_k\)</span> acts on species <span class="math inline">\(i\)</span>.</p>
+<p>Under this framework, it is straight forward to construct likelihood ratio test to infer which model is favored by data and obtain biological insight. Recently, this framework has been used to infer genes that are under stablizing selection in mammalian species evolution which provides a formal way, beyond sample variation, to estimate expression variation (<span class="math inline">\(\frac{\sigma^2}{2\alpha}\)</span>). It gives a more robust estimate from evolutionary perspective by borrowing information from other species (see the paper <a href="https://www.biorxiv.org/content/early/2017/12/04/229096">here</a> for your interest).</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.3 LTS
+
+Matrix products: default
+BLAS: /usr/lib/libblas/libblas.so.3.6.0
+LAPACK: /usr/lib/lapack/liblapack.so.3.6.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] pander_0.6.1
+
+loaded via a namespace (and not attached):
+ [1] compiler_3.4.3  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
+ [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.18     Rcpp_0.12.15   
+ [9] stringi_1.1.6   rmarkdown_1.9   knitr_1.20      git2r_0.21.0   
+[13] stringr_1.3.0   digest_0.6.15   evaluate_0.10.1</code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

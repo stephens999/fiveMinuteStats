@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Yanyu Liang" />
+
+<meta name="date" content="2018-03-08" />
+
+<title>Brownian Motion and Gaussian Process</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Brownian Motion and Gaussian Process</h1>
+<h4 class="author"><em>Yanyu Liang</em></h4>
+<h4 class="date"><em>2018-03-08</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2018-03-10</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> 1e98d66</p>
+<!-- Add your analysis here -->
+<p><span class="math display">\[
+\newcommand\var{\text{Var}}
+\newcommand\cov{\text{Cov}}
+\newcommand\E{\text{E}}
+\]</span></p>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This section is built on the top of <a href="mvnorm.html">multivariate normal</a> and <a href="normal_markov_chain.html">normal Markov chain</a>, so it is better to read them beforehand.</p>
+</div>
+<div id="constructing-a-continuous-time-random-walk" class="section level1">
+<h1>Constructing a continuous time ‘random walk’</h1>
+<p>Random walk describes the process that</p>
+<blockquote>
+<p>Consider a drunk person walk along a line and let’s record the position of he/she as time goes. Suppose the person can either go right/left for <span class="math inline">\(\Delta x\)</span> meters after one second. To record, we can simply write down the position at time <span class="math inline">\(t = 1, 2, \cdots\)</span> seconds (or take picture every second). At time <span class="math inline">\(t = k\)</span> seconds, let the position to be <span class="math inline">\(X_k\)</span>. Initially, the person is at position 0 (<span class="math inline">\(X_0 = 0\)</span>).</p>
+</blockquote>
+<span class="math display">\[\begin{align*}
+  Z_k &amp;:= X_k - X_{k - 1} \\
+  &amp;= \begin{cases}
+    \Delta x &amp; \text{, with probability $\frac{1}{2}$} \\
+    -\Delta x &amp; \text{, with probability $\frac{1}{2}$}
+  \end{cases}
+\end{align*}\]</span>
+In this process,
+<span class="math display">\[\begin{align*}
+  \E(X_k) &amp;= \E(X_{k - 1}) = \cdots = 0 \\
+  \var(X_k) &amp;= (\Delta x)^2 + \var(X_{k - 1}） \\
+  &amp;= 2(\Delta x)^2 + \var(X_{k - 2}）\\
+  &amp;= \cdots = k (\Delta x)^2
+\end{align*}\]</span>
+<p>Suppose instead of recording position every second, we do this every <span class="math inline">\(\Delta t\)</span>. Then <span class="math inline">\(\Delta x\)</span> changes accordingly. Ideally, if <span class="math inline">\(\Delta t\)</span> is infinitely small, it becomes a continous time Markov chain since we have the access to the position at any time point. If we keep the total recording time (<span class="math inline">\(T\)</span>) the same, now we have <span class="math inline">\(\var(X_{\frac{T}{\Delta t}}) = (\Delta x)^2 \frac{T}{\Delta t}\)</span>.</p>
+<p>If <span class="math inline">\(\Delta t \rightarrow 0\)</span> and <span class="math inline">\(\Delta x \rightarrow 0\)</span> independently, the variance goes to zero which is not an interesting process any more. To ensure the process to have finite non-zero variance at the end (<em>i.e.</em> go to somewhere but not impractically far away), we need <span class="math inline">\(\Delta x = \sigma \sqrt{\Delta t}\)</span>. Note that this requirement implies that <span class="math inline">\(\var(X_{\frac{T}{\Delta t}}) = \sigma^2 T\)</span>.</p>
+</div>
+<div id="brownian-motion---definition-and-simulation" class="section level1">
+<h1>Brownian motion - definition and simulation</h1>
+<p>Brownian motion is what we have described above, namely the continous version of random walk, which should satisfy the same properties as random walk. Namely,</p>
+<ol style="list-style-type: decimal">
+<li>The increment of an interval <span class="math inline">\(s \rightarrow t\)</span>, <span class="math inline">\(X(t) - X(s)\)</span> is independent to each other if the interval is non-overlapping (independent)</li>
+<li><span class="math inline">\(X(t + s) - X(s)\)</span> does not depend on <span class="math inline">\(t\)</span> (stationary)</li>
+</ol>
+<p>Formally, a stochastic process <span class="math inline">\(\{X(t), t \ge 0\}\)</span> is Brownian motion if</p>
+<ol style="list-style-type: lower-roman">
+<li><span class="math inline">\(X(0) = 0\)</span></li>
+<li><span class="math inline">\(\{X(t), t \ge 0\}\)</span> has stationary and independent increments</li>
+<li><span class="math inline">\(\forall t &gt; 0, X(t) \sim N(0, \sigma^2 t)\)</span></li>
+</ol>
+<p>Note that <span class="math inline">\(X(t)\)</span> marginally is univariate normal, but it also correlated with <span class="math inline">\(X(t&#39;)\)</span> by Makovian property. Property ii is analogous to random walk but needs to be scaled properly to make the process non-trivil (see property iii). Also, the normality of <span class="math inline">\(X(t)\)</span> can be induced by property ii with central limit theorem since intuitively increment is the accumulation of many (infinite) random walk steps.</p>
+<p>Regarding the simulation, we are interested in how the value change among a set of time points, <span class="math inline">\(t_1 &lt; t_2 &lt; \cdots &lt; t_n\)</span>. Making use of stationary and independent increments and Markovian property, the procedure is</p>
+<pre><code># Initialization
+Set t_0 = 0 and X(t_0) = 0
+
+# Simulate t_1, ..., t_n in order
+For i = 1, ..., n
+  
+  # Draw increment 
+  Draw Z from N(0, \sigma^2 \times t_i - t_{i - 1})
+  
+  # Update
+  X(t_i) = X(t_{i - 1}) + Z
+  
+End for</code></pre>
+<p>Note that <a href="normal_markov_chain.html#example:_a_normal_markov_chain">this post</a> has implemented a simpler version of the above pseudocode. The only difference is that it is realizing a time series with equal interval length.</p>
+</div>
+<div id="casting-brownian-motion-as-mvn" class="section level1">
+<h1>Casting Brownian motion as MVN</h1>
+<p>As <a href="normal_markov_chain.html#the_normal_markov_chain_as_a_multivariate_normal">this post</a> has pointed out, under such simulation scheme, <span class="math inline">\(X(t_1), \cdots, X(t_n)\)</span> can be written as <span class="math inline">\(X = AZ\)</span> with proper scaling (let <span class="math inline">\(Z_i\)</span> be standard normal)</p>
+<span class="math display">\[\begin{align*}
+  X(t_1) &amp;= \sqrt{t_1} Z_1 \\
+  X(t_2) &amp;= X(t_1) + \sqrt{t_2 - t_1} Z_2 \\
+  &amp;= \sqrt{t_1} Z_1 + \sqrt{t_2 - t_1} Z_2 \\
+  \vdots
+\end{align*}\]</span>
+Then is <span class="math inline">\(n\)</span> by <span class="math inline">\(n\)</span> matrix
+<span class="math display">\[\begin{align*}
+  A = \begin{bmatrix}
+    \sqrt{t_1} &amp; 0 &amp; 0 &amp; 0 &amp; \cdots \\
+    \sqrt{t_1} &amp; \sqrt{t_2 - t_1} &amp; 0 &amp; 0 &amp; \cdots \\
+    \sqrt{t_1} &amp; \sqrt{t_2 - t_1} &amp; \sqrt{t_3 - t_2} &amp; 0 &amp; \cdots \\
+    \cdots
+  \end{bmatrix}
+\end{align*}\]</span>
+<p>Making use of the definition of MVN (see <a href="mvnorm.html#definition">post</a>), we can conclude that <span class="math inline">\(X(t_1), \cdots, X(t_n) \sim N(0, AA&#39;)\)</span>. It suggests an alternative way to simulate Brownian motion but more importantly it provides a simpler way to write likelihood beyond the one based on Markovian property.</p>
+<p>More specifically, from the form of <span class="math inline">\(A\)</span> presented above, we can conclude that <span class="math inline">\(\cov(X(s), X(t)) = s, \forall 0 &lt; s &lt; t\)</span>.</p>
+</div>
+<div id="gaussian-process-in-brief" class="section level1">
+<h1>Gaussian process in brief</h1>
+Formally, a stochastic process <span class="math inline">\(\{X(t): t \ge 0\}\)</span> is Gaussian process if
+<span class="math display">\[\begin{align*}
+  \forall t_1, \cdots, t_n: X(t_1), \cdots, X(t_n) \sim MVN
+\end{align*}\]</span>
+<p>From the previous subsection we can conclude that Brownian motion is one example of Gaussian process.</p>
+<p>Intuitively, Gaussian process is a way to capture the linear dependency between <span class="math inline">\(X(t)\)</span>’s so it can go beyond Markovian dependency. For instance, the Brownian motion on tree is a slightly more complicated Gaussian process than Brownian motion where the dependency is captured by tree, <em>i.e.</em> <span class="math inline">\(X(t) - X(Pa(t)) \sim N(0, \sigma^2 (t - Pa(t)))\)</span>, where <span class="math inline">\(Pa(t)\)</span> is the parent of <span class="math inline">\(t\)</span> (see below tree as an example, where <span class="math inline">\(t_1\)</span> is parent of <span class="math inline">\(t_3\)</span> and <span class="math inline">\(t_4\)</span>).</p>
+<p><img src="figure/brownian_motion_and_guassian_process.Rmd/unnamed-chunk-1-1.svg" width="288" style="display: block; margin: auto;" /></p>
+<p>More closely related nodes share more <span class="math inline">\(Z_i\)</span>’s so ends up with higher correlation. Or more precisely, analogous to regular Brownian motion, <span class="math inline">\(\cov(X(s), X(t)) = \text{closest common ancestor}(s, t), \forall s, t \in \text{tree}\)</span>. For the tree shown in the figure, ultimately, we get to see <span class="math inline">\(X(t_3), X(t_4), X(t_2)\)</span> only but the covariance matrix is captured by tree structure already.</p>
+<p>Spatial Gaussian process is another example. Instead of interpreting <span class="math inline">\(t\)</span> as time, here it is interpreted as position. Then, under Gaussian process framework, we want to come up with mean and covariance for any set of spatial positions. Note that valid MVN needs covariance matrix to be positive semi-definite. To ensure that <span class="math inline">\(\cov(X(t_i), X(t_j)) = k(X(t_i), X(t_j))\)</span> where <span class="math inline">\(k(\cdot, \cdot)\)</span> is kernel function (see <a href="https://en.wikipedia.org/wiki/Kernel_method#Mathematics:_the_kernel_trick">wikipedia</a> for an explanation of why). Intuitively, kernel assigns bigger covariance to spatially close pair and in practice, you get to decide how covariance is related to ‘spatial distance’ by picking kernel (see an incomplete list of kernels <a href="http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/#kernel_functions">here</a>) and even estimating the parameters in kernel function based on the how good it fits data.</p>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.3 LTS
+
+Matrix products: default
+BLAS: /usr/lib/libblas/libblas.so.3.6.0
+LAPACK: /usr/lib/lapack/liblapack.so.3.6.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] compiler_3.4.3  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
+ [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.18     Rcpp_0.12.15   
+ [9] stringi_1.1.6   rmarkdown_1.9   knitr_1.20      git2r_0.21.0   
+[13] stringr_1.3.0   digest_0.6.15   evaluate_0.10.1</code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

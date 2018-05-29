@@ -103,6 +103,12 @@ title: "Home"
 * [Multivariate Normal](mvnorm.html)
 * [Normal Markov Chain](normal_markov_chain.html)
 
+### Brownian Motion and Ornstein-Uhlenbeck Process
+
+* [Introduction to Brownian Motion and Gaussian Process](brownian_motion_and_guassian_process.html)
+* [Introduction to Ornstein-Uhlenbeck Process](ornstein_uhlenbeck_process1.html)
+* [Applications of Brownian Motion and Ornstein-Uhlenbeck Process in Phylogeny Data](ornstein_uhlenbeck_process2.html)
+
 ## Population Genetics
 
 * [Wright-Fisher Model](wright_fisher_model.html)
