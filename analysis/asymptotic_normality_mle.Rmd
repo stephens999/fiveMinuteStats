@@ -1,7 +1,7 @@
 ---
 title: "Asymptotic Normality of MLE"
-author: "Matt Bonakdarpour"
-date: 2016-01-14
+author: "Matt Bonakdarpour [cre], Joshua Bon [ctb]"
+date: 2019-03-30
 output: 
   html_document:
     mathjax: default
@@ -30,7 +30,7 @@ knitr::read_chunk("chunks.R")
 Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples $X_1,\ldots,X_n$ with probability distribution governed by the parameter $\theta$. Let $\theta_0$ be the true value of $\theta$, and $\hat{\theta}$ be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for $\theta$ is asymptotically normal with mean $\theta_0$ and variance $I^{-1}(\theta_0)$. $I(\theta_0)$ is called the **Fisher information** -- we will describe it below. Precisely, this result states that:
 $$\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))$$
 
-If $\hat{\theta}$ is the MLE, then this says that $(\hat{\theta} - \theta_0)/I^{-1}(\theta_0)$ is nearly $N(0,1)$ when the sample size $n$ is large. This allows us to construct approximate confidence intervals for $\theta$ and perform hypothesis tests. 
+If $\hat{\theta}$ is the MLE, then this says that $\sqrt{n}(\hat{\theta} - \theta_0)/I^{-1/2}(\theta_0)$ is nearly $N(0,1)$ when the sample size $n$ is large. Alternatively, this also says that $\hat{\theta}$ is nearly $N(\theta_0,I^{-1}_{n}(\theta_0))$ where $I_{n}(\theta) = n I(\theta)$. This allows us to construct approximate confidence intervals for $\theta$ and perform hypothesis tests.
 
 ### Fisher Information
 First, some notation:  
@@ -41,10 +41,13 @@ First, some notation:
 The MLE $\hat{\theta}$ maximizes both $L(\theta)$ and $\ell(\theta)$. We typically find $\hat{\theta}$ by differentiation, solving the following equation for $\theta$:  
 $$s(\theta) = 0$$  
 
-Under regularity conditions, the Fisher information, $I(\theta)$, is :
-$$I(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\ell(\theta)\right]$$
+Under regularity conditions, the Fisher information, $I(\theta)$, for a single observation is :
+$$I(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\log p(X;\theta)\right]$$
+but can also be defined over all observations as
+$$I_{n}(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\ell(\theta)\right]$$
+Note that $I_{n}(\theta) = n I(\theta)$.
 
-Intuitively, this quantity tells us, on average, how peaked the likelihood function is. The more peaked the likelihood function, the "better" we know the true parameter. In this way, this quantity provides *information* about the true parameter. 
+Intuitively, $I_{n}(\theta)$ tells us, on average, how peaked the likelihood function is. The more peaked the likelihood function, the "better" we know the true parameter. In this way, this quantity provides *information* about the true parameter. 
 
 ## Example 1: Bernoulli Proportion
 Assume we observe i.i.d. samples $X_1,\ldots,X_n$ drawn from a Bernoulli distribution with true parameter $p_0$. Given, these observations, the log-likelihood is:
@@ -53,11 +56,12 @@ Setting the derivative equal to zero, we obtain:
 $$\frac{d}{dp}\ell(p) = \sum \frac{X_i}{p} - \frac{(1-X_i)}{1-p} = 0$$  
 Solving for $p$, we get that the MLE is the sample mean: $\hat{p} = \bar{X}$.
 
-The second derivative with respect to p is:  
+The second derivative with respect to $p$ is:  
 $$\frac{d^2}{dp^2} \ell(p) = \sum -\frac{X_i}{p^2} - \frac{(1-X_i)}{(1-p)^2}$$
 
-The Fisher information is therefore:
-$$I(p) = E\left[-\frac{d^2}{dp^2}\ell(p)\right] = -\frac{E[X_i]}{p^2} - \frac{(1-E[X_i])}{(1-p)^2} = \frac{1}{p(1-p)}$$
+The Fisher information (for all observations) is therefore:
+$$I_{n}(p) = E\left[-\frac{d^2}{dp^2}\ell(p)\right] = \sum \left( -\frac{E[X_i]}{p^2} - \frac{(1-E[X_i])}{(1-p)^2} \right) = \frac{n}{p(1-p)}$$
+and $I(p) = n^{-1}I_{n}(p) = \frac{1}{p(1-p)}$.
 
 From the result at the top of the page, we have that (for large n), $\hat{p}$ is approximately $N\left(p,\frac{p(1-p)}{n}\right)$. We illustrate this approximation in the simulation below. 
 
@@ -80,9 +84,9 @@ Assume we observe i.i.d. samples $X_1,\ldots,X_n$ drawn from a Poisson distribut
 
 $$ \ell(\lambda; X_1,\ldots,X_n) = \sum_{i=1}^n -\lambda + X_i\log(\lambda) + \log(X_i!)$$
 
-Taking the derivative with respect to $\lambda$, setting it equal to zero, and solving for $\lambda$ gives us the estimate $\hat{lambda} = \frac{1}{n}\sum_{i=1}^{n}X_i = \bar{X}$. The Fisher information is: 
+Taking the derivative with respect to $\lambda$, setting it equal to zero, and solving for $\lambda$ gives us the estimate $\hat{\lambda} = \frac{1}{n}\sum_{i=1}^{n}X_i = \bar{X}$. The Fisher information is: 
 
-$$ E_{\lambda}\left[-\frac{d^2}{d\lambda^2}\ell(\lambda)\right] = E[\frac{X}{\lambda^2}] = \frac{1}{\lambda}$$
+$$ I_{n}(\lambda) = E_{\lambda}\left[-\frac{d^2}{d\lambda^2}\ell(\lambda)\right] = \sum E[\frac{X_{i}}{\lambda^2}] = \frac{n}{\lambda}$$
 
 So we have that, we have that (for large n), $\hat{\lambda}$ is approximately $N\left(\lambda,\frac{1}{n\lambda}\right)$. We illustrate this in the same was as above:
 
