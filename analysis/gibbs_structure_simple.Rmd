@@ -2,15 +2,9 @@
 title: "Gibbs Sampling for clustering genetic data"
 author: "Matthew Stephens"
 date: 2017-02-20
-output: html_document
+output: workflowr::wflow_html
 ---
 
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
-
-```{r knitr-opts-chunk, include=FALSE}
-```
 
 **Last updated:** `r Sys.Date()`
 
@@ -218,5 +212,3 @@ Try the Gibbs sampler on the data simulated above.
 
 ## Session Information
 
-```{r session-info}
-```

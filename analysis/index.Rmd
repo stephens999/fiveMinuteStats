@@ -1,4 +1,5 @@
 ---
+site: workflowr::wflow_site
 title: "Home"
 ---
 

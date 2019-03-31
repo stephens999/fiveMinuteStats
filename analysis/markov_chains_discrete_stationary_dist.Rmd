@@ -4,24 +4,8 @@ author: "John Novembre"
 date: 2016-01-31
 ---
 
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
 
-<!-- Update knitr chunk options -->
-```{r knitr-opts-chunk, include=FALSE}
-```
 
-<!-- Insert the date the file was last updated -->
-```{r last-updated, echo=FALSE, results='asis'}
-```
-
-<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
- package git2r is installed -->
-```{r code-version, echo=FALSE, results='asis'}
-```
 
 
 # Pre-requisites
@@ -64,7 +48,7 @@ The stationary distribution has the property $\pi^T= \pi^T P$
 A brute-force hack to finding the stationary distribution is simply to take the transition matrix to a high power and then extract out any row. 
 
 ```{r}
-pi_bru <- (P%^%100)[1,]
+pi_bru <- (P^100)[1,]
 pi_bru
 ```
 
@@ -127,7 +111,7 @@ For our example, $1/\lambda_2$ is approximately 3 generations.
 ```
 Which implies we will reach equilibrium fairly quickly - much more quickly than the 100 generations we were using for our brute-force soluton to the stationary distribution. As a test, let's see how $P^12$ (i.e approx $4/\lambda_2$) looks: 
 ```{r}
-P%^%12
+P^12
 ```
 Indeed - Gary's mood will return to its stationary distribution relatively quickly after any perturbation! 
 
@@ -163,8 +147,4 @@ And the solution checks out!
 
 
 
-## Session information
 
-<!-- Insert the session information into the document -->
-```{r session-info}
-```
