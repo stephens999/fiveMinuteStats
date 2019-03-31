@@ -519,10 +519,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/0cd28bd3e7aea2258f9c3a55e2e0060c55403123" target="_blank">0cd28bd</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreef6fd600a2c860ecb4567e8e114f16a7dc6cf7475targetblankf6fd600a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/f6fd600a2c860ecb4567e8e114f16a7dc6cf7475" target="_blank">f6fd600</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreef6fd600a2c860ecb4567e8e114f16a7dc6cf7475targetblankf6fd600a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -543,7 +543,6 @@ Untracked files:
     Untracked:  analysis/shiny/tester/
     Untracked:  docs/MH_intro_files/
     Untracked:  docs/citations.bib
-    Untracked:  docs/figure/MH_intro.Rmd/
     Untracked:  docs/hmm_files/
     Untracked:  docs/libs/
     Untracked:  docs/shiny/tester/
@@ -585,6 +584,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/f6fd600a2c860ecb4567e8e114f16a7dc6cf7475/analysis/asymptotic_normality_mle.Rmd" target="_blank">f6fd600</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+workflowr::wflow_publish(“analysis/asymptotic_normality_mle.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/asymptotic_normality_mle.html" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -904,7 +937,14 @@ add asymptotic normality of MLE and wilks
 <li>the expectation in the definition of <span class="math inline">\(I_n\)</span> is with respect to the distribution of <span class="math inline">\(X_1,\dots,X_n\)</span>, <span class="math inline">\(p(X_1,\dots,X_n | \theta)\)</span>.</li>
 <li>The (negative) second derivative measures the curvature of a function, and so one can think of <span class="math inline">\(I_{n}(\theta)\)</span> as measuring, on average, how curved the log-likelihood function is – or, in other words, how peaked the likelihood function is. The more peaked the likelihood function, the more <em>information</em> it contains, and the more precise the MLE will be.</li>
 </ul>
-<p>With i.i.d. data the Fisher information can be easily shown to have the form <span class="math display">\[I_n(\theta) = n I(\theta)\]</span> where <span class="math inline">\(I(\theta)\)</span> is the Fisher information for a {} observation - that is, <span class="math inline">\(I(\theta) = I_1(\theta)\)</span>. [This follows directly from the fact that <span class="math inline">\(\ell\)</span> is the sum of <span class="math inline">\(n\)</span> terms, and then applying linearity of expectation: Exercise!]</p>
+<p>With i.i.d. data the Fisher information can be easily shown to have the form <span class="math display">\[I_n(\theta) = n I(\theta)\]</span> where <span class="math inline">\(I(\theta)\)</span> is the Fisher information for a {} observation - that is, <span class="math inline">\(I(\theta) = I_1(\theta)\)</span>. [This follows from the fact that <span class="math inline">\(\ell\)</span> is the sum of <span class="math inline">\(n\)</span> terms, and from linearity of expectation: Exercise!]</p>
+</div>
+<div id="a-slightly-more-precise-statement" class="section level3">
+<h3>A slightly more precise statement</h3>
+<p>For those that dislike the vagueness of the statement “for <span class="math inline">\(n\)</span> sufficiently large”, the result can be written more formally as a limiting result as <span class="math inline">\(n \rightarrow \infty\)</span>:</p>
+<p><span class="math display">\[I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty\]</span></p>
+<p>This kind of result, where sample size tends to infinity, is often referred to as an “asymptotic” result in statistics. So the result gives the “asymptotic sampling distribution of the MLE”.</p>
+<p>While mathematically more precise, this way of writing the result is perhaps less intutive than the approximate statement above.</p>
 </div>
 </div>
 <div id="interpretation" class="section level2">
@@ -919,13 +959,6 @@ add asymptotic normality of MLE and wilks
 <p>Notice that, because the mean of the sampling distribution of the MLE is the true value (<span class="math inline">\(\theta_0\)</span>), the variance of the sampling distribution tells us how far we might expect the MLE to lie from the true value. Specifically the variance is, by definition, the expected squared distance of the MLE from the true value <span class="math inline">\(\theta_0\)</span>. Thus the standard deviation (square root of variance) gives the root mean squared error (RMSE) of the MLE.</p>
 <p>For i.i.d. data the Fisher information <span class="math inline">\(I_n(\theta)=nI(\theta)\)</span> and so increases linearly with <span class="math inline">\(n\)</span> (see notes above). Consequently the variance decreases linearly with <span class="math inline">\(n\)</span> and the RMSE decreases with <span class="math inline">\(n^0.5\)</span>. Thus, for example, to halve the RMSE we need to multiply sample size by 4.</p>
 <p>This is a fundamental idea in statistics: for i.i.d. data (and under regularity conditions) estimation error in the MLE decreases as the <em>square root</em> of the sample size.</p>
-</div>
-<div id="a-slightly-more-precise-statement" class="section level3">
-<h3>A slightly more precise statement</h3>
-<p>For those that dislike the vagueness of the statement “for <span class="math inline">\(n\)</span> sufficiently large”, the result can be written more formally as a limiting result as <span class="math inline">\(n \rightarrow \infty\)</span>:</p>
-<p><span class="math display">\[I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty\]</span></p>
-<p>This kind of result, where sample size tends to infinity, is often referred to as an “asymptotic” result in statistics. So the result gives the “asymptotic sampling distribution of the MLE”.</p>
-<p>While mathematically more precise, this way of writing the result is perhaps less intutive than the approximate statement above.</p>
 </div>
 </div>
 <div id="example-1-bernoulli-proportion" class="section level2">
@@ -972,6 +1005,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/figure/asymptotic_normality_mle.Rmd/unnamed-chunk-1-1.png" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/34bcc51fef570dd7d5a70859f262c983fed17381/docs/figure/asymptotic_normality_mle.Rmd/unnamed-chunk-1-1.png" target="_blank">34bcc51</a>
@@ -1038,6 +1082,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/figure/asymptotic_normality_mle.Rmd/unnamed-chunk-2-1.png" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/34bcc51fef570dd7d5a70859f262c983fed17381/docs/figure/asymptotic_normality_mle.Rmd/unnamed-chunk-2-1.png" target="_blank">34bcc51</a>
