@@ -1,71 +1,113 @@
 ---
 title: "Asymptotic Normality of MLE"
-author: "Matt Bonakdarpour [cre], Joshua Bon [ctb]"
+author: "Matt Bonakdarpour [cre], Joshua Bon [ctb], Matthew Stephens [ctb]"
 date: 2019-03-30
-output: 
-  html_document:
-    mathjax: default
+output: html_document
 ---
 
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<!-- Update knitr chunk options -->
-```{r knitr-opts-chunk, include=FALSE}
-```
+## Prerequisites
 
-<!-- Insert the date the file was last updated -->
-```{r last-updated, echo=FALSE, results='asis'}
-```
+You should be familiar with the concept of [Likelihood function](likelihood_function.html).
 
-<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
- package git2r is installed -->
-```{r code-version, echo=FALSE, results='asis'}
-```
+## Overview
 
-## Main Result
-Maximum likelihood is a popular method for estimating parameters in a statistical model. Assume we observe i.i.d. samples $X_1,\ldots,X_n$ with probability distribution governed by the parameter $\theta$. Let $\theta_0$ be the true value of $\theta$, and $\hat{\theta}$ be the maximum likelihood estimate (MLE). Under regularity conditions, the MLE for $\theta$ is asymptotically normal with mean $\theta_0$ and variance $I^{-1}(\theta_0)$. $I(\theta_0)$ is called the **Fisher information** -- we will describe it below. Precisely, this result states that:
-$$\sqrt{n}(\hat{\theta} - \theta_0) \rightarrow N(0,I^{-1}(\theta_0))$$
+Maximum likelihood estimation is a popular method for estimating parameters in a statistical model. As its name suggests, maximum likelihood estimation involves finding the value of the parameter that maximizes the likelihood function (or, equivalently, maximizes the log-likelihood function). This value is called the maximum likelihood estimate, or MLE.
 
-If $\hat{\theta}$ is the MLE, then this says that $\sqrt{n}(\hat{\theta} - \theta_0)/I^{-1/2}(\theta_0)$ is nearly $N(0,1)$ when the sample size $n$ is large. Alternatively, this also says that $\hat{\theta}$ is nearly $N(\theta_0,I^{-1}_{n}(\theta_0))$ where $I_{n}(\theta) = n I(\theta)$. This allows us to construct approximate confidence intervals for $\theta$ and perform hypothesis tests.
+It seems natural to ask about the accuracy of an MLE: how far from the "true" value of the parameter can we expect the MLE to be? This vignette answers this question in a simple but important case: maximum likelihood estimation based on 
+independent and identically distributed (i.i.d.) data from a model.
 
-### Fisher Information
-First, some notation:  
-* **Likelihood**: $L(\theta) = p(X_1,\ldots,X_n;\theta)$  
-* **Log-likelihood**: $\ell(\theta) = \log{L(\theta)}$  
-* **Score function**: $s(\theta) = \frac{d}{d\theta}\ell(\theta)$
+## Asymptotic distribution of MLE for i.i.d. data
 
-The MLE $\hat{\theta}$ maximizes both $L(\theta)$ and $\ell(\theta)$. We typically find $\hat{\theta}$ by differentiation, solving the following equation for $\theta$:  
-$$s(\theta) = 0$$  
+### Set-up
 
-Under regularity conditions, the Fisher information, $I(\theta)$, for a single observation is :
-$$I(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\log p(X;\theta)\right]$$
-but can also be defined over all observations as
-$$I_{n}(\theta) = E_{\theta}\left[-\frac{d^2}{d\theta^2}\ell(\theta)\right]$$
-Note that $I_{n}(\theta) = n I(\theta)$.
+Suppose we observe *independent and identically distributed* (i.i.d.) samples $X_1,\ldots,X_n$ from a probability distribution $p(\cdot; \theta)$ governed by a parameter $\theta$ that is to be estimated. Then the likelihood for $\theta$ is:
+$$L(\theta; X_1,\dots,X_n) := p(X_1,\ldots,X_n;\theta) = \prod_{i=1}^n p(X_i ; \theta).$$ 
+And the log-likelihood is:
+$$\ell(\theta; X_1,\dots,X_n):= \log L(\theta;X_1,\dots,X_n) = \sum_{i=1}^n \log p(X_i; \theta).$$
+Let $\theta_0$ denote the true value of $\theta$, and $\hat{\theta}$ denote the maximum likelihood estimate (MLE). Because $\ell$ is a monotonic function of $L$ the MLE $\hat{\theta}$ maximizes both $L$ and $\ell$. (In simple cases we typically find $\hat{\theta}$ by differentiating the log-likelihood and solving $\ell'(\theta;X_1,\dots,X_n)=0$.)
 
-Intuitively, $I_{n}(\theta)$ tells us, on average, how peaked the likelihood function is. The more peaked the likelihood function, the "better" we know the true parameter. In this way, this quantity provides *information* about the true parameter. 
+
+### Result
+
+Under some technical conditions that often hold in practice (often referred to as "regularity conditions"), and for $n$ sufficiently large, we have the following approximate result:
+$${\hat{\theta}} {\dot\sim} N(\theta_0,I_{n}(\theta_0)^{-1})$$
+where the precision (inverse variance), $I_n(\theta_0)$, is a quantity known as the **Fisher information**, which is defined as
+$$I_{n}(\theta) := E_{\theta}\left[-\frac{d^2}{d\theta^2}\ell(\theta; X_1,\dots,X_n)\right].$$
+Notes:
+
+  - the notation $\dot\sim$ means "approximately distributed as".
+  - the expectation in the definition of $I_n$ is with respect to the distribution of $X_1,\dots,X_n$, $p(X_1,\dots,X_n | \theta)$.
+  - The (negative) second derivative measures the curvature of a function, and so one can think of $I_{n}(\theta)$ as measuring, on average, how curved the log-likelihood function is -- or, in other words, how peaked the likelihood function is. The more peaked the likelihood function, the more *information* it contains, and the more precise the MLE will be. 
+  
+With i.i.d. data the Fisher information can be easily shown 
+to have the form 
+$$I_n(\theta) = n I(\theta)$$ 
+where $I(\theta)$ is the Fisher information 
+for a {\it single} observation - that is, $I(\theta) = I_1(\theta)$. [This follows
+directly from the fact that $\ell$ is the sum of $n$ terms, and then applying linearity of expectation: Exercise!]
+
+## Interpretation
+
+### Sampling distribution
+
+The interpretation of this result needs a little care. In particular, it is important to understand what it means to say that the MLE has a "distribution", since for any
+given dataset $X_1,\dots,X_n$ the MLE $\hat{\theta}$ is just a number. 
+
+One way to think of this is to *imagine* sampling several data sets $X_1,\dots,X_n$, rather than just one data set. Each data set would give us an MLE. Supppose we collect $J$ datasets,
+and the $j$th dataset gives an MLE $\hat{\theta}_j$. The distribution of the MLE
+means the distribution of these $\hat{\theta}_j$ values.  Essentially it tells us
+what a histogram of the $\hat{\theta}_j$ values would look like. 
+ This distribution is often called the "sampling distribution" of the MLE
+ to emphasise that it is the distribution one would get when sampling many different data sets. The concrete examples
+given below help illustrate this key idea.
+ 
+### Implication for estimation error
+
+Notice that, because the mean of the sampling distribution of the MLE is the true value ($\theta_0$), the variance of the sampling distribution tells us how far we might expect the MLE to lie from the true value. Specifically the variance is, by definition, the expected squared distance of the MLE from the true value $\theta_0$. Thus the standard deviation (square root of variance) gives the root mean squared error (RMSE) of the MLE.
+
+For i.i.d. data the Fisher information $I_n(\theta)=nI(\theta)$ and so increases linearly with $n$ (see notes above). Consequently the variance decreases linearly with $n$ and the RMSE decreases with $n^0.5$. Thus, for example, to halve the RMSE we need to multiply sample size by 4.
+
+This is a fundamental idea in statistics: for i.i.d. data (and under regularity conditions)
+estimation error in the MLE decreases as the *square root* of the sample size.
+
+
+### A slightly more precise statement
+
+For those that dislike the vagueness of the statement "for $n$ sufficiently large",
+the result can be written more formally as a limiting result as $n \rightarrow \infty$:
+
+$$I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty$$
+
+This kind of result, where sample size tends to infinity, is often referred to as an "asymptotic" result in statistics. So the result gives the "asymptotic sampling distribution of the MLE". 
+
+While mathematically more precise, this way of writing the result
+is perhaps less intutive than the approximate statement above. 
+
 
 ## Example 1: Bernoulli Proportion
-Assume we observe i.i.d. samples $X_1,\ldots,X_n$ drawn from a Bernoulli distribution with true parameter $p_0$. Given, these observations, the log-likelihood is:
-$$\ell(p) = \sum X_i\log{p} + (1-X_i)\log(1-p)$$
+
+Assume we observe i.i.d. samples $X_1,\ldots,X_n$ drawn from a Bernoulli$(p)$ distribution with true parameter $p=p_0$. The log-likelihood is:
+$$\ell(p; X_1,\dots,X_n) = \sum_{i=1}^n [X_i\log{p} + (1-X_i)\log(1-p)]$$
 Setting the derivative equal to zero, we obtain:  
-$$\frac{d}{dp}\ell(p) = \sum \frac{X_i}{p} - \frac{(1-X_i)}{1-p} = 0$$  
-Solving for $p$, we get that the MLE is the sample mean: $\hat{p} = \bar{X}$.
+$$\frac{d}{dp}\ell(p;X_1,\dots,X_n) = \sum_{i=1}^n 
+\left[ \frac{X_i}{p} - \frac{(1-X_i)}{1-p}\right].$$  
+Setting this derivative to 0 and solving for $p$, gives that the MLE is the sample mean: $\hat{p} = (1/n)\sum_{i=1}^n X_i$.
 
 The second derivative with respect to $p$ is:  
-$$\frac{d^2}{dp^2} \ell(p) = \sum -\frac{X_i}{p^2} - \frac{(1-X_i)}{(1-p)^2}$$
+$$\frac{d^2}{dp^2} \ell(p; X_1,\dots,X_n) = \sum_{i=1}^n 
+\left[ -\frac{X_i}{p^2} - \frac{(1-X_i)}{(1-p)^2} \right]$$
 
 The Fisher information (for all observations) is therefore:
-$$I_{n}(p) = E\left[-\frac{d^2}{dp^2}\ell(p)\right] = \sum \left( -\frac{E[X_i]}{p^2} - \frac{(1-E[X_i])}{(1-p)^2} \right) = \frac{n}{p(1-p)}$$
-and $I(p) = n^{-1}I_{n}(p) = \frac{1}{p(1-p)}$.
+$$I_{n}(p) = E\left[-\frac{d^2}{dp^2}\ell(p)\right] = \sum_{i=1}^n  \left[ -\frac{E[X_i]}{p^2} - \frac{(1-E[X_i])}{(1-p)^2} \right] = \frac{n}{p(1-p)}.$$
+Notice that, as expected from the general result $I_n(p)=nI_1(p)$, $I_n(p)$ increases linearly with $n$. 
 
-From the result at the top of the page, we have that (for large n), $\hat{p}$ is approximately $N\left(p,\frac{p(1-p)}{n}\right)$. We illustrate this approximation in the simulation below. 
+From the main result, we have that (for large $n$), $\hat{p}$ is approximately $N\left(p,\frac{p(1-p)}{n}\right)$. We illustrate this approximation in the simulation below. 
 
-The simulation creates 7000 different sets of samples. In each sample, we have 100 draws from a Bernoulli distribution with true parameter equal to 0.4. We compute the MLE separately for each sample and plot a histogram of these 7000 MLEs. On top of this histogram, we plot the density of the asymptotic distribution as a solid line. 
+The simulation samples $J=7000$ sets of data $X_1,\dots,X_n$. In each sample, we have $n=100$ draws from a Bernoulli distribution with true parameter $p_0=0.4$. We compute the MLE separately for each sample and plot a histogram of these 7000 MLEs. On top of this histogram, we plot the density of the theoretical asymptotic sampling distribution as a solid line. 
 
 ```{r}
 num.iterations         <- 7000
@@ -80,15 +122,16 @@ curve(dnorm(x, mean=p.truth,sd=sqrt((p.truth*(1-p.truth)/num.samples.per.iter) )
 ```
 
 ##Example 2: Poisson Mean 
-Assume we observe i.i.d. samples $X_1,\ldots,X_n$ drawn from a Poisson distribution with true parameter $\lambda$. The log-likelihood is: 
 
-$$ \ell(\lambda; X_1,\ldots,X_n) = \sum_{i=1}^n -\lambda + X_i\log(\lambda) + \log(X_i!)$$
+Assume we observe i.i.d. samples $X_1,\ldots,X_n$ drawn from a Poisson$(\lambda)$ distribution with true parameter $\lambda=\lambda_0$. The log-likelihood is: 
 
-Taking the derivative with respect to $\lambda$, setting it equal to zero, and solving for $\lambda$ gives us the estimate $\hat{\lambda} = \frac{1}{n}\sum_{i=1}^{n}X_i = \bar{X}$. The Fisher information is: 
+$$ \ell(\lambda; X_1,\ldots,X_n) = \sum_{i=1}^n -\lambda + X_i\log(\lambda) + \log(X_i!).$$
 
-$$ I_{n}(\lambda) = E_{\lambda}\left[-\frac{d^2}{d\lambda^2}\ell(\lambda)\right] = \sum E[\frac{X_{i}}{\lambda^2}] = \frac{n}{\lambda}$$
+Taking the derivative with respect to $\lambda$, setting it equal to zero, and solving for $\lambda$ gives the mle as the sample mean, $\hat{\lambda} = \frac{1}{n}\sum_{i=1}^{n}X_i$. The Fisher information is: 
 
-So we have that, we have that (for large n), $\hat{\lambda}$ is approximately $N\left(\lambda,\frac{1}{n\lambda}\right)$. We illustrate this in the same was as above:
+$$ I_{n}(\lambda) = E_{\lambda}\left[-\frac{d^2}{d\lambda^2}\ell(\lambda)\right] = \sum_{i=1}^n E[X_{i}/\lambda^2] = \frac{n}{\lambda}$$
+
+The main result says that (for large $n$), $\hat{\lambda}$ is approximately $N\left(\lambda,\frac{1}{n\lambda}\right)$. We illustrate this by simulation again:
 
 ```{r}
 num.iterations         <- 7000
@@ -103,8 +146,3 @@ curve(dnorm(x, mean=lambda.truth,sd=sqrt(lambda.truth/num.samples.per.iter) ), 0
 ```
 
 
-## Session information
-
-<!-- Insert the session information into the document -->
-```{r session-info}
-```
