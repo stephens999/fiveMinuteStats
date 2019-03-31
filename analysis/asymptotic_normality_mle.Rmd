@@ -48,7 +48,19 @@ to have the form
 $$I_n(\theta) = n I(\theta)$$ 
 where $I(\theta)$ is the Fisher information 
 for a {\it single} observation - that is, $I(\theta) = I_1(\theta)$. [This follows
-directly from the fact that $\ell$ is the sum of $n$ terms, and then applying linearity of expectation: Exercise!]
+from the fact that $\ell$ is the sum of $n$ terms, and from linearity of expectation: Exercise!]
+
+### A slightly more precise statement
+
+For those that dislike the vagueness of the statement "for $n$ sufficiently large",
+the result can be written more formally as a limiting result as $n \rightarrow \infty$:
+
+$$I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty$$
+
+This kind of result, where sample size tends to infinity, is often referred to as an "asymptotic" result in statistics. So the result gives the "asymptotic sampling distribution of the MLE". 
+
+While mathematically more precise, this way of writing the result
+is perhaps less intutive than the approximate statement above. 
 
 ## Interpretation
 
@@ -74,18 +86,6 @@ For i.i.d. data the Fisher information $I_n(\theta)=nI(\theta)$ and so increases
 This is a fundamental idea in statistics: for i.i.d. data (and under regularity conditions)
 estimation error in the MLE decreases as the *square root* of the sample size.
 
-
-### A slightly more precise statement
-
-For those that dislike the vagueness of the statement "for $n$ sufficiently large",
-the result can be written more formally as a limiting result as $n \rightarrow \infty$:
-
-$$I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty$$
-
-This kind of result, where sample size tends to infinity, is often referred to as an "asymptotic" result in statistics. So the result gives the "asymptotic sampling distribution of the MLE". 
-
-While mathematically more precise, this way of writing the result
-is perhaps less intutive than the approximate statement above. 
 
 
 ## Example 1: Bernoulli Proportion
