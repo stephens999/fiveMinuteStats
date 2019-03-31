@@ -2,7 +2,7 @@
 title: "Asymptotic Normality of MLE"
 author: "Matt Bonakdarpour [cre], Joshua Bon [ctb], Matthew Stephens [ctb]"
 date: 2019-03-30
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}

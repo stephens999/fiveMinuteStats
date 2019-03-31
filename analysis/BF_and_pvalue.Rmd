@@ -5,24 +5,8 @@ date: 2016-04-20
 bibliography: citations.bib
 ---
 
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
 
-<!-- Update knitr chunk options -->
-```{r knitr-opts-chunk, include=FALSE}
-```
 
-<!-- Insert the date the file was last updated -->
-```{r last-updated, echo=FALSE, results='asis'}
-```
-
-<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
- package git2r is installed -->
-```{r code-version, echo=FALSE, results='asis'}
-```
 
 # Pre-requisites
 
@@ -94,10 +78,6 @@ Note some key features:
 + As $\sigma$ increases from 0 the BF is initially 1, rises to a maximum, and then gradually decays. This behavior, which occurs for any $x$, perhaps helps provide intuition into why it is even possible to derive an upper bound. 
 + In the limit as $\sigma \rightarrow \infty$ it is easy to show that (for any $x$) the BF $\rightarrow 0$. This is an example of "Bartlett's paradox", and illustrates why you should not just use a "very flat" prior for $\theta$ under $H_1$: the Bayes Factor will depend on how flat you mean by "very flat", and in the limit will always favor $H_0$. 
 
-## Session information
 
-<!-- Insert the session information into the document -->
-```{r session-info}
-```
 
 ## References

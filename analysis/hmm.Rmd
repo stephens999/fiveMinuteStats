@@ -2,7 +2,7 @@
 title: "HMM example"
 author: "Matthew Stephens"
 date: "May 15, 2018"
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}

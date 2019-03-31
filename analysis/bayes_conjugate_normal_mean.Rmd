@@ -2,7 +2,7 @@
 title: "Bayesian computations for the mean of a normal distribution"
 author: "Matthew Stephens"
 date: "April 23, 2018"
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
