@@ -47,7 +47,7 @@ With i.i.d. data the Fisher information can be easily shown
 to have the form 
 $$I_n(\theta) = n I(\theta)$$ 
 where $I(\theta)$ is the Fisher information 
-for a {\it single} observation - that is, $I(\theta) = I_1(\theta)$. [This follows
+for a *single* observation - that is, $I(\theta) = I_1(\theta)$. [This follows
 from the fact that $\ell$ is the sum of $n$ terms, and from linearity of expectation: Exercise!]
 
 ### A slightly more precise statement
