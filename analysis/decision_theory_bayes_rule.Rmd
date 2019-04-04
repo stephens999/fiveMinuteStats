@@ -75,8 +75,8 @@ The proof is straightforward.
 Since $p(X,Y)= p(Y|X) p(X)$, we can rewrite the expected loss for any decision rule $\hat{Y}$ as:
 $$r(\hat{Y}) = \int \biggl[ \int L(\hat{Y}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX$$
 Note that, by definition, $\hat{Y}_\text{opt}(X)$ minimizes the term inside $[]$.
-Thus
-$$r(\hat{Y}) \leq \int \biggl[ \int L(\hat{Y}_\text{opt}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX = r(\hat{Y}_\text{opt}).$$
+Thus, for any decision rule $\hat{Y}$ we have that the risk is no better than $\hat{Y}_\text{opt}$:
+$$r(\hat{Y}) \geq \int \biggl[ \int L(\hat{Y}_\text{opt}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX = r(\hat{Y}_\text{opt}).$$
 
 ## Examples
 
@@ -140,7 +140,7 @@ is in artificial simulation experiments, where the "true" distribution $p(Y,X)$ 
 cases the optimal rule can be computed, and may provide a useful yardstick against which other rules can be compared.)
 
 One way (but not the only way) to proceed in practice
-is to perform Bayesian inference for $Y$ anyway, by simpely positing (assuming) some "prior" distribution $p(Y)$, and a "likelihood" $p(X|Y)$, and using these to compute a posterior distribution $p(Y|X)$. The result above shows that inference based on this posterior will be optimal, on average, across large numbers of samples of $(X,Y)$ drawn from $p(X,Y)= p(Y)p(X|Y)$. But, of course, the result does not
+is to perform Bayesian inference for $Y$ anyway, by simply positing (assuming) some "prior" distribution $p(Y)$, and a "likelihood" $p(X|Y)$, and using these to compute a posterior distribution $p(Y|X)$. The result above shows that inference based on this posterior will be optimal, on average, across large numbers of samples of $(X,Y)$ drawn from $p(X,Y)= p(Y)p(X|Y)$. But, of course, the result does not
 guarantee optimality, on average, across samples from some other distribution, $q(X,Y)$ say.  One might summarize this as "Bayesian inference is optimal, on average, if both the prior distribution and likelihood are `correct'".
 
 
