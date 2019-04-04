@@ -440,7 +440,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-31
+<strong>Last updated:</strong> 2019-04-04
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -471,10 +471,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/0cd28bd3e7aea2258f9c3a55e2e0060c55403123" target="_blank">0cd28bd</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreee9676f812eab7efdd51fdc9611bfa4c6b2843314targetblanke9676f8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/e9676f812eab7efdd51fdc9611bfa4c6b2843314" target="_blank">e9676f8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreee9676f812eab7efdd51fdc9611bfa4c6b2843314targetblanke9676f8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -495,7 +495,6 @@ Untracked files:
     Untracked:  analysis/shiny/tester/
     Untracked:  docs/MH_intro_files/
     Untracked:  docs/citations.bib
-    Untracked:  docs/figure/MH_intro.Rmd/
     Untracked:  docs/hmm_files/
     Untracked:  docs/libs/
     Untracked:  docs/shiny/tester/
@@ -537,6 +536,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/e9676f812eab7efdd51fdc9611bfa4c6b2843314/analysis/decision_theory_bayes_rule.Rmd" target="_blank">e9676f8</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-04-04
+</td>
+<td>
+workflowr::wflow_publish(“analysis/decision_theory_bayes_rule.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/decision_theory_bayes_rule.html" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -611,7 +644,7 @@ index.Rmd
 <h2>The optimal decision rule</h2>
 <p>So what decision rule <span class="math inline">\(\hat{Y}\)</span> is “optimal” in terms of minimizing the expected loss <span class="math inline">\(r\)</span>? It is easy to show that the following decision rule minimizes <span class="math inline">\(r\)</span>:</p>
 <p><em>Optimal Decision Rule:</em> For each <span class="math inline">\(X\)</span> choose the prediction <span class="math inline">\(\hat{Y}_\text{opt}(X)\)</span> that minimizes the conditional expected loss: <span class="math display">\[\hat{Y}_\text{opt}(X) = \arg \min_a \int L(a, Y) \, p(Y | X) dY.\]</span></p>
-<p>The proof is straightforward. Since <span class="math inline">\(p(X,Y)= p(Y|X) p(X)\)</span>, we can rewrite the expected loss for any decision rule <span class="math inline">\(\hat{Y}\)</span> as: <span class="math display">\[r(\hat{Y}) = \int \biggl[ \int L(\hat{Y}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX\]</span> Note that, by definition, <span class="math inline">\(\hat{Y}_\text{opt}(X)\)</span> minimizes the term inside <span class="math inline">\([]\)</span>. Thus <span class="math display">\[r(\hat{Y}) \leq \int \biggl[ \int L(\hat{Y}_\text{opt}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX = r(\hat{Y}_\text{opt}).\]</span></p>
+<p>The proof is straightforward. Since <span class="math inline">\(p(X,Y)= p(Y|X) p(X)\)</span>, we can rewrite the expected loss for any decision rule <span class="math inline">\(\hat{Y}\)</span> as: <span class="math display">\[r(\hat{Y}) = \int \biggl[ \int L(\hat{Y}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX\]</span> Note that, by definition, <span class="math inline">\(\hat{Y}_\text{opt}(X)\)</span> minimizes the term inside <span class="math inline">\([]\)</span>. Thus, for any decision rule <span class="math inline">\(\hat{Y}\)</span> we have that the risk is no better than <span class="math inline">\(\hat{Y}_\text{opt}\)</span>: <span class="math display">\[r(\hat{Y}) \geq \int \biggl[ \int L(\hat{Y}_\text{opt}(X),Y) p(Y|X) \, dY \biggr] p(X) \, dX = r(\hat{Y}_\text{opt}).\]</span></p>
 </div>
 <div id="examples" class="section level2">
 <h2>Examples</h2>
@@ -640,7 +673,7 @@ the optimal decision rule is to set <span class="math inline">\(\hat{Y}\)</span>
 <div id="theory-vs-practice" class="section level2">
 <h2>Theory vs Practice</h2>
 <p>Note that the optimal decision rule depends on the distribution <span class="math inline">\(p(Y,X)\)</span> – or, more specifically, on the conditional distribution <span class="math inline">\(p(Y|X)\)</span>. Typically one does not know this distribution exactly, and so one cannot implement the optimal decision rule. (An exception is in artificial simulation experiments, where the “true” distribution <span class="math inline">\(p(Y,X)\)</span> is known; in these cases the optimal rule can be computed, and may provide a useful yardstick against which other rules can be compared.)</p>
-<p>One way (but not the only way) to proceed in practice is to perform Bayesian inference for <span class="math inline">\(Y\)</span> anyway, by simpely positing (assuming) some “prior” distribution <span class="math inline">\(p(Y)\)</span>, and a “likelihood” <span class="math inline">\(p(X|Y)\)</span>, and using these to compute a posterior distribution <span class="math inline">\(p(Y|X)\)</span>. The result above shows that inference based on this posterior will be optimal, on average, across large numbers of samples of <span class="math inline">\((X,Y)\)</span> drawn from <span class="math inline">\(p(X,Y)= p(Y)p(X|Y)\)</span>. But, of course, the result does not guarantee optimality, on average, across samples from some other distribution, <span class="math inline">\(q(X,Y)\)</span> say. One might summarize this as “Bayesian inference is optimal, on average, if both the prior distribution and likelihood are `correct’”.</p>
+<p>One way (but not the only way) to proceed in practice is to perform Bayesian inference for <span class="math inline">\(Y\)</span> anyway, by simply positing (assuming) some “prior” distribution <span class="math inline">\(p(Y)\)</span>, and a “likelihood” <span class="math inline">\(p(X|Y)\)</span>, and using these to compute a posterior distribution <span class="math inline">\(p(Y|X)\)</span>. The result above shows that inference based on this posterior will be optimal, on average, across large numbers of samples of <span class="math inline">\((X,Y)\)</span> drawn from <span class="math inline">\(p(X,Y)= p(Y)p(X|Y)\)</span>. But, of course, the result does not guarantee optimality, on average, across samples from some other distribution, <span class="math inline">\(q(X,Y)\)</span> say. One might summarize this as “Bayesian inference is optimal, on average, if both the prior distribution and likelihood are `correct’”.</p>
 </div>
 </div>
 
