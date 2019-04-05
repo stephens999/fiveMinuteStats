@@ -2,12 +2,12 @@
 title: "The Coalescent Process"
 author: "Jennifer Blanc"
 date: "3/13/2019"
-output: html_document
+output: 
+  html_document:
+    self_contained: no
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-rm(list = ls())
 set.seed(12)
 library(ggplot2)
 library(reshape2)
@@ -16,12 +16,16 @@ library(reshape2)
 
 ### Pre-requisites 
 
-* Wright-Fisher Model 
-* Intro probability  
+* [Wright-Fisher Model](https://stephens999.github.io/fiveMinuteStats/wright_fisher_model.html)  
+* Intro probability    
 
 ### The Coalescent Process
 
-In population genetics, we are often interested in modeling the relationship between a sample of genetic variants. The coalescent works backwards in time to model the genelogical relationship between the alleles in a sample. Coalescent theory was pioneered by John Kingman in the 1980s and remains one of the most widely used population genetics models. To understand how the coalescent works, it is helpful to first think about the wright-fisher model where we have idealized population with 2N haploid individuals, a neutral genetic locus, a constant population size of 2N, and offspring being randomly assigned to parents. While these might sound like idealized and unrealistic conditions, we can still derive interesting and applicable results from this model. Furthermore, it is the foundation on which a variety of more complicated models are built.     
+In population genetics, we are often interested in modeling the relationship between a sample of genetic variants. The coalescent works backwards in time to model the genelogical relationship between the alleles in a sample. [Coalescent theory](https://en.wikipedia.org/wiki/Coalescent_theory) was pioneered by [John Kingman](https://en.wikipedia.org/wiki/John_Kingman) in the 1980s and remains one of the most widely used population genetics models. To understand how the coalescent works, it is helpful to first think about the [wright-fisher model](https://stephens999.github.io/fiveMinuteStats/wright_fisher_model.html) where we have idealized population with 2N haploid individuals, a neutral genetic locus, a constant population size of 2N, and offspring being randomly assigned to parents (see Figure 1). While these might sound like idealized and unrealistic conditions, we can still derive interesting and applicable results from this model. Furthermore, it is the foundation on which a variety of more complicated models are built.   
+
+```{r, out.width = "200px", echo=FALSE, out.height="300px", fig.align='center', fig.cap="   Figure 1"}
+knitr::include_graphics("Discrete_Coal_Pic.jpg", dpi = 50)
+```
 
 ### Time to Coalescence  
 
@@ -83,9 +87,16 @@ We have now written the probability of a coalescent event in a sample of size n 
 
 $$E[T_n] = \frac{2N}{{n}\choose{2}}$$  
 
+We can now return to the wright-fisher popultion from Figure 1. There we had a population of size 2N = 10 and we were considering a sample of size n = 3. Looking at the discrete generations in Figure 1, we can see the geneological relationship between these three samples is highlighted in dark green. This geneology is reproduced on the left in figure 2. The right side of figure 2 shows the continous generation coalescent model where the time to first coalescent event for our sample, $T_3$, is shown by the dotted line in the middle and the last coalescent event, $T_2$, by the top dotted line.  
+
+```{r, out.width = "300px", echo=FALSE, out.height="400px", fig.align='center', fig.cap="   Figure 2"}
+knitr::include_graphics("Cont_Coal_Pic.jpg", dpi = 50)
+```
+
+
 ## Simulating Coalescent Times  
 
-Finally, we will simulate the coalescent times for an entire sample. Before we do that, we are going to re-scale our expression slightly. Since we are typically working with large populations, the expected time for two alleles to coalesce ($2N$) is usually a very large number, which can make looking at coalescent times on the scale of generations difficult. Instead, we are going to set $k = 2N \mathrm{ generations} \Longleftrightarrow t = 1$. So each $t$ time-step backwards, actually represents 2N generations. We can now re-write the probability of a coalescent event before $t +1$ as:   
+We will now simulate the coalescent times for an entire sample. Before we do that, we are going to re-scale our expression slightly. Since we are typically working with large populations, the expected time for two alleles to coalesce ($2N$) is usually a very large number, which can make looking at coalescent times on the scale of generations difficult. Instead, we are going to set $k = 2N \mathrm{ generations} \Longleftrightarrow t = 1$. So each $t$ time-step backwards, actually represents 2N generations. We can now re-write the probability of a coalescent event before $t +1$ as:   
 
 $$P_{C,t+1} = {{n}\choose{2}}e^{-{{n}\choose{2}}}t$$
 
@@ -186,8 +197,6 @@ dat <- melt(data, id = "n")
 ggplot(dat, aes(x = n, y = value, color = variable)) + geom_point() + geom_line() + theme_classic() + scale_color_manual(name = " ", labels = c("E[Ln]", "E[TMRCA]"), values  = c("red4", "navy")) + ylab("Time") + theme(legend.position="bottom")
 ```
 
-```{r}
-sessionInfo()
-```
+Figures from: The Coalescent and Measurably Evolving Populations Alexei Drummond Department of Computer Science University of Auckland, NZ  
 
 
