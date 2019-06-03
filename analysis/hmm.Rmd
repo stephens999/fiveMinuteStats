@@ -77,7 +77,7 @@ for(k in 1:K){
 for(t in 1:(T-1)){
   m = alpha[t,] %*% P
   for(k in 1:K){
-    alpha[t+1,k] = m[k]*emit(k,X[t]) 
+    alpha[t+1,k] = m[k]*emit(k,X[t+1]) 
   }
 }
 
