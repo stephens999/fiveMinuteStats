@@ -76,9 +76,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -196,8 +194,6 @@ $(document).ready(function () {
   menuAnchor.closest('li.dropdown').addClass('active');
 });
 </script>
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
 
@@ -345,8 +341,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -355,6 +349,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -414,8 +418,8 @@ div.section {
 
 
 <h1 class="title toc-ignore">Introduction to EM: Gaussian Mixture Models</h1>
-<h4 class="author"><em>Matt Bonakdarpour</em></h4>
-<h4 class="date"><em>2016-01-22</em></h4>
+<h4 class="author">Matt Bonakdarpour</h4>
+<h4 class="date">2016-01-22</h4>
 
 </div>
 
@@ -431,7 +435,7 @@ div.section {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -440,21 +444,21 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-31
+<strong>Last updated:</strong> 2019-06-12
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
-<div id="report" class="tab-pane fade">
+<div id="checks" class="tab-pane fade">
 <div id="workflowr-checks" class="panel-group">
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -519,10 +523,22 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/0cd28bd3e7aea2258f9c3a55e2e0060c55403123" target="_blank">0cd28bd</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda" class="panel-collapse collapse">
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree7da80917710d76557e6ef0968db761b2ae949e88targetblank7da8091a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/7da80917710d76557e6ef0968db761b2ae949e88" target="_blank">7da8091</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree7da80917710d76557e6ef0968db761b2ae949e88targetblank7da8091a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -543,8 +559,8 @@ Untracked files:
     Untracked:  analysis/shiny/tester/
     Untracked:  docs/MH_intro_files/
     Untracked:  docs/citations.bib
-    Untracked:  docs/figure/MH_intro.Rmd/
-    Untracked:  docs/figure/hmm.Rmd/
+    Untracked:  docs/figure/The Ancestral Process.Rmd/
+    Untracked:  docs/figure/The Coalescent Process.Rmd/
     Untracked:  docs/hmm_files/
     Untracked:  docs/libs/
     Untracked:  docs/shiny/tester/
@@ -586,6 +602,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/7da80917710d76557e6ef0968db761b2ae949e88/analysis/intro_to_em.Rmd" target="_blank">7da8091</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-06-12
+</td>
+<td>
+workflowr::wflow_publish(“analysis/intro_to_em.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/intro_to_em.html" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -777,9 +827,9 @@ add two mixture model vignettes + merge redundant info in markov chain vignettes
 <div id="review-mle-of-normal-distribution" class="section level1">
 <h1>Review: MLE of Normal Distribution</h1>
 <p>Suppose we have <span class="math inline">\(n\)</span> observations <span class="math inline">\(X_1,\ldots,X_n\)</span> from a Gaussian distribution with unknown mean <span class="math inline">\(\mu\)</span> and known variance <span class="math inline">\(\sigma^2\)</span>. To find the maximum likelihood estimate for <span class="math inline">\(\mu\)</span>, we find the log-likelihood <span class="math inline">\(\ell (\mu)\)</span>, take the derivative with respect to <span class="math inline">\(\mu\)</span>, set it equal zero, and solve for <span class="math inline">\(\mu\)</span>: <span class="math display">\[\begin{align}
-L(\mu) &amp;= \prod_{i=1}^n \frac{1}{\sigma\sqrt{2\pi}}\exp{-\frac{(x_i-\mu)^2}{2\sigma^2}} \\
-\Rightarrow \ell(\mu) &amp;= \sum_{i=1}^n\log \left (\frac{1}{\sigma\sqrt{2\pi}} \right )  - \left (\frac{(x_i-\mu)^2}{2\sigma^2} \right) \\
-\rightarrow \frac{d}{d\mu}\ell(\mu) &amp;= \sum_{i=1}^n \frac{x_i - \mu}{2\sigma^2}
+L(\mu) &amp;= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp{-\frac{(x_i-\mu)^2}{2\sigma^2}} \\
+\Rightarrow \ell(\mu) &amp;= \sum_{i=1}^n \left[ \log \left (\frac{1}{\sqrt{2\pi\sigma^2}} \right )  - \frac{(x_i-\mu)^2}{2\sigma^2} \right] \\
+\Rightarrow \frac{d}{d\mu}\ell(\mu) &amp;= \sum_{i=1}^n \frac{x_i - \mu}{\sigma^2}
 \end{align}\]</span></p>
 <p>Setting this equal to zero and solving for <span class="math inline">\(\mu\)</span>, we get that <span class="math inline">\(\mu_{\text{MLE}} = \frac{1}{n}\sum_{i=1}^n x_i\)</span>. Note that applying the log function to the likelihood helped us decompose the product and removed the exponential function so that we could easily solve for the MLE.</p>
 </div>
@@ -881,6 +931,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/figure/intro_to_em.Rmd/unnamed-chunk-1-1.png" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/c3b365a48f7fc76cf83ade425916d31e547d8077/docs/figure/intro_to_em.Rmd/unnamed-chunk-1-1.png" target="_blank">c3b365a</a>
 </td>
 <td>
@@ -895,7 +956,7 @@ John Blischak
 </div>
 </div>
 <p>Now we write a function to compute the log-likelihood for the incomplete data, assuming the parameters are known. This will be used to determine convergence: <span class="math display">\[\ell(\theta) = \sum_{i=1}^n \log \left( \sum_{k=1}^2 \pi_k \underbrace{N(x_i;\mu_k, \sigma_k^2)}_{L[i,k]} \right )\]</span></p>
-<pre class="r"><code>compute.log.lik &lt;- function(X, L, w) {
+<pre class="r"><code>compute.log.lik &lt;- function(L, w) {
   L[,1] = L[,1]*w[1]
   L[,2] = L[,2]*w[2]
   return(sum(log(rowSums(L))))
@@ -905,19 +966,19 @@ John Blischak
 L[, 1] = dnorm(X, mean=mu.true[1], sd = sigma.true[1])
 L[, 2] = dnorm(X, mean=mu.true[2], sd = sigma.true[2])</code></pre>
 <p>Finally, we implement the E and M step in the <code>EM.iter</code> function below. The <code>mixture.EM</code> function is the driver which checks for convergence by computing the log-likelihoods at each step.</p>
-<pre class="r"><code>mixture.EM &lt;- function(w.init, L, X) {
+<pre class="r"><code>mixture.EM &lt;- function(w.init, L) {
   
   w.curr &lt;- w.init
   
   # store log-likehoods for each iteration
   log_liks &lt;- c()
-  ll       &lt;- compute.log.lik(X, L, w.curr)
+  ll       &lt;- compute.log.lik(L, w.curr)
   log_liks &lt;- c(log_liks, ll)
   delta.ll &lt;- 1
   
   while(delta.ll &gt; 1e-5) {
     w.curr   &lt;- EM.iter(w.curr, L)
-    ll       &lt;- compute.log.lik(X, L, w.curr)
+    ll       &lt;- compute.log.lik(L, w.curr)
     log_liks &lt;- c(log_liks, ll)
     delta.ll &lt;- log_liks[length(log_liks)]  - log_liks[length(log_liks)-1]
   }
@@ -938,7 +999,7 @@ EM.iter &lt;- function(w.curr, L, ...) {
   return(w.next)
 }</code></pre>
 <pre class="r"><code>#perform EM
-ee &lt;- mixture.EM(w.init=c(0.5,0.5), L, X)
+ee &lt;- mixture.EM(w.init=c(0.5,0.5), L)
 print(paste(&quot;Estimate = (&quot;, round(ee[[1]][1],2), &quot;,&quot;, round(ee[[1]][2],2), &quot;)&quot;, sep=&quot;&quot;))</code></pre>
 <pre><code>[1] &quot;Estimate = (0.29,0.71)&quot;</code></pre>
 <p>Finally, we inspect the evolution of the log-likelihood and note that it is strictly increases:</p>
@@ -968,6 +1029,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/figure/intro_to_em.Rmd/unnamed-chunk-6-1.png" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/c3b365a48f7fc76cf83ade425916d31e547d8077/docs/figure/intro_to_em.Rmd/unnamed-chunk-6-1.png" target="_blank">c3b365a</a>
 </td>
 <td>
@@ -981,7 +1053,7 @@ John Blischak
 </table>
 </div>
 </div>
-<br> <br>
+<br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -991,7 +1063,7 @@ John Blischak
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.2 (2018-12-20)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Mojave 10.14.1
+Running under: macOS Mojave 10.14.4
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -1004,11 +1076,11 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_1.0.0      digest_0.6.18   rprojroot_1.3-2
- [5] backports_1.1.3 git2r_0.24.0    magrittr_1.5    evaluate_0.12  
- [9] stringi_1.2.4   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.2     stringr_1.3.1   glue_1.3.0      xfun_0.4       
-[17] yaml_2.2.0      compiler_3.5.2  htmltools_0.3.6 knitr_1.21     </code></pre>
+ [1] workflowr_1.4.0 Rcpp_1.0.1      digest_0.6.19   rprojroot_1.3-2
+ [5] backports_1.1.4 git2r_0.25.2    magrittr_1.5    evaluate_0.14  
+ [9] stringi_1.4.3   fs_1.3.1        whisker_0.3-2   rmarkdown_1.13 
+[13] tools_3.5.2     stringr_1.4.0   glue_1.3.1      xfun_0.7       
+[17] yaml_2.2.0      compiler_3.5.2  htmltools_0.3.6 knitr_1.23     </code></pre>
 </div>
 </div>
 
