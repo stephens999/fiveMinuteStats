@@ -27,9 +27,9 @@ This note describes the EM algorithm which aims to obtain the maximum likelihood
 # Review: MLE of Normal Distribution
 Suppose we have $n$ observations $X_1,\ldots,X_n$ from a Gaussian distribution with unknown mean $\mu$ and known variance $\sigma^2$. To find the maximum likelihood estimate for $\mu$, we find the log-likelihood $\ell (\mu)$, take the derivative with respect to $\mu$, set it equal zero, and solve for $\mu$:
 $$\begin{align}
-L(\mu) &= \prod_{i=1}^n \frac{1}{\sigma\sqrt{2\pi}}\exp{-\frac{(x_i-\mu)^2}{2\sigma^2}} \\
-\Rightarrow \ell(\mu) &= \sum_{i=1}^n\log \left (\frac{1}{\sigma\sqrt{2\pi}} \right )  - \left (\frac{(x_i-\mu)^2}{2\sigma^2} \right) \\
-\rightarrow \frac{d}{d\mu}\ell(\mu) &= \sum_{i=1}^n \frac{x_i - \mu}{2\sigma^2}
+L(\mu) &= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp{-\frac{(x_i-\mu)^2}{2\sigma^2}} \\
+\Rightarrow \ell(\mu) &= \sum_{i=1}^n \left[ \log \left (\frac{1}{\sqrt{2\pi\sigma^2}} \right )  - \frac{(x_i-\mu)^2}{2\sigma^2} \right] \\
+\Rightarrow \frac{d}{d\mu}\ell(\mu) &= \sum_{i=1}^n \frac{x_i - \mu}{\sigma^2}
 \end{align}$$
 
 Setting this equal to zero and solving for $\mu$, we get that $\mu_{\text{MLE}} = \frac{1}{n}\sum_{i=1}^n x_i$. Note that applying the log function to the likelihood helped us decompose the product and removed the exponential function so that we could easily solve for the MLE. 
@@ -146,7 +146,7 @@ hist(X,breaks=15)
 Now we write a function to compute the log-likelihood for the incomplete data, assuming the parameters are known. This will be used to determine convergence:
 $$\ell(\theta) = \sum_{i=1}^n \log \left( \sum_{k=1}^2 \pi_k \underbrace{N(x_i;\mu_k, \sigma_k^2)}_{L[i,k]} \right )$$
 ```{r}
-compute.log.lik <- function(X, L, w) {
+compute.log.lik <- function(L, w) {
   L[,1] = L[,1]*w[1]
   L[,2] = L[,2]*w[2]
   return(sum(log(rowSums(L))))
@@ -164,19 +164,19 @@ L[, 2] = dnorm(X, mean=mu.true[2], sd = sigma.true[2])
 Finally, we implement the E and M step in the `EM.iter` function below. The `mixture.EM` function is the driver which checks for convergence by computing the log-likelihoods at each step.
 
 ```{r}
-mixture.EM <- function(w.init, L, X) {
+mixture.EM <- function(w.init, L) {
   
   w.curr <- w.init
   
   # store log-likehoods for each iteration
   log_liks <- c()
-  ll       <- compute.log.lik(X, L, w.curr)
+  ll       <- compute.log.lik(L, w.curr)
   log_liks <- c(log_liks, ll)
   delta.ll <- 1
   
   while(delta.ll > 1e-5) {
     w.curr   <- EM.iter(w.curr, L)
-    ll       <- compute.log.lik(X, L, w.curr)
+    ll       <- compute.log.lik(L, w.curr)
     log_liks <- c(log_liks, ll)
     delta.ll <- log_liks[length(log_liks)]  - log_liks[length(log_liks)-1]
   }
@@ -200,7 +200,7 @@ EM.iter <- function(w.curr, L, ...) {
 
 ```{r}
 #perform EM
-ee <- mixture.EM(w.init=c(0.5,0.5), L, X)
+ee <- mixture.EM(w.init=c(0.5,0.5), L)
 print(paste("Estimate = (", round(ee[[1]][1],2), ",", round(ee[[1]][2],2), ")", sep=""))
 ```
 
