@@ -2,56 +2,66 @@
 title: "Home"
 ---
 
-# Likelihood Ratios 
+# Session  1: Likelihood and Bayesian inference
+
 *  [Fully specified models, discrete data](likelihood_ratio_simple_models.html)
 *  [Fully specified models, continuous data](likelihood_ratio_simple_continuous_data.html)
-*  [Examples and Pitfalls](likelihood_do_dont.html)
 *  [Simple Bayesian Inference](LR_and_BF.html)
-*  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
 
-# Likelihood Function (continuous parameter)
 
 *  [The Likelihood Function](likelihood_function.html)
 *  [Bayesian inference for a continuous parameter: analytic calculation](bayes_beta_binomial.html)
+* [The Beta Distribution](beta.html)
 *  [Bayesian inference for a continuous parameter: summarizing the posterior](summarize_interpret_posterior.html)
 
+
+###  Session 1 Supplementary material
+
+*  [Posterior Distribution for multi-model comparisons](bayes_multiclass.html)
+*  [Examples and Pitfalls](likelihood_do_dont.html)
 *  [Simple example: Bayesian inference for normal mean (known variance)](shiny_normal_example.html)
+* [The Dirichlet Distribution](dirichlet.html)
 
-
-# Markov Chains
+# Session 2: Markov Chains
 
 *  [Discrete-Time Markov Chains: Introduction](markov_chains_discrete_intro.html)
 *  [Simulating Discrete-Time Markov Chains: An Introduction](simulating_discrete_chains_1.html)
 *  [Simulating Discrete-Time Markov Chains: Limiting Distributions](simulating_discrete_chains_2.html)
 
-# Markov Chain Monte Carlo
+# Session 2/3: Markov Chain Monte Carlo
+
+* [The Metropolis--Hastings algorithm](MH_intro.html)
+* [Simple examples of Metropolis--Hastings algorithm](MH-examples1.html)
+
 
 * [Introduction to Gibbs Sampling](gibbs1.html)
+* [Gibbs Sampling for a univariate normal mixture](gibbs2.html)
+* [Gibbs Sampling for a mixture of product-bernoullis](gibbs_structure_simple.html)
 
 
-# Supplementary Information
+# Optional Additional Material
 
-## Bayesian Computation
+### Bayesian Computation
 
 * [Every Bayesian computation is an integral (or a sum)](integral.html)
 * [Importance sampling](Importance_sampling.html)
 * [Relationship between Bayes Factor and p value](BF_and_pvalue.html)
 
-## Population Genetics
+### Population Genetics
 
 * [Wright-Fisher Model](wright_fisher_model.html)
 * [Wright-Fisher Model Approximations](approx_wright_fisher_model.html)
 
-## Mixture Models
+### Mixture Models
 
 *  [Introduction to Mixture Models](intro_to_mixture_models.html)
 *  [Introduction to EM: Gaussian Mixture Models](intro_to_em.html)
 
-## More on MCMC
+### More on MCMC
 
 * [Gibbs Sampling for a simple normal mixture](gibbs2.html)
 
-## More on Markov Chains
+### More on Markov Chains
 
 *  [Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations](stationary_distribution.html)
 *  [Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition](markov_chains_discrete_stationary_dist.html)
