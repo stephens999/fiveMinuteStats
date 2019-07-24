@@ -27,6 +27,7 @@ title: "Home"
 *  [Discrete-Time Markov Chains: Introduction](markov_chains_discrete_intro.html)
 *  [Simulating Discrete-Time Markov Chains: An Introduction](simulating_discrete_chains_1.html)
 *  [Simulating Discrete-Time Markov Chains: Limiting Distributions](simulating_discrete_chains_2.html)
+* [Example: Wright-Fisher Model](wright_fisher_model.html)
 
 # Session 2/3: Markov Chain Monte Carlo
 
@@ -49,7 +50,7 @@ title: "Home"
 
 ### Population Genetics
 
-* [Wright-Fisher Model](wright_fisher_model.html)
+
 * [Wright-Fisher Model Approximations](approx_wright_fisher_model.html)
 
 ### Mixture Models
