@@ -55,7 +55,7 @@ from the fact that $\ell$ is the sum of $n$ terms, and from linearity of expecta
 For those that dislike the vagueness of the statement "for $n$ sufficiently large",
 the result can be written more formally as a limiting result as $n \rightarrow \infty$:
 
-$$I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty$$
+$$I_n(\theta_0)^{0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty$$
 
 This kind of result, where sample size tends to infinity, is often referred to as an "asymptotic" result in statistics. So the result gives the "asymptotic sampling distribution of the MLE". 
 
