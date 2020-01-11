@@ -502,10 +502,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeda7a08ea406f49cb308fa1f4a9729692482ac2a1targetblankda7a08ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/da7a08ea406f49cb308fa1f4a9729692482ac2a1" target="_blank">da7a08e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree2ed9d49432c46a3a547f0651b6b5fbe17ebe4962targetblank2ed9d49a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/2ed9d49432c46a3a547f0651b6b5fbe17ebe4962" target="_blank">2ed9d49</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeda7a08ea406f49cb308fa1f4a9729692482ac2a1targetblankda7a08ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree2ed9d49432c46a3a547f0651b6b5fbe17ebe4962targetblank2ed9d49a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -562,6 +562,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/2022f7f15a1357f4b130f020d0bd8ca9693d1bbc/docs/asymptotic_normality_mle.html" target="_blank">2022f7f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-01-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/47f21191f03d28dd2aa172c3d03ab41d145ab23e/analysis/asymptotic_normality_mle.Rmd" target="_blank">47f2119</a>
+</td>
+<td>
+GitHub
+</td>
+<td>
+2019-12-13
+</td>
+<td>
+“Asymptotic normality” correct formal limit result
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1039,7 +1073,7 @@ add asymptotic normality of MLE and wilks
 <div id="a-slightly-more-precise-statement" class="section level3">
 <h3>A slightly more precise statement</h3>
 <p>For those that dislike the vagueness of the statement “for <span class="math inline">\(n\)</span> sufficiently large”, the result can be written more formally as a limiting result as <span class="math inline">\(n \rightarrow \infty\)</span>:</p>
-<p><span class="math display">\[I_n(\theta_0)^{-0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty\]</span></p>
+<p><span class="math display">\[I_n(\theta_0)^{0.5} (\hat{\theta} - \theta_0) \rightarrow N(0,1) \text{ as } n \rightarrow \infty\]</span></p>
 <p>This kind of result, where sample size tends to infinity, is often referred to as an “asymptotic” result in statistics. So the result gives the “asymptotic sampling distribution of the MLE”.</p>
 <p>While mathematically more precise, this way of writing the result is perhaps less intutive than the approximate statement above.</p>
 </div>
