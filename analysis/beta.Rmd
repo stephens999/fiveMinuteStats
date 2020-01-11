@@ -74,7 +74,7 @@ From these examples you should note the following:
 The parameters $a$ and $b$ can also be less than 1, but the distribution in this case starts to have a different kind of shape. Specifically if $a<1$ then there is a peak at 0, and if $b<1$ then there is a peak at 1 (so if both are $<1$ then the distribution is U-shaped). Here are some examples:
 ```{r}
 p = seq(0,1, length=100)
-plot(p, dbeta(p, 0.1, 0.1), ylab="density", type ="l", col=4)
+plot(p, dbeta(p, 0.1, 0.1), ylim=c(0,3),ylab="density", type ="l", col=4)
 lines(p, dbeta(p, 0.5, 0.5), type ="l", col=3)
 lines(p, dbeta(p, 0.1, 0.5), col=2) 
 lines(p, dbeta(p, 0.5, 2), col=1) 
