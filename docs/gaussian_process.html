@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2020-02-28" />
+
+<title>gaussian_process</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">gaussian_process</h1>
+<h4 class="author">Matthew Stephens</h4>
+<h4 class="date">2020-02-28</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-03-01
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.0.9000). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree3c311abaa006a58d1882184f15ea4f4bd199c6detargetblank3c311aba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/3c311abaa006a58d1882184f15ea4f4bd199c6de" target="_blank">3c311ab</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree3c311abaa006a58d1882184f15ea4f4bd199c6detargetblank3c311aba" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/3c311abaa006a58d1882184f15ea4f4bd199c6de" target="_blank">3c311ab</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    analysis/bernoulli_poisson_process_cache/
+
+Untracked files:
+    Untracked:  _workflowr.yml
+    Untracked:  analysis/CI.Rmd
+    Untracked:  analysis/gibbs_structure.Rmd
+    Untracked:  analysis/libs/
+    Untracked:  analysis/results.Rmd
+    Untracked:  analysis/shiny/tester/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/gaussian_process.Rmd</code>) and HTML (<code>docs/gaussian_process.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/3c311abaa006a58d1882184f15ea4f4bd199c6de/analysis/gaussian_process.Rmd" target="_blank">3c311ab</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+<td>
+workflowr::wflow_publish(“gaussian_process.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>You need to be familiar with the <a href="mvnorm.html">multivariate normal distribution</a>.</p>
+</div>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Suppose you want to model the variation of a continuous variable <span class="math inline">\(T\)</span> – say, temperature – across a spatial region (say think in two dimensions for now). Let <span class="math inline">\(T(x)\)</span> denote the temperature at any location <span class="math inline">\(x\)</span> (so think of <span class="math inline">\(x\)</span> as a position in a space <span class="math inline">\(\mathcal{X}\)</span>). So <span class="math inline">\(T\)</span> is a function that maps the space <span class="math inline">\(\mathcal{X}\)</span> to the real value line <span class="math inline">\(R\)</span>, which we can write <span class="math inline">\(T: \mathcal{X} \rightarrow R\)</span>.</p>
+<p>Suppose you measured the temperature at just one location, say <span class="math inline">\(x = x_1\)</span>. The value <span class="math inline">\(T(x_1)\)</span> would be a scalar, so you could imagine modelling it using a univariate normal distribution.</p>
+<p>Similarly, if you measured the temperature at two locations, say <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>, then you would obtain two temperatures <span class="math inline">\(T(x_1),T(x_2)\)</span>. If the locations <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> were near to one another then we might expect the two temperatures <span class="math inline">\(T(x_1)\)</span> and <span class="math inline">\(T(x_2)\)</span> to be similar to one another. If the locations were further away from one another then maybe the temperatures would be less similar. This suggests one might model the pair <span class="math inline">\(T(x_1),T(x_2)\)</span> using a bivariate normal distribution, whose covariance depends on the distance between <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> (and decaying with distance).</p>
+<p>Now, suppose we measure the temperature at <span class="math inline">\(r\)</span> locations <span class="math inline">\(x_1,\dots,x_r\)</span>. The natural generalization of the above is to model the temperatures <span class="math inline">\(T(x_1),\dots,T(x_r)\)</span> as a multivariate (<span class="math inline">\(r\)</span>-variate) normal distribution with the covariance of <span class="math inline">\(T(x_i),T(x_j)\)</span> depending on the distance between <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> (and decaying with distance). Notice that, conceptually, the function <span class="math inline">\(T\)</span> is defined everywhere in space, but we are measuring it at a finite number of points – and we assume that at any finite number of points the values we get will follow a multivariate normal distribution. This idea motivates the definition of a Gaussian process – it is defined in a continuos space, but at any finite number of points it has a multivariate normal distribution.</p>
+</div>
+<div id="definition" class="section level2">
+<h2>Definition</h2>
+<p>A stochastic process <span class="math inline">\({T(x): x \in \mathcal{X}}\)</span> is said to be a <em>Gaussian Process</em> if <span class="math inline">\((T(x_1),\dots,T(x_r))\)</span> is multivariate normal for all <span class="math inline">\(x_1,\dots,x_r \in \mathcal{X}\)</span>.</p>
+</div>
+<div id="defining-a-gaussian-process" class="section level2">
+<h2>Defining a Gaussian process</h2>
+<p>Just as a multivariate normal distribution is defined by a mean and a covariance matrix, a Gaussian process is defined by a mean <em>function</em> <span class="math inline">\(\mu(x) :\mathcal{X} \rightarrow R\)</span> and a covariance <em>function</em> <span class="math inline">\(\Sigma: \mathcal{X} \cross \mathcal{X} \rightarrow R\)</span>. Think of <span class="math inline">\(\mu(x)\)</span> as specifying the mean of <span class="math inline">\(T(x)\)</span> for any point <span class="math inline">\(x\)</span> and <span class="math inline">\(\Sigma(x_1,x_2)\)</span> as specifying the covariance for any pair of points <span class="math inline">\(x_1,x_2\)</span>. That is: <span class="math display">\[E(T(x)) = \mu(x)\]</span> and <span class="math display">\[cov(T(x_1),T(x_2)) = \Sigma(x_1,x_2).\]</span></p>
+<p>Given suitable functions <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\Sigma\)</span>, we could simulate the values <span class="math inline">\(T(x_1),\dots,T(x_r)\)</span> from a multivariate normal distribution, by first computing the mean (by applying the function <span class="math inline">\(\mu(\cdot)\)</span> to every point <span class="math inline">\(x_1,dots,x_r\)</span>) and the covariance matrix (appyling the function <span class="math inline">\(\Sigma(\cdot,\cdot)\)</span> to every pair of points), and then using a standard method for simulating from a multivariate normal. We will see an example of this below.</p>
+<p>Note that the covariance function <span class="math inline">\(\Sigma\)</span> has to be carefully chosen, so that the covariance matrix it gives for any set of points is a valid covariance matrix. Specifically, the covariance matrix must always be positive semi-definite (PSD), meaning all its eigenvalues are <span class="math inline">\(\geq 0\)</span>. So you can’t just choose any function you like for <span class="math inline">\(\Sigma\)</span>. We will give some common choices below after we have introduced a common simplification.</p>
+</div>
+<div id="stationary-and-isotropic-gaussian-processes" class="section level2">
+<h2>Stationary and Isotropic Gaussian Processes</h2>
+<p>Gaussian processes become simpler to define and work with if we make two additional simplifying assumptions:</p>
+<ul>
+<li><p>The mean function <span class="math inline">\(\mu\)</span> is a constant, <span class="math inline">\(\mu(x) = \mu\)</span> for all <span class="math inline">\(x\)</span>.</p></li>
+<li><p>The covariance function <span class="math inline">\(\Sigma(x_1,x_2)\)</span> depends <em>only</em> on the distance between the two points, <span class="math inline">\(d(x_1,x_2)\)</span>. That is <span class="math inline">\(\Sigma(x_1,x_2) = K( d(x_1,x_2) )\)</span> for some function <span class="math inline">\(K\)</span> that maps distance to covariance.</p></li>
+</ul>
+<p>A Gaussian process that satisfies these two assumptions is said to be <em>Stationary and Isotropic</em>.</p>
+<p>This simplifies defining a Gaussian process because we just have to specify the mean <span class="math inline">\(\mu\)</span> (a number) and the function <span class="math inline">\(K(d)\)</span>, which says how covariance declines with distance <span class="math inline">\(d\)</span>. Again, because we need the covariance matrix to be PSD, only certain choices of <span class="math inline">\(K\)</span> are valid. Three simple common choices of <span class="math inline">\(K\)</span> that lead to valid PSD covariances are:</p>
+<ul>
+<li><p>Squared exponential: <span class="math inline">\(K(d; l) = \exp(-|d|^2/2l^2)\)</span> where <span class="math inline">\(l\)</span> is a parameter that determines the length scale over which the covariance decays (e.g. does covariance of temperature decay over meters, or kilometers, or hundreds of kilometers?).</p></li>
+<li><p>Ornstein–Uhlenbeck: <span class="math inline">\(K(d; l) = \exp(-|d|/l)\)</span>, where again <span class="math inline">\(l\)</span> is a parameter that controls the length scale.</p></li>
+<li><p>Matérn: whose form is a bit more complicated, but is easily computed using the <code>geoR</code> package below. The Matérn covariance function is widely used in Geostatistic applications.</p></li>
+</ul>
+</div>
+<div id="simulation" class="section level2">
+<h2>Simulation</h2>
+<p>To help understand a new distribution it can often be helpful to simulate from it. Here we look at some simulations from a few different Gaussian processes. In these examples we look at one-dimensional examples, just because they are much easier to plot and visualize. One-dimensional GPs are also useful - e.g. to model the way that variables vary along a 1-d space (e.g. with time or along the human genome).</p>
+<div id="squared-exponential-kernel" class="section level3">
+<h3>Squared exponential kernel</h3>
+<p>So here we generate 100 points <span class="math inline">\(x_1,\dots,x_{100}\)</span> in the range <span class="math inline">\([0,1]\)</span> and simulate the value of a Gaussian process at those 100 points using the squared exponential kernel.</p>
+<pre class="r"><code>set.seed(11)
+x = runif(100)
+d = abs(outer(x,x,&quot;-&quot;)) # compute distance matrix, d_{ij} = |x_i - x_j|
+l = 1 # length scale
+Sigma_SE = exp(-d^2/(2*l^2)) # squared exponential kernel
+y = mvtnorm::rmvnorm(1,sigma=Sigma_SE)
+plot(x,y)</code></pre>
+<p><img src="figure/gaussian_process.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>You can see that effectively this simulation has created a “curve” in which <span class="math inline">\(y\)</span> varies smoothly with <span class="math inline">\(x\)</span>. Indeed, a GP can be thought of as a distribution on curves (whose smoothness depends on the covariance function used, as we will see later).</p>
+<p>Of course, this is just one random curve (and only measured at 100 points, although conceptually it is defined at all points in the space). Here we generate nine different simulations:</p>
+<pre class="r"><code>par(mfcol=c(3,3),mar=c(0.5,0.5,0.5,0.5))
+for(i in 1:9){
+  x = runif(100)
+  d = abs(outer(x,x,&quot;-&quot;)) # compute distance matrix, d_{ij} = |x_i - x_j|
+  Sigma_SE = exp(-d^2/(2*l^2)) # squared exponential kernel
+  y = mvtnorm::rmvnorm(1,sigma=Sigma_SE)
+  plot(x,y)
+}</code></pre>
+<p><img src="figure/gaussian_process.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="change-length-scale" class="section level3">
+<h3>Change length scale</h3>
+<p>Notice that these curves do not change very quickly with distance. We can get curves that change more quickly by using a smaller length scale parameter <span class="math inline">\(l\)</span> in the covariance function.</p>
+<p>Try making the covariance decay faster with distance:</p>
+<pre class="r"><code>l = 0.1 # smaller length scale
+par(mfcol=c(3,3),mar=c(0.5,0.5,0.5,0.5))
+for(i in 1:9){
+  x = runif(100)
+  d = abs(outer(x,x,&quot;-&quot;)) # compute distance matrix, d_{ij} = |x_i - x_j|
+  Sigma_SE = exp(-d^2/(2*l^2)) # squared exponential kernel
+  y = mvtnorm::rmvnorm(1,sigma=Sigma_SE)
+  plot(x,y)
+}</code></pre>
+<p><img src="figure/gaussian_process.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="the-ou-covariance-function" class="section level1">
+<h1>The OU covariance function:</h1>
+<p>Here we use the covariance function for what is known as the “Ornstein–Uhlenbeck process”, which you can think of as a modified Brownian motion, where the modification tends to pull the process back towards 0. (Unmodified BM tends to wander progressively further from 0.)</p>
+<p>Notice that visually these functions seem much “rougher” than those produced by the squared exponential function. (And indeed this visual impression is correct: the functions produced by the OU covariance are not differentiable, although they are continuous.)</p>
+<pre class="r"><code>l = 1 # length scale
+par(mfcol=c(3,3),mar=c(0.5,0.5,0.5,0.5))
+for(i in 1:9){
+  x = runif(100)
+  d = abs(outer(x,x,&quot;-&quot;)) # compute distance matrix, d_{ij} = |x_i - x_j|
+  Sigma_OU = exp(-d/l) # OU kernel
+  y = mvtnorm::rmvnorm(1,sigma=Sigma_OU)
+  plot(x,y)
+}</code></pre>
+<p><img src="figure/gaussian_process.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="matern-covariance-function" class="section level1">
+<h1>Matern covariance function</h1>
+<p>The Matern covariance function produces curves that are a smoother than OU, but not as smooth as SE:</p>
+<pre class="r"><code>library(&quot;geoR&quot;)</code></pre>
+<pre><code>Warning in fun(libname, pkgname): couldn&#39;t connect to display &quot;:0&quot;</code></pre>
+<pre><code>--------------------------------------------------------------
+ Analysis of Geostatistical Data
+ For an Introduction to geoR go to http://www.leg.ufpr.br/geoR
+ geoR version 1.8-1 (built on 2020-02-08) is now loaded
+--------------------------------------------------------------</code></pre>
+<pre class="r"><code>l = 0.1 # length scale
+par(mfcol=c(3,3),mar=c(0.5,0.5,0.5,0.5))
+for(i in 1:9){
+  x = runif(100)
+  d = abs(outer(x,x,&quot;-&quot;)) # compute distance matrix, d_{ij} = |x_i - x_j|
+  Sigma_M = matern(d,phi=l,kappa=1) 
+  y = mvtnorm::rmvnorm(1,sigma=Sigma_M)
+  plot(x,y)
+}</code></pre>
+<p><img src="figure/gaussian_process.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Mojave 10.14.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] geoR_1.8-1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.3              knitr_1.26              whisker_0.4            
+ [4] magrittr_1.5            workflowr_1.6.0.9000    MASS_7.3-51.4          
+ [7] lattice_0.20-38         R6_2.4.1                rlang_0.4.2            
+[10] stringr_1.4.0           RandomFields_3.3.8      tcltk_3.6.0            
+[13] tools_3.6.0             grid_3.6.0              xfun_0.12              
+[16] git2r_0.26.1            RandomFieldsUtils_0.5.3 htmltools_0.4.0        
+[19] yaml_2.2.0              digest_0.6.23           rprojroot_1.3-2        
+[22] later_1.0.0             splancs_2.01-40         promises_1.1.0         
+[25] fs_1.3.1                glue_1.3.1              evaluate_0.14          
+[28] rmarkdown_2.0           sp_1.3-2                stringi_1.4.5          
+[31] compiler_3.6.0          backports_1.1.5         mvtnorm_1.0-12         
+[34] httpuv_1.5.2           </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
