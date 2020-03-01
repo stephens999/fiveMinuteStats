@@ -1,5 +1,5 @@
 ---
-title: "gaussian_process"
+title: "Introduction to Gaussian Processes"
 author: "Matthew Stephens"
 date: "2020-02-28"
 output: workflowr::wflow_html
