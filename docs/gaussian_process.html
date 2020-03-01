@@ -13,7 +13,7 @@
 
 <meta name="date" content="2020-02-28" />
 
-<title>gaussian_process</title>
+<title>Introduction to Gaussian Processes</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -384,7 +384,7 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">gaussian_process</h1>
+<h1 class="title toc-ignore">Introduction to Gaussian Processes</h1>
 <h4 class="author">Matthew Stephens</h4>
 <h4 class="date">2020-02-28</h4>
 
@@ -502,16 +502,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree3c311abaa006a58d1882184f15ea4f4bd199c6detargetblank3c311aba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/3c311abaa006a58d1882184f15ea4f4bd199c6de" target="_blank">3c311ab</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreebc38322436e6f89cc23f11281f41d8bd7dc25539targetblankbc38322a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/bc38322436e6f89cc23f11281f41d8bd7dc25539" target="_blank">bc38322</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree3c311abaa006a58d1882184f15ea4f4bd199c6detargetblank3c311aba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreebc38322436e6f89cc23f11281f41d8bd7dc25539targetblankbc38322a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/3c311abaa006a58d1882184f15ea4f4bd199c6de" target="_blank">3c311ab</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/bc38322436e6f89cc23f11281f41d8bd7dc25539" target="_blank">bc38322</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -568,6 +568,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/bc38322436e6f89cc23f11281f41d8bd7dc25539/analysis/gaussian_process.Rmd" target="_blank">bc38322</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+<td>
+workflowr::wflow_publish(“gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/2b3a01f57a8d93f5d823048150bded69fa4a7357/docs/gaussian_process.html" target="_blank">2b3a01f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -642,6 +676,43 @@ Sigma_SE = exp(-d^2/(2*l^2)) # squared exponential kernel
 y = mvtnorm::rmvnorm(1,sigma=Sigma_SE)
 plot(x,y)</code></pre>
 <p><img src="figure/gaussian_process.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/2b3a01f57a8d93f5d823048150bded69fa4a7357/docs/figure/gaussian_process.Rmd/unnamed-chunk-1-1.png" target="_blank">2b3a01f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>You can see that effectively this simulation has created a “curve” in which <span class="math inline">\(y\)</span> varies smoothly with <span class="math inline">\(x\)</span>. Indeed, a GP can be thought of as a distribution on curves (whose smoothness depends on the covariance function used, as we will see later).</p>
 <p>Of course, this is just one random curve (and only measured at 100 points, although conceptually it is defined at all points in the space). Here we generate nine different simulations:</p>
 <pre class="r"><code>par(mfcol=c(3,3),mar=c(0.5,0.5,0.5,0.5))
@@ -653,6 +724,43 @@ for(i in 1:9){
   plot(x,y)
 }</code></pre>
 <p><img src="figure/gaussian_process.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/2b3a01f57a8d93f5d823048150bded69fa4a7357/docs/figure/gaussian_process.Rmd/unnamed-chunk-2-1.png" target="_blank">2b3a01f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="change-length-scale" class="section level3">
 <h3>Change length scale</h3>
@@ -668,6 +776,43 @@ for(i in 1:9){
   plot(x,y)
 }</code></pre>
 <p><img src="figure/gaussian_process.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/2b3a01f57a8d93f5d823048150bded69fa4a7357/docs/figure/gaussian_process.Rmd/unnamed-chunk-3-1.png" target="_blank">2b3a01f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="the-ou-covariance-function" class="section level1">
@@ -684,6 +829,43 @@ for(i in 1:9){
   plot(x,y)
 }</code></pre>
 <p><img src="figure/gaussian_process.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/2b3a01f57a8d93f5d823048150bded69fa4a7357/docs/figure/gaussian_process.Rmd/unnamed-chunk-4-1.png" target="_blank">2b3a01f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="matern-covariance-function" class="section level1">
 <h1>Matern covariance function</h1>
@@ -705,6 +887,43 @@ for(i in 1:9){
   plot(x,y)
 }</code></pre>
 <p><img src="figure/gaussian_process.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/2b3a01f57a8d93f5d823048150bded69fa4a7357/docs/figure/gaussian_process.Rmd/unnamed-chunk-5-1.png" target="_blank">2b3a01f</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-03-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
