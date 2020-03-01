@@ -98,7 +98,7 @@ title: "Home"
 *  [Poisson Process: The Limiting Case of the Bernoulli Process](bernoulli_poisson_process.html)
 
 ### Methods for sampling non-standard distributions
-
+s
 *  [Inverse Transform Sampling](inverse_transform_sampling.html)
 
 
@@ -106,6 +106,10 @@ title: "Home"
 
 * [Multivariate Normal](mvnorm.html)
 * [Normal Markov Chain](normal_markov_chain.html)
+
+### Gaussian Process
+
+* [Introduction to Gaussian Processes](gaussian_process.html)
 
 ## Population Genetics
 
