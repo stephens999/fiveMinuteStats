@@ -113,5 +113,7 @@ s
 
 ## Population Genetics
 
+* [Simulating from a simple genetic mixture model](r_simplemix.html)
 * [Wright-Fisher Model](wright_fisher_model.html)
 * [Wright-Fisher Model Approximations](approx_wright_fisher_model.html)
+
