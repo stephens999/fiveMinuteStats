@@ -394,7 +394,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -403,7 +403,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -412,10 +412,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-22
+<strong>Last updated:</strong> 2020-07-26
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -431,12 +431,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -460,7 +460,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
 </div>
 </div>
 </div>
@@ -503,16 +503,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreec95261f16a613d7cc4f8d60874e295543b3519b6targetblankc95261fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/c95261f16a613d7cc4f8d60874e295543b3519b6" target="_blank">c95261f</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree38e01387d16a22a89fa6fb8fd403d6e77ef19dc2targetblank38e0138a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/38e01387d16a22a89fa6fb8fd403d6e77ef19dc2" target="_blank">38e0138</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreec95261f16a613d7cc4f8d60874e295543b3519b6targetblankc95261fa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree38e01387d16a22a89fa6fb8fd403d6e77ef19dc2targetblank38e0138a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/c95261f16a613d7cc4f8d60874e295543b3519b6" target="_blank">c95261f</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/38e01387d16a22a89fa6fb8fd403d6e77ef19dc2" target="_blank">38e0138</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -531,6 +531,9 @@ Untracked files:
     Untracked:  analysis/libs/
     Untracked:  analysis/results.Rmd
     Untracked:  analysis/shiny/tester/
+
+Unstaged changes:
+    Modified:   analysis/r_simplemix.Rmd
 
 </code></pre>
 <p>
@@ -569,6 +572,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/227f78905a240857d7cd6779fc97297ba0a82250/docs/r_simplemix.html" target="_blank">227f789</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-07-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -701,14 +721,6 @@ p  0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9
 [20,] 2 1 0 1 0 0 0 0 0 0</code></pre>
 </div>
 </div>
-<div id="exercises" class="section level2">
-<h2>Exercises</h2>
-<p>Here are some things you might like to try:</p>
-<ol style="list-style-type: decimal">
-<li><p>Modify the <code>r_simplemix</code> code to allow the mixture proportions to be specified, rather than fixed at (0.5,0.5). You could do this by adding a parameter <code>w</code> to the function that specifies the proportions to use (<code>w</code> for “weights”).</p></li>
-<li><p>Further modify the <code>r_simplemix</code> code to simulate from a mixture of <code>K</code> populations instead of just two (so <code>P</code> will be a matrix with <code>K</code> rows).</p></li>
-</ol>
-</div>
 <div id="inference-problems" class="section level2">
 <h2>Inference problems</h2>
 <p>These types of data can help motivate a number of statistical inference problems.</p>
@@ -716,6 +728,15 @@ p  0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9
 <li><p>Given the allele frequencies <code>P</code> and the genotypes <code>x</code>, how might you infer the populations of origin <code>z</code>? In the genetic literature this is sometimes called the “assignment problem”; more generally, it is an example of a “classification problem”.</p></li>
 <li><p>Given the populations of origin <code>z</code> and the genotypes <code>x</code>, how might you infer the population allele frequencies <code>P</code>?</p></li>
 <li><p>Given just the genotypes <code>x</code> how might you infer both <code>z</code> and <code>P</code>? (This is an example of a “clustering” problem).</p></li>
+</ol>
+</div>
+<div id="exercises" class="section level2">
+<h2>Exercises</h2>
+<p>Here are some things you might like to try:</p>
+<ol style="list-style-type: decimal">
+<li><p>Modify the <code>r_simplemix</code> code to allow the mixture proportions to be specified, rather than fixed at (0.5,0.5). You could do this by adding a parameter <code>w</code> to the function that specifies the proportions to use (<code>w</code> for “weights”).</p></li>
+<li><p>Write a function, <code>posterior_prob_assignment=function(x,P,w)</code>, to compute the posterior probability that each individual came from each population, given the genotypes <code>x</code>, the allelel frequencies <code>P</code> and the mixture proportions <code>w</code>. Apply your function to the simulated data.</p></li>
+<li><p>Write a function <code>posterior_prob_allele_frequencies=function(x,z,a)</code> to compute the parameters of the beta posterior in each population at each locus. Here <code>a</code> is a vector of length 2 giving the parameters of the beta prior for <code>P[k,r]</code>. That is, the prior is <code>P[k,r]</code> <span class="math display">\[\sim\]</span> Beta(<code>a[1]</code>,<code>a[2]</code>). Because the Beta distribution has two parameters, there will be 2 parameters for each locus and each population. So the output of your function should be a 2 x ‘K’ x <code>R</code> array (where ‘K=2’ because we have a mixture of 2 populations).</p></li>
 </ol>
 <br>
 <p>
@@ -740,13 +761,14 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.6.1 Rcpp_1.0.4.6    rprojroot_1.3-2 digest_0.6.25  
- [5] later_1.0.0     R6_2.4.1        backports_1.1.5 git2r_0.26.1   
- [9] magrittr_1.5    evaluate_0.14   stringi_1.4.6   rlang_0.4.5    
-[13] fs_1.3.2        promises_1.1.0  whisker_0.4     rmarkdown_2.1  
-[17] tools_3.6.0     stringr_1.4.0   glue_1.4.0      httpuv_1.5.2   
-[21] xfun_0.12       yaml_2.2.1      compiler_3.6.0  htmltools_0.4.0
-[25] knitr_1.28     </code></pre>
+ [1] Rcpp_1.0.4.6    rstudioapi_0.11 knitr_1.28      whisker_0.4    
+ [5] magrittr_1.5    workflowr_1.6.1 R6_2.4.1        rlang_0.4.7    
+ [9] stringr_1.4.0   tools_3.6.0     xfun_0.12       git2r_0.26.1   
+[13] htmltools_0.4.0 yaml_2.2.1      digest_0.6.25   rprojroot_1.3-2
+[17] tibble_2.1.3    crayon_1.3.4    later_1.0.0     promises_1.1.0 
+[21] fs_1.4.2        glue_1.4.1      evaluate_0.14   rmarkdown_2.1  
+[25] stringi_1.4.6   compiler_3.6.0  pillar_1.4.3    backports_1.1.5
+[29] httpuv_1.5.2    pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 

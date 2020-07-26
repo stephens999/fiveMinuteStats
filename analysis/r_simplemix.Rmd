@@ -129,15 +129,6 @@ print(cbind(z=sim$z,sim$x))
 ```
 
 
-## Exercises
-
-Here are some things you might like to try:
-
-1. Modify the `r_simplemix` code to allow the mixture proportions to be specified, rather than fixed at (0.5,0.5). You could do this by adding a parameter `w` to the function that specifies the proportions to use (`w` for "weights").
-
-2. Further modify the `r_simplemix` code to simulate from a mixture of `K` populations instead of just two (so `P` will be a matrix with `K` rows).
-
-
 ## Inference problems
 
 These types of data can help motivate a number of statistical inference problems.
@@ -151,6 +142,21 @@ example of a "classification problem".
 might you infer the population allele frequencies `P`?
 
 3. Given just the genotypes `x` how might you infer both `z` and `P`? (This is an example of a "clustering" problem). 
+
+## Exercises
+
+Here are some things you might like to try:
+
+1. Modify the `r_simplemix` code to allow the mixture proportions to be specified, rather than fixed at (0.5,0.5). You could do this by adding a parameter `w` to the function that specifies the proportions to use (`w` for "weights").
+
+2. Write a function, `posterior_prob_assignment=function(x,P,w)`, to compute the posterior probability that each individual came from each population, given the genotypes 
+`x`,  the allelel frequencies `P` and the mixture proportions `w`.  Apply your function to the simulated data.
+
+3. Write a function `posterior_prob_allele_frequencies=function(x,z,a)` to compute the parameters of the beta posterior in each population at each locus.
+Here `a` is a vector of length 2 giving the parameters of the beta prior for `P[k,r]`. 
+That is, the prior is `P[k,r]` $$\sim$$ Beta(`a[1]`,`a[2]`).
+Because the Beta distribution has two parameters, there will be 2 parameters for each locus and each population. So the output of your function should be a 2 x 'K' x `R` array (where 'K=2' because we have a mixture of 2 populations).
+
 
 
 
