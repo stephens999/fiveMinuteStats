@@ -154,7 +154,7 @@ Here are some things you might like to try:
 
 3. Write a function `posterior_prob_allele_frequencies=function(x,z,a)` to compute the parameters of the beta posterior in each population at each locus.
 Here `a` is a vector of length 2 giving the parameters of the beta prior for `P[k,r]`. 
-That is, the prior is `P[k,r]` $$\sim$$ Beta(`a[1]`,`a[2]`).
+That is, the prior is `P[k,r]` $\sim$ Beta(`a[1]`,`a[2]`).
 Because the Beta distribution has two parameters, there will be 2 parameters for each locus and each population. So the output of your function should be a 2 x 'K' x `R` array (where 'K=2' because we have a mixture of 2 populations).
 
 
