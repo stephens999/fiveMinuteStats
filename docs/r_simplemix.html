@@ -412,7 +412,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-26
+<strong>Last updated:</strong> 2020-07-27
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -503,16 +503,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree087983260a2471584622c6054c34a8b4c519f26btargetblank0879832a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/087983260a2471584622c6054c34a8b4c519f26b" target="_blank">0879832</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree2e3ae76ae7b1618dd56335ff9fd4dd795271893ctargetblank2e3ae76a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/2e3ae76ae7b1618dd56335ff9fd4dd795271893c" target="_blank">2e3ae76</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree087983260a2471584622c6054c34a8b4c519f26btargetblank0879832a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree2e3ae76ae7b1618dd56335ff9fd4dd795271893ctargetblank2e3ae76a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/087983260a2471584622c6054c34a8b4c519f26b" target="_blank">0879832</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/2e3ae76ae7b1618dd56335ff9fd4dd795271893c" target="_blank">2e3ae76</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -529,8 +529,12 @@ Untracked files:
     Untracked:  analysis/CI.Rmd
     Untracked:  analysis/gibbs_structure.Rmd
     Untracked:  analysis/libs/
+    Untracked:  analysis/r_simplemix_extended.Rmd
     Untracked:  analysis/results.Rmd
     Untracked:  analysis/shiny/tester/
+
+Unstaged changes:
+    Modified:   analysis/LR_and_BF.Rmd
 
 </code></pre>
 <p>
@@ -569,6 +573,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/2e3ae76ae7b1618dd56335ff9fd4dd795271893c/analysis/r_simplemix.Rmd" target="_blank">2e3ae76</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-07-27
+</td>
+<td>
+workflowr::wflow_publish(“analysis/r_simplemix.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/8dc31ecab87f00b9aebe38cfb4639f854180faaf/docs/r_simplemix.html" target="_blank">8dc31ec</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-07-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -783,8 +821,8 @@ p  0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9
 <p>Here are some things you might like to try:</p>
 <ol style="list-style-type: decimal">
 <li><p>Modify the <code>r_simplemix</code> code to allow the mixture proportions to be specified, rather than fixed at (0.5,0.5). You could do this by adding a parameter <code>w</code> to the function that specifies the proportions to use (<code>w</code> for “weights”).</p></li>
-<li><p>Write a function, <code>posterior_prob_assignment=function(x,P,w)</code>, to compute the posterior probability that each individual came from each population, given the genotypes <code>x</code>, the allelel frequencies <code>P</code> and the mixture proportions <code>w</code>. Apply your function to the simulated data.</p></li>
-<li><p>Write a function <code>posterior_prob_allele_frequencies=function(x,z,a)</code> to compute the parameters of the beta posterior in each population at each locus. Here <code>a</code> is a vector of length 2 giving the parameters of the beta prior for <code>P[k,r]</code>. That is, the prior is <code>P[k,r]</code> <span class="math inline">\(\sim\)</span> Beta(<code>a[1]</code>,<code>a[2]</code>). Because the Beta distribution has two parameters, there will be 2 parameters for each locus and each population. So the output of your function should be a 2 x ‘K’ x <code>R</code> array (where ‘K=2’ because we have a mixture of 2 populations).</p></li>
+<li><p>Write a function, <code>posterior_prob_assignment=function(x,P,w)</code>, to compute the posterior probability that each individual came from each population, given the genotypes <code>x</code>, the allele frequencies <code>P</code> and the mixture proportions <code>w</code>. Apply your function to the simulated data.</p></li>
+<li><p>Write a function <code>posterior_param_allele_frequencies=function(x,z,a)</code> to compute the parameters of the beta posterior in each population at each locus. Here <code>a</code> is a vector of length 2 giving the parameters of the beta prior for <code>P[k,r]</code>. That is, the prior is <code>P[k,r]</code> <span class="math inline">\(\sim\)</span> Beta(<code>a[1]</code>,<code>a[2]</code>). Because the Beta distribution has two parameters, there will be 2 parameters for each locus and each population. So the output of your function should be a 2 x ‘K’ x <code>R</code> array (where ‘K=2’ because we have a mixture of 2 populations).</p></li>
 </ol>
 <br>
 <p>
