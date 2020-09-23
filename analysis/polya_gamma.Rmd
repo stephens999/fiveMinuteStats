@@ -1,0 +1,183 @@
+---
+title: "polya_gamma"
+author: "Matthew Stephens"
+date: "2020-09-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library("BayesLogit")
+```
+
+
+## Introduction
+
+The Pólya--Gamma distribution is used in Bayesian analysis of logistic regression
+and related models. See [Polson et al](https://arxiv.org/abs/1205.0310), henceforth PSW.
+
+However, I could not find an accessible summary of its basic properties,
+so I decided to summarize them here. For now I am not going to 
+explain how this distribution is used, so you will have to read the 
+primary literature for that. 
+
+This is work in progress as I learn about the distribution myself.
+
+## Definition
+
+PSW define a random variable $X$ to have a Pólya--Gamma distribution with parameters $b>1$ and $c\ in R$ if it has the same distribution as the following (non-negative) weighted
+sum of Gamma random variables:
+$$X = 1/(2\pi^2) \sum_{k=1}^\infty \frac{g_k}{(k-0.5)^2 + c^2/(4\pi)^2}$$
+where $g_k \sim \Gamma(b,1)$ are mutually  independent. 
+
+Note that $X$ is non-negative. As we shall see, the Pólya--Gamma distribution
+can have a density
+that looks somewhat similar to a Gamma distribution, with a mode at zero or a mode away from zero. If you have never come across this distribution
+before it is perhaps helpful to think of it as most similar to a Gamma distribution (among commonly-used distributions).
+
+## Density and exponential tilting
+
+The PG distribution does not have a closed-form density.
+However the role of the parameters $b,c$ can be better understood by noting
+that the density for $PG(b,c)$ factorizes into a part that depends on $c$ and a part that depends on $b$.
+
+Specifically, if $f(\cdot; b,c)$ denotes the density of $PG(b,c)$ then
+$$f(x; b,c) \propto \exp(-c^2x/2) f(x; b,0).$$
+The phrase "exponential tilting" is sometimes used to describe
+multiplying a density by an exponential term like this. So we say that $PG(b,c)$
+is obtained from $PG(b,0)$ by exponential tilting, with $c^2$ controlling the
+amount of tilt.
+
+## Histograms of samples
+
+The `BayesLogit` package provides ways to simulate from this distribution.
+Here we use this to plot some histograms of samples from PG distributions.
+
+```{r}
+rpg_hist = function(b,c,nsamp=10000,xmax=2,log=FALSE,...){
+  x = rpg(nsamp,b,c)
+  if(log==TRUE){
+    x = log(x)
+    title = "log(X); "
+    breaks = seq(-xmax,xmax,length=100)
+    x = x[x<xmax & x>(-xmax)]
+  } else {
+    title = ""
+    breaks = seq(0,xmax,length=100)
+    x = x[x<xmax]
+  }
+  hist(x,breaks = breaks,probability=TRUE,main=paste0(title, "b=",b,", c=",c),...)
+}
+```
+
+### $PG(b,0)$
+
+We start with $PG(b,0)$ as the base case.
+
+#### Moderately small $b$
+
+In practical applications $b$ is often an integer.
+So $b\geq 1$ is of primary interest and we start there.
+On the left I give histograms of $X$ and on the right I plot $\log(X)$.
+As $b$ gets bigger the variance
+of $\log(X)$ gets smaller.
+
+```{r}
+par(mfcol=c(4,2),mai=rep(0.3,4))
+rpg_hist(1,0,xmax=2,ylim=c(0,4))
+rpg_hist(2,0,xmax=2,ylim=c(0,4))
+rpg_hist(3,0,xmax=2,ylim=c(0,4))
+rpg_hist(4,0,xmax=2,ylim=c(0,4))
+
+rpg_hist(1,0,xmax=5,log=TRUE,ylim=c(0,1))
+rpg_hist(2,0,xmax=5,log=TRUE,ylim=c(0,1))
+rpg_hist(3,0,xmax=5,log=TRUE,ylim=c(0,1))
+rpg_hist(4,0,xmax=5,log=TRUE,ylim=c(0,1))
+```
+
+#### Large $b$
+
+```{r}
+par(mfcol=c(4,2),mai=rep(0.3,4))
+rpg_hist(5,0,xmax=35,ylim=c(0,1))
+rpg_hist(10,0,xmax=35,ylim=c(0,1))
+rpg_hist(50,0,xmax=35,ylim=c(0,1))
+rpg_hist(100,0,xmax=35,ylim=c(0,1))
+
+rpg_hist(5,0,xmax=5,ylim=c(0,5),log=TRUE)
+rpg_hist(10,0,xmax=5,ylim=c(0,5),log=TRUE)
+rpg_hist(50,0,xmax=5,ylim=c(0,5),log=TRUE)
+rpg_hist(100,0,xmax=5,ylim=c(0,5),log=TRUE)
+```
+
+
+
+#### Very small $b$ ($<1$).
+
+For completeness we show some plots for very small $b$ too.
+```{r}
+par(mfcol=c(4,2),mai=rep(0.3,4))
+rpg_hist(.01,0,xmax=1,ylim=c(0,10))
+rpg_hist(.05,0,xmax=1,ylim=c(0,10))
+rpg_hist(.1,0,xmax=1,ylim=c(0,10))
+rpg_hist(.5,0,xmax=1,ylim=c(0,10))
+
+rpg_hist(.01,0,xmax=15,ylim=c(0,.5),log=TRUE)
+rpg_hist(.05,0,xmax=15,ylim=c(0,.5),log=TRUE)
+rpg_hist(.1,0,xmax=15,ylim=c(0,.5),log=TRUE)
+rpg_hist(.5,0,xmax=15,ylim=c(0,.5),log=TRUE)
+```
+
+### $PG(b,c)$
+
+If $c$ is small then the distribution looks similar to $PG(b,0)$ which has mean $b/4$.
+
+If $c$ is large then it becomes concentrated about the mean, which for large $c$ is approximately $b/2c$. 
+
+
+
+
+## Laplace Transform
+
+The Laplace tranform of $PG(b,0)$ has a nice closed form, 
+and is given by:
+$$f(t) = [\cosh(\sqrt{t/2})]^{-b}$$.
+
+
+## Expectation 
+
+Notice that $E(g_k)=b$ so the expectation of $X$ scales linearly with $b$.
+Clearly it also decreases with $c$.
+
+In fact the expectation is given by PSW as 
+$$E(X) = (b/2c) \tanh(c/2) = (b/2c) \frac{\exp(c)-1}{\exp(c)+1}$$
+
+For small $x$, $\tanh(x) \approx x$ so for small $c$ we have $E(X) \approx b/4$.
+For large $x$, $\tanh(x) \approx 1$ so for large $c$ we have $E(X) \approx b/(2c)$.
+
+In general the expectation lies betweed 0 and $b/4$.
+
+We can compute the expectation 
+```{r}
+epg = function(b,c){
+  (b/(2*c)) * tanh(c/2)
+}
+```
+
+And then we can plot the expectation for $b=1$ as a function of $c$.
+(For other $b$ the graph will have the same shape, just multiplied by $b$).
+
+```{r}
+c = seq(-10,10,length=100)
+plot(c,epg(1,c),type="l",ylim=c(0,0.25), main="Expectation of PG(1,c) as fn of c")
+```
+
+And for a wider range of $c$:
+```{r}
+c = seq(-100,100,length=1000)
+plot(c,epg(1,c),type="l",ylim=c(0,0.25), main="Expectation of PG(1,c) as fn of c")
+```
+
+
+
