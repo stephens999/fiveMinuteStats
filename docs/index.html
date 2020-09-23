@@ -408,7 +408,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-22
+<strong>Last updated:</strong> 2020-09-23
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -418,7 +418,7 @@ div.tocify {
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.1). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
@@ -439,16 +439,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreedaa57b1b73319849f3cba66adb9eb45d749e2cd7targetblankdaa57b1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/daa57b1b73319849f3cba66adb9eb45d749e2cd7" target="_blank">daa57b1</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree1cb6337628bc7ce55231ab6944d9bac9a834d6datargetblank1cb6337a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/1cb6337628bc7ce55231ab6944d9bac9a834d6da" target="_blank">1cb6337</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreedaa57b1b73319849f3cba66adb9eb45d749e2cd7targetblankdaa57b1a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree1cb6337628bc7ce55231ab6944d9bac9a834d6datargetblank1cb6337a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/daa57b1b73319849f3cba66adb9eb45d749e2cd7" target="_blank">daa57b1</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/1cb6337628bc7ce55231ab6944d9bac9a834d6da" target="_blank">1cb6337</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -465,8 +465,12 @@ Untracked files:
     Untracked:  analysis/CI.Rmd
     Untracked:  analysis/gibbs_structure.Rmd
     Untracked:  analysis/libs/
+    Untracked:  analysis/r_simplemix_extended_template.Rmd
     Untracked:  analysis/results.Rmd
     Untracked:  analysis/shiny/tester/
+
+Unstaged changes:
+    Modified:   analysis/LR_and_BF.Rmd
 
 </code></pre>
 <p>
@@ -505,6 +509,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/1cb6337628bc7ce55231ab6944d9bac9a834d6da/analysis/index.Rmd" target="_blank">1cb6337</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-09-23
+</td>
+<td>
+workflowr::wflow_publish(“index.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/38e01387d16a22a89fa6fb8fd403d6e77ef19dc2/docs/index.html" target="_blank">38e0138</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2020-07-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1925,10 +1963,10 @@ first commit
 <h3>Markov Chain Monte Carlo</h3>
 <ul>
 <li><a href="MH_intro.html">The Metropolis–Hastings algorithm</a></li>
-<li><p><a href="MH-examples1.html">Simple examples of Metropolis–Hastings algorithm</a></p></li>
+<li><a href="MH-examples1.html">Simple examples of Metropolis–Hastings algorithm</a></li>
 <li><a href="gibbs1.html">Introduction to Gibbs Sampling</a></li>
 <li><a href="gibbs2.html">Gibbs Sampling for a univariate normal mixture</a></li>
-<li><p><a href="gibbs_structure_simple.html">Gibbs Sampling for a mixture of product-bernoullis</a></p></li>
+<li><a href="gibbs_structure_simple.html">Gibbs Sampling for a mixture of product-bernoullis</a></li>
 </ul>
 </div>
 <div id="hidden-markov-models" class="section level3">
@@ -1943,6 +1981,7 @@ first commit
 <ul>
 <li><a href="beta.html">The Beta Distribution</a></li>
 <li><a href="dirichlet.html">The Dirichlet Distribution</a></li>
+<li><a href="polya_gamma.html">The Pólya–Gamma Distribution</a></li>
 </ul>
 </div>
 <div id="stochastic-processes" class="section level2">
@@ -1950,11 +1989,11 @@ first commit
 <div id="discrete-time-markov-chains" class="section level3">
 <h3>Discrete-Time Markov Chains</h3>
 <ul>
-<li><p><a href="markov_chains_discrete_intro.html">Discrete-Time Markov Chains: Introduction</a></p></li>
-<li><p><a href="stationary_distribution.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></p></li>
-<li><p><a href="markov_chains_discrete_stationary_dist.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></p></li>
-<li><p><a href="simulating_discrete_chains_1.html">Simulating Discrete-Time Markov Chains: An Introduction</a></p></li>
-<li><p><a href="simulating_discrete_chains_2.html">Simulating Discrete-Time Markov Chains: Limiting Distributions</a></p></li>
+<li><a href="markov_chains_discrete_intro.html">Discrete-Time Markov Chains: Introduction</a></li>
+<li><a href="stationary_distribution.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via solution of the global balance equations</a></li>
+<li><a href="markov_chains_discrete_stationary_dist.html">Discrete-Time Markov Chains: Finding the Stationary Distribution via eigendecomposition</a></li>
+<li><a href="simulating_discrete_chains_1.html">Simulating Discrete-Time Markov Chains: An Introduction</a></li>
+<li><a href="simulating_discrete_chains_2.html">Simulating Discrete-Time Markov Chains: Limiting Distributions</a></li>
 </ul>
 </div>
 <div id="poisson-processes" class="section level3">
@@ -1966,7 +2005,9 @@ first commit
 </div>
 <div id="methods-for-sampling-non-standard-distributions" class="section level3">
 <h3>Methods for sampling non-standard distributions</h3>
-<p>s * <a href="inverse_transform_sampling.html">Inverse Transform Sampling</a></p>
+<ul>
+<li><a href="inverse_transform_sampling.html">Inverse Transform Sampling</a></li>
+</ul>
 </div>
 <div id="multivariate-normal" class="section level3">
 <h3>Multivariate Normal</h3>
@@ -2077,7 +2118,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
