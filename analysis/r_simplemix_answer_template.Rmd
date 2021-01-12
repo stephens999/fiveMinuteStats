@@ -163,11 +163,13 @@ Because the Beta distribution has two parameters, there will be 2 parameters for
 
 Here are some answer templates for Exercises 2 and 3.
 You will need to fill in the "..."
+(Note: these chunks have the option set `eval=FALSE` so that this document compiles; you will have to remove these if you want to run these chunks
+on compilation.)
 
 ### Exercise 2
 
 
-```{r}
+```{r eval=FALSE}
 #' Compute the likelihood for allele frequences p given genotype data x
 #' @param p an R vector of allele frequencies
 #' @param x an R vector of genotypes
@@ -200,7 +202,7 @@ posterior_prob_assignment=function(x,P,w){
 
 
 Here we can run this on the example data, and compare the posterior probabilities with the true labels.
-```{r}
+```{r eval = FALSE}
 set.seed(123)
 sim = r_simplemix(n=20,P)
 posterior = posterior_prob_assignment(sim$x,P,w=c(0.5,0.5))
@@ -211,7 +213,7 @@ plot(sim$z,posterior[,2],xlab="true population", ylab="posterior prob for popula
 ### Exercise 3
 
 
-```{r}
+```{r eval = FALSE}
 #' Compute the posterior parameters for allele frequencies given genotypes 
 #' and population labels
 #' @param x an n by R matrix of genotypes
@@ -231,7 +233,7 @@ posterior_param_allele_frequencies=function(x,z,a){
 ```
 
 Here we can run this on the example data:
-```{r}
+```{r eval=FALSE}
 set.seed(123)
 sim = r_simplemix(n=20,P)
 posterior_param = posterior_param_allele_frequencies(sim$x,sim$z,a = c(1,1))
