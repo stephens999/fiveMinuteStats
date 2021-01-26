@@ -50,7 +50,8 @@ title: "Home"
 
 ### Mixture Models
 
-*  [Introduction to Mixture Models](intro_to_mixture_models.html)
+*  [Introduction to Mixture Models](mixture_models_01.html)
+*  [Alternative Introduction to Mixture Models](intro_to_mixture_models.html)
 *  [Introduction to EM: Gaussian Mixture Models](intro_to_em.html)
 
 ### Bayesian Computation
