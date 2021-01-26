@@ -82,11 +82,11 @@ For convenience introduce latent variables $Z_i$ for each individual
 to indicate whether individual $i$ is normal ($Z_i=1$) or diseased ($Z_i=2$). Of course the $Z_i$ are unobserved. 
 
 Now note that *if we knew* $\pi$ then we could easily compute the posterior probability that each individual is diseased given their test result $X_i=x_i$. Specifically
-$$w_{ik}:=\Pr(Z_i = k | X_i=x_i) = \pi_k L_{ik}/ \sum_{k'} \pi_{k'} L_{ik'}$$
+$$w_{ik}:=\Pr(Z_i = k | X_i=x_i) = \pi_k L_{ik}/ \sum_{k'=1}^2 \pi_{k'} L_{ik'}$$
 where $L_{ik} := p(x_i | Z_i=k)$. See [Bayesian computations for the two-class problem](LR_and_BF.html) for details.
 
 Furthermore, *if we knew these probabilities* it would be natural to estimate the proportion  of individuals in class $k$ by the average of the $w_{ik}$:
-$$\pi_k \approx (1/n) \sum_{i=1}^2 w_{ik}$$.
+$$\pi_k \approx (1/n) \sum_{i=1}^n w_{ik}$$.
 
 So we have the following challenge: if we knew $w$ we could estimate $\pi$, but we need to know $\pi$ to compute $w$. This suggests, intuitively, an iterative procedure: repeatedly iterate between computing $w$ and estimating $\pi$. Here is code implementing this idea:
 
