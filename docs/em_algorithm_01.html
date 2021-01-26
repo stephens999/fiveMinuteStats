@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2021-01-26" />
+
+<title>A prelude to the EM algorithm</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">A prelude to the EM algorithm</h1>
+<h4 class="author">Matthew Stephens</h4>
+<h4 class="date">2021-01-26</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-01-26
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreee5519094b67affa91f8a11b9174a08bad7f43527targetblanke551909a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/e5519094b67affa91f8a11b9174a08bad7f43527" target="_blank">e551909</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreee5519094b67affa91f8a11b9174a08bad7f43527targetblanke551909a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/e5519094b67affa91f8a11b9174a08bad7f43527" target="_blank">e551909</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    analysis/bernoulli_poisson_process_cache/
+
+Untracked files:
+    Untracked:  _workflowr.yml
+    Untracked:  analysis/CI.Rmd
+    Untracked:  analysis/gibbs_structure.Rmd
+    Untracked:  analysis/libs/
+    Untracked:  analysis/results.Rmd
+    Untracked:  analysis/shiny/tester/
+
+Unstaged changes:
+    Modified:   analysis/LR_and_BF.Rmd
+    Deleted:    analysis/r_simplemix_extended.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/em_algorithm_01.Rmd</code>) and HTML (<code>docs/em_algorithm_01.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/e5519094b67affa91f8a11b9174a08bad7f43527/analysis/em_algorithm_01.Rmd" target="_blank">e551909</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-01-26
+</td>
+<td>
+workflowr::wflow_publish(“em_algorithm_01.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="pre-requisites" class="section level1">
+<h1>Pre-requisites</h1>
+<p>This document assumes basic familiarity with <a href="mixture_models_01.html">mixture models</a>, <a href="likelihood_function.Rmd">likelihoods</a> and <a href="LR_and_BF.html">Bayesian computations for the two-class problem</a>.</p>
+</div>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The <strong>expectation-maximization</strong> algorithm, usually known as the EM algorithm, is a widely-used computational method for performing maximum likelihood method in certain models. Its attractions include that it is often simple to code and monotonic (every iteration increases the likelihood). It is also often quick to find a “reasonably good” solution, although if a very precise solution is required then it can be slow. In this document we describe the EM algorithm for a particular problem – maximum likelihood estimation of the mixture proportions – where it has a particularly simple and intuitive form. We do not give any formal derivation or explain why it works, which will require further study. The idea is to motivate you to perfom this further study.</p>
+</div>
+<div id="the-problem" class="section level1">
+<h1>The problem</h1>
+<p>We consider again the medical screening example from <a href="mixture_model_01.html">this vignette</a>. This example involves a test for a disease that is based on measuring the concentration (<span class="math inline">\(X\)</span>) of a protein in the blood. In normal individuals <span class="math inline">\(X\)</span> has a Gamma distribution with mean 1 and shape 2 (so scale parameter is 0.5 as scale = mean/shape). In diseased individuals the protein becomes elevated, and <span class="math inline">\(X\)</span> has a Gamma distribution with mean 2 and shape 2 (so scale =1).</p>
+<p>Now consider the following question. Suppose we observe data <span class="math inline">\(x_1,\dots,x_n\)</span> on <span class="math inline">\(n\)</span> individuals randomly sampled from a population. How can we estimate the proportion of individuals in the population that are diseased?</p>
+<div id="formulating-via-maximum-likelihood" class="section level2">
+<h2>Formulating via maximum likelihood</h2>
+<p>A natural approach to parameter estimation to use maximum likelihood. The first step in this approach is to write down the likelihood. To do this note that the samples are independent from the following mixture model: <span class="math display">\[p(x | \pi) = \pi_1 \Gamma(x;0.5,2) + \pi_2 \Gamma(x; 1, 2)\]</span> where <span class="math inline">\(\pi:=(\pi_1,\pi_2)\)</span>, with <span class="math inline">\(\pi_1\)</span> the proportion of normal individuals, and <span class="math inline">\(\pi_2\)</span> the proportion of diseased individuals. Note that <span class="math inline">\(\pi_1+\pi_2=1\)</span> as these are the only possibilities, so there is only really one parameter to be estimated here.</p>
+<p>The likelihood for <span class="math inline">\(\pi\)</span> is: <span class="math display">\[L(\pi) = \prod_j [\pi_1 \Gamma(x_j;0.5,2) + \pi_2 \Gamma(x_j; 1, 2)]\]</span> and so the log-likelihood is: <span class="math display">\[l(\pi) = \sum_j \log [\pi_1 \Gamma(x_j;0.5,2) + \pi_2 \Gamma(x_j; 1, 2)].\]</span> The following code simulates data from the model (with true value of <span class="math inline">\(\pi_1=0.7\)</span>) and then plots the log-likelihood:</p>
+<pre class="r"><code>n = 1000 # number of samples
+x = rep(0,n) # to store the samples
+shape = c(2,2) # shapes of the two components
+scale = c(0.5,1) # scales of the two components
+for(i in 1:n){
+  if(runif(1)&lt;0.7) 
+    z=1 else z=2
+  x[i] = rgamma(1,scale=scale[z],shape=shape[z])
+}
+
+mix_loglik = function(pi1,x){
+  sum(log(pi1 * dgamma(x,scale=0.5,shape=2) + (1-pi1)*dgamma(x,scale=1,shape=2)))
+}
+
+pi1_vec = seq(0,1,length=100)
+loglik = rep(0,100)
+for(i in 1:length(pi1_vec)){
+  loglik[i] = mix_loglik(pi1_vec[i],x)
+}
+
+plot(pi1_vec, loglik, type=&quot;l&quot;, main=&quot;log-likelihoood&quot;, xlab=&quot;pi_1&quot;)</code></pre>
+<p><img src="figure/em_algorithm_01.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(pi1_vec,loglik-max(loglik), ylim=c(-10,0),type=&quot;l&quot;, main=&quot;log-likelihood (zoomed in)&quot; , xlab=&quot;pi_1&quot;)</code></pre>
+<p><img src="figure/em_algorithm_01.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We can see from this plot that the maximum likelihood estiamte is near the true value (0.7). However, we cannot actually find the maximum easily analytically (e.g. try differentiating the log-likelihood and setting the derivative to zero). Therefore we need numerical methods. There are many numerical methods, and the EM algorithm is just one of many that could be used for this problem.</p>
+</div>
+<div id="the-em-algorithm" class="section level2">
+<h2>The EM algorithm</h2>
+<p>For this problem the EM algorithm has an intuitive form which we now describe. (Note this is not a derivation - it is just an intuitive heuristic argument).</p>
+<p>For convenience introduce latent variables <span class="math inline">\(Z_i\)</span> for each individual to indicate whether individual <span class="math inline">\(i\)</span> is normal (<span class="math inline">\(Z_i=1\)</span>) or diseased (<span class="math inline">\(Z_i=2\)</span>). Of course the <span class="math inline">\(Z_i\)</span> are unobserved.</p>
+<p>Now note that <em>if we knew</em> <span class="math inline">\(\pi\)</span> then we could easily compute the posterior probability that each individual is diseased given their test result <span class="math inline">\(X_i=x_i\)</span>. Specifically <span class="math display">\[w_{ik}:=\Pr(Z_i = k | X_i=x_i) = \pi_k L_{ik}/ \sum_{k&#39;} \pi_{k&#39;} L_{ik&#39;}\]</span> where <span class="math inline">\(L_{ik} := p(x_i | Z_i=k)\)</span>. See <a href="LR_and_BF.html">Bayesian computations for the two-class problem</a> for details.</p>
+<p>Furthermore, <em>if we knew these probabilities</em> it would be natural to estimate the proportion of individuals in class <span class="math inline">\(k\)</span> by the average of the <span class="math inline">\(w_{ik}\)</span>: <span class="math display">\[\pi_k \approx (1/n) \sum_{i=1}^2 w_{ik}\]</span>.</p>
+<p>So we have the following challenge: if we knew <span class="math inline">\(w\)</span> we could estimate <span class="math inline">\(\pi\)</span>, but we need to know <span class="math inline">\(\pi\)</span> to compute <span class="math inline">\(w\)</span>. This suggests, intuitively, an iterative procedure: repeatedly iterate between computing <span class="math inline">\(w\)</span> and estimating <span class="math inline">\(\pi\)</span>. Here is code implementing this idea:</p>
+<pre class="r"><code>simple_em = function(x, pi1.init=0.5, niter = 100){
+  n = length(x)
+  pi1 = rep(0,niter+1)
+  pi1[1] = pi1.init
+  L = matrix(nrow=n,ncol=2)
+  L[,1] = dgamma(x,scale=0.5,shape=2) 
+  L[,2] = dgamma(x,scale=1,shape=2) 
+  w = matrix(nrow=n,ncol=2)
+  for(iter in 1:niter){
+    w[,1] = pi1[iter]*L[,1]
+    w[,2] = (1-pi1[iter])*L[,2]
+    for(i in 1:n){ # normalize the rows of w to sum to 1
+      w[i,] = w[i,]/(w[i,1]+w[i,2])  
+    }
+    pi1[iter+1] = mean(w[,1]) 
+  }
+  return(pi1)
+  
+}
+
+pi1.iter = simple_em(x)
+plot(pi1.iter, xlab=&quot;iteration&quot;, ylab=&quot;pi1&quot;)</code></pre>
+<p><img src="figure/em_algorithm_01.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pi1.iter[101]</code></pre>
+<pre><code>[1] 0.6926776</code></pre>
+<p>Here we try another starting point. We see it converges to the same value.</p>
+<pre class="r"><code>pi1.iter = simple_em(x,pi1.init=0.9)
+plot(pi1.iter, xlab=&quot;iteration&quot;, ylab=&quot;pi1&quot;)</code></pre>
+<p><img src="figure/em_algorithm_01.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pi1.iter[101]</code></pre>
+<pre><code>[1] 0.6926776</code></pre>
+<p>And check that this value it converges to is the maximum likelihood estimate:</p>
+<pre class="r"><code>plot(pi1_vec,loglik-max(loglik), ylim=c(-10,0),type=&quot;l&quot;, main=&quot;log-likelihood (zoomed in)&quot; , xlab=&quot;pi_1&quot;)
+abline(v=pi1.iter[101])</code></pre>
+<p><img src="figure/em_algorithm_01.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6       rstudioapi_0.11  whisker_0.4      knitr_1.29      
+ [5] magrittr_1.5     workflowr_1.6.2  R6_2.4.1         rlang_0.4.8     
+ [9] stringr_1.4.0    tools_3.6.0      xfun_0.16        git2r_0.27.1    
+[13] htmltools_0.5.0  ellipsis_0.3.1   yaml_2.2.1       digest_0.6.27   
+[17] rprojroot_1.3-2  tibble_3.0.4     lifecycle_0.2.0  crayon_1.3.4    
+[21] later_1.1.0.1    vctrs_0.3.4      fs_1.5.0         promises_1.1.1  
+[25] glue_1.4.2       evaluate_0.14    rmarkdown_2.3    stringi_1.4.6   
+[29] compiler_3.6.0   pillar_1.4.6     backports_1.1.10 httpuv_1.5.4    
+[33] pkgconfig_2.0.3 </code></pre>
+</div>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
