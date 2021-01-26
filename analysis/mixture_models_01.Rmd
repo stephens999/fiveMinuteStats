@@ -1,0 +1,165 @@
+---
+title: "Mixture Models"
+author: "Matthew Stephens"
+date: "2021-01-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+# Pre-requisites 
+
+You should be familiar with basic probability, including the law of total probability, the notion of distibution and density, and with standard distributions (particularly the Gamma distribution).
+
+
+# Overview
+
+This vignette introduces the idea of a mixture model. These
+models are widely used in statistics to 
+model data where observations come from
+a "mixture" of two or more different distributions. The vignette introduces
+the basic idea of a mixture, its density/mass function, and 
+terminology like "mixture proportions", "mixture components" and "latent variable representation".
+
+# Example
+
+We begin this vignette with an example.
+A medical screening test for a disease involves measuring the concentration ($X$) of a protein in the blood. In normal individuals $X$ has a Gamma distribution with mean 1 and shape 2 (so scale parameter is 0.5 as scale = mean/shape).
+In diseased individuals the protein becomes elevated, and $X$ has a Gamma distribution with mean 2 and shape 2 (so scale =1). 
+
+Suppose that in a particular population 70\% of individuals are normal
+and 30\% are diseased. What will be the overall distribution of the protein
+levels in this population? How could you simulate from this distribution?
+
+## Answer
+
+### The overall distribution
+
+Let $X$ denote the protein concentration of a randomly chosen individual from the population. Let $Z$ denote whether that same randomly-chosen individual is normal ($Z=1$) or diseased ($Z=2$). Here we assume that $Z$ is unobserved; it has been introduced to help with notation and derivations.
+
+By the law of total probability we can write the density of $X$ as:
+$$p(x) = \Pr(Z = 1) p(x | Z=1)  + \Pr(Z=2) p(x|Z=2).$$
+[In words, this represents
+$$p(x) = \Pr(\text{normal}) p(x | \text{normal}) + \Pr(\text{diseased}) p(x | \text{diseased}).]$$
+
+
+From the information given we know that $\Pr(\text{normal})=0.7$ and $\Pr(\text{diseased})=0.3$. We also know $p(x| \text{normal})$ and
+$p(x| \text{diseased})$ are each given by the density of a gamma distribution. So we can write
+
+$$p(x) = 0.7 \Gamma(x;0.5,2) + 0.3 \Gamma(x; 1, 2)$$
+where $\Gamma(x; a,b)$ denotes the density of a Gamma distribution
+with scale $a$ and shape $b$.
+
+This distribution is an example of a "mixture distribution" (in particular
+it is a "mixture of two Gamma distributions"). 
+Here we plot the density of this mixture distribution (blue) as well as
+the densities of the individual distributions that were combined to make the mixture (black for normal, red for disease). In mixture terminology these individual distributions are called the "component distributions".
+```{r}
+x = seq(0,10,length=100)
+plot(x, 0.7*dgamma(x,scale = 0.5,shape = 2) + 0.3 * dgamma(x,scale = 1,shape = 2)
+       , col="blue", type="l", xlab="protein concentration", main="mixture distribution (blue)\n and component distributions (black,red)", ylab="density", ylim=c(0,0.8))
+lines(x, dgamma(x,scale = 0.5,shape = 2), type="l", col="black")
+lines(x, dgamma(x,scale = 1,shape = 2), type="l", col="red")
+```
+
+### Simulation
+
+One nice thing about mixture models is that they are super-easy to simulate from. The trick is to simulate both $(Z,X)$ from the joint distribution $p(Z,X)$, and then to simply ignore $Z$. This ensures that $X$ comes from its marginal distribution $p(X)$. 
+
+Simulating from $p(Z,X)$ can be achieved by a two-stage process, simulating $Z \sim p(Z)$ and then $X|Z \sim p(X|Z)$, both of which are easy.
+The following code illustrates this idea
+by simulating 10000 samples from the mixture, and then plotting a histogram of the samples. As you can see the histogram closely matches the mixture density.
+```{r}
+n = 10000 # number of samples
+x = rep(0,n) # to store the samples
+shape = c(2,2) # shapes of the two components
+scale = c(0.5,1) # scales of the two components
+for(i in 1:n){
+  if(runif(1)<0.7) 
+    z=1 else z=2
+  x[i] = rgamma(1,scale=scale[z],shape=shape[z])
+}
+
+# plot the histogram; note use of probability=TRUE so that it is scaled like a density (area=1). This makes it easy to compare with the theoretical density
+hist(x,nclass=100,xlim=c(0,10),probability=TRUE)
+
+# now plot density on top
+xvec = seq(0,10,length=100)
+lines(xvec, 0.7*dgamma(xvec,scale = 0.5,shape = 2) + 0.3 * dgamma(xvec,scale = 1,shape = 2))
+```
+
+
+# Exercises
+
+The following exercises are designed to 
+help you generalize the ideas used in
+example above to other settings.
+
+
+## 1. Other mixture component distributions
+
+In the above example there is nothing special about the Gamma distribution; one can similarly form mixtures of other distributions. This exercise illustrates this idea.
+
+Consider modelling the heights of people sampled from a population that is 50% male and 50% female, where the males have heights that are normally distributed with mean 70 inches and standard deviation 3 inches,
+and the females have heights that are normally distributed with mean 64.5 inches and standard deviation 2.5 inches. Write the density of the mixture model. Identify the mixture proportions and the mixture component densities. Plot the mixture density and the component densities in a plot similar to the one in the example above. 
+
+
+## 2. More than two distributions
+
+Similarly, there is nothing that limits us to mixing just two distributions -- you can mix any number of distributions together. This exercise illustrates this idea.
+
+Suppose that in the protein concentration example above the population consists of males and females, who have different rates of disease, and also different protein distributions. So now there are four different groups, "male, diseased", "male, normal", "female, diseased", and "female, normal".
+Making whatever assumptions you want about the component distributions
+(say what they are), and about the relative frequency of each group in the population (again, say what they are), write out a mixture distribution that could represent this situation.
+Plot the components of your assumed mixture and the mixture density.
+
+## 3. Discrete data
+
+The above example involves a mixture of two continuous distributions (Gamma distributions) and so the mixture distribution is also continuous. However, mixtures of discrete distributions work in the same way: you just use
+probability mass functions instead of probability density functions.
+
+For example, let $X$ denote the number of molecules of a particular gene in a cell randomly drawn from some population of cells. Assume that
+the population contains three cell types, in proportions $(0.2,0.4,0.4)$. Suppose that in each cell type the number of molecules follows
+a Poisson distribution with mean parameter $\lambda=2,5,10$ respectively.
+The distribution of $X$ is therefore a mixture of three poisson distributions. Can you write down its probability mass function? 
+
+## 4. Measurement error
+
+The examples above all involve using mixtures to model 
+a population containing several different "groups". But
+mixtures also arise in other settings. For example, suppose 
+the number of molecules 
+y
+
+
+
+# General case
+
+Putting the above ideas together we can write the density for a  
+mixture of $K$ continuous distributions that have densities $f_1,\dots,f_K$,
+in proportions $\pi_1,\dots,\pi_K$. Such a mixture would have density:
+$$p(x) = \sum_{k=1}^K \pi_k f_k(x).$$
+(Exactly the same equation holds for a mixture of $K$ discrete distibutions, but with $p(x)$ and $f_k$ representing probability mass functions instead of densities.)
+
+Some important terminology:
+
++ This is called a *mixture distribution* (or mixture model, or just mixture) with $K$ *components*. (Sometimes it is called a *finite mixture* because one can also further generalize the ideas to an uncountably infinite number of components!)
+
++ The $f_1,\dots,f_K$ are called the *component densities* (or *component distributions*). So $f_1$ is the density of component 1, and $f_k$ is the density of component $k$. 
+
++ The $\pi_1,\dots,\pi_K$ are called the *mixture proportions*. Of course
+we must have $\pi_k \geq 0$ and $\sum_{k=1}^K \pi_k =1$.
+
++ The unobserved random variable $Z$ is sometimes referred to as the "component of origin" or the "component that gave rise to" the observation $X$. If we have $n$ observations $X_1,\dots,X_n$ from a mixture model
+it is common to let $Z_i$ denote the component that gave rise to $X_i$.
+
++ Introducing unobserved variables, $Z_i$, to help with computations
+or derivations is a common trick that is used beyond mixture models.
+This trick is sometimes called *data augmentation*.  The unobserved random variables are sometimes called *hidden variables* or *latent variables*. 
+Representing the mixture model
+$$p(x) = \sum_{k=1}^K \pi_k f_k(x).$$
+by the two-stage process:
+$$p(Z=k) = \pi_k$$
+$$p(x | Z=k) = f_k(x)$$
+is called the *latent variable representation* of the mixture model.
+
