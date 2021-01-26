@@ -123,15 +123,6 @@ the population contains three cell types, in proportions $(0.2,0.4,0.4)$. Suppos
 a Poisson distribution with mean parameter $\lambda=2,5,10$ respectively.
 The distribution of $X$ is therefore a mixture of three poisson distributions. Can you write down its probability mass function? 
 
-## 4. Measurement error
-
-The examples above all involve using mixtures to model 
-a population containing several different "groups". But
-mixtures also arise in other settings. For example, suppose 
-the number of molecules 
-y
-
-
 
 # General case
 
