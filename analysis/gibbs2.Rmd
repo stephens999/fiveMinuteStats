@@ -9,7 +9,7 @@ date: 2016-06-01
 
 # Pre-requisites
 
-Know what a Gibbs sampler is, and a mixture model is, and be familiar with Bayesian inference for a normal mean and for the two class problem.
+You should know about [Gibbs sampling](gibbs1.html) and [mixture models](mixture_models_01.html), and be familiar with Bayesian inference for the [normal mean](bayes_conjugate_normal_mean.html) and for the [two class problem](LR_and_BF.html).
 
 # Overview
 
