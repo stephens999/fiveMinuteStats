@@ -38,7 +38,7 @@ sum(x0)
 
 # What are the expected probability states after one or two steps?
 
-If initial prob distribution $x_0$ is $3 \times 1$ column vector, then $x_0^T P= x_1^T$. In R, the %*% operator automatically promotes a vector to the appropriate matrix to make the arguments conformable.  In the case of multiplying a length 3 vector by a $3\time 3$ matrix, it takes the vector to be a row-vector. This means our math can look simply:
+If initial prob distribution $x_0$ is $3 \times 1$ column vector, then $x_0^T P= x_1^T$. In R, the %*% operator automatically promotes a vector to the appropriate matrix to make the arguments conformable.  In the case of multiplying a length 3 vector by a $3 \times 3$ matrix, it takes the vector to be a row-vector. This means our math can look simply:
 ```{r}
 # After one step
 x0%*%P
