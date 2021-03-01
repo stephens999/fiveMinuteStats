@@ -66,10 +66,10 @@ From the above we can see that you can simulate from
 a multivariate normal with any mean $\mu$ and variance covariance matrix $\Sigma$ 
 provided that $\Sigma$ can be written as $\Sigma = AA'$ for some matrix $A$.
 This turns out to be possible if and only if $\Sigma$ is what
-is known "Positive semi-definite" matrix - that is a symmetric matrix
+is known as a "Positive semi-definite" matrix - that is a symmetric matrix
 with non-negative eigenvalues.
 
-Given a positive semi-definite matrix $\Sigma$ there are multiple ways to find a matrix $A$ such that $\Sigma=AA'$ (and indeed multiple matrices $A$ that obey this). However, for our purposes here we only need one way, and here we use the "Cholesky decomposition", which finds a unique lower triangular matrix $L$ such that $LL' \Sigma$. Here's an illustration of the Cholesky decomposition (the R function `chol()` finds an upper triangular matrix, so we transpose it here to make it lower triangular).
+Given a positive semi-definite matrix $\Sigma$ there are multiple ways to find a matrix $A$ such that $\Sigma=AA'$ (and indeed multiple matrices $A$ that obey this). However, for our purposes here we only need one way, and here we use the "Cholesky decomposition", which finds a unique lower triangular matrix $L$ such that $LL' = \Sigma$. Here's an illustration of the Cholesky decomposition (the R function `chol()` finds an upper triangular matrix, so we transpose it here to make it lower triangular).
 
 ```{r}
 Sigma = rbind(c(2,1),c(1,2))
