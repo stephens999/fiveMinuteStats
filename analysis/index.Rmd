@@ -104,7 +104,8 @@ title: "Home"
 ### Multivariate Normal
 
 * [Multivariate Normal](mvnorm.html)
-* [Normal Markov Chain](normal_markov_chain.html)
+* [The precision matrix](normal_markov_chain.html)
+* [Interpreting $N(\mu,\Sigma)$ via eigen-decomposition of $\Sigma$](mvnorm_eigen.html)
 
 ### Gaussian Process
 
