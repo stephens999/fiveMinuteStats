@@ -408,7 +408,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-26
+<strong>Last updated:</strong> 2021-03-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -439,16 +439,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreea40ff17b1c0001055e2d897cecb88d4a08086353targetblanka40ff17a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/a40ff17b1c0001055e2d897cecb88d4a08086353" target="_blank">a40ff17</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreece7c149fb084c75bb2d32791814937be298f88f8targetblankce7c149a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/ce7c149fb084c75bb2d32791814937be298f88f8" target="_blank">ce7c149</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreea40ff17b1c0001055e2d897cecb88d4a08086353targetblanka40ff17a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreece7c149fb084c75bb2d32791814937be298f88f8targetblankce7c149a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/a40ff17b1c0001055e2d897cecb88d4a08086353" target="_blank">a40ff17</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/ce7c149fb084c75bb2d32791814937be298f88f8" target="_blank">ce7c149</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -470,7 +470,8 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/LR_and_BF.Rmd
-    Modified:   analysis/mixture_models_01.Rmd
+    Modified:   analysis/MH-examples1.Rmd
+    Modified:   analysis/MH_intro.Rmd
     Deleted:    analysis/r_simplemix_extended.Rmd
 
 </code></pre>
@@ -510,6 +511,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/ce7c149fb084c75bb2d32791814937be298f88f8/analysis/index.Rmd" target="_blank">ce7c149</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-03-01
+</td>
+<td>
+workflowr::wflow_publish(“index.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/f4d1736457b04f9a7d80d0d6b80ac4d522b5fc60/docs/index.html" target="_blank">f4d1736</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2118,7 +2153,8 @@ first commit
 <h3>Multivariate Normal</h3>
 <ul>
 <li><a href="mvnorm.html">Multivariate Normal</a></li>
-<li><a href="normal_markov_chain.html">Normal Markov Chain</a></li>
+<li><a href="normal_markov_chain.html">The precision matrix</a></li>
+<li><a href="mvnorm_eigen.html">Interpreting <span class="math inline">\(N(\mu,\Sigma)\)</span> via eigen-decomposition of <span class="math inline">\(\Sigma\)</span></a></li>
 </ul>
 </div>
 <div id="gaussian-process" class="section level3">
