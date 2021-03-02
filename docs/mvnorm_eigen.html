@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2021-02-28" />
+
+<title>Interpreting multivariate normal via eigen-decomposition of covariance matrix</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Interpreting multivariate normal via eigen-decomposition of covariance matrix</h1>
+<h4 class="author">Matthew Stephens</h4>
+<h4 class="date">2021-02-28</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-03-01
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree669e3a75a5b13163ddfc0e54f4adfaed4b360468targetblank669e3a7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/669e3a75a5b13163ddfc0e54f4adfaed4b360468" target="_blank">669e3a7</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree669e3a75a5b13163ddfc0e54f4adfaed4b360468targetblank669e3a7a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/669e3a75a5b13163ddfc0e54f4adfaed4b360468" target="_blank">669e3a7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    analysis/bernoulli_poisson_process_cache/
+
+Untracked files:
+    Untracked:  _workflowr.yml
+    Untracked:  analysis/CI.Rmd
+    Untracked:  analysis/gibbs_structure.Rmd
+    Untracked:  analysis/libs/
+    Untracked:  analysis/results.Rmd
+    Untracked:  analysis/shiny/tester/
+
+Unstaged changes:
+    Modified:   analysis/LR_and_BF.Rmd
+    Modified:   analysis/MH-examples1.Rmd
+    Modified:   analysis/MH_intro.Rmd
+    Deleted:    analysis/r_simplemix_extended.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/mvnorm_eigen.Rmd</code>) and HTML (<code>docs/mvnorm_eigen.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/669e3a75a5b13163ddfc0e54f4adfaed4b360468/analysis/mvnorm_eigen.Rmd" target="_blank">669e3a7</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-03-01
+</td>
+<td>
+workflowr::wflow_publish(“mvnorm_eigen.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(mvtnorm)</code></pre>
+<pre><code>Warning: package &#39;mvtnorm&#39; was built under R version 3.6.2</code></pre>
+<div id="pre-requisites" class="section level2">
+<h2>Pre-requisites</h2>
+<p>You should be familiar with the <a href="mvnorm.html">Multivariate normal distribution</a>, and with the eigen-decomposition for symmetric positive semi-definite (PSD) matrices.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Getting an intuition for what the <span class="math inline">\(p\)</span>-dimensional multivariate normal distribution, <span class="math inline">\(N_p(\mu,\Sigma)\)</span>, “looks like” can be difficult. For <span class="math inline">\(p=1,2\)</span> things are not too bad: we can directly visualize a univariate normal distribution by plotting its density, and visualize a bivariate normal distribution by plotting a contour plot of the density, or by simulating samples from the distribution and visualizing them using a 2d scatterplot. For example, the following code does this for <span class="math inline">\(N(0,\Sigma)\)</span> where <span class="math display">\[\Sigma = \begin{pmatrix}
+1.0 &amp; 0.7 \\ 0.7 &amp; 1.0 \end{pmatrix}\]</span>:</p>
+<pre class="r"><code>Sigma= cbind(c(1,0.7),c(0.7,1))
+X = rmvnorm(1000,c(0,0),Sigma)
+plot(X[,1],X[,2],main=&quot;Samples from bivariate normal with variance Sigma&quot;,asp=1)</code></pre>
+<p><img src="figure/mvnorm_eigen.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /> But in <span class="math inline">\(p=100\)</span> dimensions, or even just <span class="math inline">\(p=4\)</span> dimensions, things become much harder because direct visualization is impractical.</p>
+<p>So how can we get intuition about the multivariate normal distribution, <span class="math inline">\(N_p(\mu,\Sigma)\)</span> when <span class="math inline">\(p\)</span> is large?</p>
+<p>Note first that the mean <span class="math inline">\(\mu\)</span> is just a vector of <span class="math inline">\(p\)</span> numbers, and generally causes few problem in interpretation: you can just think of each number as specifying the mean in each of the <span class="math inline">\(p\)</span> coordinates one at a time.</p>
+<p>In contrast, the covariance matrix <span class="math inline">\(\Sigma\)</span> is a <span class="math inline">\(p \times p\)</span> matrix that captures potentially more complex patterns, and creates more challenges for intuition. One possible approach is to plot a heatmap of this matrix, and this can certainly be helpful in certain situations. However, this vignette describes a more algebraic approach, based on the eigen-decomposition of <span class="math inline">\(\Sigma\)</span>.</p>
+</div>
+<div id="some-linear-algebra" class="section level2">
+<h2>Some linear algebra</h2>
+<p>Recall that any valid <span class="math inline">\(p \times p\)</span> covariance matrix <span class="math inline">\(\Sigma\)</span> must be symmetric and positive semi-definite (PSD). Furthermore, recall that any such PSD matrix must have eigen-decomposition: <span class="math display">\[\Sigma = V \Lambda V&#39;\]</span> where:</p>
+<ul>
+<li><p><span class="math inline">\(\Lambda\)</span> is a <span class="math inline">\(K \times K\)</span> diagonal matrix with the non-zero eigenvalues of <span class="math inline">\(\Sigma\)</span>, <span class="math inline">\(\lambda_1,\dots,\lambda_K\)</span> say, on the diagonal (<span class="math inline">\(K \leq p\)</span> is the rank of <span class="math inline">\(\Sigma\)</span>).</p></li>
+<li><p><span class="math inline">\(V\)</span> is a <span class="math inline">\(p \times K\)</span> orthonormal matrix (<span class="math inline">\(V&#39;V=I_K\)</span>), whose columns <span class="math inline">\(v_1,\dots,v_K\)</span> are the normalized eigenvectors of <span class="math inline">\(\Sigma\)</span> corresponding to the non-zero eigenvalues.</p></li>
+</ul>
+<p>Recall also that if <span class="math inline">\(Z \sim N_p(0, I_p)\)</span> and <span class="math inline">\(A\)</span> is any <span class="math inline">\(n \times p\)</span> matrix then <span class="math inline">\(\mu + AZ \sim N(\mu, AA&#39;)\)</span>.</p>
+<p>Now apply this last result with <span class="math inline">\(A= V \Lambda^{0.5}\)</span> where <span class="math inline">\(\Lambda^{0.5}\)</span> is the diagonal matrix with <span class="math inline">\(\lambda_1^{0.5},\dots,\lambda_K^{0.5}\)</span> on the diagonal. We get <span class="math display">\[ \mu + V \Lambda^{0.5} Z \sim N_p(\mu, V \Lambda^{0.5} \Lambda^{0.5} V&#39;).\]</span> That is, <span class="math display">\[\mu + V \Lambda^{0.5} Z \sim N_p(\mu, \Sigma).\]</span> We can write the matrix multiple <span class="math inline">\(V\Lambda^{0.5} Z\)</span> as a sum to make the structure more obvious: <span class="math display">\[\mu + \sum_{k=1}^K \lambda_k^{0.5} z_k v_k  \sim N_p(\mu, \Sigma).\]</span> Here <span class="math inline">\(\mu\)</span> and <span class="math inline">\(v_1,\dots,v_K\)</span> are all column vector of length <span class="math inline">\(p\)</span>, whereas the <span class="math inline">\(\lambda_k\)</span> and <span class="math inline">\(z_k\)</span> are all scalars.</p>
+<div id="interpration-as-a-random-linear-combination-of-eigenvectors" class="section level3">
+<h3>Interpration as a random linear combination of eigenvectors</h3>
+<p>From this algebra, if <span class="math inline">\(X \sim N_p(\mu,\Sigma)\)</span>, then we can think of <span class="math inline">\(X\)</span> as being generated by taking the mean <span class="math inline">\(\mu\)</span>, and adding a <em>random linear combination</em> of the eigenvectors of <span class="math inline">\(\Sigma\)</span>. Specifically <span class="math display">\[X = \mu + \sum_{k=1}^K b_k v_k,\]</span> where the weights <span class="math display">\[b_k=\lambda_k^{0.5} z_k \sim N(0,\lambda_k).\]</span> are independent of one another.</p>
+<p>Note that if <span class="math inline">\(\lambda_k\)</span> is small then <span class="math inline">\(b_k \approx 0\)</span>, so the eigenvectors with small eigenvalues contribute little to <span class="math inline">\(X\)</span>, and we can focus on the eigenvectors with large eigenvalues. Indeed, this approach provides the simplest insights when most of the <span class="math inline">\(\lambda_k\)</span> are negligible, and only one or two eigenvectors contribute meaningfully to the sum.</p>
+</div>
+</div>
+<div id="example-rank-1-covariance" class="section level2">
+<h2>Example: rank 1 covariance</h2>
+<p>To make a simple example, set <span class="math inline">\(\mu=0\)</span> and assume <span class="math inline">\(\Sigma\)</span> is a rank 1 matrix. That is, <span class="math inline">\(\Sigma\)</span> has only one eigenvector: <span class="math display">\[\Sigma = \lambda vv&#39;\]</span> for some <span class="math inline">\(p\)</span>-vector <span class="math inline">\(v\)</span>.</p>
+<p>In this case the algebra above gives the representation <span class="math inline">\(X= b v\)</span> where <span class="math inline">\(b \sim N(0,\lambda)\)</span>. That is <span class="math inline">\(X\)</span> is simply a multiple of <span class="math inline">\(v\)</span>, where the multiplier is randomly distributed from a univariate normal. Thus in this case the randomness in <span class="math inline">\(X\)</span> boils down to the randomness in a single random univarate normal, which is easy to visualize.</p>
+<p>To give a specific example, suppose that <span class="math inline">\(v\)</span> is the vector of all 1s <span class="math inline">\(v=(1,\dots,1)\)</span> and <span class="math inline">\(\lambda=1\)</span>. That is <span class="math inline">\(\Sigma\)</span> is a matrix of all 1s. Then <span class="math inline">\(X= (b,b,b,\dots,b)\)</span> where <span class="math inline">\(b \sim N(0,1)\)</span>.</p>
+<p>To give another specific example, if <span class="math inline">\(v=(-1,-1,-1,1,1)\)</span> and <span class="math inline">\(\lambda=2\)</span> then <span class="math inline">\(X= (-b,-b,-b,b,b)\)</span> where <span class="math inline">\(b \sim N(0,2)\)</span>.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] mvtnorm_1.1-1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6       rstudioapi_0.11  whisker_0.4      knitr_1.29      
+ [5] magrittr_1.5     workflowr_1.6.2  R6_2.4.1         rlang_0.4.8     
+ [9] stringr_1.4.0    tools_3.6.0      xfun_0.16        git2r_0.27.1    
+[13] htmltools_0.5.0  ellipsis_0.3.1   yaml_2.2.1       digest_0.6.27   
+[17] rprojroot_1.3-2  tibble_3.0.4     lifecycle_0.2.0  crayon_1.3.4    
+[21] later_1.1.0.1    vctrs_0.3.4      fs_1.5.0         promises_1.1.1  
+[25] glue_1.4.2       evaluate_0.14    rmarkdown_2.3    stringi_1.4.6   
+[29] compiler_3.6.0   pillar_1.4.6     backports_1.1.10 httpuv_1.5.4    
+[33] pkgconfig_2.0.3 </code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
