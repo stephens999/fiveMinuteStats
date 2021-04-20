@@ -40,7 +40,7 @@ Let $X$ denote the protein concentration of a randomly chosen individual from th
 By the law of total probability we can write the density of $X$ as:
 $$p(x) = \Pr(Z = 1) p(x | Z=1)  + \Pr(Z=2) p(x|Z=2).$$
 [In words, this represents
-$$p(x) = \Pr(\text{normal}) p(x | \text{normal}) + \Pr(\text{diseased}) p(x | \text{diseased}).]$$
+$$p(x) = \Pr(normal) p(x | normal) + \Pr(diseased) p(x | diseased).]$$
 
 
 From the information given we know that $\Pr(\text{normal})=0.7$ and $\Pr(\text{diseased})=0.3$. We also know $p(x| \text{normal})$ and
