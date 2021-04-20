@@ -415,16 +415,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeb4bb1245209d82178f761541dfaff65ac73650e4targetblankb4bb124a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/b4bb1245209d82178f761541dfaff65ac73650e4" target="_blank">b4bb124</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeaef8ce3086f3695115394ddd47db4419c6728f42targetblankaef8ce3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/aef8ce3086f3695115394ddd47db4419c6728f42" target="_blank">aef8ce3</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeb4bb1245209d82178f761541dfaff65ac73650e4targetblankb4bb124a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeaef8ce3086f3695115394ddd47db4419c6728f42targetblankaef8ce3a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/b4bb1245209d82178f761541dfaff65ac73650e4" target="_blank">b4bb124</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/aef8ce3086f3695115394ddd47db4419c6728f42" target="_blank">aef8ce3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -470,6 +470,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/aef8ce3086f3695115394ddd47db4419c6728f42/analysis/em_variational.Rmd" target="_blank">aef8ce3</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-04-20
+</td>
+<td>
+workflowr::wflow_publish(“analysis/em_variational.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/b0d4e375db2ae13db75401c078d8551800eaaf27/docs/em_variational.html" target="_blank">b0d4e37</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-04-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -534,8 +568,9 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 </div>
 <div id="set-up" class="section level2">
 <h2>Set-up</h2>
-<p>Suppose we have data <span class="math inline">\(X\)</span> from a distribution <span class="math inline">\(p(X|\theta)\)</span> where <span class="math inline">\(\theta\)</span> denotes parameters whose values are unknown and live in some space <span class="math inline">\(\Theta\)</span>. We aim to find the maximum likelihood estimate for <span class="math inline">\(\theta\)</span> <span class="math display">\[\hat\theta:= \arg \max_{\theta \in \Theta} p(X | \theta).\]</span> Suppose further that we can write <span class="math inline">\(p(X | \theta)\)</span> as an integration (or sum) over latent variables <span class="math inline">\(Z\)</span>. That is <span class="math display">\[p(X | \theta) = \int p(X, Z| \theta)\]</span> for some joint distribution <span class="math inline">\(p(X,Z| \theta)\)</span>. (When considered as a function of <span class="math inline">\(\theta\)</span> this distribution, <span class="math inline">\(p(X,Z | \theta)\)</span>, is sometimes referred to as ``the complete data likelihood".)</p>
-<p>The EM algorithm provides a convenient way to find <span class="math inline">\(\hat\theta\)</span> when the complete data log-likelihood has certain “friendly” features, which will become apparent below.</p>
+<p>Suppose we have data <span class="math inline">\(X\)</span> from a distribution <span class="math inline">\(p(X|\theta)\)</span> where <span class="math inline">\(\theta\)</span> denotes parameters whose values are unknown and live in some space <span class="math inline">\(\Theta\)</span>. We aim to find the maximum likelihood estimate for <span class="math inline">\(\theta\)</span> <span class="math display">\[\hat\theta:= \arg \max_{\theta \in \Theta} p(X | \theta).\]</span> Suppose further that we can write <span class="math inline">\(p(X | \theta)\)</span> as an integration (or sum) over latent variables <span class="math inline">\(Z\)</span>. That is <span class="math display">\[p(X | \theta) = \int p(X, Z| \theta) dZ\]</span> for some joint distribution <span class="math inline">\(p(X,Z| \theta)\)</span>.</p>
+<p>The pair <span class="math inline">\(X,Z\)</span> is sometimes referred to as the “complete data” (based on the idea that <span class="math inline">\(Z\)</span> is something that we wished we observed, but do not), and <span class="math inline">\(p(X,Z | \theta)\)</span>, as a function of <span class="math inline">\(\theta\)</span>, is sometimes referred to as “the complete data likelihood” – it is the likelihood we would have if we actually observed <span class="math inline">\(Z\)</span> as well as <span class="math inline">\(X\)</span>.</p>
+<p>The EM algorithm provides a convenient way to find <span class="math inline">\(\hat\theta\)</span> when the complete data likelihood has certain “friendly” features, which will become apparent below.</p>
 <p>Note: throughout this note I treat <span class="math inline">\(Z\)</span> as a continuous random variable, using integrals and density functions. However, the same ideas apply if <span class="math inline">\(Z\)</span> is discrete: you can just replace integrals with sums and replace density functions with probability mass functions.</p>
 <p>Note: <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> willl typically both be multi-dimensional, not just scalars.</p>
 </div>
@@ -548,8 +583,8 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 <h3>Two key results</h3>
 <p>There are two key results.</p>
 <ol style="list-style-type: decimal">
-<li><p>For any given <span class="math inline">\(\theta\)</span> let <span class="math inline">\(\hat{q}_\theta\)</span> denote the value of <span class="math inline">\(q\)</span> that maximizes <span class="math inline">\(F(q,\theta)\)</span>. That is, <span class="math display">\[\hat{q}_\theta:= \arg \max_q F(\theta,q).\]</span> This optimal <span class="math inline">\(q\)</span> is given by the conditional distribution of the latent variables <span class="math inline">\(Z\)</span> given the data <span class="math inline">\(X\)</span> and <span class="math inline">\(\theta\)</span>: <span class="math display">\[\hat{q}_\theta(z) = p(Z | X, \theta)\]</span></p></li>
-<li><p>The likelihood <span class="math inline">\(l(\theta):=\log p(X| \theta)\)</span> is related to <span class="math inline">\(F\)</span> by: <span class="math display">\[l(\theta) = \max_q F(\theta,q)\]</span> Both results follow directly from <span class="math display">\[F(q,\theta) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).\]</span> and the fact that the minimum of <span class="math display">\[KL(q || p)\]</span> over <span class="math inline">\(q\)</span> is 0, attained at <span class="math inline">\(q=p\)</span>.</p></li>
+<li><p>For any given <span class="math inline">\(\theta\)</span> let <span class="math inline">\(\hat{q}_\theta\)</span> denote the value of <span class="math inline">\(q\)</span> that maximizes <span class="math inline">\(F(q,\theta)\)</span>. That is, <span class="math display">\[\hat{q}_\theta:= \arg \max_q F(\theta,q).\]</span> This optimal <span class="math inline">\(q\)</span> is given by the conditional distribution of the latent variables <span class="math inline">\(Z\)</span> given the data <span class="math inline">\(X\)</span> and <span class="math inline">\(\theta\)</span>: <span class="math display">\[\hat{q}_\theta(z) = p(Z | X, \theta).\]</span></p></li>
+<li><p>The likelihood <span class="math inline">\(l(\theta):=\log p(X| \theta)\)</span> is related to <span class="math inline">\(F\)</span> by: <span class="math display">\[l(\theta) = \max_q F(\theta,q).\]</span> Both results follow directly from <span class="math display">\[F(q,\theta) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).\]</span> and the fact that the minimum of <span class="math display">\[KL(q || p)\]</span> over <span class="math inline">\(q\)</span> is 0, attained at <span class="math inline">\(q=p\)</span>.</p></li>
 </ol>
 </div>
 </div>
@@ -562,6 +597,11 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 <li><p>Step 2: <span class="math inline">\(\theta \leftarrow \arg \max_\theta F(q,\theta)\)</span></p></li>
 </ul>
 <p>From result 1, step 1 is achieved by <span class="math inline">\(q = p(Z | X,\theta)\)</span>. Step 2 involves maximizing the expected complete-data log-likelihood, <span class="math display">\[\theta \leftarrow \arg \max_\theta E_q \log p(X,Z|\theta).\]</span> Of course the EM algorithm is only useful if both steps are straightforward.</p>
+</div>
+<div id="extensions-of-the-em-algorithm" class="section level2">
+<h2>Extensions of the EM algorithm</h2>
+<p>One of the nice things about this view of the EM algorithm is that it naturally suggests extensions of the EM algorithm that may be useful when the regular EM is hard. For example, suppose that in Step 2 it is hard to optimize <span class="math inline">\(F\)</span> over <span class="math inline">\(\theta\)</span>, but it is easy to find a new value of <span class="math inline">\(\theta\)</span> that *increases$ <span class="math inline">\(F\)</span>. Then using this “incremental” step instead of Step 2 may still be enough to produce an algorithm that optimizes <span class="math inline">\(F\)</span>, and therefore optimizes <span class="math inline">\(l(\theta)\)</span>.</p>
+<p>Another variation on the EM algorithm arises if we replace step 1 with a constrained optimization <span class="math inline">\(q \leftarrow \arg \max_{q \in Q&#39;} F(q,\theta)\)</span> where <span class="math inline">\(Q&#39;\)</span> is a family of distributions chosen to make this optimization tractible. In this case the resulting algorithm would no longer optimize <span class="math inline">\(l(\theta)\)</span> but it can be thought of as an approximation. This approach comes up in many “variational approximation” algorithms, and studying the accuracy of such approximations remains an active area of research.</p>
 </div>
 
 <hr>
