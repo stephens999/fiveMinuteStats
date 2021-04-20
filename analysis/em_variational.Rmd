@@ -1,0 +1,55 @@
+---
+title: "em_variational"
+author: "Matthew Stephens"
+date: "2021-04-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This vignette describes a very useful
+view of the EM algorithm due to 
+[Neal and Hinton](https://link.springer.com/chapter/10.1007/978-94-011-5014-9_12).  [Note on notation: Neal and Hinton use $Z$ to denote observed data, but I use it to denote latent unobserved values. So be sure to keep this in mind
+if you are trying to relate their paper to my summary here.]
+
+## Set-up
+
+Suppose we have data $X$ from a distribution $p(X|\theta)$ 
+where $\theta$ denotes parameters whose values are unknown
+and live in some space $\Theta$. 
+We aim to find the maximum likelihood estimate for $\theta$
+$$\hat\theta:= \arg \max_{\theta \in \Theta} p(X | \theta).$$
+Suppose further that we can write $p(X | \theta)$ as an integration
+(or sum) over latent variables $Z$. That is
+$$p(X | \theta) = \int p(X, Z| \theta)$$
+for some joint distribution $p(X,Z| \theta)$.
+(When considered as a function of $\theta$ this 
+distribution, $p(X,Z | \theta)$, is sometimes referred to as ``the complete data log-likelilhood".)
+
+
+The EM algorithm provides a convenient way to find $\hat\theta$
+when the complete data log-likelihood has certain "friendly" features, which will become apparent below. 
+
+Note: throughout this note I treat $Z$ as a continuous random variable,
+using integrals and density functions.
+However, the same ideas apply if $Z$ is discrete: you can just replace integrals with sums and replace density functions with probability mass functions.
+
+Note: $X$ and $Z$ willl typically both be multi-dimensional, not just scalars.
+
+## The $F$ function
+
+Let $Q$ denote the space of all "distributions on $Z$".
+So $q \in Q$ means that $q$ is a distribution on $Z$, with density 
+$q(Z)$ say. 
+
+Define the following function $F$ that maps $(\Theta, Q)$ to the real line:
+$$F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)$$
+where $H(q)$ denotes the entropy of $q$: 
+$$H(q) = - E_q \log(q(Z))$$
+
+```{r}
+
+```
+
