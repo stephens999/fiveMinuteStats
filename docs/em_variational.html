@@ -13,14 +13,24 @@
 
 <meta name="date" content="2021-04-20" />
 
-<title>em_variational</title>
+<title>A Variational view of the EM algorithm</title>
 
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -38,12 +48,18 @@ div.section {
 }
 </style>
 
-<style type="text/css">code{white-space: pre;}</style>
+
+
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -56,32 +72,7 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
 
 
 
@@ -91,10 +82,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -111,40 +98,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -172,7 +132,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -184,7 +144,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -195,10 +155,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -210,7 +183,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -336,13 +308,13 @@ div.tocify {
 
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
 
 
 
@@ -372,7 +344,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/stephens999/fiveMinuteStats">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -381,11 +353,11 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
-<h1 class="title toc-ignore">em_variational</h1>
+<h1 class="title toc-ignore">A Variational view of the EM algorithm</h1>
 <h4 class="author">Matthew Stephens</h4>
 <h4 class="date">2021-04-20</h4>
 
@@ -415,7 +387,7 @@ div.tocify {
 <strong>Last updated:</strong> 2021-04-20
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -443,100 +415,23 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeb4bb1245209d82178f761541dfaff65ac73650e4targetblankb4bb124a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/b4bb1245209d82178f761541dfaff65ac73650e4" target="_blank">b4bb124</a> </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
-<div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
-</p>
-</div>
-<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
-<div class="panel-body">
-<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
-</p>
-</div>
-<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
-<div class="panel-body">
-<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
-</p>
-</div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
-<div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
-</p>
-</div>
-<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
-<div class="panel-body">
-<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreec3a36621547663c909d927902076c7befba62690targetblankc3a3662a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/c3a36621547663c909d927902076c7befba62690" target="_blank">c3a3662</a> </a>
-</p>
-</div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreec3a36621547663c909d927902076c7befba62690targetblankc3a3662a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreeb4bb1245209d82178f761541dfaff65ac73650e4targetblankb4bb124a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/c3a36621547663c909d927902076c7befba62690" target="_blank">c3a3662</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/b4bb1245209d82178f761541dfaff65ac73650e4" target="_blank">b4bb124</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/.Rhistory
-    Ignored:    analysis/bernoulli_poisson_process_cache/
-
-Untracked files:
-    Untracked:  _workflowr.yml
-    Untracked:  analysis/CI.Rmd
-    Untracked:  analysis/gibbs_structure.Rmd
-    Untracked:  analysis/libs/
-    Untracked:  analysis/results.Rmd
-    Untracked:  analysis/shiny/tester/
-
-Unstaged changes:
-    Modified:   analysis/LR_and_BF.Rmd
-    Modified:   analysis/MH-examples1.Rmd
-    Modified:   analysis/MH_intro.Rmd
-    Deleted:    analysis/r_simplemix_extended.Rmd
 
 </code></pre>
 <p>
@@ -580,6 +475,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/b4bb1245209d82178f761541dfaff65ac73650e4/analysis/em_variational.Rmd" target="_blank">b4bb124</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-04-20
+</td>
+<td>
+workflowr::wflow_publish(“analysis/em_variational.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/bf50b1a060f139e7c809759f8e524dede283bbd1/docs/em_variational.html" target="_blank">bf50b1a</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-04-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/c3a36621547663c909d927902076c7befba62690/analysis/em_variational.Rmd" target="_blank">c3a3662</a>
 </td>
 <td>
@@ -601,11 +530,11 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This vignette describes a very useful view of the EM algorithm due to <a href="https://link.springer.com/chapter/10.1007/978-94-011-5014-9_12">Neal and Hinton</a>. [Note on notation: Neal and Hinton use <span class="math inline">\(Z\)</span> to denote observed data, but I use it to denote latent unobserved values. So be sure to keep this in mind if you are trying to relate their paper to my summary here.]</p>
+<p>This vignette describes the EM algorithm, using the very useful view due to <a href="https://link.springer.com/chapter/10.1007/978-94-011-5014-9_12">Neal and Hinton</a>. [Note on notation: Neal and Hinton use <span class="math inline">\(Z\)</span> to denote observed data, but I use it to denote latent unobserved values. So be sure to keep this in mind if you are trying to relate their paper to my summary here.]</p>
 </div>
 <div id="set-up" class="section level2">
 <h2>Set-up</h2>
-<p>Suppose we have data <span class="math inline">\(X\)</span> from a distribution <span class="math inline">\(p(X|\theta)\)</span> where <span class="math inline">\(\theta\)</span> denotes parameters whose values are unknown and live in some space <span class="math inline">\(\Theta\)</span>. We aim to find the maximum likelihood estimate for <span class="math inline">\(\theta\)</span> <span class="math display">\[\hat\theta:= \arg \max_{\theta \in \Theta} p(X | \theta).\]</span> Suppose further that we can write <span class="math inline">\(p(X | \theta)\)</span> as an integration (or sum) over latent variables <span class="math inline">\(Z\)</span>. That is <span class="math display">\[p(X | \theta) = \int p(X, Z| \theta)\]</span> for some joint distribution <span class="math inline">\(p(X,Z| \theta)\)</span>. (When considered as a function of <span class="math inline">\(\theta\)</span> this distribution, <span class="math inline">\(p(X,Z | \theta)\)</span>, is sometimes referred to as ``the complete data log-likelilhood".)</p>
+<p>Suppose we have data <span class="math inline">\(X\)</span> from a distribution <span class="math inline">\(p(X|\theta)\)</span> where <span class="math inline">\(\theta\)</span> denotes parameters whose values are unknown and live in some space <span class="math inline">\(\Theta\)</span>. We aim to find the maximum likelihood estimate for <span class="math inline">\(\theta\)</span> <span class="math display">\[\hat\theta:= \arg \max_{\theta \in \Theta} p(X | \theta).\]</span> Suppose further that we can write <span class="math inline">\(p(X | \theta)\)</span> as an integration (or sum) over latent variables <span class="math inline">\(Z\)</span>. That is <span class="math display">\[p(X | \theta) = \int p(X, Z| \theta)\]</span> for some joint distribution <span class="math inline">\(p(X,Z| \theta)\)</span>. (When considered as a function of <span class="math inline">\(\theta\)</span> this distribution, <span class="math inline">\(p(X,Z | \theta)\)</span>, is sometimes referred to as ``the complete data likelihood".)</p>
 <p>The EM algorithm provides a convenient way to find <span class="math inline">\(\hat\theta\)</span> when the complete data log-likelihood has certain “friendly” features, which will become apparent below.</p>
 <p>Note: throughout this note I treat <span class="math inline">\(Z\)</span> as a continuous random variable, using integrals and density functions. However, the same ideas apply if <span class="math inline">\(Z\)</span> is discrete: you can just replace integrals with sums and replace density functions with probability mass functions.</p>
 <p>Note: <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> willl typically both be multi-dimensional, not just scalars.</p>
@@ -613,40 +542,26 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 <div id="the-f-function" class="section level2">
 <h2>The <span class="math inline">\(F\)</span> function</h2>
 <p>Let <span class="math inline">\(Q\)</span> denote the space of all “distributions on <span class="math inline">\(Z\)</span>”. So <span class="math inline">\(q \in Q\)</span> means that <span class="math inline">\(q\)</span> is a distribution on <span class="math inline">\(Z\)</span>, with density <span class="math inline">\(q(Z)\)</span> say.</p>
-<p>Define the following function <span class="math inline">\(F\)</span> that maps <span class="math inline">\((\Theta, Q)\)</span> to the real line: <span class="math display">\[F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)\]</span> where <span class="math inline">\(H(q)\)</span> denotes the entropy of <span class="math inline">\(q\)</span>: <span class="math display">\[H(q) = - E_q \log(q(Z))\]</span></p>
-<br>
-<p>
-<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
-</button>
-</p>
-<div id="workflowr-sessioninfo" class="collapse">
-<pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.0 (2019-04-26)
-Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS  10.16
-
-Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
-
-locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6       rstudioapi_0.13  whisker_0.4      knitr_1.29      
- [5] magrittr_1.5     workflowr_1.6.2  R6_2.4.1         rlang_0.4.10    
- [9] stringr_1.4.0    tools_3.6.0      xfun_0.16        git2r_0.27.1    
-[13] htmltools_0.5.0  ellipsis_0.3.1   yaml_2.2.1       digest_0.6.27   
-[17] rprojroot_1.3-2  tibble_3.0.4     lifecycle_1.0.0  crayon_1.3.4    
-[21] later_1.1.0.1    vctrs_0.3.4      fs_1.5.0         promises_1.1.1  
-[25] glue_1.4.2       evaluate_0.14    rmarkdown_2.3    stringi_1.4.6   
-[29] compiler_3.6.0   pillar_1.4.6     backports_1.1.10 httpuv_1.5.4    
-[33] pkgconfig_2.0.3 </code></pre>
+<p>Define the following function <span class="math inline">\(F\)</span> that maps <span class="math inline">\((\Theta, Q)\)</span> to the real line: <span class="math display">\[F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)\]</span> where <span class="math inline">\(H(q)\)</span> denotes the entropy of <span class="math inline">\(q\)</span>: <span class="math display">\[H(q) = - E_q \log(q(Z))\]</span> Note that <span class="math inline">\(F\)</span> can be rewritten as: <span class="math display">\[F(q,\theta) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).\]</span></p>
+<p>where <span class="math inline">\(KL(q,p)\)</span> denotes the Kullback–Leibler divergence from <span class="math inline">\(q\)</span> to <span class="math inline">\(p\)</span>.</p>
+<div id="two-key-results" class="section level3">
+<h3>Two key results</h3>
+<p>There are two key results.</p>
+<ol style="list-style-type: decimal">
+<li><p>For any given <span class="math inline">\(\theta\)</span> let <span class="math inline">\(\hat{q}_\theta\)</span> denote the value of <span class="math inline">\(q\)</span> that maximizes <span class="math inline">\(F(q,\theta)\)</span>. That is, <span class="math display">\[\hat{q}_\theta:= \arg \max_q F(\theta,q).\]</span> This optimal <span class="math inline">\(q\)</span> is given by the conditional distribution of the latent variables <span class="math inline">\(Z\)</span> given the data <span class="math inline">\(X\)</span> and <span class="math inline">\(\theta\)</span>: <span class="math display">\[\hat{q}_\theta(z) = p(Z | X, \theta)\]</span></p></li>
+<li><p>The likelihood <span class="math inline">\(l(\theta):=\log p(X| \theta)\)</span> is related to <span class="math inline">\(F\)</span> by: <span class="math display">\[l(\theta) = \max_q F(\theta,q)\]</span> Both results follow directly from <span class="math display">\[F(q,\theta) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).\]</span> and the fact that the minimum of <span class="math display">\[KL(q || p)\]</span> over <span class="math inline">\(q\)</span> is 0, attained at <span class="math inline">\(q=p\)</span>.</p></li>
+</ol>
 </div>
+</div>
+<div id="the-em-algorithm" class="section level2">
+<h2>The EM algorithm</h2>
+<p>It follow from Result 2 above that the maximum likelihood estimate <span class="math inline">\(\hat\theta\)</span> can be obtained by <em>jointly maximizing <span class="math inline">\(F\)</span> over <span class="math inline">\(q\)</span> and <span class="math inline">\(\theta\)</span></em>.</p>
+<p>The EM algorithm simply does this by iterating the following two steps:</p>
+<ul>
+<li><p>Step 1: <span class="math inline">\(q \leftarrow \arg \max_q F(q,\theta)\)</span></p></li>
+<li><p>Step 2: <span class="math inline">\(\theta \leftarrow \arg \max_\theta F(q,\theta)\)</span></p></li>
+</ul>
+<p>From result 1, step 1 is achieved by <span class="math inline">\(q = p(Z | X,\theta)\)</span>. Step 2 involves maximizing the expected complete-data log-likelihood, <span class="math display">\[\theta \leftarrow \arg \max_\theta E_q \log p(X,Z|\theta).\]</span> Of course the EM algorithm is only useful if both steps are straightforward.</p>
 </div>
 
 <hr>
@@ -687,6 +602,8 @@ footer is added to webpages before the MathJax javascript. -->
 </script>
 
 
+
+
 </div>
 </div>
 
@@ -696,7 +613,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -714,7 +631,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
