@@ -45,7 +45,7 @@ We will define the linear system in matrix notation:
 $$\underbrace{\begin{bmatrix}
     -0.3 &  0.4 & 0  \\
      0.2 & -0.4 & 1  \\
-     0.1 &    0 & 1  \\
+     0.1 &    0 & -1  \\
      1   &  1   & 1 
 \end{bmatrix}}_A \begin{bmatrix}
 \pi_1 \\
