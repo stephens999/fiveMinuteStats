@@ -23,14 +23,14 @@ We aim to find the maximum likelihood estimate for $\theta$
 $$\hat\theta:= \arg \max_{\theta \in \Theta} p(X | \theta).$$
 Suppose further that we can write $p(X | \theta)$ as an integration
 (or sum) over latent variables $Z$. That is
-$$p(X | \theta) = \int p(X, Z| \theta)$$
+$$p(X | \theta) = \int p(X, Z| \theta) dZ$$
 for some joint distribution $p(X,Z| \theta)$.
-(When considered as a function of $\theta$ this 
-distribution, $p(X,Z | \theta)$, is sometimes referred to as ``the complete data likelihood".)
 
+The pair $X,Z$ is sometimes referred to as the "complete data" (based on the idea that $Z$ is something that we wished we observed, but do not),
+and $p(X,Z | \theta)$, as a function of $\theta$, is sometimes referred to as "the complete data likelihood" -- it is the likelihood we would have if we actually observed $Z$ as well as $X$.
 
 The EM algorithm provides a convenient way to find $\hat\theta$
-when the complete data log-likelihood has certain "friendly" features, which will become apparent below. 
+when the complete data likelihood has certain "friendly" features, which will become apparent below. 
 
 Note: throughout this note I treat $Z$ as a continuous random variable,
 using integrals and density functions.
@@ -60,10 +60,10 @@ There are two key results.
 1. For any given $\theta$ let $\hat{q}_\theta$ denote the value of $q$ that maximizes $F(q,\theta)$. That is,
 $$\hat{q}_\theta:= \arg \max_q F(\theta,q).$$
 This optimal $q$ is given by the conditional distribution of the latent variables $Z$ given the data $X$ and $\theta$:
-$$\hat{q}_\theta(z) = p(Z | X, \theta)$$
+$$\hat{q}_\theta(z) = p(Z | X, \theta).$$
 
 2. The likelihood $l(\theta):=\log p(X| \theta)$ is related to $F$ by:
-$$l(\theta) = \max_q F(\theta,q)$$
+$$l(\theta) = \max_q F(\theta,q).$$
 Both results follow directly from
 $$F(q,\theta) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
 and the fact that the minimum of $$KL(q || p)$$ over $q$ is 0, attained
@@ -85,3 +85,15 @@ Step 2 involves maximizing the expected complete-data log-likelihood,
 $$\theta \leftarrow \arg \max_\theta E_q \log p(X,Z|\theta).$$
 Of course the EM algorithm is only useful if both steps are straightforward.
 
+## Extensions of the EM algorithm
+
+One of the nice things about this view of the EM algorithm is that it naturally suggests extensions of the EM algorithm that may be useful when the regular EM is hard. For example, suppose that in Step 2 it is hard to optimize $F$ over $\theta$, but it is easy to find a new value of $\theta$ that *increases$ $F$.
+Then using this "incremental" step instead of Step 2 may still be enough to
+produce an algorithm that optimizes $F$, and therefore optimizes $l(\theta)$. 
+
+Another variation on the EM algorithm arises if we replace step 1 with a 
+constrained optimization $q \leftarrow \arg \max_{q \in Q'} F(q,\theta)$
+where $Q'$ is a family of distributions chosen to make this optimization
+tractible. In this case the resulting algorithm would no longer optimize $l(\theta)$ but it can be thought of as an approximation. This approach
+comes up in many "variational approximation" algorithms, and studying
+the accuracy of such approximations remains an active area of research. 
