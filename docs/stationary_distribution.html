@@ -1,26 +1,36 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Matt Bonakdarpour" />
+<meta name="author" content="Matt Bonakdarpour; with edits by Matthew Stephens" />
 
 <meta name="date" content="2016-01-21" />
 
 <title>Discrete Markov Chains: Finding the Stationary Distribution</title>
 
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -30,12 +40,26 @@
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
-<style type="text/css">code{white-space: pre;}</style>
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
+div.section {
+  padding-top: 12px;
+}
 </style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -48,37 +72,10 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+
 
 <style type = "text/css">
 .main-container {
@@ -86,13 +83,8 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -106,40 +98,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -167,7 +132,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -179,7 +144,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -190,14 +155,25 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
 
@@ -207,7 +183,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -243,6 +218,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -255,48 +231,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -310,6 +247,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -345,8 +288,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -356,14 +297,24 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
 
 
 
@@ -393,7 +344,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/stephens999/fiveMinuteStats">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -402,20 +353,13 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<!-- Add a small amount of space between sections. -->
-<style type="text/css">
-div.section {
-  padding-top: 12px;
-}
-</style>
-
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
 <h1 class="title toc-ignore">Discrete Markov Chains: Finding the Stationary Distribution</h1>
-<h4 class="author"><em>Matt Bonakdarpour</em></h4>
-<h4 class="date"><em>2016-01-21</em></h4>
+<h4 class="author">Matt Bonakdarpour; with edits by Matthew Stephens</h4>
+<h4 class="date">2016-01-21</h4>
 
 </div>
 
@@ -431,7 +375,7 @@ div.section {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -440,21 +384,21 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-03-31
+<strong>Last updated:</strong> 2021-05-08
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
-<div id="report" class="tab-pane fade">
+<div id="checks" class="tab-pane fade">
 <div id="workflowr-checks" class="panel-group">
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -488,7 +432,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
 </div>
 </div>
 </div>
@@ -519,35 +463,35 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/0cd28bd3e7aea2258f9c3a55e2e0060c55403123" target="_blank">0cd28bd</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree0cd28bd3e7aea2258f9c3a55e2e0060c55403123targetblank0cd28bda" class="panel-collapse collapse">
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreefc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683targetblankfc5fe81a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683" target="_blank">fc5fe81</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreefc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683targetblankfc5fe81a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683" target="_blank">fc5fe81</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/.Rhistory
-    Ignored:    analysis/bernoulli_poisson_process_cache/
-
-Untracked files:
-    Untracked:  _workflowr.yml
-    Untracked:  analysis/CI.Rmd
-    Untracked:  analysis/gibbs_structure.Rmd
-    Untracked:  analysis/libs/
-    Untracked:  analysis/results.Rmd
-    Untracked:  analysis/shiny/tester/
-    Untracked:  docs/MH_intro_files/
-    Untracked:  docs/citations.bib
-    Untracked:  docs/figure/MH_intro.Rmd/
-    Untracked:  docs/figure/hmm.Rmd/
-    Untracked:  docs/hmm_files/
-    Untracked:  docs/libs/
-    Untracked:  docs/shiny/tester/
 
 </code></pre>
 <p>
@@ -562,7 +506,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/stationary_distribution.Rmd</code>) and HTML (<code>docs/stationary_distribution.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -586,6 +530,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683/analysis/stationary_distribution.Rmd" target="_blank">fc5fe81</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-05-08
+</td>
+<td>
+workflowr::wflow_publish(“analysis/stationary_distribution.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/e4436faed60f1cba41c08be775d07b6292fb2cd0/analysis/stationary_distribution.Rmd" target="_blank">e4436fa</a>
+</td>
+<td>
+GitHub
+</td>
+<td>
+2021-04-20
+</td>
+<td>
+fixes small error in typesetting
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/stationary_distribution.html" target="_blank">5f62ee6</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/0cd28bd3e7aea2258f9c3a55e2e0060c55403123/analysis/stationary_distribution.Rmd" target="_blank">0cd28bd</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+workflowr::wflow_publish(all = TRUE)
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -642,16 +654,16 @@ Remove front and end matter of non-standard templates.
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/fb0f6e37ced1f4d374ed6ced4b01cb465776f001/docs/stationary_distribution.html" target="_blank">fb0f6e3</a>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/8e616835a4eccac7c4e0a8eeec86fdcefb1525ab/docs/stationary_distribution.html" target="_blank">8e61683</a>
 </td>
 <td>
-stephens999
+Marcus Davy
 </td>
 <td>
 2017-03-03
 </td>
 <td>
-Merge pull request #33 from mdavy86/f/review
+rendered html using wflow_build(all=TRUE)
 </td>
 </tr>
 <tr>
@@ -659,16 +671,16 @@ Merge pull request #33 from mdavy86/f/review
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/0713277eda2ef15ef7f1bc52f287a9027db4e017/docs/stationary_distribution.html" target="_blank">0713277</a>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5d0fa13282db4a97dc7d62e2d704e88a5afdb824/docs/stationary_distribution.html" target="_blank">5d0fa13</a>
 </td>
 <td>
-stephens999
+Marcus Davy
 </td>
 <td>
-2017-03-03
+2017-03-02
 </td>
 <td>
-Merge pull request #31 from mdavy86/f/review
+wflow_build() rendered html files
 </td>
 </tr>
 <tr>
@@ -682,7 +694,7 @@ Rmd
 Marcus Davy
 </td>
 <td>
-2017-02-27
+2017-02-26
 </td>
 <td>
 typos, refs
@@ -826,7 +838,7 @@ split simulating discrete markov chains into three separate notes
 <p>We will define the linear system in matrix notation: <span class="math display">\[\underbrace{\begin{bmatrix}
     -0.3 &amp;  0.4 &amp; 0  \\
      0.2 &amp; -0.4 &amp; 1  \\
-     0.1 &amp;    0 &amp; 1  \\
+     0.1 &amp;    0 &amp; -1  \\
      1   &amp;  1   &amp; 1 
 \end{bmatrix}}_A \begin{bmatrix}
 \pi_1 \\
@@ -839,17 +851,11 @@ split simulating discrete markov chains into three separate notes
 1
 \end{bmatrix}}_b \\
 A\pi = b\]</span></p>
-<p>Since this linear system has more equations than unknowns, it is an overdetermined system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for <span class="math inline">\(\pi\)</span> exactly) when <span class="math inline">\(b\)</span> is in the column space of <span class="math inline">\(A\)</span>. We can check this numerically by obtaining the rank of <span class="math inline">\(A\)</span>, then obtaining the rank of an augmented matrix with <span class="math inline">\(b\)</span> appended as a column of <span class="math inline">\(A\)</span>. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, especially for large matrices. But for our small example, we are safe.)</p>
+<p>Since this linear system has more equations than unknowns, it is an overdetermined system. Overdetermined systems can be solved using a QR decomposition, so we use that here. (In brief, <code>qr.solve</code> works by finding the QR decomposition of <span class="math inline">\(A\)</span>, <span class="math inline">\(A=QR\)</span> with <span class="math inline">\(Q&#39;Q=I\)</span> and <span class="math inline">\(R\)</span> an upper triangular matrix. Then if <span class="math inline">\(A\pi = b\)</span> it must be the case that <span class="math inline">\(QR\pi=b\)</span> which implies <span class="math inline">\(R\pi = Q&#39;b\)</span>, and this can be solved easily because <span class="math inline">\(R\)</span> is triangular.)</p>
 <pre class="r"><code>library(Matrix)
 A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
-b        &lt;- c(0,0,0, 1)
-rank.A   &lt;- as.numeric(rankMatrix(A))
-rank.Ab  &lt;- as.numeric(rankMatrix(cbind(A,b)))
-print(paste(&quot;The rank of A =&quot;, rank.A, &quot;and the rank of the augmented matrix =&quot;, rank.Ab))</code></pre>
-<pre><code>[1] &quot;The rank of A = 3 and the rank of the augmented matrix = 3&quot;</code></pre>
-<p>We see that <span class="math inline">\(A\)</span> has full column rank, and that the rank is unchanged when we add <span class="math inline">\(b\)</span> as a column. Therefore, <span class="math inline">\(b\)</span> is in the column space of <span class="math inline">\(A\)</span>, and this system is consistent. We can find <span class="math inline">\(\pi\)</span> by solving the normal equations: <span class="math display">\[A^TA\pi = A^Tb\]</span></p>
-<p>We use the solve function in R to solve for the stationary distribution <span class="math inline">\(\pi\)</span>:</p>
-<pre class="r"><code>pi        &lt;- drop(solve(t(A) %*% A, t(A) %*% b))
+b        &lt;- c(0,0,0, 1)</code></pre>
+<pre class="r"><code>pi        &lt;- qr.solve(A,b)
 names(pi) &lt;- c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;)
 pi </code></pre>
 <pre><code>   state.1    state.2    state.3 
@@ -864,8 +870,8 @@ pi </code></pre>
 \pi - \pi P &amp;= 0 \\
 (I - P)\pi &amp;= 0
 \end{align}\]</span></p>
-<p>One challenge though is that we need the constrained solution which respects that <span class="math inline">\(\pi\)</span> describes a probability distribution (i.e. <span class="math inline">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row of all 1’s to our <span class="math inline">\((I-P)\)</span> (call this new matrix <span class="math inline">\(A\)</span>) and a 1 to the last element of the zero vector on the right hand side (call this new vector <span class="math inline">\(b\)</span>). Now we want to solve <span class="math inline">\(A\pi = b\)</span> which is overdetermined, so we solve the normal equations <span class="math inline">\(A^TA\pi = A^Tb\)</span>.</p>
-<br> <br>
+<p>One challenge though is that we need the constrained solution which respects that <span class="math inline">\(\pi\)</span> describes a probability distribution (i.e. <span class="math inline">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row of all 1’s to our <span class="math inline">\((I-P)\)</span> (call this new matrix <span class="math inline">\(A\)</span>) and a 1 to the last element of the zero vector on the right hand side (call this new vector <span class="math inline">\(b\)</span>). Now we want to solve <span class="math inline">\(A\pi = b\)</span> which is overdetermine so we solve it as above using <code>qr.solve</code>.</p>
+<br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -873,13 +879,13 @@ pi </code></pre>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.2 (2018-12-20)
-Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Mojave 10.14.1
+<pre><code>R version 4.0.5 (2021-03-31)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 10.16
 
 Matrix products: default
-BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -888,15 +894,18 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Matrix_1.2-15
+[1] Matrix_1.3-2
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_1.0.0      lattice_0.20-38 digest_0.6.18  
- [5] rprojroot_1.3-2 grid_3.5.2      backports_1.1.3 git2r_0.24.0   
- [9] magrittr_1.5    evaluate_0.12   stringi_1.2.4   fs_1.2.6       
-[13] whisker_0.3-2   rmarkdown_1.11  tools_3.5.2     stringr_1.3.1  
-[17] glue_1.3.0      xfun_0.4        yaml_2.2.0      compiler_3.5.2 
-[21] htmltools_0.3.6 knitr_1.21     </code></pre>
+ [1] Rcpp_1.0.6        whisker_0.4       knitr_1.32        magrittr_2.0.1   
+ [5] workflowr_1.6.2   lattice_0.20-41   R6_2.5.0          rlang_0.4.10     
+ [9] fansi_0.4.2       stringr_1.4.0     tools_4.0.5       grid_4.0.5       
+[13] xfun_0.22         utf8_1.2.1        git2r_0.28.0      htmltools_0.5.1.1
+[17] ellipsis_0.3.2    rprojroot_2.0.2   yaml_2.2.1        digest_0.6.27    
+[21] tibble_3.1.1      lifecycle_1.0.0   crayon_1.4.1      later_1.2.0      
+[25] vctrs_0.3.8       fs_1.5.0          promises_1.2.0.1  glue_1.4.2       
+[29] evaluate_0.14     rmarkdown_2.7     stringi_1.5.3     compiler_4.0.5   
+[33] pillar_1.6.0      httpuv_1.5.5      pkgconfig_2.0.3  </code></pre>
 </div>
 </div>
 </div>
@@ -939,6 +948,8 @@ footer is added to webpages before the MathJax javascript. -->
 </script>
 
 
+
+
 </div>
 </div>
 
@@ -948,13 +959,56 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
