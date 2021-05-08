@@ -1,6 +1,6 @@
 ---
 title: "Discrete Markov Chains: Finding the Stationary Distribution"
-author: "Matt Bonakdarpour"
+author: "Matt Bonakdarpour; with edits by Matthew Stephens"
 date: 2016-01-21
 ---
 
@@ -59,22 +59,18 @@ $$\underbrace{\begin{bmatrix}
 \end{bmatrix}}_b \\
 A\pi = b$$
 
-Since this linear system has more equations than unknowns, it is an overdetermined system. Recall from linear algebra that an overdetermined system is consistent (i.e. we can solve for $\pi$ exactly) when $b$ is in the column space of $A$. We can check this numerically by obtaining the rank of $A$, then obtaining the rank of an augmented matrix with $b$ appended as a column of $A$. (Side note: it can be difficult to find the rank of an arbitrary matrix numerically, especially for large matrices. But for our small example, we are safe.)
+Since this linear system has more equations than unknowns, it is an overdetermined system. Overdetermined systems can be solved using a QR decomposition, so we use that here. (In brief, `qr.solve` 
+works by finding the QR decomposition of $A$, $A=QR$ with $Q'Q=I$ and $R$ an upper triangular matrix. Then if $A\pi = b$ it must be the case that $QR\pi=b$ which implies $R\pi = Q'b$, and this can be solved easily because $R$ is triangular.)
+
 
 ```{r}
 library(Matrix)
 A        <- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b        <- c(0,0,0, 1)
-rank.A   <- as.numeric(rankMatrix(A))
-rank.Ab  <- as.numeric(rankMatrix(cbind(A,b)))
-print(paste("The rank of A =", rank.A, "and the rank of the augmented matrix =", rank.Ab))
-```
-We see that $A$ has full column rank, and that the rank is unchanged when we add $b$ as a column. Therefore, $b$ is in the column space of $A$, and this system is consistent. We can find $\pi$ by solving the normal equations:
-$$A^TA\pi = A^Tb$$
 
-We use the solve function in R to solve for the stationary distribution $\pi$:
+
 ```{r}
-pi        <- drop(solve(t(A) %*% A, t(A) %*% b))
+pi        <- qr.solve(A,b)
 names(pi) <- c('state.1', 'state.2', 'state.3')
 pi 
 ```
@@ -96,7 +92,7 @@ $$\begin{align}
 (I - P)\pi &= 0
 \end{align}$$
 
-One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row of all 1's to our $(I-P)$ (call this new matrix $A$) and a 1 to the last element of the zero vector on the right hand side (call this new vector $b$). Now we want to solve $A\pi = b$ which is overdetermined, so we solve the normal equations $A^TA\pi = A^Tb$. 
+One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row of all 1's to our $(I-P)$ (call this new matrix $A$) and a 1 to the last element of the zero vector on the right hand side (call this new vector $b$). Now we want to solve $A\pi = b$ which is overdetermine so we solve it as above using `qr.solve`.
 
 
 
