@@ -47,7 +47,7 @@ Now we're stuck because we can't analytically solve for $\mu_k$. However, we mak
 
 ## EM, informally
 Intuitively, the latent variables $Z_i$ should help us find the MLEs. We first attempt to compute the posterior distribution of $Z_i$ given the observations:
-$$P(Z_i=k|X_i) = \frac{P(X_i|Z_i=k)P(Z_i=k)}{P(X_i)} = \frac{\pi_k N(\mu_k,\sigma_k^2)}{\sum_{k=1}^K\pi_k N(\mu_k, \sigma_k)} = \gamma_{Z_i}(k) \tag{2}$$
+$$P(Z_i=k|X_i) = \frac{P(X_i|Z_i=k)P(Z_i=k)}{P(X_i)} = \frac{\pi_k N(\mu_k,\sigma_k^2)}{\sum_{k=1}^K\pi_k N(\mu_k, \sigma_k^2)} = \gamma_{Z_i}(k) \tag{2}$$
 
 Now we can rewrite equation (1), the derivative of the log-likelihood with respect to $\mu_k$, as follows:
 $$\sum_{i=1}^n \gamma_{Z_i}(k) \frac{(x_i-\mu_k)}{\sigma_k^2} = 0 $$
