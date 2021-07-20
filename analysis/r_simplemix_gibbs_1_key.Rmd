@@ -1,0 +1,300 @@
+---
+title: Gibbs sampler Exercises for a simple genetic mixture (with answers)
+author: "Matthew Stephens and Eric C Anderson"
+date: "2021-07-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+ 
+This vignette contains a set of exercises to lead you through creating a [Gibbs sampler](gibbs1.html) for a [simple genetic mixture](r_simplemix.html). 
+It relies on code from the latter vignette, including the code
+to complete the exercises. 
+This first chunk contains all the code you need 
+and is taken from [here](r_simplemix_withanswers.html). 
+
+```{r}
+# Original code to sample haploid genotypes
+
+#' @param n number of samples
+#' @param p a vector of allele frequencies
+r_haploid_genotypes = function(n,p){
+  R = length(p)
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),p)
+  }
+  return(x)
+}
+
+# Exercise 1 answerto sample from a simple genetic mixture model
+
+#' @param n number of samples
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a w-vector of component prior probabilities
+r_simplemix = function(n,P,w=c(0.5,0.5)){
+  R = ncol(P) # number of loci
+  z = rep(0,n) # used to store population of origin of each individual
+  x = matrix(nrow = n, ncol=R) #used to store genotypes
+  
+  for(i in 1:n){
+    z[i] = sample(1:2, size=1, prob=w)
+    x[i,] = r_haploid_genotypes(1,P[z[i],])
+  }
+  return(list(x=x,z=z))
+}
+
+
+### Exercise 2 answer
+
+#' Compute the likelihood for allele frequences p given genotype data x
+#' @param p an R vector of allele frequencies
+#' @param x an R vector of genotypes
+likelihood = function(p,x){
+  return(prod(p^x*(1-p)^(1-x)))
+}
+
+#' normalize a vectorx, so it's elements sum to 1
+#' @param x a vector
+normalize = function(x){x/sum(x)}
+
+#' Compute posterior assignment probabilities
+#' @param x an n by R matrix of genotypes
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a 2-vector of prior probabilities
+posterior_prob_assignment=function(x,P,w){
+  n = nrow(x)
+  K = length(w)
+  post = matrix(nrow=n, ncol=K) # to store the posterior probabilities
+  lik = rep(0,K) # a vector to store the likelihoods
+  for(i in 1:n){
+    for(k in 1:K){
+      lik[k] = likelihood(P[k,],x[i,])
+    }
+    post[i,] = normalize(lik*w)
+  }
+  return(post)
+}
+
+
+### Exercise 3 answer
+
+#' Compute the posterior parameters for allele frequencies given genotypes 
+#' and population labels
+#' @param x an n by R matrix of genotypes
+#' @param z an n vector of population assignments
+#' @param a a 2-vector of prior parameters
+posterior_param_allele_frequencies=function(x,z,a){
+ K = 2
+ R = ncol(x)
+ post_param = array(dim=c(2,K,R))
+ for(k in 1:K){
+   for(r in 1:R){
+     number_of_ones = sum(x[z==k,r]) #number of 1s observed at locus r in population k
+     total = sum(z==k) # how many individuals in population k
+     post_param[,k,r] = a + c(number_of_ones, total - number_of_ones)
+   }
+ }
+ return(post_param)
+}
+```
+
+
+## Exercises
+
+For this exercise we will assume the mixture proportions `w` are fixed and known. The things we do not know are the assignment indicators (`Z`)
+and the population allele frequences (`P`).
+The Gibbs sampler for fitting the mixture model must therefore alternative between two key steps: sample the assignment indicators given the allele frequencies,
+and sample the allele frequencies given the indicators. 
+That is:
+
+- sample from `Z | P, x, w`
+- sample from `P | Z, x, w`
+
+
+The following three exercises build up this Gibbs sampler.
+Each exercise includes an answer template (you need to fill in the code in `...`) and a small chunk of code you can use to try out your answer.
+
+Note: all these chunks have the option set `` so that this document compiles even though the code is incomplete. You will have to remove these if you want to run these chunks on compilation.
+
+## Exercise 1: `newZ_gibbs()`
+
+Write a function `newZ_gibbs <- function(x, P, w) {...}` to sample from
+the full conditional distribution for the population assignment indicators `Z`. It should use `x` , `P`, and `w` and the function `posterior_prob_assignment()` given above to compute this full conditional probabiities for the assignments, and then, using that, sample a new value of `z_i` for every individual.
+
+Here is an answer template:
+```{r }
+#' Simulate new values for the population assignments from their full conditional distribution
+#' @param x an n by R matrix of genotypes
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a 2-vector of prior probabilities
+newZ_gibbs <- function(x, P, w) {
+    K <- nrow(P)
+    n <- nrow(x)
+    
+    # get the full conditionals
+    zprobs <- posterior_prob_assignment(x, P, w)  # makes a matrix of probabilities
+    
+    newZ <- rep(NA, n)
+    
+    for (i in 1:n) {
+      newZ[i] <- sample(1:K, size = 1, prob = zprobs[i,])   # simulate new Z's from the zprobs
+    }
+    
+    newZ
+}
+```
+
+
+When you have filled this in try running it on example data:
+```{r }
+# simulate example data
+p = seq(0.1,0.9,length=9)
+P = rbind(p,1-p)
+set.seed(123)
+sim = r_simplemix(n=20,P)
+
+newZ <- newZ_gibbs(sim$x, P, w = c(0.5, 0.5))
+
+# here is the original value
+sim$z
+# here is the new value
+newZ
+```
+
+## Exercise 2. `newP_gibbs()`
+
+Write a function `newP_gibbs <- function(x, z, a) {...}` to
+sample from
+the full conditional distribution for the population allele frequencies `P`. 
+It should use `x`, `z`, and `a` and the function `posterior_param_allele_frequencies()` to find the parameters of the beta distributions that are the full conditional distributions for the allele frequencies, and then sample new values of the allele frequencies, giving a new matrix `P`.
+
+
+Here is an answer template:
+```{r}
+#' Simulate new values for the allele frequencies 
+#' @param x an n by R matrix of genotypes
+#' @param z an n vector of population assignments
+#' @param a a 2-vector of prior parameters
+newP_gibbs <- function(x,z,a = c(1,1)) {
+  
+  # compute the beta parameters for the full conditionals of P
+  p_params <- posterior_param_allele_frequencies(x, z, a)
+  
+  R <- ncol(x)  # number of loci
+  K <- 2
+
+  # prepare a matrix for output
+  newP <- matrix(nrow = 2, ncol = R)
+  
+  # simulate beta random variables to fill the P matrix
+  for(r in 1:R) {
+    for(k in 1:K) {
+    
+    # get the beta parameters for population k
+    par1 <- p_params[1,k,r]
+    par2 <- p_params[2,k,r]
+    
+    # simulate a new value from a beta distribution
+    newP[k,r] <- rbeta(1, par1, par2)
+    }
+  }
+  
+  newP
+}
+```
+
+
+Again, when you have completed it, try running on example data:
+```{r}
+set.seed(123)
+sim = r_simplemix(n=20,P)
+newP <- newP_gibbs(sim$x, sim$z, a = c(1,1))
+
+# here is the original value
+P
+# here is the new value
+newP
+```
+
+
+
+## Exercise 3: put it together
+
+Write a function `mcmc_gibbs_Z_and_P <- function(
+  x, 
+  a = c(1, 1), 
+  w=c(0.5, 0.5), 
+  nIter = 500
+)` implementing a Gibbs sampler to fit the simple genetic mixture model.
+Start from a random initial value of `Z`, then alternately update `P` and `Z` using `newZ_gibbs()` and `newP_gibbs()` functions.
+
+
+Here is an answer template:
+
+```{r }
+# do mcmc by Gibbs sampling for Z and P
+#' @param x an n by R matrix of genotypes
+#' @param a a 2-vector of prior parameters for the allele frequencies
+#' @param w a 2-vector of mixing proportions assumed to be (0.5, 0.5)
+#' @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P <- function(
+  x, 
+  a = c(1, 1), 
+  w=c(0.5, 0.5), 
+  nIter = 500
+) {
+  
+  n <- nrow(x)
+  R <- ncol(x)
+  K <- 2
+  
+  # we need to have an initial value for the Z's.  Just sample it, randomly from w
+  z <- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P <- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z <- newZ_gibbs(x, P, w)
+    
+    # For now, just print the current values
+    # print z
+    print(paste("Z: rep =", rep))
+    print(z)
+    
+    # print P
+    print(paste("P: rep =", rep))
+    print(P)
+  }
+}
+```
+
+
+
+Here we can run this on the example data:
+```{r}
+set.seed(123)
+sim = r_simplemix(n=20,P)
+
+# now, given only the genotypes x, the allele frequency prior parameters a,
+# and assuming mixing proportions of w = c(0.5, 0.5), we can run a Markov chain
+# that samples from the posterior distribution of Z, and P.
+
+# Print the true values of z and P from the simulated data:
+sim$z
+P
+
+# Currently, the function just prints the values of Z and P each iteration.
+# Just run it for 10 iterations
+mcmc_gibbs_Z_and_P(sim$x, nIter = 10)
+```
+
+If you go back and check, you should find that the initial `Z` does not look anything like the true value from the simulation, but, after only 10 iterations, `Z` in the Markov chain is quite
+similar to the true `Z`.
+
