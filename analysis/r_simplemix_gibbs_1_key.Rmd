@@ -10,8 +10,8 @@ editor_options:
 ## Introduction
  
 This vignette contains a set of exercises to lead you through creating a [Gibbs sampler](gibbs1.html) for a [simple genetic mixture](r_simplemix.html). 
-It relies on code from the latter vignette, including the code
-to complete the exercises. 
+It relies on code from the latter vignette (including the code
+to complete the exercises in that vignette). 
 This first chunk contains all the code you need 
 and is taken from [here](r_simplemix_withanswers.html). 
 
@@ -29,7 +29,7 @@ r_haploid_genotypes = function(n,p){
   return(x)
 }
 
-# Exercise 1 answerto sample from a simple genetic mixture model
+# code to sample from a simple genetic mixture model
 
 #' @param n number of samples
 #' @param P a 2 by R matrix of allele frequencies
@@ -45,9 +45,6 @@ r_simplemix = function(n,P,w=c(0.5,0.5)){
   }
   return(list(x=x,z=z))
 }
-
-
-### Exercise 2 answer
 
 #' Compute the likelihood for allele frequences p given genotype data x
 #' @param p an R vector of allele frequencies
@@ -78,8 +75,6 @@ posterior_prob_assignment=function(x,P,w){
   return(post)
 }
 
-
-### Exercise 3 answer
 
 #' Compute the posterior parameters for allele frequencies given genotypes 
 #' and population labels
