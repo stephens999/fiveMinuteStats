@@ -13,7 +13,7 @@ This vignette contains a set of exercises to lead you through creating a [Gibbs 
 It relies on code from the latter vignette (including the code
 to complete the exercises in that vignette). 
 This first chunk contains all the code you need 
-and is taken from [here](r_simplemix_withanswers.html). 
+and is taken from [here](r_simplemix_key.html). 
 
 ```{r}
 # Original code to sample haploid genotypes
