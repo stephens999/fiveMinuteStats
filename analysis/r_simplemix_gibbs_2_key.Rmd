@@ -1,0 +1,554 @@
+---
+title: Further Exercises for a simple genetic mixture (with answers)
+author: "Matthew Stephens and Eric C Anderson"
+date: "2021-07-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+## Introduction
+
+This vignette contains additional material and exercises that extend the
+inference for a [simple genetic mixture](r_simplemix.html).
+First, we allow the mixture proportions, `w`, to be estimated rather than fixed. Second we add a function to the Gibbs sampler to help monitor convergence. Finally, we discuss how we might change the prior on the allele frequencies in different populations to allow that they tend to be similar to one another (``correlated allele frequencies"). 
+
+These exercises will build on code written to answer the [previous exercises](r_simplemix_gibbs_1_key.html), so this first chunk reads in all the previous code you need.
+
+```{r}
+
+# Original code to sample haploid genotypes
+
+#' @param n number of samples
+#' @param p a vector of allele frequencies
+r_haploid_genotypes = function(n,p){
+  R = length(p)
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),p)
+  }
+  return(x)
+}
+
+# code to sample from a simple genetic mixture model
+
+#' @param n number of samples
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a w-vector of component prior probabilities
+r_simplemix = function(n,P,w=c(0.5,0.5)){
+  R = ncol(P) # number of loci
+  z = rep(0,n) # used to store population of origin of each individual
+  x = matrix(nrow = n, ncol=R) #used to store genotypes
+  
+  for(i in 1:n){
+    z[i] = sample(1:2, size=1, prob=w)
+    x[i,] = r_haploid_genotypes(1,P[z[i],])
+  }
+  return(list(x=x,z=z))
+}
+
+
+#' Compute the likelihood for allele frequences p given genotype data x
+#' @param p an R vector of allele frequencies
+#' @param x an R vector of genotypes
+likelihood = function(p,x){
+  return(prod(p^x*(1-p)^(1-x)))
+}
+
+#' normalize a vector, x, so it's elements sum to 1
+#' @param x a vector
+normalize = function(x){x/sum(x)}
+
+#' Compute posterior assignment probabilities
+#' @param x an n by R matrix of genotypes
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a 2-vector of prior probabilities
+posterior_prob_assignment=function(x,P,w){
+  n = nrow(x)
+  K = length(w)
+  post = matrix(nrow=n, ncol=K) # to store the posterior probabilities
+  lik = rep(0,K) # a vector to store the likelihoods
+  for(i in 1:n){
+    for(k in 1:K){
+      lik[k] = likelihood(P[k,],x[i,])
+    }
+    post[i,] = normalize(lik*w)
+  }
+  return(post)
+}
+
+#' Compute the posterior parameters for allele frequencies given genotypes 
+#' and population labels
+#' @param x an n by R matrix of genotypes
+#' @param z an n vector of population assignments
+#' @param a a 2-vector of prior parameters
+posterior_param_allele_frequencies=function(x,z,a){
+ K = 2
+ R = ncol(x)
+ post_param = array(dim=c(2,K,R))
+ for(k in 1:K){
+   for(r in 1:R){
+     number_of_ones = sum(x[z==k,r]) #number of 1s observed at locus r in population k
+     total = sum(z==k) # how many individuals in population k
+     post_param[,k,r] = a + c(number_of_ones, total - number_of_ones)
+   }
+ }
+ return(post_param)
+}
+
+#' Simulate new values for the population assignments from their full conditional distribution
+#' @param x an n by R matrix of genotypes
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a 2-vector of prior probabilities
+newZ_gibbs <- function(x, P, w) {
+    K <- nrow(P)
+    n <- nrow(x)
+    
+    # get the full conditionals
+    zprobs <- posterior_prob_assignment(x, P, w)  # makes a matrix of probabilities
+    
+    newZ <- rep(NA, n)
+    
+    for (i in 1:n) {
+      newZ[i] <- sample(1:K, size = 1, prob = zprobs[i,])   # simulate new Z's from the zprobs
+    }
+    
+    newZ
+}
+
+
+#' Simulate new values for the allele frequencies 
+#' @param x an n by R matrix of genotypes
+#' @param z an n vector of population assignments
+#' @param a a 2-vector of prior parameters
+newP_gibbs <- function(x,z,a = c(1,1)) {
+  
+  # compute the beta parameters for the full conditionals of P
+  p_params <- posterior_param_allele_frequencies(x, z, a)
+  
+  R <- ncol(x)  # number of loci
+  K <- 2
+
+  # prepare a matrix for output
+  newP <- matrix(nrow = 2, ncol = R)
+  
+  # simulate beta random variables to fill the P matrix
+  for(r in 1:R) {
+    for(k in 1:K) {
+    
+    # get the beta parameters for population k
+    par1 <- p_params[1,k,r]
+    par2 <- p_params[2,k,r]
+    
+    # simulate a new value from a beta distribution
+    newP[k,r] <- rbeta(1, par1, par2)
+    }
+  }
+  
+  newP
+}
+
+
+# do mcmc by Gibbs sampling for Z and P
+#' @param x an n by R matrix of genotypes
+#' @param a a 2-vector of prior parameters for the allele frequencies
+#' @param w a 2-vector of mixing proportions assumed to be (0.5, 0.5)
+#' @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P <- function(
+  x, 
+  a = c(1, 1), 
+  w=c(0.5, 0.5), 
+  nIter = 500
+) {
+  
+  n <- nrow(x)
+  R <- ncol(x)
+  K <- 2
+  
+  # we need to have an initial value for the Z's.  Just sample it, randomly from w
+  z <- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P <- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z <- newZ_gibbs(x, P, w)
+    
+    # For now, just print the current values
+    # print z
+    print(paste("Z: rep =", rep))
+    print(z)
+    
+    # print P
+    print(paste("P: rep =", rep))
+    print(P)
+  }
+}
+```
+
+## The model
+
+We begin by writing out the model more formally.
+We have genotypes $x$, allele frequencies $P$, and assignment labels $z$.
+The joint distribution is:
+$$p(x, P, z) = p(P,z) p(x|P,z)$$ 
+We assumed the prior distributions on $P$ and $z$ are independent, so:
+$$p(x,P,z) = p(P) p(z) p(x | P,z).$$
+
+In these expressions I kept things simple by not including the mixture proportions $w=(0.5,0.5)$  and the allele frequency prior parameters $a=(1,1)$, because they 
+were both treated as fixed and known. Since we are going to change this I will put those in explicitly now:
+
+$$p(x, P, z | w, a) = p(P| a) p(z | w) p(x|P,z)$$  
+Each term in this expression can be written out in more detail.
+
+For example, we assumed independent beta priors on the elements of $P$ so:
+$$p(P | a) = \prod_k \prod_r p(P_{kr} | a) \propto \prod_k \prod_r P_{kr}^{a_1-1} (1-P_{kr})^{a_2-1}$$
+The $z$ were sampled independently according to $w=(w_1,w_2)$:
+$$p(z | w) = \prod_i p(z_i | w) = \prod_i w_1^{I(z_i==1)} (1-w_1)^{I(z_i==2)}$$
+And the genotypes for individual $i$ were then drawn from the allele frequencies of the relevant subpopulation $z_i$.
+$$p(x | P,z) = \prod_i \prod_r P_{z_i r}^{x_i} (1-P_{z_i r})^{1-x_i}$$
+
+
+## Estimating `w`
+
+Now suppose we want to add the facility to estimate $w$ rather than treat it as fixed.
+We can proceed to specify a prior distribution for $w$ and do Bayesian inference.
+
+The model becomes:
+$$p(x, P, z, w | a) = p(P| a) p(z | w) p(w) p(x|P,z)$$  
+
+Note that the full conditional for $w$ is then given by:
+$$p(w | x, P, z, a) \propto p(x,P,z,w|a) \propto p(z|w) p(w).$$
+That is, it is obtained by taking full joint distribution of everything in our model, and ignoring the terms that do not depend on $w$. (This is generally true for the full conditional distributions: to find the full conditional of a parameter, write down the joint distribution and ignore terms that do not depend on the parameter.)
+
+The sampling of $z|w$ is effectively binomial, and indeed:
+$$p(z|w) \propto w_1^{n_1}(1-w_1)^{n_2}$$
+where 
+$$n_1 := \#\{z_i: z_i==1\}$$ and
+$$n_2 := \#\{z_i: z_i==2\}$$.
+
+So if we use a beta prior for $w$, say
+$$w \sim Beta(b_1, b_2)$$
+then the full conditional for $w$ will also be a beta distribution.
+(Can you write down the parameters of this posterior?)
+
+Thus we can sample from the full conditional for $w$. This means we can
+include it in our MCMC scheme using a Gibbs step. The extended Gibbs algorithm, in outline, 
+will look like this:
+
+Iterate:
+
+1. sample `P` from `P` | `z`, `w`, `x`
+2. sample `z` from `z` | `P`, `w`, `x`
+3. sample `w` from `w` | `P`, `z`, `x`
+
+(Note that step 1 does not actually depend on `w`, and step  3 does not actually depend on `x`).
+
+### Exercise 1: `newW_gibbs`
+
+Implement the update to `w`, outlined above, in a function `newW_gibbs(z, b=c(1,1))` where `b` are the parameters of the beta prior on `w`. Incorporate this update into the previous Gibbs sampling function (`mcmc_gibbs_Z_and_P` in the first chunk) to create a new Gibbs sampling function, `mcmc_gibbs_Z_and_P_and_W <- function(x, a = c(1, 1), b = c(1, 1), nIter = 500)`. While doing this, also take the opportunity to modify the Gibbs sampling function to return not just the final sampled values of `z`, but also the sampled values of `z` in each iteration, in a matrix `z_trace`.
+
+Here is an answer template for `newW_gibbs`:
+```{r}
+#' Simulate new values for the component proportions 
+#' @param z an n vector of population assignments
+#' @param b a 2-vector of prior parameters
+newW_gibbs <- function(z,b = c(1,1)) {
+  n1 = sum(z==1)
+  n2 = sum(z==2)
+  w = rbeta(1,shape1 = b[1]+n1, shape2 = b[2]+n2)
+  return(c(w,1-w))
+}
+```
+
+You should insert this into the updated Gibbs sampler:
+```{r}
+# do mcmc by Gibbs sampling for Z and P and W
+#' @param x an n by R matrix of genotypes
+#' @param a a 2-vector of prior parameters for the allele frequencies
+#' @param b a 2-vector of prior parameters for the mixing proportions
+#' @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P_and_W <- function(
+  x, 
+  a = c(1, 1), 
+  b = c(1, 1), 
+  nIter = 500
+) {
+  
+  n <- nrow(x)
+  R <- ncol(x)
+  K <- 2
+  
+  # initialize w
+  w <- c(0.5,0.5)
+  
+  # we need to have an initial value for the Z's.  Just sample it, randomly from w
+  z <- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # store z every iteration for final output
+  z_trace <- matrix(NA,nrow=nIter, ncol=n)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P <- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z <- newZ_gibbs(x, P, w)
+    
+    # Gibbs update for w
+    w <- newW_gibbs(z, b)
+    
+    # store z
+    z_trace[rep,] = z
+    
+  }
+  return(list(P=P,z=z,w=w, z_trace = z_trace))
+}
+```
+
+Once complete try running this on the example data:
+```{r}
+# simulate example data
+p = seq(0.1,0.9,length=9)
+P = rbind(p,1-p)
+set.seed(123)
+sim = r_simplemix(n=20,P)
+
+# now, given only the genotypes x, the allele frequency prior parameters a,
+# and assuming mixing proportions of w = c(0.5, 0.5), we can run a Markov chain
+# that samples from the posterior distribution of Z, and P.
+
+# Print the true values of z from the simulated data:
+sim$z
+
+# Run it for 100 iterations
+res = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+res$z
+res$w
+table(res$z,sim$z) 
+```
+
+We should really do longer runs than this. Also, 
+rather than just taking the final result, we should average over the iterations. Here I plot the trace of the MCMC for individual 1, and I compute
+for each individual the posterior mode of its assigment (1 or 2). 
+```{r}
+res = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+plot(res$z_trace[,1], main="trace of assignments of individual 1")
+post_assignment_prob_pop2 <- colMeans(res$z_trace==2)
+post_mode_z = 1+ (post_assignment_prob_pop2>0.5)
+table(post_mode_z,sim$z)
+```
+
+The posterior mode assignments in this case turn out to be exactly correct,
+except the population labels 1 and 2 are "switched" (This is sometimes called the "label-switching" problem -- you have to be aware of this issue when comparing cluster results with one another or with a simulation ground truth.)
+
+## Computing a trace of the target value (for convergence assessment)
+
+When we are running MCMC we should always monitor its convergence somehow.
+It is really useful to do this by computing $\log \pi(x)$ where $\pi$ is the target distribution (up to a constant). This is useful because even if $x$ is very high dimensional 
+$\log \pi(x)$ is just a one-dimensional real number. 
+
+In this case our target is:
+$$p(x, P, z, w | a, b) = p(P| a) p(z | w) p(w | b) p(x|P,z)$$  
+So the log target is
+$$\log p(x, P, z, w | a, b) = \log p(P| a) + \log p(z | w) + \log p(w | b) + \log p(x|P,z)$$
+In the answer key below, the first three terms are referred to as "log prior" terms, and the last term is referred to as a "log-likelihood" term. 
+
+### Exercise 2: compute the log target
+
+Based on the above, write a function `log_target <- function(x,z,P,w,a,b)` to compute $\log p(x,z,P,w | a,b)$ and incorporate it into the
+Gibbs sampling function (so that function returns a vector, log_target_trace,
+containing the values of this target function at every iteration).
+
+Here is an answer key:
+
+```{r}
+#' @param x an R vector of data (single genotype)
+#' @param p an R vector of allele frequencies
+#' @return the log-likelihood for a single individual given the allele frequencies in its population
+log_pr_x_given_p <- function(x,p){
+  return(sum(x*log(p)+(1-x)*log(1-p)))
+}
+
+
+# Compute the log of the target distribution p(x,z,P,w | a,b)
+#' @param x an n by R matrix of genotypes
+#' @param z an n vector of population assignments
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a 2-vector of population proportions
+#' @param a a 2-vector of prior parameters for the allele frequencies
+#' @param b a 2-vector of prior parameters for the mixing proportions
+log_target <- function(x,z,P,w,a,b){
+  n = nrow(x)
+ 
+  log_prior_z = sum(ifelse(z==1, log(w[1]), log(w[2])))
+  log_prior_P = sum(dbeta(P,shape1=a[1], shape2=a[2],log=TRUE))
+  log_prior_w = dbeta(w[1],b[1],b[2])
+  
+  # now compute the term log Pr(x | z,P) by summing over individuals
+  loglik = 0
+  for(i in 1:n){
+    loglik = loglik + log_pr_x_given_p(x[i,],P[z[i],])
+  }
+  
+  return(loglik+log_prior_z+log_prior_P+log_prior_w)
+}
+```
+
+
+Now incorporate that trace into the Gibbs sampling function
+
+```{r}
+# do mcmc by Gibbs sampling for Z and P and W
+#' @param x an n by R matrix of genotypes
+#' @param a a 2-vector of prior parameters for the allele frequencies
+#' @param b a 2-vector of prior parameters for the mixing proportions
+#' @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P_and_W <- function(
+  x, 
+  a = c(1, 1), 
+  b = c(1, 1), 
+  nIter = 500
+) {
+  
+  n <- nrow(x)
+  R <- ncol(x)
+  K <- 2
+  
+  # initialize w
+  w <- c(0.5,0.5)
+  
+  # we need to have an initial value for the Z's.  Just sample it, randomly from w
+  z <- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # store z every iteration for final output
+  z_trace <- matrix(NA,nrow=nIter, ncol=n)
+  
+  log_target_trace <- rep(NA,nIter)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P <- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z <- newZ_gibbs(x, P, w)
+    
+    # Gibbs update for z
+    w <- newW_gibbs(z, b)
+    
+    # store z
+    z_trace[rep,] = z
+    log_target_trace[rep] = log_target(x,z,P,w,a,b)
+  }
+  return(list(P=P,z=z,w=w, z_trace = z_trace, log_target_trace=log_target_trace))
+}
+```
+
+Here we can run this on the example data. For illustration we run it 3 times and compare results (which show similiar patterns overall, so supportive of adequate convergence):
+```{r}
+set.seed(123)
+sim = r_simplemix(n=20,P)
+res1 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+res2 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+res3 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+plot(res1$log_target_trace, ylab="log p(x,P,z,w)", type="l",col="black")
+lines(res2$log_target_trace,col="red")
+lines(res3$log_target_trace,col="green")
+```
+
+
+Here we simulate a larger data set, and check its behaviour over the first 100 iterations. You can see from the trace that each run starts at a bad solution (low target value) and moves to a much better solution over the first 5-10 iterations. Because the traces all settle at a similar value we might guess that they are finding similar solutions (but in practice we would do longer runs and more careful checks of this.)
+
+```{r}
+set.seed(123)
+sim = r_simplemix(n=2000,P)
+res1 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+res2 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+res3 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+plot(res1$log_target_trace, ylab="log p(x,P,z,w)", type="l",col="black")
+lines(res2$log_target_trace,col="red")
+lines(res3$log_target_trace,col="green")
+```
+
+
+## Correlated allele frequencies
+
+In the above we assumed priors the allele frequences in the two populations
+are independent. But in practice, when you look at two populations, it is often
+the case that the allele frequencies will be somewhat similar.
+
+Here we can introduce this by changing the prior on `P`. We will still assume
+beta priors, but we will let the mean of this beta prior change from locus to locus, and use the same mean for both populations. This will induce a correlation between the allele frequency for population 1 and for population 2.
+
+Specifically, let us begin by allowing the parameters of the Beta prior to change from locus to locus: 
+$$P_{kr} \sim Be(a_{1r},a_{2r})$$
+One problem here is that $a_{1r}$ and $a_{2r}$ are a bit difficult to interpret - and
+their interpretation kind of depends on one another. Also, I now have
+a lot of parameters... 
+
+To solve these problems we can reparameterize the Beta distribution in terms of its mean $m_r := a_{1r}/(a_{1r}+a_{2r})$ and the sum $N_r := a_{1r} + a_{2r}$ which determines the variance, and then reduce the number of parameters by assuming $N_r$ is the same for all loci, $N_r=N$. 
+
+So we can write
+$$P_{kr} | m_r, N \sim Be(m_r N, (1-m_r)N)$$
+Now I will put a prior on $m_r$. Since $m_r$ is a number between 0 and 1 I will use a uniform prior. 
+
+The value of $N$ determines the strength of the correlation between populations: if $N$ is big, then $P_{kr}$ will be very close to $m_r$ for both $k$. For simplicity I will just fix $N=10$ for now, which will give a modest correlation. As a further extension you could imagine also putting a prior on $N$ and estimating $N$ from the data.
+
+Here I illustrate this model by simulating from it:
+```{r}
+set.seed(1001)
+R = 100
+m = runif(R)
+N = 10
+P1 = rbeta(R, m*N, (1-m)*N)
+P2 = rbeta(R, m*N, (1-m)*N)
+plot(P1,P2,main="illustration of correlated allele frequencies")
+```
+
+So to summarize the model we have:
+$$p(x, P, z, w, m | N) = p(m) p(P| m, N) p(z | w) p(w) p(x|P,z)$$  
+Given $m,N$ the prior on $P_{kl}$ is still Beta, and so the full conditional of $P$ is still Beta (now with different prior parameters for each locus, but this does not 
+complicate things too much).
+
+Also the full conditionals for $z$ and $w$ have not changed, so we can keep the Gibbs updates for those....
+
+So we are just left with $m$. However, the full conditional on $m$ is not tractable. It does not have a nice form and we cannot sample from it. The solution is to
+use a MH update for $m$, and mix it in with the Gibbs sampling updates!
+Remember that there is a separate $m$ parameter for each locus, which is a lot of parameters if there are a lot of loci. Also the loci are independent. So it makes
+sense to update each $m_r$ parameter separately using component-wise MH, rather than jointly. 
+
+
+
+### Exercise 3: `update_m_MH`
+
+Write a function `update_m_MH <- function(P,N)` to perform
+an MH update for m under the model above. Incorporate 
+this update into the Gibbs sampler.
+
+Here is an answer template for the first part:
+```{r, eval=FALSE}
+update_m_MH <- function(P,N){
+  R = ncol(P)
+  for(r in 1:R){
+    proposed_m = m[r] + rnorm(1,0,0.1)
+    A = ...
+    if(runif(1)<A)
+      m[r] = proposed_m
+  }
+  return(m)
+}
+```
+
+
+
+
+
+
