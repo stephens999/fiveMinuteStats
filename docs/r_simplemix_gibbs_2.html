@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthew Stephens and Eric C Anderson" />
+
+<meta name="date" content="2021-07-20" />
+
+<title>Further Exercises for a simple genetic mixture</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Further Exercises for a simple genetic mixture</h1>
+<h4 class="author">Matthew Stephens and Eric C Anderson</h4>
+<h4 class="date">2021-07-20</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-07-23
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree96d1685ff8e7d364e0a251dc5441ae5bb1b02180targetblank96d1685a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/96d1685ff8e7d364e0a251dc5441ae5bb1b02180" target="_blank">96d1685</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree96d1685ff8e7d364e0a251dc5441ae5bb1b02180targetblank96d1685a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/96d1685ff8e7d364e0a251dc5441ae5bb1b02180" target="_blank">96d1685</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    analysis/bernoulli_poisson_process_cache/
+
+Untracked files:
+    Untracked:  _workflowr.yml
+    Untracked:  analysis/CI.Rmd
+    Untracked:  analysis/gibbs_structure.Rmd
+    Untracked:  analysis/libs/
+    Untracked:  analysis/results.Rmd
+    Untracked:  analysis/shiny/tester/
+
+Unstaged changes:
+    Modified:   analysis/LR_and_BF.Rmd
+    Modified:   analysis/MH-examples1.Rmd
+    Modified:   analysis/MH_intro.Rmd
+    Deleted:    analysis/r_simplemix_extended.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/r_simplemix_gibbs_2.Rmd</code>) and HTML (<code>docs/r_simplemix_gibbs_2.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/96d1685ff8e7d364e0a251dc5441ae5bb1b02180/analysis/r_simplemix_gibbs_2.Rmd" target="_blank">96d1685</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-07-23
+</td>
+<td>
+wflow_publish(c(“r_simplemix_gibbs_2_key.Rmd”, “r_simplemix_gibbs_2.Rmd”))
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette contains additional material and exercises that extend the inference for a <a href="r_simplemix.html">simple genetic mixture</a>. First, we allow the mixture proportions, <code>w</code>, to be estimated rather than fixed. Second we add a function to the Gibbs sampler to help monitor convergence. Finally, we discuss how we might change the prior on the allele frequencies in different populations to allow that they tend to be similar to one another (``correlated allele frequencies").</p>
+<p>These exercises will build on code written to answer the <a href="r_simplemix_gibbs_1_key.html">previous exercises</a>, so this first chunk reads in all the previous code you need.</p>
+<pre class="r"><code># Original code to sample haploid genotypes
+
+#&#39; @param n number of samples
+#&#39; @param p a vector of allele frequencies
+r_haploid_genotypes = function(n,p){
+  R = length(p)
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),p)
+  }
+  return(x)
+}
+
+# code to sample from a simple genetic mixture model
+
+#&#39; @param n number of samples
+#&#39; @param P a 2 by R matrix of allele frequencies
+#&#39; @param w a w-vector of component prior probabilities
+r_simplemix = function(n,P,w=c(0.5,0.5)){
+  R = ncol(P) # number of loci
+  z = rep(0,n) # used to store population of origin of each individual
+  x = matrix(nrow = n, ncol=R) #used to store genotypes
+  
+  for(i in 1:n){
+    z[i] = sample(1:2, size=1, prob=w)
+    x[i,] = r_haploid_genotypes(1,P[z[i],])
+  }
+  return(list(x=x,z=z))
+}
+
+
+#&#39; Compute the likelihood for allele frequences p given genotype data x
+#&#39; @param p an R vector of allele frequencies
+#&#39; @param x an R vector of genotypes
+likelihood = function(p,x){
+  return(prod(p^x*(1-p)^(1-x)))
+}
+
+#&#39; normalize a vector, x, so it&#39;s elements sum to 1
+#&#39; @param x a vector
+normalize = function(x){x/sum(x)}
+
+#&#39; Compute posterior assignment probabilities
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param P a 2 by R matrix of allele frequencies
+#&#39; @param w a 2-vector of prior probabilities
+posterior_prob_assignment=function(x,P,w){
+  n = nrow(x)
+  K = length(w)
+  post = matrix(nrow=n, ncol=K) # to store the posterior probabilities
+  lik = rep(0,K) # a vector to store the likelihoods
+  for(i in 1:n){
+    for(k in 1:K){
+      lik[k] = likelihood(P[k,],x[i,])
+    }
+    post[i,] = normalize(lik*w)
+  }
+  return(post)
+}
+
+#&#39; Compute the posterior parameters for allele frequencies given genotypes 
+#&#39; and population labels
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param z an n vector of population assignments
+#&#39; @param a a 2-vector of prior parameters
+posterior_param_allele_frequencies=function(x,z,a){
+ K = 2
+ R = ncol(x)
+ post_param = array(dim=c(2,K,R))
+ for(k in 1:K){
+   for(r in 1:R){
+     number_of_ones = sum(x[z==k,r]) #number of 1s observed at locus r in population k
+     total = sum(z==k) # how many individuals in population k
+     post_param[,k,r] = a + c(number_of_ones, total - number_of_ones)
+   }
+ }
+ return(post_param)
+}
+
+#&#39; Simulate new values for the population assignments from their full conditional distribution
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param P a 2 by R matrix of allele frequencies
+#&#39; @param w a 2-vector of prior probabilities
+newZ_gibbs &lt;- function(x, P, w) {
+    K &lt;- nrow(P)
+    n &lt;- nrow(x)
+    
+    # get the full conditionals
+    zprobs &lt;- posterior_prob_assignment(x, P, w)  # makes a matrix of probabilities
+    
+    newZ &lt;- rep(NA, n)
+    
+    for (i in 1:n) {
+      newZ[i] &lt;- sample(1:K, size = 1, prob = zprobs[i,])   # simulate new Z&#39;s from the zprobs
+    }
+    
+    newZ
+}
+
+
+#&#39; Simulate new values for the allele frequencies 
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param z an n vector of population assignments
+#&#39; @param a a 2-vector of prior parameters
+newP_gibbs &lt;- function(x,z,a = c(1,1)) {
+  
+  # compute the beta parameters for the full conditionals of P
+  p_params &lt;- posterior_param_allele_frequencies(x, z, a)
+  
+  R &lt;- ncol(x)  # number of loci
+  K &lt;- 2
+
+  # prepare a matrix for output
+  newP &lt;- matrix(nrow = 2, ncol = R)
+  
+  # simulate beta random variables to fill the P matrix
+  for(r in 1:R) {
+    for(k in 1:K) {
+    
+    # get the beta parameters for population k
+    par1 &lt;- p_params[1,k,r]
+    par2 &lt;- p_params[2,k,r]
+    
+    # simulate a new value from a beta distribution
+    newP[k,r] &lt;- rbeta(1, par1, par2)
+    }
+  }
+  
+  newP
+}
+
+
+# do mcmc by Gibbs sampling for Z and P
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param a a 2-vector of prior parameters for the allele frequencies
+#&#39; @param w a 2-vector of mixing proportions assumed to be (0.5, 0.5)
+#&#39; @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P &lt;- function(
+  x, 
+  a = c(1, 1), 
+  w=c(0.5, 0.5), 
+  nIter = 500
+) {
+  
+  n &lt;- nrow(x)
+  R &lt;- ncol(x)
+  K &lt;- 2
+  
+  # we need to have an initial value for the Z&#39;s.  Just sample it, randomly from w
+  z &lt;- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P &lt;- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z &lt;- newZ_gibbs(x, P, w)
+    
+    # For now, just print the current values
+    # print z
+    print(paste(&quot;Z: rep =&quot;, rep))
+    print(z)
+    
+    # print P
+    print(paste(&quot;P: rep =&quot;, rep))
+    print(P)
+  }
+}</code></pre>
+</div>
+<div id="the-model" class="section level2">
+<h2>The model</h2>
+<p>We begin by writing out the model more formally. We have genotypes <span class="math inline">\(x\)</span>, allele frequencies <span class="math inline">\(P\)</span>, and assignment labels <span class="math inline">\(z\)</span>. The joint distribution is: <span class="math display">\[p(x, P, z) = p(P,z) p(x|P,z)\]</span> We assumed the prior distributions on <span class="math inline">\(P\)</span> and <span class="math inline">\(z\)</span> are independent, so: <span class="math display">\[p(x,P,z) = p(P) p(z) p(x | P,z).\]</span></p>
+<p>In these expressions I kept things simple by not including the mixture proportions <span class="math inline">\(w=(0.5,0.5)\)</span> and the allele frequency prior parameters <span class="math inline">\(a=(1,1)\)</span>, because they were both treated as fixed and known. Since we are going to change this I will put those in explicitly now:</p>
+<p><span class="math display">\[p(x, P, z | w, a) = p(P| a) p(z | w) p(x|P,z)\]</span><br />
+Each term in this expression can be written out in more detail.</p>
+<p>For example, we assumed independent beta priors on the elements of <span class="math inline">\(P\)</span> so: <span class="math display">\[p(P | a) = \prod_k \prod_r p(P_{kr} | a) \propto \prod_k \prod_r P_{kr}^{a_1-1} (1-P_{kr})^{a_2-1}\]</span> The <span class="math inline">\(z\)</span> were sampled independently according to <span class="math inline">\(w=(w_1,w_2)\)</span>: <span class="math display">\[p(z | w) = \prod_i p(z_i | w) = \prod_i w_1^{I(z_i==1)} (1-w_1)^{I(z_i==2)}\]</span> And the genotypes for individual <span class="math inline">\(i\)</span> were then drawn from the allele frequencies of the relevant subpopulation <span class="math inline">\(z_i\)</span>. <span class="math display">\[p(x | P,z) = \prod_i \prod_r P_{z_i r}^{x_i} (1-P_{z_i r})^{1-x_i}\]</span></p>
+</div>
+<div id="estimating-w" class="section level2">
+<h2>Estimating <code>w</code></h2>
+<p>Now suppose we want to add the facility to estimate <span class="math inline">\(w\)</span> rather than treat it as fixed. We can proceed to specify a prior distribution for <span class="math inline">\(w\)</span> and do Bayesian inference.</p>
+<p>The model becomes: <span class="math display">\[p(x, P, z, w | a) = p(P| a) p(z | w) p(w) p(x|P,z)\]</span></p>
+<p>Note that the full conditional for <span class="math inline">\(w\)</span> is then given by: <span class="math display">\[p(w | x, P, z, a) \propto p(x,P,z,w|a) \propto p(z|w) p(w).\]</span> That is, it is obtained by taking full joint distribution of everything in our model, and ignoring the terms that do not depend on <span class="math inline">\(w\)</span>. (This is generally true for the full conditional distributions: to find the full conditional of a parameter, write down the joint distribution and ignore terms that do not depend on the parameter.)</p>
+<p>The sampling of <span class="math inline">\(z|w\)</span> is effectively binomial, and indeed: <span class="math display">\[p(z|w) \propto w_1^{n_1}(1-w_1)^{n_2}\]</span> where <span class="math display">\[n_1 := \#\{z_i: z_i==1\}\]</span> and <span class="math display">\[n_2 := \#\{z_i: z_i==2\}\]</span>.</p>
+<p>So if we use a beta prior for <span class="math inline">\(w\)</span>, say <span class="math display">\[w \sim Beta(b_1, b_2)\]</span> then the full conditional for <span class="math inline">\(w\)</span> will also be a beta distribution. (Can you write down the parameters of this posterior?)</p>
+<p>Thus we can sample from the full conditional for <span class="math inline">\(w\)</span>. This means we can include it in our MCMC scheme using a Gibbs step. The extended Gibbs algorithm, in outline, will look like this:</p>
+<p>Iterate:</p>
+<ol style="list-style-type: decimal">
+<li>sample <code>P</code> from <code>P</code> | <code>z</code>, <code>w</code>, <code>x</code></li>
+<li>sample <code>z</code> from <code>z</code> | <code>P</code>, <code>w</code>, <code>x</code></li>
+<li>sample <code>w</code> from <code>w</code> | <code>P</code>, <code>z</code>, <code>x</code></li>
+</ol>
+<p>(Note that step 1 does not actually depend on <code>w</code>, and step 3 does not actually depend on <code>x</code>).</p>
+<div id="exercise-1-neww_gibbs" class="section level3">
+<h3>Exercise 1: <code>newW_gibbs</code></h3>
+<p>Implement the update to <code>w</code>, outlined above, in a function <code>newW_gibbs(z, b=c(1,1))</code> where <code>b</code> are the parameters of the beta prior on <code>w</code>. Incorporate this update into the previous Gibbs sampling function (<code>mcmc_gibbs_Z_and_P</code> in the first chunk) to create a new Gibbs sampling function, <code>mcmc_gibbs_Z_and_P_and_W &lt;- function(x, a = c(1, 1), b = c(1, 1), nIter = 500)</code>. While doing this, also take the opportunity to modify the Gibbs sampling function to return not just the final sampled values of <code>z</code>, but also the sampled values of <code>z</code> in each iteration, in a matrix <code>z_trace</code>.</p>
+<p>Here is an answer template for <code>newW_gibbs</code>:</p>
+<pre class="r"><code>#&#39; Simulate new values for the component proportions 
+#&#39; @param z an n vector of population assignments
+#&#39; @param b a 2-vector of prior parameters
+newW_gibbs &lt;- function(z,b = c(1,1)) {
+  w = rbeta(1,shape1 = ..., shape2 = ...)
+  return(c(w,1-w))
+}</code></pre>
+<p>You should insert this into the updated Gibbs sampler:</p>
+<pre class="r"><code># do mcmc by Gibbs sampling for Z and P and W
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param a a 2-vector of prior parameters for the allele frequencies
+#&#39; @param b a 2-vector of prior parameters for the mixing proportions
+#&#39; @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P_and_W &lt;- function(
+  x, 
+  a = c(1, 1), 
+  b = c(1, 1), 
+  nIter = 500
+) {
+  
+  n &lt;- nrow(x)
+  R &lt;- ncol(x)
+  K &lt;- 2
+  
+  # initialize w
+  w &lt;- c(0.5,0.5)
+  
+  # we need to have an initial value for the Z&#39;s.  Just sample it, randomly from w
+  z &lt;- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # store z every iteration for final output
+  z_trace &lt;- matrix(NA,nrow=nIter, ncol=n)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P &lt;- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z &lt;- newZ_gibbs(x, P, w)
+    
+    # Gibbs update for w
+    ...
+    
+    # store z
+    z_trace[rep,] = z
+    
+  }
+  return(list(P=P,z=z,w=w, z_trace = z_trace))
+}</code></pre>
+<p>Once complete try running this on the example data:</p>
+<pre class="r"><code># simulate example data
+p = seq(0.1,0.9,length=9)
+P = rbind(p,1-p)
+set.seed(123)
+sim = r_simplemix(n=20,P)
+
+# now, given only the genotypes x, the allele frequency prior parameters a,
+# and assuming mixing proportions of w = c(0.5, 0.5), we can run a Markov chain
+# that samples from the posterior distribution of Z, and P.
+
+# Print the true values of z from the simulated data:
+sim$z
+
+# Run it for 100 iterations
+res = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+res$z
+res$w
+table(res$z,sim$z) </code></pre>
+<p>We should really do longer runs than this. Also, rather than just taking the final result, we should average over the iterations. Here I plot the trace of the MCMC for individual 1, and I compute for each individual the posterior mode of its assigment (1 or 2).</p>
+<pre class="r"><code>res = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+plot(res$z_trace[,1], main=&quot;trace of assignments of individual 1&quot;)
+post_assignment_prob_pop2 &lt;- colMeans(res$z_trace==2)
+post_mode_z = 1+ (post_assignment_prob_pop2&gt;0.5)
+table(post_mode_z,sim$z)</code></pre>
+<p>The posterior mode assignments in this case turn out to be exactly correct, except the population labels 1 and 2 are “switched” (This is sometimes called the “label-switching” problem – you have to be aware of this issue when comparing cluster results with one another or with a simulation ground truth.)</p>
+</div>
+</div>
+<div id="computing-a-trace-of-the-target-value-for-convergence-assessment" class="section level2">
+<h2>Computing a trace of the target value (for convergence assessment)</h2>
+<p>When we are running MCMC we should always monitor its convergence somehow. It is really useful to do this by computing <span class="math inline">\(\log \pi(x)\)</span> where <span class="math inline">\(\pi\)</span> is the target distribution (up to a constant). This is useful because even if <span class="math inline">\(x\)</span> is very high dimensional <span class="math inline">\(\log \pi(x)\)</span> is just a one-dimensional real number.</p>
+<p>In this case our target is: <span class="math display">\[p(x, P, z, w | a, b) = p(P| a) p(z | w) p(w | b) p(x|P,z)\]</span><br />
+So the log target is <span class="math display">\[\log p(x, P, z, w | a, b) = \log p(P| a) + \log p(z | w) + \log p(w | b) + \log p(x|P,z)\]</span> In the answer key below, the first three terms are referred to as “log prior” terms, and the last term is referred to as a “log-likelihood” term.</p>
+<div id="exercise-2-compute-the-log-target" class="section level3">
+<h3>Exercise 2: compute the log target</h3>
+<p>Based on the above, write a function <code>log_target &lt;- function(x,z,P,w,a,b)</code> to compute <span class="math inline">\(\log p(x,z,P,w | a,b)\)</span> and incorporate it into the Gibbs sampling function (so that function returns a vector, log_target_trace, containing the values of this target function at every iteration).</p>
+<p>Here is an answer key:</p>
+<pre class="r"><code>#&#39; @param x an R vector of data (single genotype)
+#&#39; @param p an R vector of allele frequencies
+#&#39; @return the log-likelihood for a single individual given the allele frequencies in its population
+log_pr_x_given_p &lt;- function(x,p){
+  return(...)
+}
+
+
+# Compute the log of the target distribution p(x,z,P,w | a,b)
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param z an n vector of population assignments
+#&#39; @param P a 2 by R matrix of allele frequencies
+#&#39; @param w a 2-vector of population proportions
+#&#39; @param a a 2-vector of prior parameters for the allele frequencies
+#&#39; @param b a 2-vector of prior parameters for the mixing proportions
+log_target &lt;- function(x,z,P,w,a,b){
+  n = nrow(x)
+ 
+  log_prior_z = ...
+  log_prior_P = ...
+  log_prior_w = ...
+  
+  # now compute the term log Pr(x | z,P) by summing over individuals
+  loglik = 0
+  for(i in 1:n){
+    loglik = loglik + log_pr_x_given_p(x[i,],P[z[i],])
+  }
+  
+  return(loglik+log_prior_z+log_prior_P+log_prior_w)
+}</code></pre>
+<p>Now incorporate that trace into the Gibbs sampling function</p>
+<pre class="r"><code># do mcmc by Gibbs sampling for Z and P and W
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param a a 2-vector of prior parameters for the allele frequencies
+#&#39; @param b a 2-vector of prior parameters for the mixing proportions
+#&#39; @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P_and_W &lt;- function(
+  x, 
+  a = c(1, 1), 
+  b = c(1, 1), 
+  nIter = 500
+) {
+  
+  n &lt;- nrow(x)
+  R &lt;- ncol(x)
+  K &lt;- 2
+  
+  # initialize w
+  w &lt;- c(0.5,0.5)
+  
+  # we need to have an initial value for the Z&#39;s.  Just sample it, randomly from w
+  z &lt;- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # store z every iteration for final output
+  z_trace &lt;- matrix(NA,nrow=nIter, ncol=n)
+  
+  log_target_trace &lt;- rep(NA,nIter)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P &lt;- newP_gibbs(x, z, a)
+    
+    # Gibbs update for z
+    z &lt;- newZ_gibbs(x, P, w)
+    
+    # Gibbs update for z
+    w &lt;- newW_gibbs(z, b)
+    
+    # store z
+    z_trace[rep,] = z
+    log_target_trace[rep] = log_target(x,z,P,w,a,b)
+  }
+  return(list(P=P,z=z,w=w, z_trace = z_trace, log_target_trace=log_target_trace))
+}</code></pre>
+<p>Here we can run this on the example data. For illustration we run it 3 times and compare results (which show similiar patterns overall, so supportive of adequate convergence):</p>
+<pre class="r"><code>set.seed(123)
+sim = r_simplemix(n=20,P)
+res1 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+res2 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+res3 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 1000)
+plot(res1$log_target_trace, ylab=&quot;log p(x,P,z,w)&quot;, type=&quot;l&quot;,col=&quot;black&quot;)
+lines(res2$log_target_trace,col=&quot;red&quot;)
+lines(res3$log_target_trace,col=&quot;green&quot;)</code></pre>
+<p>Here we simulate a larger data set, and check its behaviour over the first 100 iterations. You can see from the trace that each run starts at a bad solution (low target value) and moves to a much better solution over the first 5-10 iterations. Because the traces all settle at a similar value we might guess that they are finding similar solutions (but in practice we would do longer runs and more careful checks of this.)</p>
+<pre class="r"><code>set.seed(123)
+sim = r_simplemix(n=2000,P)
+res1 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+res2 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+res3 = mcmc_gibbs_Z_and_P_and_W(sim$x, nIter = 100)
+plot(res1$log_target_trace, ylab=&quot;log p(x,P,z,w)&quot;, type=&quot;l&quot;,col=&quot;black&quot;)
+lines(res2$log_target_trace,col=&quot;red&quot;)
+lines(res3$log_target_trace,col=&quot;green&quot;)</code></pre>
+</div>
+</div>
+<div id="correlated-allele-frequencies" class="section level2">
+<h2>Correlated allele frequencies</h2>
+<p>In the above we assumed priors the allele frequences in the two populations are independent. But in practice, when you look at two populations, it is often the case that the allele frequencies will be somewhat similar.</p>
+<p>Here we can introduce this by changing the prior on <code>P</code>. We will still assume beta priors, but we will let the mean of this beta prior change from locus to locus, and use the same mean for both populations. This will induce a correlation between the allele frequency for population 1 and for population 2.</p>
+<p>Specifically, let us begin by allowing the parameters of the Beta prior to change from locus to locus: <span class="math display">\[P_{kr} \sim Be(a_{1r},a_{2r})\]</span> One problem here is that <span class="math inline">\(a_{1r}\)</span> and <span class="math inline">\(a_{2r}\)</span> are a bit difficult to interpret - and their interpretation kind of depends on one another. Also, I now have a lot of parameters…</p>
+<p>To solve these problems we can reparameterize the Beta distribution in terms of its mean <span class="math inline">\(m_r := a_{1r}/(a_{1r}+a_{2r})\)</span> and the sum <span class="math inline">\(N_r := a_{1r} + a_{2r}\)</span> which determines the variance, and then reduce the number of parameters by assuming <span class="math inline">\(N_r\)</span> is the same for all loci, <span class="math inline">\(N_r=N\)</span>.</p>
+<p>So we can write <span class="math display">\[P_{kr} | m_r, N \sim Be(m_r N, (1-m_r)N)\]</span> Now I will put a prior on <span class="math inline">\(m_r\)</span>. Since <span class="math inline">\(m_r\)</span> is a number between 0 and 1 I will use a uniform prior.</p>
+<p>The value of <span class="math inline">\(N\)</span> determines the strength of the correlation between populations: if <span class="math inline">\(N\)</span> is big, then <span class="math inline">\(P_{kr}\)</span> will be very close to <span class="math inline">\(m_r\)</span> for both <span class="math inline">\(k\)</span>. For simplicity I will just fix <span class="math inline">\(N=10\)</span> for now, which will give a modest correlation. As a further extension you could imagine also putting a prior on <span class="math inline">\(N\)</span> and estimating <span class="math inline">\(N\)</span> from the data.</p>
+<p>Here I illustrate this model by simulating from it:</p>
+<pre class="r"><code>set.seed(1001)
+R = 100
+m = runif(R)
+N = 10
+P1 = rbeta(R, m*N, (1-m)*N)
+P2 = rbeta(R, m*N, (1-m)*N)
+plot(P1,P2,main=&quot;illustration of correlated allele frequencies&quot;)</code></pre>
+<p><img src="figure/r_simplemix_gibbs_2.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>So to summarize the model we have: <span class="math display">\[p(x, P, z, w, m | N) = p(m) p(P| m, N) p(z | w) p(w) p(x|P,z)\]</span><br />
+Given <span class="math inline">\(m,N\)</span> the prior on <span class="math inline">\(P_{kl}\)</span> is still Beta, and so the full conditional of <span class="math inline">\(P\)</span> is still Beta (now with different prior parameters for each locus, but this does not complicate things too much).</p>
+<p>Also the full conditionals for <span class="math inline">\(z\)</span> and <span class="math inline">\(w\)</span> have not changed, so we can keep the Gibbs updates for those….</p>
+<p>So we are just left with <span class="math inline">\(m\)</span>. However, the full conditional on <span class="math inline">\(m\)</span> is not tractable. It does not have a nice form and we cannot sample from it. The solution is to use a MH update for <span class="math inline">\(m\)</span>, and mix it in with the Gibbs sampling updates! Remember that there is a separate <span class="math inline">\(m\)</span> parameter for each locus, which is a lot of parameters if there are a lot of loci. Also the loci are independent. So it makes sense to update each <span class="math inline">\(m_r\)</span> parameter separately using component-wise MH, rather than jointly.</p>
+<div id="exercise-3-update_m_mh" class="section level3">
+<h3>Exercise 3: <code>update_m_MH</code></h3>
+<p>Write a function <code>update_m_MH &lt;- function(P,N)</code> to perform an MH update for m under the model above. Incorporate this update into the Gibbs sampler.</p>
+<p>Here is an answer template for the first part:</p>
+<pre class="r"><code>update_m_MH &lt;- function(P,N){
+  R = ncol(P)
+  for(r in 1:R){
+    proposed_m = m[r] + rnorm(1,0,0.1)
+    A = ...
+    if(runif(1)&lt;A)
+      m[r] = proposed_m
+  }
+  return(m)
+}</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6        whisker_0.4       knitr_1.29        magrittr_2.0.1   
+ [5] workflowr_1.6.2   R6_2.5.0          rlang_0.4.11      fansi_0.5.0      
+ [9] stringr_1.4.0     tools_3.6.0       xfun_0.16         utf8_1.2.1       
+[13] git2r_0.27.1      htmltools_0.5.1.1 ellipsis_0.3.2    rprojroot_1.3-2  
+[17] yaml_2.2.1        digest_0.6.27     tibble_3.1.2      lifecycle_1.0.0  
+[21] crayon_1.4.1      later_1.2.0       vctrs_0.3.8       fs_1.5.0         
+[25] promises_1.2.0.1  glue_1.4.2        evaluate_0.14     rmarkdown_2.3    
+[29] stringi_1.4.6     compiler_3.6.0    pillar_1.6.1      backports_1.1.10 
+[33] httpuv_1.5.4      pkgconfig_2.0.3  </code></pre>
+</div>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
