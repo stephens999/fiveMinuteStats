@@ -9,11 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Matthew Stephens" />
+<meta name="author" content="Matthew Stephens and Eric C Anderson" />
 
-<meta name="date" content="2020-07-22" />
+<meta name="date" content="2021-07-20" />
 
-<title>Generate data from a simple genetic mixture model</title>
+<title>Gibbs sampler Exercises for a simple genetic mixture</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -385,9 +385,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Generate data from a simple genetic mixture model</h1>
-<h4 class="author">Matthew Stephens</h4>
-<h4 class="date">2020-07-22</h4>
+<h1 class="title toc-ignore">Gibbs sampler Exercises for a simple genetic mixture</h1>
+<h4 class="author">Matthew Stephens and Eric C Anderson</h4>
+<h4 class="date">2021-07-20</h4>
 
 </div>
 
@@ -503,16 +503,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree59e192dc1076b7a72b1d579dc69d180623da1fe6targetblank59e192da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/59e192dc1076b7a72b1d579dc69d180623da1fe6" target="_blank">59e192d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree59e61b0f9c7b507f06ec2989ced834bf9077a176targetblank59e61b0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/59e61b0f9c7b507f06ec2989ced834bf9077a176" target="_blank">59e61b0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree59e192dc1076b7a72b1d579dc69d180623da1fe6targetblank59e192da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree59e61b0f9c7b507f06ec2989ced834bf9077a176targetblank59e61b0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/59e192dc1076b7a72b1d579dc69d180623da1fe6" target="_blank">59e192d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/59e61b0f9c7b507f06ec2989ced834bf9077a176" target="_blank">59e61b0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -551,7 +551,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/r_simplemix.Rmd</code>) and HTML (<code>docs/r_simplemix.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/r_simplemix_gibbs_1.Rmd</code>) and HTML (<code>docs/r_simplemix_gibbs_1.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -580,7 +580,7 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/59e192dc1076b7a72b1d579dc69d180623da1fe6/analysis/r_simplemix.Rmd" target="_blank">59e192d</a>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/59e61b0f9c7b507f06ec2989ced834bf9077a176/analysis/r_simplemix_gibbs_1.Rmd" target="_blank">59e61b0</a>
 </td>
 <td>
 Matthew Stephens
@@ -589,7 +589,7 @@ Matthew Stephens
 2021-07-21
 </td>
 <td>
-wflow_publish(“r_simplemix.Rmd”)
+wflow_publish(c(“r_simplemix_gibbs_1_key.Rmd”, “r_simplemix_gibbs_1.Rmd”))
 </td>
 </tr>
 <tr>
@@ -597,13 +597,13 @@ wflow_publish(“r_simplemix.Rmd”)
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/e072bd89e6652b9e6d92cd2a08b42337d4a23046/docs/r_simplemix.html" target="_blank">e072bd8</a>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5dd4667fbf8c04a462d3bf569effb80484c61b65/docs/r_simplemix_gibbs_1.html" target="_blank">5dd4667</a>
 </td>
 <td>
 Matthew Stephens
 </td>
 <td>
-2020-07-27
+2021-07-20
 </td>
 <td>
 Build site.
@@ -614,16 +614,16 @@ Build site.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/2e3ae76ae7b1618dd56335ff9fd4dd795271893c/analysis/r_simplemix.Rmd" target="_blank">2e3ae76</a>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/d983c3f89c0eda65f6649ec246a8ef7b03621390/analysis/r_simplemix_gibbs_1.Rmd" target="_blank">d983c3f</a>
 </td>
 <td>
 Matthew Stephens
 </td>
 <td>
-2020-07-27
+2021-07-20
 </td>
 <td>
-workflowr::wflow_publish(“analysis/r_simplemix.Rmd”)
+wflow_publish(c(“r_simplemix_gibbs_1_key.Rmd”, “r_simplemix_gibbs_1.Rmd”))
 </td>
 </tr>
 <tr>
@@ -631,13 +631,13 @@ workflowr::wflow_publish(“analysis/r_simplemix.Rmd”)
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/8dc31ecab87f00b9aebe38cfb4639f854180faaf/docs/r_simplemix.html" target="_blank">8dc31ec</a>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/9fcbc7a6728fbf30904cf790e0601e0b19b278e0/docs/r_simplemix_gibbs_1.html" target="_blank">9fcbc7a</a>
 </td>
 <td>
 Matthew Stephens
 </td>
 <td>
-2020-07-26
+2021-07-20
 </td>
 <td>
 Build site.
@@ -648,84 +648,16 @@ Build site.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/087983260a2471584622c6054c34a8b4c519f26b/analysis/r_simplemix.Rmd" target="_blank">0879832</a>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/f06b1d1bc2ee5d98015a215abb73570b0f12d796/analysis/r_simplemix_gibbs_1.Rmd" target="_blank">f06b1d1</a>
 </td>
 <td>
 Matthew Stephens
 </td>
 <td>
-2020-07-26
+2021-07-20
 </td>
 <td>
-workflowr::wflow_publish(“analysis/r_simplemix.Rmd”)
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/e2a6440c0f863e98a493435091af916a34525430/analysis/r_simplemix.Rmd" target="_blank">e2a6440</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2020-07-26
-</td>
-<td>
-added by hand to avoid figure error
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/e2a6440c0f863e98a493435091af916a34525430/docs/r_simplemix.html" target="_blank">e2a6440</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2020-07-26
-</td>
-<td>
-added by hand to avoid figure error
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/227f78905a240857d7cd6779fc97297ba0a82250/docs/r_simplemix.html" target="_blank">227f789</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2020-07-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/c95261f16a613d7cc4f8d60874e295543b3519b6/analysis/r_simplemix.Rmd" target="_blank">c95261f</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2020-07-22
-</td>
-<td>
-workflowr::wflow_publish(“r_simplemix.Rmd”)
+wflow_publish(“r_simplemix_gibbs_1.Rmd”)
 </td>
 </tr>
 </tbody>
@@ -737,17 +669,10 @@ workflowr::wflow_publish(“r_simplemix.Rmd”)
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This vignette is an “ice-breaker”, to motivate learning and statistical inference centered around genetic mixtures.</p>
-<p>You don’t need to know what a mixture model is to understand this, but if you want to know more about mixture models in general you might read this <a href="intro_to_mixture_models.html">introduction to mixture models</a>.</p>
-</div>
-<div id="simulating-haploid-data-for-a-single-population" class="section level2">
-<h2>Simulating haploid data for a single population</h2>
-<p>First we consider simulating genotype data for <span class="math inline">\(n\)</span> haploid individuals at <span class="math inline">\(R\)</span> independent bi-allelic loci (positions along the genome) sampled from a population.</p>
-<p>The term “haploid” means that each individual has only one copy of their genome. (Most animals, are diploid, which means they have two copies of their genome – one inherited from the mother and the other inherited from the father. However, focussing on haploid individuals makes the ideas and code easier to follow. Once you understand the haploid case it is not too hard to extend the ideas to the diploid case.)</p>
-<p>The term “bi-allelic” means that the loci have two possible alleles (types), which for convenience we will label <code>0</code> and <code>1</code>.</p>
-<p>Under these assumptions, the genotype for each individual is simply a sequence of 0s and 1s. The probability of seeing a <code>0</code> vs a <code>1</code> at each locus is determined by the “allele frequencies” at each locus, which we will specify by a vector <code>p</code>. Specifically, <code>p[r]</code> specifies the frequency of the <code>1</code> allele at locus <code>r</code>.</p>
-<p>The following code simulates from this model.</p>
-<pre class="r"><code>#&#39; @param n number of samples
+<p>This vignette contains a set of exercises to lead you through creating a <a href="gibbs1.html">Gibbs sampler</a> for a <a href="r_simplemix.html">simple genetic mixture</a>. It relies on code from the latter vignette (including the code to complete the exercises in that vignette). This first chunk contains all the code you need and is taken from <a href="r_simplemix_key.html">here</a>.</p>
+<pre class="r"><code># Original code to sample haploid genotypes
+
+#&#39; @param n number of samples
 #&#39; @param p a vector of allele frequencies
 r_haploid_genotypes = function(n,p){
   R = length(p)
@@ -756,117 +681,27 @@ r_haploid_genotypes = function(n,p){
     x[i,] = rbinom(R,rep(1,R),p)
   }
   return(x)
-}</code></pre>
-<div id="example" class="section level3">
-<h3>Example</h3>
-<p>To illustrate this function we simulate a small example dataset, containing 20 individuals at 9 loci. The frequencies of the <code>1</code> allele at the loci are increasing from 0.1 at the first locus to 0.9 at the 9th locus (the pattern is not supposed to be realistic, it is just to help illustrate the idea).</p>
-<p>As you can see, the <code>1</code> allele is rarer at the earlier loci, whereas the <code>0</code> allele is rarer at the later loci.</p>
-<pre class="r"><code>set.seed(123)
-p = seq(0.1,0.9,length=9)
-x = r_haploid_genotypes(20,p)
-p</code></pre>
-<pre><code>[1] 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9</code></pre>
-<pre class="r"><code>x </code></pre>
-<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
- [1,]    0    0    0    1    1    1    1    0    1
- [2,]    0    1    0    1    1    1    0    1    1
- [3,]    0    1    1    1    1    0    1    1    1
- [4,]    0    0    0    1    1    0    0    1    1
- [5,]    0    0    0    0    0    1    1    1    1
- [6,]    0    0    0    0    1    1    1    1    1
- [7,]    0    0    0    1    1    1    1    1    1
- [8,]    0    1    0    1    1    0    1    1    1
- [9,]    0    0    0    0    0    0    1    1    1
-[10,]    0    0    1    0    0    0    0    0    1
-[11,]    0    0    0    1    0    1    0    1    1
-[12,]    0    0    0    0    1    1    0    0    1
-[13,]    0    0    1    0    0    0    0    1    1
-[14,]    1    0    0    1    0    1    1    1    0
-[15,]    0    0    0    1    1    0    1    1    1
-[16,]    0    1    1    1    0    1    1    1    1
-[17,]    0    0    0    0    0    0    0    1    1
-[18,]    0    0    0    0    0    1    1    1    1
-[19,]    0    0    0    0    1    1    1    1    1
-[20,]    0    1    1    1    1    1    1    0    1</code></pre>
-</div>
-</div>
-<div id="simulating-haploid-data-from-a-mixture-of-two-populations" class="section level2">
-<h2>Simulating haploid data from a mixture of two populations</h2>
-<p>Now suppose we sample from a group of individuals formed by mixing together the individuals from two different populations. This is an example of a “mixture model”.</p>
-<p>For simplicity we will assume the two different populations are mixed in equal proportions. That is the “mixture proportions” are 0.5 and 0.5.</p>
-<p>The following <code>r_simplemix</code> function generates data from such a model. The allele frequencies for the two populations must be specified in a matrix <code>P</code> whose first row contains the allele frequencies for population <code>1</code> and second row is the allele frequencies for population <code>2</code>. (So element <code>P[k,r]</code> is the frequency of the <code>1</code> alleles in population <code>k</code> at locus <code>r</code>.) For each individual <code>i</code> it randomly samples the population (<code>z[i]</code>) to be 1 or 2, and then uses the <code>r_haploid_genotypes</code> to generate the genotypes (<code>x[i,]</code>) from that population.</p>
-<pre class="r"><code>#&#39; @param n number of samples
+}
+
+# code to sample from a simple genetic mixture model
+
+#&#39; @param n number of samples
 #&#39; @param P a 2 by R matrix of allele frequencies
-r_simplemix = function(n,P){
+#&#39; @param w a w-vector of component prior probabilities
+r_simplemix = function(n,P,w=c(0.5,0.5)){
   R = ncol(P) # number of loci
   z = rep(0,n) # used to store population of origin of each individual
   x = matrix(nrow = n, ncol=R) #used to store genotypes
   
   for(i in 1:n){
-    z[i] = sample(1:2, size=1, prob=c(0.5,0.5))
+    z[i] = sample(1:2, size=1, prob=w)
     x[i,] = r_haploid_genotypes(1,P[z[i],])
   }
   return(list(x=x,z=z))
-}</code></pre>
-<div id="example-1" class="section level3">
-<h3>Example</h3>
-<p>Here we sample 20 individuals: in one population the frequencies are as above, whereas in the second population they are reversed (<code>1-p</code>)…again not at all realistic but to help illustrate an idea.</p>
-<pre class="r"><code>set.seed(123)
-P = rbind(p,1-p)
-print(P)</code></pre>
-<pre><code>  [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-p  0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9
-   0.9  0.8  0.7  0.6  0.5  0.4  0.3  0.2  0.1</code></pre>
-<pre class="r"><code>sim = r_simplemix(n=20,P)</code></pre>
-<p>Here are the results of the simulation (first column is the population of origin; the remaining columns are the genotypes). If you look carefully you should see that individuals from population 1 tend to have more <code>1</code> alleles in the later loci, whereas individuals from population <code>2</code> tend to have more <code>1</code> alleles in the earlier loci. This is because of the way that the allele frequencies were set up in the two populations. (Of course in real data the differences between different populations will not usually show patterns like this! I chose the patterns so you can see them by eye, not to be realistic.)</p>
-<pre class="r"><code>print(cbind(z=sim$z,sim$x))</code></pre>
-<pre><code>      z                  
- [1,] 2 1 1 0 0 0 0 1 0 0
- [2,] 1 0 0 0 0 1 1 1 1 0
- [3,] 1 0 0 1 1 1 1 1 1 1
- [4,] 1 1 0 1 0 0 0 1 1 1
- [5,] 2 1 1 1 1 0 0 0 0 0
- [6,] 2 1 1 1 1 0 0 1 1 0
- [7,] 1 0 0 0 1 0 0 0 1 1
- [8,] 1 0 0 0 0 0 1 1 1 1
- [9,] 2 1 1 0 1 0 1 1 1 0
-[10,] 2 1 1 1 1 0 1 0 0 0
-[11,] 1 0 0 1 0 1 0 1 1 1
-[12,] 1 0 0 1 1 0 1 0 1 1
-[13,] 1 0 0 0 0 1 1 1 1 1
-[14,] 1 0 0 1 0 1 0 0 0 1
-[15,] 2 1 1 1 0 0 0 0 0 0
-[16,] 1 0 0 0 0 0 1 1 1 1
-[17,] 1 0 0 0 0 1 0 1 1 1
-[18,] 1 0 1 1 1 1 1 1 0 1
-[19,] 1 0 0 0 0 0 1 1 0 0
-[20,] 2 1 0 1 0 0 0 0 0 0</code></pre>
-</div>
-</div>
-<div id="inference-problems" class="section level2">
-<h2>Inference problems</h2>
-<p>These types of data can help motivate a number of statistical inference problems.</p>
-<ol style="list-style-type: decimal">
-<li><p>Given the allele frequencies <code>P</code> and the genotypes <code>x</code>, how might you infer the populations of origin <code>z</code>? In the genetic literature this is sometimes called the “assignment problem”; more generally, it is an example of a “classification problem”.</p></li>
-<li><p>Given the populations of origin <code>z</code> and the genotypes <code>x</code>, how might you infer the population allele frequencies <code>P</code>?</p></li>
-<li><p>Given just the genotypes <code>x</code> how might you infer both <code>z</code> and <code>P</code>? (This is an example of a “clustering” problem).</p></li>
-</ol>
-</div>
-<div id="exercises" class="section level2">
-<h2>Exercises</h2>
-<p>Here are some things you might like to try:</p>
-<ol style="list-style-type: decimal">
-<li><p>Modify the <code>r_simplemix</code> code to allow the mixture proportions to be specified, rather than fixed at (0.5,0.5). You could do this by adding a parameter <code>w</code> to the function that specifies the proportions to use (<code>w</code> for “weights”).</p></li>
-<li><p>Write a function, <code>posterior_prob_assignment=function(x,P,w)</code>, to compute the posterior probability that each individual came from each population, given the genotypes <code>x</code>, the allele frequencies <code>P</code> and the mixture proportions <code>w</code>. Apply your function to the simulated data.</p></li>
-<li><p>Write a function <code>posterior_param_allele_frequencies=function(x,z,a)</code> to compute the parameters of the beta posterior in each population at each locus. Here <code>a</code> is a vector of length 2 giving the parameters of the beta prior for <code>P[k,r]</code>. That is, the prior is <code>P[k,r]</code> <span class="math inline">\(\sim\)</span> Beta(<code>a[1]</code>,<code>a[2]</code>). Because the Beta distribution has two parameters, there will be 2 parameters for each locus and each population. So the output of your function should be a 2 x ‘K’ x <code>R</code> array (where ‘K=2’ because we have a mixture of 2 populations).</p></li>
-</ol>
-</div>
-<div id="answer-templates" class="section level2">
-<h2>Answer templates</h2>
-<p>Here are some answer templates for Exercises 2 and 3. You will need to fill in the “…” (Note: these chunks have the option set <code>eval=FALSE</code> so that this document compiles; you will have to remove these if you want to run these chunks on compilation.)</p>
-<div id="exercise-2" class="section level3">
-<h3>Exercise 2</h3>
-<pre class="r"><code>#&#39; Compute the likelihood for allele frequences p given genotype data x
+}
+
+
+#&#39; Compute the likelihood for allele frequences p given genotype data x
 #&#39; @param p an R vector of allele frequencies
 #&#39; @param x an R vector of genotypes
 likelihood = function(p,x){
@@ -888,21 +723,14 @@ posterior_prob_assignment=function(x,P,w){
   lik = rep(0,K) # a vector to store the likelihoods
   for(i in 1:n){
     for(k in 1:K){
-    ...
+      lik[k] = likelihood(P[k,],x[i,])
     }
-    ...
+    post[i,] = normalize(lik*w)
   }
   return(post)
-}</code></pre>
-<p>Here we can run this on the example data, and compare the posterior probabilities with the true labels.</p>
-<pre class="r"><code>set.seed(123)
-sim = r_simplemix(n=20,P)
-posterior = posterior_prob_assignment(sim$x,P,w=c(0.5,0.5))
-plot(sim$z,posterior[,2],xlab=&quot;true population&quot;, ylab=&quot;posterior prob for population 2&quot;)</code></pre>
-</div>
-<div id="exercise-3" class="section level3">
-<h3>Exercise 3</h3>
-<pre class="r"><code>#&#39; Compute the posterior parameters for allele frequencies given genotypes 
+}
+
+#&#39; Compute the posterior parameters for allele frequencies given genotypes 
 #&#39; and population labels
 #&#39; @param x an n by R matrix of genotypes
 #&#39; @param z an n vector of population assignments
@@ -913,17 +741,163 @@ posterior_param_allele_frequencies=function(x,z,a){
  post_param = array(dim=c(2,K,R))
  for(k in 1:K){
    for(r in 1:R){
-     ...
+     number_of_ones = sum(x[z==k,r]) #number of 1s observed at locus r in population k
+     total = sum(z==k) # how many individuals in population k
+     post_param[,k,r] = a + c(number_of_ones, total - number_of_ones)
    }
  }
  return(post_param)
 }</code></pre>
+</div>
+<div id="exercises" class="section level2">
+<h2>Exercises</h2>
+<p>For this exercise we will assume the mixture proportions <code>w</code> are fixed and known. The things we do not know are the assignment indicators (<code>Z</code>) and the population allele frequences (<code>P</code>). The Gibbs sampler for fitting the mixture model must therefore alternative between two key steps: sample the assignment indicators given the allele frequencies, and sample the allele frequencies given the indicators. That is:</p>
+<ul>
+<li>sample from <code>Z | P, x, w</code></li>
+<li>sample from <code>P | Z, x, w</code></li>
+</ul>
+<p>The following three exercises build up this Gibbs sampler. Each exercise includes an answer template (you need to fill in the code in <code>...</code>) and a small chunk of code you can use to try out your answer.</p>
+<p>Note: all these chunks have the option set <code>eval=FALSE</code> so that this document compiles even though the code is incomplete. You will have to remove these if you want to run these chunks on compilation.</p>
+</div>
+<div id="exercise-1-newz_gibbs" class="section level2">
+<h2>Exercise 1: <code>newZ_gibbs()</code></h2>
+<p>Write a function <code>newZ_gibbs &lt;- function(x, P, w) {...}</code> to sample from the full conditional distribution for the population assignment indicators <code>Z</code>. It should use <code>x</code> , <code>P</code>, and <code>w</code> and the function <code>posterior_prob_assignment()</code> given above to compute this full conditional probabiities for the assignments, and then, using that, sample a new value of <code>z_i</code> for every individual.</p>
+<p>Here is an answer template:</p>
+<pre class="r"><code>#&#39; Simulate new values for the population assignments from their full conditional distribution
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param P a 2 by R matrix of allele frequencies
+#&#39; @param w a 2-vector of prior probabilities
+newZ_gibbs &lt;- function(x, P, w) {
+    K &lt;- nrow(P)
+    n &lt;- nrow(x)
+    
+    # get the full conditionals
+    zprobs &lt;- ...  # makes a matrix of probabilities
+    
+    newZ &lt;- rep(NA, n)
+    
+    for (i in 1:n) {
+      newZ[i] &lt;- ...  # simulate new Z&#39;s from the zprobs
+    }
+    
+    newZ
+}</code></pre>
+<p>When you have filled this in try running it on example data:</p>
+<pre class="r"><code># simulate example data
+p = seq(0.1,0.9,length=9)
+P = rbind(p,1-p)
+set.seed(123)
+sim = r_simplemix(n=20,P)
+
+newZ &lt;- newZ_gibbs(sim$x, P, w = c(0.5, 0.5))
+
+# here is the original value
+sim$z
+# here is the new value
+newZ</code></pre>
+</div>
+<div id="exercise-2.-newp_gibbs" class="section level2">
+<h2>Exercise 2. <code>newP_gibbs()</code></h2>
+<p>Write a function <code>newP_gibbs &lt;- function(x, z, a) {...}</code> to sample from the full conditional distribution for the population allele frequencies <code>P</code>. It should use <code>x</code>, <code>z</code>, and <code>a</code> and the function <code>posterior_param_allele_frequencies()</code> to find the parameters of the beta distributions that are the full conditional distributions for the allele frequencies, and then sample new values of the allele frequencies, giving a new matrix <code>P</code>.</p>
+<p>Here is an answer template:</p>
+<pre class="r"><code>#&#39; Simulate new values for the allele frequencies 
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param z an n vector of population assignments
+#&#39; @param a a 2-vector of prior parameters
+newP_gibbs &lt;- function(x,z,a = c(1,1)) {
+  
+  # compute the beta parameters for the full conditionals of P
+  p_params &lt;- ...
+  
+  R &lt;- ncol(x)  # number of loci
+  K &lt;- 2
+
+  # prepare a matrix for output
+  newP &lt;- matrix(nrow = 2, ncol = R)
+  
+  # simulate beta random variables to fill the P matrix
+  for(r in 1:R) {
+    for(k in 1:K) {
+    
+    # get the beta parameters out of p_params for population k and marker r
+    par1 &lt;- ...
+    par2 &lt;- ...
+    
+    # simulate a new value from a beta distribution
+    newP[k,r] &lt;- ...
+    }
+  }
+  
+  newP
+}</code></pre>
+<p>Again, when you have completed it, try running on example data:</p>
+<pre class="r"><code>set.seed(123)
+sim = r_simplemix(n=20,P)
+newP &lt;- newP_gibbs(sim$x, sim$z, a = c(1,1))
+
+# here is the original value
+P
+# here is the new value
+newP</code></pre>
+</div>
+<div id="exercise-3-put-it-together" class="section level2">
+<h2>Exercise 3: put it together</h2>
+<p>Write a function <code>mcmc_gibbs_Z_and_P &lt;- function(   x,    a = c(1, 1),    w=c(0.5, 0.5),    nIter = 500 )</code> implementing a Gibbs sampler to fit the simple genetic mixture model. Start from a random initial value of <code>Z</code>, then alternately update <code>P</code> and <code>Z</code> using <code>newZ_gibbs()</code> and <code>newP_gibbs()</code> functions.</p>
+<p>Here is an answer template:</p>
+<pre class="r"><code># do mcmc by Gibbs sampling for Z and P
+#&#39; @param x an n by R matrix of genotypes
+#&#39; @param a a 2-vector of prior parameters for the allele frequencies
+#&#39; @param w a 2-vector of mixing proportions assumed to be (0.5, 0.5)
+#&#39; @param nIter the number of sweeps (updates of both Z and P) of the chain to perform
+mcmc_gibbs_Z_and_P &lt;- function(
+  x, 
+  a = c(1, 1), 
+  w=c(0.5, 0.5), 
+  nIter = 500
+) {
+  
+  n &lt;- nrow(x)
+  R &lt;- ncol(x)
+  K &lt;- 2
+  
+  # we need to have an initial value for the Z&#39;s.  Just sample it, randomly from w
+  z &lt;- sample(1:2, size = n, replace = TRUE, prob = w)
+  
+  # cycle over the sweeps
+  for (rep in 1:nIter) {
+    
+    # Gibbs update for P
+    P &lt;- ...
+    
+    # Gibbs update for z
+    z &lt;- ...
+    
+    # For now, just print the current values
+    # print z
+    print(paste(&quot;Z: rep =&quot;, rep))
+    print(z)
+    
+    # print P
+    print(paste(&quot;P: rep =&quot;, rep))
+    print(P)
+  }
+}</code></pre>
 <p>Here we can run this on the example data:</p>
 <pre class="r"><code>set.seed(123)
 sim = r_simplemix(n=20,P)
-posterior_param = posterior_param_allele_frequencies(sim$x,sim$z,a = c(1,1))
-posterior_param[,1,] # these should be the posterior parameters for population 1
-posterior_param[,2,] # these should be the posterior parameters for population 2</code></pre>
+
+# now, given only the genotypes x, the allele frequency prior parameters a,
+# and assuming mixing proportions of w = c(0.5, 0.5), we can run a Markov chain
+# that samples from the posterior distribution of Z, and P.
+
+# Print the true values of z and P from the simulated data:
+sim$z
+P
+
+# Currently, the function just prints the values of Z and P each iteration.
+# Just run it for 10 iterations
+mcmc_gibbs_Z_and_P(sim$x, nIter = 10)</code></pre>
+<p>If you go back and check, you should find that the initial <code>Z</code> does not look anything like the true value from the simulation, but, after only 10 iterations, <code>Z</code> in the Markov chain is quite similar to the true <code>Z</code>.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -956,7 +930,6 @@ loaded via a namespace (and not attached):
 [25] promises_1.2.0.1  glue_1.4.2        evaluate_0.14     rmarkdown_2.3    
 [29] stringi_1.4.6     compiler_3.6.0    pillar_1.6.1      backports_1.1.10 
 [33] httpuv_1.5.4      pkgconfig_2.0.3  </code></pre>
-</div>
 </div>
 </div>
 

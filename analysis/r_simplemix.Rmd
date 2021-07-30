@@ -159,6 +159,88 @@ Because the Beta distribution has two parameters, there will be 2 parameters for
 
 
 
+## Answer templates
+
+Here are some answer templates for Exercises 2 and 3.
+You will need to fill in the "..."
+(Note: these chunks have the option set `eval=FALSE` so that this document compiles; you will have to remove these if you want to run these chunks
+on compilation.)
+
+### Exercise 2
+
+
+```{r eval=FALSE}
+#' Compute the likelihood for allele frequences p given genotype data x
+#' @param p an R vector of allele frequencies
+#' @param x an R vector of genotypes
+likelihood = function(p,x){
+  return(prod(p^x*(1-p)^(1-x)))
+}
+
+#' normalize a vector, x, so it's elements sum to 1
+#' @param x a vector
+normalize = function(x){x/sum(x)}
+
+#' Compute posterior assignment probabilities
+#' @param x an n by R matrix of genotypes
+#' @param P a 2 by R matrix of allele frequencies
+#' @param w a 2-vector of prior probabilities
+posterior_prob_assignment=function(x,P,w){
+  n = nrow(x)
+  K = length(w)
+  post = matrix(nrow=n, ncol=K) # to store the posterior probabilities
+  lik = rep(0,K) # a vector to store the likelihoods
+  for(i in 1:n){
+    for(k in 1:K){
+    ...
+    }
+    ...
+  }
+  return(post)
+}
+```
+
+
+Here we can run this on the example data, and compare the posterior probabilities with the true labels.
+```{r eval = FALSE}
+set.seed(123)
+sim = r_simplemix(n=20,P)
+posterior = posterior_prob_assignment(sim$x,P,w=c(0.5,0.5))
+plot(sim$z,posterior[,2],xlab="true population", ylab="posterior prob for population 2")
+```
+
+
+### Exercise 3
+
+
+```{r eval = FALSE}
+#' Compute the posterior parameters for allele frequencies given genotypes 
+#' and population labels
+#' @param x an n by R matrix of genotypes
+#' @param z an n vector of population assignments
+#' @param a a 2-vector of prior parameters
+posterior_param_allele_frequencies=function(x,z,a){
+ K = 2
+ R = ncol(x)
+ post_param = array(dim=c(2,K,R))
+ for(k in 1:K){
+   for(r in 1:R){
+     ...
+   }
+ }
+ return(post_param)
+}
+```
+
+Here we can run this on the example data:
+```{r eval=FALSE}
+set.seed(123)
+sim = r_simplemix(n=20,P)
+posterior_param = posterior_param_allele_frequencies(sim$x,sim$z,a = c(1,1))
+posterior_param[,1,] # these should be the posterior parameters for population 1
+posterior_param[,2,] # these should be the posterior parameters for population 2
+```
+
 
 
 
