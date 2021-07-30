@@ -9,13 +9,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Matt Bonakdarpour; with edits by Matthew Stephens" />
+<meta name="author" content="Matt Bonakdarpour; with edits by Matthew Stephens and Jitao David Zhang" />
 
 <meta name="date" content="2016-01-21" />
 
 <title>Discrete Markov Chains: Finding the Stationary Distribution</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -309,12 +309,12 @@ div.tocify {
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -358,7 +358,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Discrete Markov Chains: Finding the Stationary Distribution</h1>
-<h4 class="author">Matt Bonakdarpour; with edits by Matthew Stephens</h4>
+<h4 class="author">Matt Bonakdarpour; with edits by Matthew Stephens and Jitao David Zhang</h4>
 <h4 class="date">2016-01-21</h4>
 
 </div>
@@ -366,7 +366,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -375,7 +375,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -384,10 +384,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-05-08
+<strong>Last updated:</strong> 2021-05-30
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -403,12 +403,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -475,23 +475,26 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreefc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683targetblankfc5fe81a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683" target="_blank">fc5fe81</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomAcciofiveMinuteStatstreeb26f1bd18b7a41bcb3b61027385f34766de8daa5targetblankb26f1bda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/Accio/fiveMinuteStats/tree/b26f1bd18b7a41bcb3b61027385f34766de8daa5" target="_blank">b26f1bd</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreefc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683targetblankfc5fe81a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomAcciofiveMinuteStatstreeb26f1bd18b7a41bcb3b61027385f34766de8daa5targetblankb26f1bda" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683" target="_blank">fc5fe81</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/Accio/fiveMinuteStats/tree/b26f1bd18b7a41bcb3b61027385f34766de8daa5" target="_blank">b26f1bd</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
-Ignored files:
-    Ignored:    .Rproj.user/
+Untracked files:
+    Untracked:  analysis/.stationary_distribution.Rmd.swp
+
+Unstaged changes:
+    Modified:   analysis/stationary_distribution.Rmd
 
 </code></pre>
 <p>
@@ -532,10 +535,27 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Accio/fiveMinuteStats/acd0a14e40cda5eaa0f32b1fb6efb57aad5fd10d/docs/stationary_distribution.html" target="_blank">acd0a14</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2021-05-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683/analysis/stationary_distribution.Rmd" target="_blank">fc5fe81</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/fc5fe81e27aa3e1dbfcf4d8a4db69fc8088fa683/analysis/stationary_distribution.Rmd" target="_blank">fc5fe81</a>
 </td>
 <td>
 Matthew Stephens
@@ -552,7 +572,7 @@ workflowr::wflow_publish(“analysis/stationary_distribution.Rmd”)
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/e4436faed60f1cba41c08be775d07b6292fb2cd0/analysis/stationary_distribution.Rmd" target="_blank">e4436fa</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/e4436faed60f1cba41c08be775d07b6292fb2cd0/analysis/stationary_distribution.Rmd" target="_blank">e4436fa</a>
 </td>
 <td>
 GitHub
@@ -569,7 +589,7 @@ fixes small error in typesetting
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/stationary_distribution.html" target="_blank">5f62ee6</a>
+<a href="https://rawcdn.githack.com/Accio/fiveMinuteStats/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/stationary_distribution.html" target="_blank">5f62ee6</a>
 </td>
 <td>
 Matthew Stephens
@@ -586,7 +606,7 @@ Build site.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/0cd28bd3e7aea2258f9c3a55e2e0060c55403123/analysis/stationary_distribution.Rmd" target="_blank">0cd28bd</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/0cd28bd3e7aea2258f9c3a55e2e0060c55403123/analysis/stationary_distribution.Rmd" target="_blank">0cd28bd</a>
 </td>
 <td>
 Matthew Stephens
@@ -603,13 +623,13 @@ workflowr::wflow_publish(all = TRUE)
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/34bcc51fef570dd7d5a70859f262c983fed17381/docs/stationary_distribution.html" target="_blank">34bcc51</a>
+<a href="https://rawcdn.githack.com/Accio/fiveMinuteStats/34bcc51fef570dd7d5a70859f262c983fed17381/docs/stationary_distribution.html" target="_blank">34bcc51</a>
 </td>
 <td>
 John Blischak
 </td>
 <td>
-2017-03-06
+2017-03-07
 </td>
 <td>
 Build site.
@@ -620,13 +640,13 @@ Build site.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/5fbc8b5c658203baf6765874b24794d41da622a8/analysis/stationary_distribution.Rmd" target="_blank">5fbc8b5</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/5fbc8b5c658203baf6765874b24794d41da622a8/analysis/stationary_distribution.Rmd" target="_blank">5fbc8b5</a>
 </td>
 <td>
 John Blischak
 </td>
 <td>
-2017-03-06
+2017-03-07
 </td>
 <td>
 Update workflowr project with wflow_update (version 0.4.0).
@@ -637,13 +657,13 @@ Update workflowr project with wflow_update (version 0.4.0).
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/391ba3c0cf210ea8de8125ee8063557ceff55080/analysis/stationary_distribution.Rmd" target="_blank">391ba3c</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/391ba3c0cf210ea8de8125ee8063557ceff55080/analysis/stationary_distribution.Rmd" target="_blank">391ba3c</a>
 </td>
 <td>
 John Blischak
 </td>
 <td>
-2017-03-06
+2017-03-07
 </td>
 <td>
 Remove front and end matter of non-standard templates.
@@ -654,7 +674,7 @@ Remove front and end matter of non-standard templates.
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/8e616835a4eccac7c4e0a8eeec86fdcefb1525ab/docs/stationary_distribution.html" target="_blank">8e61683</a>
+<a href="https://rawcdn.githack.com/Accio/fiveMinuteStats/8e616835a4eccac7c4e0a8eeec86fdcefb1525ab/docs/stationary_distribution.html" target="_blank">8e61683</a>
 </td>
 <td>
 Marcus Davy
@@ -671,7 +691,7 @@ rendered html using wflow_build(all=TRUE)
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/5d0fa13282db4a97dc7d62e2d704e88a5afdb824/docs/stationary_distribution.html" target="_blank">5d0fa13</a>
+<a href="https://rawcdn.githack.com/Accio/fiveMinuteStats/5d0fa13282db4a97dc7d62e2d704e88a5afdb824/docs/stationary_distribution.html" target="_blank">5d0fa13</a>
 </td>
 <td>
 Marcus Davy
@@ -688,7 +708,7 @@ wflow_build() rendered html files
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/d6741417d44f168473b77d41bba75ddf1acce30b/analysis/stationary_distribution.Rmd" target="_blank">d674141</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/d6741417d44f168473b77d41bba75ddf1acce30b/analysis/stationary_distribution.Rmd" target="_blank">d674141</a>
 </td>
 <td>
 Marcus Davy
@@ -705,13 +725,13 @@ typos, refs
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/c3b365a48f7fc76cf83ade425916d31e547d8077/docs/stationary_distribution.html" target="_blank">c3b365a</a>
+<a href="https://rawcdn.githack.com/Accio/fiveMinuteStats/c3b365a48f7fc76cf83ade425916d31e547d8077/docs/stationary_distribution.html" target="_blank">c3b365a</a>
 </td>
 <td>
 John Blischak
 </td>
 <td>
-2017-01-02
+2017-01-03
 </td>
 <td>
 Build site.
@@ -722,13 +742,13 @@ Build site.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/67a857539cd8a4029e899208aed19da6c78b4b36/analysis/stationary_distribution.Rmd" target="_blank">67a8575</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/67a857539cd8a4029e899208aed19da6c78b4b36/analysis/stationary_distribution.Rmd" target="_blank">67a8575</a>
 </td>
 <td>
 John Blischak
 </td>
 <td>
-2017-01-02
+2017-01-03
 </td>
 <td>
 Use external chunk to set knitr chunk options.
@@ -739,13 +759,13 @@ Use external chunk to set knitr chunk options.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/5ec12c73e37fc3c7ec04a31f6d85eede0f6c436e/analysis/stationary_distribution.Rmd" target="_blank">5ec12c7</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/5ec12c73e37fc3c7ec04a31f6d85eede0f6c436e/analysis/stationary_distribution.Rmd" target="_blank">5ec12c7</a>
 </td>
 <td>
 John Blischak
 </td>
 <td>
-2017-01-02
+2017-01-03
 </td>
 <td>
 Use session-info chunk.
@@ -756,13 +776,13 @@ Use session-info chunk.
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/3bb3b731aa52d0a107691123792c46f798100039/analysis/stationary_distribution.Rmd" target="_blank">3bb3b73</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/3bb3b731aa52d0a107691123792c46f798100039/analysis/stationary_distribution.Rmd" target="_blank">3bb3b73</a>
 </td>
 <td>
 mbonakda
 </td>
 <td>
-2016-02-24
+2016-02-25
 </td>
 <td>
 add two mixture model vignettes + merge redundant info in markov chain vignettes
@@ -773,7 +793,7 @@ add two mixture model vignettes + merge redundant info in markov chain vignettes
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/f209a9acb8aaf6108249ee6b123a0125182b027e/analysis/stationary_distribution.Rmd" target="_blank">f209a9a</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/f209a9acb8aaf6108249ee6b123a0125182b027e/analysis/stationary_distribution.Rmd" target="_blank">f209a9a</a>
 </td>
 <td>
 mbonakda
@@ -790,7 +810,7 @@ fix up typos
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephens999/fiveMinuteStats/blob/0f93e3cab261ee6e2ff19059a53c73cb2a623159/analysis/stationary_distribution.Rmd" target="_blank">0f93e3c</a>
+<a href="https://github.com/Accio/fiveMinuteStats/blob/0f93e3cab261ee6e2ff19059a53c73cb2a623159/analysis/stationary_distribution.Rmd" target="_blank">0f93e3c</a>
 </td>
 <td>
 mbonakda
@@ -824,7 +844,7 @@ split simulating discrete markov chains into three separate notes
     0.4 &amp; 0.6 &amp; 0 \\
     0   &amp; 1   &amp; 0 
 \end{bmatrix}\]</span></p>
-<p>Since every state is <em>accessible</em> from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution <span class="math inline">\(\pi\)</span> is the vector such that <span class="math display">\[\pi = \pi P\]</span>.</p>
+<p>Since every state is <em>accessible</em> from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution <span class="math inline">\(\pi\)</span> is the row vector such that <span class="math display">\[\pi = \pi P\]</span>.</p>
 <p>Therefore, we can find our stationary distribution by solving the following linear system: <span class="math display">\[\begin{align*}
 0.7\pi_1 + 0.4\pi_2  &amp;= \pi_1 \\
 0.2\pi_1 + 0.6\pi_2 + \pi_3 &amp;= \pi_2 \\
@@ -850,10 +870,10 @@ split simulating discrete markov chains into three separate notes
 0 \\
 1
 \end{bmatrix}}_b \\
-A\pi = b\]</span></p>
-<p>Since this linear system has more equations than unknowns, it is an overdetermined system. Overdetermined systems can be solved using a QR decomposition, so we use that here. (In brief, <code>qr.solve</code> works by finding the QR decomposition of <span class="math inline">\(A\)</span>, <span class="math inline">\(A=QR\)</span> with <span class="math inline">\(Q&#39;Q=I\)</span> and <span class="math inline">\(R\)</span> an upper triangular matrix. Then if <span class="math inline">\(A\pi = b\)</span> it must be the case that <span class="math inline">\(QR\pi=b\)</span> which implies <span class="math inline">\(R\pi = Q&#39;b\)</span>, and this can be solved easily because <span class="math inline">\(R\)</span> is triangular.)</p>
-<pre class="r"><code>library(Matrix)
-A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
+A\pi^T = b\]</span></p>
+<p>The stationary distribution, which is usually represented by a row vector, is transposed with <span class="math inline">\(\pi^T\)</span>.</p>
+<p>Since this linear system has more equations than unknowns, it is an overdetermined system. Overdetermined systems can be solved using a QR decomposition, so we use that here. (In brief, <code>qr.solve</code> works by finding the QR decomposition of <span class="math inline">\(A\)</span>, <span class="math inline">\(A=QR\)</span> with <span class="math inline">\(Q&#39;Q=I\)</span> and <span class="math inline">\(R\)</span> an upper triangular matrix. Then if <span class="math inline">\(A\pi^T = b\)</span> it must be the case that <span class="math inline">\(QR\pi^T=b\)</span> which implies <span class="math inline">\(R\pi^T = Q&#39;b\)</span>, and this can be solved easily because <span class="math inline">\(R\)</span> is triangular.)</p>
+<pre class="r"><code>A        &lt;- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b        &lt;- c(0,0,0, 1)</code></pre>
 <pre class="r"><code>pi        &lt;- qr.solve(A,b)
 names(pi) &lt;- c(&#39;state.1&#39;, &#39;state.2&#39;, &#39;state.3&#39;)
@@ -868,9 +888,28 @@ pi </code></pre>
 <h2>The General Approach</h2>
 <p>Recall that we are attempting to find a solution to <span class="math display">\[\pi = \pi P\]</span> such that <span class="math inline">\(\sum_i \pi_i =1\)</span>. First we rearrange the expression above to get: <span class="math display">\[\begin{align}
 \pi - \pi P &amp;= 0 \\
-(I - P)\pi &amp;= 0
+\pi (I - P) &amp;= 0 \\
+(I - P)^T\pi^T &amp;= 0
 \end{align}\]</span></p>
-<p>One challenge though is that we need the constrained solution which respects that <span class="math inline">\(\pi\)</span> describes a probability distribution (i.e. <span class="math inline">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row of all 1’s to our <span class="math inline">\((I-P)\)</span> (call this new matrix <span class="math inline">\(A\)</span>) and a 1 to the last element of the zero vector on the right hand side (call this new vector <span class="math inline">\(b\)</span>). Now we want to solve <span class="math inline">\(A\pi = b\)</span> which is overdetermine so we solve it as above using <code>qr.solve</code>.</p>
+<p>One challenge though is that we need the constrained solution which respects that <span class="math inline">\(\pi\)</span> describes a probability distribution (i.e. <span class="math inline">\(\sum \pi_i = 1\)</span>). Luckily this is a linear constraint that is easily represented by adding another equation to the system. So as a small trick, we need to add a row of all 1’s to our <span class="math inline">\((I-P)^T\)</span> (call this new matrix <span class="math inline">\(A\)</span>) and a 1 to the last element of the zero vector on the right hand side (call this new vector <span class="math inline">\(b\)</span>). Now we want to solve <span class="math inline">\(A\pi = b\)</span> which is over-determined so we solve it as above using <code>qr.solve</code>.</p>
+<p>The function <code>stationary</code> below implements the general approach, and we test it with the worked example above.</p>
+<pre class="r"><code>stationary &lt;- function(transition) {
+  stopifnot(is.matrix(transition) &amp;&amp;
+        nrow(transition)==ncol(transition) &amp;&amp;
+            all(transition&gt;=0 &amp; transition&lt;=1))
+  p &lt;- diag(nrow(transition)) - transition
+  A &lt;- rbind(t(p),
+         rep(1, ncol(transition)))
+  b &lt;- c(rep(0, nrow(transition)),
+         1)
+  res &lt;- qr.solve(A, b)
+  names(res) &lt;- paste0(&quot;state.&quot;, 1:nrow(transition))
+  return(res)
+}
+stationary(matrix(c(0.7, 0.2, 0.1, 0.4, 0.6, 0, 0, 1, 0),
+                  nrow=3, byrow=TRUE))</code></pre>
+<pre><code>   state.1    state.2    state.3 
+0.54054054 0.40540541 0.05405405 </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -879,33 +918,26 @@ pi </code></pre>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.0.5 (2021-03-31)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Big Sur 10.16
+<pre><code>R version 3.6.2 (2019-12-12)
+Platform: x86_64-apple-darwin18.7.0 (64-bit)
+Running under: macOS Catalina 10.15.7
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+BLAS/LAPACK: /usr/local/Cellar/openblas/0.3.7/lib/libopenblasp-r0.3.7.dylib
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] de_CH.UTF-8/de_CH.UTF-8/de_CH.UTF-8/C/de_CH.UTF-8/de_CH.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] Matrix_1.3-2
-
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6        whisker_0.4       knitr_1.32        magrittr_2.0.1   
- [5] workflowr_1.6.2   lattice_0.20-41   R6_2.5.0          rlang_0.4.10     
- [9] fansi_0.4.2       stringr_1.4.0     tools_4.0.5       grid_4.0.5       
-[13] xfun_0.22         utf8_1.2.1        git2r_0.28.0      htmltools_0.5.1.1
-[17] ellipsis_0.3.2    rprojroot_2.0.2   yaml_2.2.1        digest_0.6.27    
-[21] tibble_3.1.1      lifecycle_1.0.0   crayon_1.4.1      later_1.2.0      
-[25] vctrs_0.3.8       fs_1.5.0          promises_1.2.0.1  glue_1.4.2       
-[29] evaluate_0.14     rmarkdown_2.7     stringi_1.5.3     compiler_4.0.5   
-[33] pillar_1.6.0      httpuv_1.5.5      pkgconfig_2.0.3  </code></pre>
+ [1] workflowr_1.6.2   Rcpp_1.0.6        rprojroot_2.0.2   digest_0.6.27    
+ [5] later_1.2.0       R6_2.5.0          git2r_0.28.0      magrittr_2.0.1   
+ [9] evaluate_0.14     stringi_1.6.2     rlang_0.4.11      fs_1.5.0         
+[13] promises_1.2.0.1  whisker_0.4       rmarkdown_2.8     tools_3.6.2      
+[17] stringr_1.4.0     glue_1.4.2        httpuv_1.6.1      xfun_0.23        
+[21] yaml_2.2.1        compiler_3.6.2    htmltools_0.5.1.1 knitr_1.33       </code></pre>
 </div>
 </div>
 </div>

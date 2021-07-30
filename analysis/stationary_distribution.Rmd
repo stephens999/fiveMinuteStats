@@ -1,6 +1,6 @@
 ---
 title: "Discrete Markov Chains: Finding the Stationary Distribution"
-author: "Matt Bonakdarpour; with edits by Matthew Stephens"
+author: "Matt Bonakdarpour; with edits by Matthew Stephens and Jitao David Zhang"
 date: 2016-01-21
 ---
 
@@ -13,7 +13,7 @@ This document assumes basic familiarity with Markov chains and linear algebra.
 
 # Overview
 
-In this note, we illustrate one way of analytically obtaining the stationary distribution for a finite discrete Markov chain. 
+In this note, we illustrate one way of analytically obtaining the stationary distribution for a finite discrete Markov chain.
 
 # 3x3 example
 
@@ -24,7 +24,7 @@ $$P = \begin{bmatrix}
     0   & 1   & 0 
 \end{bmatrix}$$
 
-Since every state is *accessible* from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution $\pi$ is the vector such that 
+Since every state is *accessible* from every other state, this Markov chain is irreducible. Every irreducible finite state space Markov chain has a unique stationary distribution. Recall that the stationary distribution $\pi$ is the row vector such that
 $$\pi = \pi P$$. 
 
 Therefore, we can find our stationary distribution by solving the following linear system:
@@ -57,14 +57,16 @@ $$\underbrace{\begin{bmatrix}
 0 \\
 1
 \end{bmatrix}}_b \\
-A\pi = b$$
+A\pi^T = b$$
+
+The stationary distribution, which is usually represented by a row vector, is
+transposed with $\pi^T$.
 
 Since this linear system has more equations than unknowns, it is an overdetermined system. Overdetermined systems can be solved using a QR decomposition, so we use that here. (In brief, `qr.solve` 
-works by finding the QR decomposition of $A$, $A=QR$ with $Q'Q=I$ and $R$ an upper triangular matrix. Then if $A\pi = b$ it must be the case that $QR\pi=b$ which implies $R\pi = Q'b$, and this can be solved easily because $R$ is triangular.)
+works by finding the QR decomposition of $A$, $A=QR$ with $Q'Q=I$ and $R$ an upper triangular matrix. Then if $A\pi^T = b$ it must be the case that $QR\pi^T=b$ which implies $R\pi^T = Q'b$, and this can be solved easily because $R$ is triangular.)
 
 
 ```{r}
-library(Matrix)
 A        <- matrix(c(-0.3, 0.2, 0.1, 1, 0.4, -0.4, 0, 1, 0, 1, -1, 1 ), ncol=3,nrow=4)
 b        <- c(0,0,0, 1)
 
@@ -89,10 +91,30 @@ $$\pi = \pi P$$
 such that $\sum_i \pi_i =1$. First we rearrange the expression above to get:
 $$\begin{align}
 \pi - \pi P &= 0 \\
-(I - P)\pi &= 0
+\pi (I - P) &= 0 \\
+(I - P)^T\pi^T &= 0
 \end{align}$$
 
-One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row of all 1's to our $(I-P)$ (call this new matrix $A$) and a 1 to the last element of the zero vector on the right hand side (call this new vector $b$). Now we want to solve $A\pi = b$ which is overdetermine so we solve it as above using `qr.solve`.
+One challenge though is that we need the constrained solution which respects that $\pi$ describes a probability distribution (i.e. $\sum \pi_i = 1$).  Luckily this is a linear constraint that is easily represented by adding another equation to the system.  So as a small trick, we need to add a row of all 1's to our $(I-P)^T$ (call this new matrix $A$) and a 1 to the last element of the zero vector on the right hand side (call this new vector $b$). Now we want to solve $A\pi = b$ which is over-determined so we solve it as above using `qr.solve`.
 
+The function `stationary` below implements the general approach, and we test it
+with the worked example above.
 
+```{r}
+stationary <- function(transition) {
+  stopifnot(is.matrix(transition) &&
+	    nrow(transition)==ncol(transition) &&
+            all(transition>=0 & transition<=1))
+  p <- diag(nrow(transition)) - transition
+  A <- rbind(t(p),
+	     rep(1, ncol(transition)))
+  b <- c(rep(0, nrow(transition)),
+         1)
+  res <- qr.solve(A, b)
+  names(res) <- paste0("state.", 1:nrow(transition))
+  return(res)
+}
+stationary(matrix(c(0.7, 0.2, 0.1, 0.4, 0.6, 0, 0, 1, 0),
+                  nrow=3, byrow=TRUE))
+```
 
