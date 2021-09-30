@@ -1,11 +1,14 @@
 ---
 title: "Computing Stationary Distributions of a Discrete Markov Chain"
-author: "John Novembre"
+author: "John Novembre, with edits by Matthew Stephens"
 date: 2016-01-31
 ---
 
 
 
+```{r}
+library(expm) # used to compute matrix power
+```
 
 
 # Pre-requisites
@@ -48,11 +51,11 @@ The stationary distribution has the property $\pi^T= \pi^T P$
 A brute-force hack to finding the stationary distribution is simply to take the transition matrix to a high power and then extract out any row. 
 
 ```{r}
-pi_bru <- (P^100)[1,]
+pi_bru <- (P %^% 100)[1,]
 pi_bru
 ```
 
-We can test if the resulting vector is a stationary distribution by assessing if the resulting vector statisfies $\pi^{T}=pi^{T}P$ (i.e. $pi^{T}-pi^{T}P -  = 0$).
+We can test if the resulting vector is a stationary distribution by assessing if the resulting vector statisfies $\pi^{T}=\pi^{T}P$ (i.e. $\pi^{T}-\pi^{T}P  = 0$).
 ```{r}
 pi_bru - pi_bru%*%P
 ```
