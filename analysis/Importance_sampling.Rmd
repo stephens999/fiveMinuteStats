@@ -83,6 +83,8 @@ The trick to solving this is doing things on log scale.
 But the IS formula involves averaging, and we have to do the averaging
 on the raw scale, not the log scale. This function allows
 us to do this. Perhaps you can work out what is going on here?
+[Hint: note that `mean(w*(y>z)) = mean(y>z) * mean(w[y>z])`.]
+
 ```{r}
 #function to find the log of the mean of exp(lx).
 lmean=function(lx){
@@ -95,8 +97,8 @@ Exploiting this we can now do IS for $z=100$:
 ```{r}
 lpnorm.IS= function(z,nsamp=100000){
   y = rnorm(nsamp,z,1)
-  w = dnorm(y,0,1,log=TRUE) - dnorm(y,z,1, log=TRUE)
-  log(mean(y>z)) + lmean(w[y>z])
+  lw = dnorm(y,0,1,log=TRUE) - dnorm(y,z,1, log=TRUE) # log-weights
+  log(mean(y>z)) + lmean(lw[y>z]) 
 }
 lpnorm.IS(100)
 pnorm(100,lower.tail=FALSE,log=TRUE)
