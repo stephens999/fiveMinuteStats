@@ -415,16 +415,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree3af0a34f38cda384696653feec281bdf0c53b2d6targetblank3af0a34a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/3af0a34f38cda384696653feec281bdf0c53b2d6" target="_blank">3af0a34</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreea918be9af1670a934a87630536bf87b43287bcbctargetblanka918be9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/a918be9af1670a934a87630536bf87b43287bcbc" target="_blank">a918be9</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree3af0a34f38cda384696653feec281bdf0c53b2d6targetblank3af0a34a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreea918be9af1670a934a87630536bf87b43287bcbctargetblanka918be9a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/3af0a34f38cda384696653feec281bdf0c53b2d6" target="_blank">3af0a34</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/a918be9af1670a934a87630536bf87b43287bcbc" target="_blank">a918be9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -487,6 +487,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/a918be9af1670a934a87630536bf87b43287bcbc/analysis/em_variational.Rmd" target="_blank">a918be9</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-01-20
+</td>
+<td>
+workflowr::wflow_publish(“analysis/em_variational.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/0fb57d15999e9f3f64961a07ed76843fa31e118a/docs/em_variational.html" target="_blank">0fb57d1</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-01-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -648,7 +682,8 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 <li><p>Step 1: <span class="math inline">\(q \leftarrow \arg \max_q F(\theta,q)\)</span></p></li>
 <li><p>Step 2: <span class="math inline">\(\theta \leftarrow \arg \max_\theta F(\theta,q)\)</span></p></li>
 </ul>
-<p>From result 1, step 1 is achieved by <span class="math inline">\(q = p(Z | X,\theta)\)</span>. Step 2 involves maximizing the expected complete-data log-likelihood, <span class="math display">\[\theta \leftarrow \arg \max_\theta E_q \log p(X,Z|\theta).\]</span> Of course the EM algorithm is only useful if both steps are straightforward.</p>
+<p>From result 1, step 1 is achieved by <span class="math inline">\(q = p(Z | X,\theta)\)</span>. Step 2 involves <em>M</em>aximizing the <em>E</em>xpected “complete-data log-likelihood”, <span class="math display">\[\theta \leftarrow \arg \max_\theta E_q \log p(X,Z|\theta).\]</span> (Note: the E and M in the EM name come from the “Expectation” and “Maximization” in Step 2.)</p>
+<p>Of course the EM algorithm is only useful if both steps are straightforward, which they are in some important problems. The reason for this is that the complete data log-likelihood <span class="math inline">\(\log p(X,Z| \theta)\)</span> is often a simpler function of <span class="math inline">\(\theta\)</span> than is the log-likelihod <span class="math inline">\(\log p(X | \theta)\)</span>.</p>
 </div>
 <div id="extensions-of-the-em-algorithm" class="section level2">
 <h2>Extensions of the EM algorithm</h2>
