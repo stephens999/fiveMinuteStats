@@ -49,7 +49,7 @@ $$F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)$$
 where $H(q)$ denotes the entropy of $q$: 
 $$H(q) = - E_q \log(q(Z))$$
 Note that $F$ can be rewritten as:
-$$F(q,\theta) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
+$$F(\theta,q) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
 
 where $KL(q,p)$ denotes the Kullback--Leibler divergence from $q$ to $p$.
 
@@ -57,15 +57,17 @@ where $KL(q,p)$ denotes the Kullback--Leibler divergence from $q$ to $p$.
 
 There are two key results.
 
-1. For any given $\theta$ let $\hat{q}_\theta$ denote the value of $q$ that maximizes $F(q,\theta)$. That is,
+1. For any given $\theta$ let $\hat{q}_\theta$ denote the value of $q$ that maximizes $F(\theta,q)$. That is,
 $$\hat{q}_\theta:= \arg \max_q F(\theta,q).$$
-This optimal $q$ is given by the conditional distribution of the latent variables $Z$ given the data $X$ and $\theta$:
+The first key result is that this optimal $q$ is given by the conditional distribution of the latent variables $Z$ given the data $X$ and $\theta$:
 $$\hat{q}_\theta(z) = p(Z | X, \theta).$$
 
-2. The likelihood $l(\theta):=\log p(X| \theta)$ is related to $F$ by:
+2. The log-likelihood $l(\theta):=\log p(X| \theta)$ is related to $F$ by:
 $$l(\theta) = \max_q F(\theta,q).$$
+
+
 Both results follow directly from
-$$F(q,\theta) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
+$$F(\theta,q) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
 and the fact that the minimum of $$KL(q || p)$$ over $q$ is 0, attained
 at $q=p$.
 
@@ -76,14 +78,15 @@ It follow from Result 2 above that the maximum likelihood estimate $\hat\theta$ 
 
 The EM algorithm simply does this by iterating the following two steps:
 
-- Step 1: $q \leftarrow \arg \max_q F(q,\theta)$
+- Step 1: $q \leftarrow \arg \max_q F(\theta,q)$
 
-- Step 2: $\theta \leftarrow \arg \max_\theta F(q,\theta)$
+- Step 2: $\theta \leftarrow \arg \max_\theta F(\theta,q)$
 
 From result 1, step 1 is achieved by $q = p(Z | X,\theta)$. 
 Step 2 involves maximizing the expected complete-data log-likelihood,
 $$\theta \leftarrow \arg \max_\theta E_q \log p(X,Z|\theta).$$
 Of course the EM algorithm is only useful if both steps are straightforward.
+
 
 ## Extensions of the EM algorithm
 
@@ -92,7 +95,7 @@ Then using this "incremental" step instead of Step 2 may still be enough to
 produce an algorithm that optimizes $F$, and therefore optimizes $l(\theta)$. 
 
 Another variation on the EM algorithm arises if we replace step 1 with a 
-constrained optimization $q \leftarrow \arg \max_{q \in Q'} F(q,\theta)$
+constrained optimization $q \leftarrow \arg \max_{q \in Q'} F(\theta,q)$
 where $Q'$ is a family of distributions chosen to make this optimization
 tractible. In this case the resulting algorithm would no longer optimize $l(\theta)$ but it can be thought of as an approximation. This approach
 comes up in many "variational approximation" algorithms, and studying
