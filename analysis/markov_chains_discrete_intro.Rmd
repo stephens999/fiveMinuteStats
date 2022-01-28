@@ -17,7 +17,7 @@ Here we provide a quick introduction to discrete Markov Chains.
 
 # Definition of a Markov Chain
 
-A Markov Chain is a discrete stochastic process with the *Markov property* : $P(X_t|X_{t-1},\ldots,X_1)= P(X_t|X_{t-1})$.  It is fully determined by a probability transition matrix $P$ which defines the transition probabilities ($P_ij=P(X_t=j|X_{t-1}=i)$ and an initial probability distribution specified by the vector $x$ where $x_i=P(X_0=i)$.  The time-dependent random variable $X_t$ is describing the state of our probabilistic system at time-step $t$.
+A Markov Chain is a discrete stochastic process with the *Markov property* : $P(X_t|X_{t-1},\ldots,X_1)= P(X_t|X_{t-1})$.  It is fully determined by a probability transition matrix $P$ which defines the transition probabilities ($P_{ij}=P(X_t=j|X_{t-1}=i)$ and an initial probability distribution specified by the vector $x$ where $x_i=P(X_0=i)$.  The time-dependent random variable $X_t$ is describing the state of our probabilistic system at time-step $t$.
 
 # Example: Gary's mood
 
@@ -38,7 +38,7 @@ sum(x0)
 
 # What are the expected probability states after one or two steps?
 
-If initial prob distribution $x_0$ is $3 \times 1$ column vector, then $x_0^T P= x_1^T$. In R, the %*% operator automatically promotes a vector to the appropriate matrix to make the arguments conformable.  In the case of multiplying a length 3 vector by a $3 \times 3$ matrix, it takes the vector to be a row-vector. This means our math can look simply:
+If initial prob distribution $x_0$ is $3 \times 1$ column vector, then $x_0^T P= x_1^T$. In R, the `%*%` operator automatically promotes a vector to the appropriate matrix to make the arguments conformable.  In the case of multiplying a length 3 vector by a $3 \times 3$ matrix, it takes the vector to be a row-vector. This means our math can be written simply as:
 ```{r}
 # After one step
 x0%*%P
@@ -60,11 +60,11 @@ library(expm)
 P%^%2
 ```
 
-And now let's push this : Looking at the state of the chain after many steps, say 100.  First let's look at the probability transition matrix...
+And now let's push this by looking at the state of the chain after many steps, say 100.  First let's look at the probability transition matrix...
 ```{r}
 P%^%100
 ```
-What do you notice about the rows?   And let's see what this does for various starting distributions:
+What do you notice about the rows?   And let's see what this does for various different starting distributions:
 ```{r}
 c(1,0,0) %*%(P%^%100)
 c(0.2,0.5,0.3) %*%(P%^%100)
