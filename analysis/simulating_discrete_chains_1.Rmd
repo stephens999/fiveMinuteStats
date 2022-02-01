@@ -29,7 +29,7 @@ $$P = \begin{bmatrix}
 
 We denote the $(i,j)$-th entry of the matrix $P$ as $P_{ij}$. 
 
-Now assume that our Markov chain starts in state 1 so that $X_0 = 1$. Since we are starting in state 1, our transition probabilities are defined by the first row of $P$. Our chain can either remain in state $1$ with probability $P_{11}$ or transition to state $2$ with probability $P_{12}$. Therefore, to simulate $X_1$, we must generate a random variable according to the probabilities $P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7$ and $P_{12} = P(X_1 = 2 | X_0 = 0) = 0.3$.
+Now assume that our Markov chain starts in state 1 so that $X_0 = 1$. Since we are starting in state 1, our transition probabilities are defined by the first row of $P$. Our chain can either remain in state $1$ with probability $P_{11}$ or transition to state $2$ with probability $P_{12}$. Therefore, to simulate $X_1$, we must generate a random variable according to the probabilities $P_{11}= P(X_1 = 1 | X_0 = 1) = 0.7$ and $P_{12} = P(X_1 = 2 | X_0 = 1) = 0.3$.
 
 In general, we can generate any discrete random variable according to a set of probabilities $p = \{p_1, \ldots, p_K\}$ with [Inverse Transform Sampling](inverse_transform_sampling.html). Also note that this is equivalent to taking a single draw from a multinomial distribution with probability vector $p$ -- we use this method in the algorithm below. 
 
