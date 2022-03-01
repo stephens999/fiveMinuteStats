@@ -1,0 +1,58 @@
+---
+title: "Linear combinations of independent normals are normal"
+author: "Matthew Stephens"
+date: "2022-03-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+# Pre-requisites
+
+Basic familiarity with the univariate normal distribution
+
+# A statement of the basic property
+
+The simple goal of this vignette is to introduce 
+a basic property of the (univariate) normal distribution: that linear combinations of independent normal variables are also normal.
+
+Formally, suppose $Z_1$ and $Z_2$ represent independent, normally distributed random variables. Then for any scalars $a$ and $b$, the linear combination 
+$$X:=aZ_1+bZ_2$$ 
+is also (univariate) normal.
+
+Also, by basic properties of expectation and variance, $E(X) = aE(Z_1)+bE(Z_2)$ and $var(X)= a^2 var(Z_1) + b^2 var(Z_2)$.
+
+
+
+# Example
+
+The following code provides a visual illustration of this idea with $a=2$ and $b=3$,
+but it holds for any $a$ and $b$.
+
+First we sample some values of $X$ by randomly 
+generating $Z_1$ and $Z_2$, and computing $X=aZ_1+bZ_2$:
+```{r}
+Z1 = rnorm(1000)
+Z2 = rnorm(1000)
+a = 2
+b = 3
+
+X = a*Z1 + b*Z2 
+```
+
+The property says that the samples of $X$ look normal. A quick histogram and qqplot suggest it does.... (of course this is not a proof that the property holds; it is just an illustration of the idea).
+```{r}
+hist(X)
+qqnorm(X)
+```
+
+
+# Addendum: Stable distributions
+
+If you are curious by nature, you might now ask:
+is the normal distribution the only distribution that satisfies this property?  
+The answer is "no". For example, $t$ distributions also satisfy this property.
+Distributions that satisfy this property are called  ``stable" distributions.
+You can read more at [https://en.wikipedia.org/wiki/Stable_distribution]
+
