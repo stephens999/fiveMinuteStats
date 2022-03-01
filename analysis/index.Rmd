@@ -104,6 +104,8 @@ title: "Home"
 
 ### Multivariate Normal
 
+* [A key property of univariate normal](norm_linear_comb.html)
+* [Bivariate normal distribution](mvnorm_00.html)
 * [Multivariate Normal](mvnorm.html)
 * [The precision matrix](normal_markov_chain.html)
 * [Interpreting $N(\mu,\Sigma)$ via eigen-decomposition of $\Sigma$](mvnorm_eigen.html)
