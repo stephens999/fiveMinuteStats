@@ -66,7 +66,7 @@ x
 ```
 
 It should be clear from the above that in our example the mean is $\mu=(0,0)$.
-What is the covariance matrix $\Sigma$? We can compute it from the formula $Sigma = AA'$:
+What is the covariance matrix $\Sigma$? We can compute it from the formula $\Sigma = AA'$:
 ```{r}
 Sigma = A %*% t(A)
 Sigma
