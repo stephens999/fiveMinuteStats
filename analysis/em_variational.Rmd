@@ -49,7 +49,7 @@ $$F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)$$
 where $H(q)$ denotes the entropy of $q$: 
 $$H(q) = - E_q \log(q(Z))$$
 Note that $F$ can be rewritten as:
-$$F(\theta,q) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
+$$F(\theta,q) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = \log p(X| \theta) - KL[ q || p(Z|X,\theta) ]$$
 
 where $KL(q,p)$ denotes the Kullback--Leibler divergence from $q$ to $p$.
 
@@ -67,7 +67,7 @@ $$l(\theta) = \max_q F(\theta,q).$$
 
 
 Both results follow directly from
-$$F(\theta,q) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).$$
+$$F(\theta,q) =  \log p(X| \theta) - KL[ q || p(Z|X,\theta) ].$$
 and the fact that the minimum of $$KL(q || p)$$ over $q$ is 0, attained
 at $q=p$.
 
@@ -92,7 +92,7 @@ which they are in some important problems. The reason for this is that the compl
 
 ## Extensions of the EM algorithm
 
-One of the nice things about this view of the EM algorithm is that it naturally suggests extensions of the EM algorithm that may be useful when the regular EM is hard. For example, suppose that in Step 2 it is hard to optimize $F$ over $\theta$, but it is easy to find a new value of $\theta$ that *increases$ $F$.
+One of the nice things about this view of the EM algorithm is that it naturally suggests extensions of the EM algorithm that may be useful when the regular EM is hard. For example, suppose that in Step 2 it is hard to optimize $F$ over $\theta$, but it is easy to find a new value of $\theta$ that *increases* $F$.
 Then using this "incremental" step instead of Step 2 may still be enough to
 produce an algorithm that optimizes $F$, and therefore optimizes $l(\theta)$. 
 
