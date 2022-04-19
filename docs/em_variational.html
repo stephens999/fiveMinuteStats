@@ -384,7 +384,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-01-20
+<strong>Last updated:</strong> 2022-04-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -415,16 +415,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreea918be9af1670a934a87630536bf87b43287bcbctargetblanka918be9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/a918be9af1670a934a87630536bf87b43287bcbc" target="_blank">a918be9</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree203cb51b6dc4ca3f077bd491c155536851733b2etargetblank203cb51a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/203cb51b6dc4ca3f077bd491c155536851733b2e" target="_blank">203cb51</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstreea918be9af1670a934a87630536bf87b43287bcbctargetblanka918be9a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree203cb51b6dc4ca3f077bd491c155536851733b2etargetblank203cb51a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/a918be9af1670a934a87630536bf87b43287bcbc" target="_blank">a918be9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/203cb51b6dc4ca3f077bd491c155536851733b2e" target="_blank">203cb51</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -487,6 +487,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/203cb51b6dc4ca3f077bd491c155536851733b2e/analysis/em_variational.Rmd" target="_blank">203cb51</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-04-19
+</td>
+<td>
+workflowr::wflow_publish(“analysis/em_variational.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/2ed96343203db2af76f181f0cbc3fe3faf05eb93/docs/em_variational.html" target="_blank">2ed9634</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-01-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -662,7 +696,7 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 <div id="the-f-function" class="section level2">
 <h2>The <span class="math inline">\(F\)</span> function</h2>
 <p>Let <span class="math inline">\(Q\)</span> denote the space of all “distributions on <span class="math inline">\(Z\)</span>”. So <span class="math inline">\(q \in Q\)</span> means that <span class="math inline">\(q\)</span> is a distribution on <span class="math inline">\(Z\)</span>, with density <span class="math inline">\(q(Z)\)</span> say.</p>
-<p>Define the following function <span class="math inline">\(F\)</span> that maps <span class="math inline">\((\Theta, Q)\)</span> to the real line: <span class="math display">\[F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)\]</span> where <span class="math inline">\(H(q)\)</span> denotes the entropy of <span class="math inline">\(q\)</span>: <span class="math display">\[H(q) = - E_q \log(q(Z))\]</span> Note that <span class="math inline">\(F\)</span> can be rewritten as: <span class="math display">\[F(\theta,q) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).\]</span></p>
+<p>Define the following function <span class="math inline">\(F\)</span> that maps <span class="math inline">\((\Theta, Q)\)</span> to the real line: <span class="math display">\[F(\theta,q):= E_q \log p(X, Z | \theta) + H(q)\]</span> where <span class="math inline">\(H(q)\)</span> denotes the entropy of <span class="math inline">\(q\)</span>: <span class="math display">\[H(q) = - E_q \log(q(Z))\]</span> Note that <span class="math inline">\(F\)</span> can be rewritten as: <span class="math display">\[F(\theta,q) = E_q(\log p(Z|X,\theta) p(X| \theta)/ q(Z)) = \log p(X| \theta) - KL[ q || p(Z|X,\theta) ]\]</span></p>
 <p>where <span class="math inline">\(KL(q,p)\)</span> denotes the Kullback–Leibler divergence from <span class="math inline">\(q\)</span> to <span class="math inline">\(p\)</span>.</p>
 <div id="two-key-results" class="section level3">
 <h3>Two key results</h3>
@@ -671,7 +705,7 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 <li><p>For any given <span class="math inline">\(\theta\)</span> let <span class="math inline">\(\hat{q}_\theta\)</span> denote the value of <span class="math inline">\(q\)</span> that maximizes <span class="math inline">\(F(\theta,q)\)</span>. That is, <span class="math display">\[\hat{q}_\theta:= \arg \max_q F(\theta,q).\]</span> The first key result is that this optimal <span class="math inline">\(q\)</span> is given by the conditional distribution of the latent variables <span class="math inline">\(Z\)</span> given the data <span class="math inline">\(X\)</span> and <span class="math inline">\(\theta\)</span>: <span class="math display">\[\hat{q}_\theta(z) = p(Z | X, \theta).\]</span></p></li>
 <li><p>The log-likelihood <span class="math inline">\(l(\theta):=\log p(X| \theta)\)</span> is related to <span class="math inline">\(F\)</span> by: <span class="math display">\[l(\theta) = \max_q F(\theta,q).\]</span></p></li>
 </ol>
-<p>Both results follow directly from <span class="math display">\[F(\theta,q) = KL[ q || p(Z|X,\theta) ] + \log p(X| \theta).\]</span> and the fact that the minimum of <span class="math display">\[KL(q || p)\]</span> over <span class="math inline">\(q\)</span> is 0, attained at <span class="math inline">\(q=p\)</span>.</p>
+<p>Both results follow directly from <span class="math display">\[F(\theta,q) =  \log p(X| \theta) - KL[ q || p(Z|X,\theta) ].\]</span> and the fact that the minimum of <span class="math display">\[KL(q || p)\]</span> over <span class="math inline">\(q\)</span> is 0, attained at <span class="math inline">\(q=p\)</span>.</p>
 </div>
 </div>
 <div id="the-em-algorithm" class="section level2">
@@ -687,7 +721,7 @@ workflowr::wflow_publish(“em_variational.Rmd”)
 </div>
 <div id="extensions-of-the-em-algorithm" class="section level2">
 <h2>Extensions of the EM algorithm</h2>
-<p>One of the nice things about this view of the EM algorithm is that it naturally suggests extensions of the EM algorithm that may be useful when the regular EM is hard. For example, suppose that in Step 2 it is hard to optimize <span class="math inline">\(F\)</span> over <span class="math inline">\(\theta\)</span>, but it is easy to find a new value of <span class="math inline">\(\theta\)</span> that *increases$ <span class="math inline">\(F\)</span>. Then using this “incremental” step instead of Step 2 may still be enough to produce an algorithm that optimizes <span class="math inline">\(F\)</span>, and therefore optimizes <span class="math inline">\(l(\theta)\)</span>.</p>
+<p>One of the nice things about this view of the EM algorithm is that it naturally suggests extensions of the EM algorithm that may be useful when the regular EM is hard. For example, suppose that in Step 2 it is hard to optimize <span class="math inline">\(F\)</span> over <span class="math inline">\(\theta\)</span>, but it is easy to find a new value of <span class="math inline">\(\theta\)</span> that <em>increases</em> <span class="math inline">\(F\)</span>. Then using this “incremental” step instead of Step 2 may still be enough to produce an algorithm that optimizes <span class="math inline">\(F\)</span>, and therefore optimizes <span class="math inline">\(l(\theta)\)</span>.</p>
 <p>Another variation on the EM algorithm arises if we replace step 1 with a constrained optimization <span class="math inline">\(q \leftarrow \arg \max_{q \in Q&#39;} F(\theta,q)\)</span> where <span class="math inline">\(Q&#39;\)</span> is a family of distributions chosen to make this optimization tractible. In this case the resulting algorithm would no longer optimize <span class="math inline">\(l(\theta)\)</span> but it can be thought of as an approximation. This approach comes up in many “variational approximation” algorithms, and studying the accuracy of such approximations remains an active area of research.</p>
 </div>
 
