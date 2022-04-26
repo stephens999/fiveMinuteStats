@@ -109,7 +109,7 @@ truth and approximation as `r trueLR(0.001,1)` and `r approxLR(0.001,1)`.
 
 In most cases, the Likelihood ratio for model $M_1$ vs model $M_0$ for a continuous
 random variable $X$, given an observation 
-$X=x$, can we well approximated by
+$X=x$, can be well approximated by
 the ratio of the model densities of $X$, evaluated at $x$.
 This approximation comes from assuming that the model density functions are 
 approximately constant within the neighborhood of $x$ that has radius equal to the measurement precision.
