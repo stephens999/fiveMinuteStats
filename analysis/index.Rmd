@@ -65,6 +65,7 @@ title: "Home"
 ### Markov Chain Monte Carlo
 
 * [The Metropolis--Hastings algorithm](MH_intro.html)
+* [The Metropolis--Hastings algorithm 2](MH_intro_02.html)
 * [Simple examples of Metropolis--Hastings algorithm](MH-examples1.html)
 * [Introduction to Gibbs Sampling](gibbs1.html)
 * [Gibbs Sampling for a univariate normal mixture](gibbs2.html)
