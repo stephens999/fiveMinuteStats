@@ -58,6 +58,9 @@ plot(z1,type="l")
 lines(z2,col=2)
 lines(z3,col=3)
 
+plot(log_exp_target(z1))
+lines(log_exp_target(z2),col=2)
+lines(log_exp_target(z3),col=3)
 
 par(mfcol=c(3,1)) #rather odd command tells R to put 3 graphs on a single page
 maxz=max(c(z1,z2,z3))
