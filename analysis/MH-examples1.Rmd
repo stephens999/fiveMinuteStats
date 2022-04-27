@@ -6,9 +6,9 @@ output: workflowr::wflow_html
 ---
 
 
-
-
 # Pre-requisites
+
+You should be familiar with the Metropolis--Hastings Algorithm, introduced [here](MH_intro.html), and elaborated [here](MH_intro_02.html).
 
 
 # Caveat on code
@@ -18,62 +18,25 @@ Note: the code here is designed to be readable by a beginner, rather than "effic
 
 # Example 1: sampling from an exponential distribution using MCMC
 
-Any MCMC scheme aims to produce (dependent) samples from a ``target" distribution. In this case we are going to use the exponential distribution with mean 1 as our target distribution. So we start by defining our target density:
-
-
+Any MCMC scheme aims to produce (dependent) samples from a ``target" distribution. In this case we are going to use the exponential distribution with mean 1 as our target distribution. Here we define this function (on log scale):
 ```{r}
-target = function(x){
-  if(x<0){
-    return(0)}
-  else {
-    return( exp(-x))
-  }
+log_exp_target = function(x){
+  return(dexp(x,rate=1, log=TRUE))
 }
 ```
 
-
-Having defined the function, we can now use it to compute a couple of values (just to illustrate the idea of a function):
+The following code implements a simple MH algorithm. (Note that the parameter
+`log_target` is a function which computes the log of the target distribution; 
+you may be unfamiliar with the idea of passing
+a function as a parameter, but it works just like any other type of parameter...):
 ```{r}
-target(1)
-target(-1)
-```
-
-Next, we will program a Metropolis--Hastings scheme to sample
-from a distribution proportional to the target
-```{r}
-x = rep(0,1000)
-x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
-for(i in 2:1000){
-  currentx = x[i-1]
-  proposedx = currentx + rnorm(1,mean=0,sd=1)
-  A = target(proposedx)/target(currentx) 
-  if(runif(1)<A){
-    x[i] = proposedx       # accept move with probabily min(1,A)
-  } else {
-    x[i] = currentx        # otherwise "reject" move, and stay where we are
-  }
-}
-```
-
-Note that x is a realization of a Markov Chain. We can make a few plots of x:
-```{r}
-plot(x) 
-hist(x)
-```
-
-
-
-We can wrap this up in a function to make things a bit neater,
-and make it easy to try changing starting values and proposal distributions
-
-```{r}
-easyMCMC = function(niter, startval, proposalsd){
+easyMCMC = function(log_target, niter, startval, proposalsd){
   x = rep(0,niter)
   x[1] = startval     
   for(i in 2:niter){
     currentx = x[i-1]
     proposedx = rnorm(1,mean=currentx,sd=proposalsd) 
-    A = target(proposedx)/target(currentx)
+    A = exp(log_target(proposedx) - log_target(currentx))
     if(runif(1)<A){
       x[i] = proposedx       # accept move with probabily min(1,A)
     } else {
@@ -85,13 +48,11 @@ easyMCMC = function(niter, startval, proposalsd){
 ```
 
 
-
-Now we'll run the MCMC scheme 3 times, and look to see how similar the results are:
-
+Now we run the MCMC three times from different starting points and compare results:
 ```{r}
-z1=easyMCMC(1000,3,1)
-z2=easyMCMC(1000,3,1)
-z3=easyMCMC(1000,3,1)
+z1=easyMCMC(log_exp_target, 1000,3,1)
+z2=easyMCMC(log_exp_target, 1000,1,1)
+z3=easyMCMC(log_exp_target, 1000,5,1)
 
 plot(z1,type="l")
 lines(z2,col=2)
@@ -112,18 +73,17 @@ hist(z3,breaks=seq(0,maxz,length=20))
 
 Use the function `easyMCMC` to explore the following:
 
-  a) how do different starting values affect the MCMC scheme?  
-  b) what is the effect of having a bigger/smaller proposal standard deviation?
-  c) try changing the target function to the following
+  a) how do different starting values affect the MCMC scheme? (try some extreme starting points) 
+  b) what is the effect of having a bigger/smaller proposal standard deviation? (again, try some extreme values)
+  c) try changing the (log-)target function to the following
 
 ```{r}
-target = function(x){
-  
-  return((x>0 & x <1) + (x>2 & x<3))
+log_target_bimodal = function(x){
+  log(0.8* dnorm(x,-4,1) + 0.2 * dnorm(x, 4, 1)) 
 }
 ```
 
-What does this target look like?
+What does this target distribution look like?
 What happens if the proposal sd is too small here? (try e.g. 1 and 0.1)
 
 # Example 2: Estimating an allele frequency
@@ -147,15 +107,15 @@ distribution of $p$. Try to go through the code to see how it works.
 
 
 ```{r}
-prior = function(p){
+log_prior = function(p){
   if((p<0) || (p>1)){  # || here means "or"
-    return(0)}
+    return(-Inf)}
   else{
-    return(1)}
+    return(0)}
 }
 
-likelihood = function(p, nAA, nAa, naa){
-  return(p^(2*nAA) * (2*p*(1-p))^nAa * (1-p)^(2*naa))
+log_likelihood = function(p, nAA, nAa, naa){
+  return((2*nAA)*log(p)  + nAa * log (2*p*(1-p)) + (2*naa)*log(1-p))
 }
 
 psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
@@ -164,7 +124,7 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
   for(i in 2:niter){
     currentp = p[i-1]
     newp = currentp + rnorm(1,0,pproposalsd)
-    A = prior(newp)*likelihood(newp,nAA,nAa,naa)/(prior(currentp) * likelihood(currentp,nAA,nAa,naa))
+    A = exp(log_prior(newp) + log_likelihood(newp,nAA,nAa,naa) - log_prior(currentp) - log_likelihood(currentp,nAA,nAa,naa))
     if(runif(1)<A){
       p[i] = newp       # accept move with probabily min(1,A)
     } else {
