@@ -47,15 +47,23 @@ lines(Z,col=2,lwd=2)
 # Compute Forwards Probabilities 
 
 We define the forwards probabilities as
-$$\alpha_{tk} := p(X_1,\dots,X_t; Z_n=k) $$
+$$\alpha_{tk} := p(X_1,\dots,X_t; Z_n=k) = p(X_1,\dots,X_t|Z_n=k)Pr(Z_n=k).$$
 So 
 $$\alpha_{1k} = \pi_k p(X_1 | Z_1 = k),$$
 where $\pi_k = \Pr(Z_1=k)$. (Here we assume $\pi=(0.5,0.5)$, which is the stationary distribution of $P$.)
 
 Further, we can compute $\alpha_{t+1}$ from $\alpha_t$ using the forward algorithm:
-$$\alpha_{(t+1) k} = \sum_j p(X_1,\dots,X_t,X_{t+1}; Z_t=j, Z_{t+1}=k)$$
-$$ = \sum_j \alpha_{tj} P_{jk} \  p(X_{t+1} | Z_{t+1}=k)$$
-$$ = (\alpha_{t\cdot} P)_k \ p(X_{t+1} | Z_{t+1}=k).$$
+$$
+\begin{aligned}
+\alpha_{(t+1) k} =& \sum_j p(X_1,\dots,X_t,X_{t+1}, Z_t=j, Z_{t+1}=k) \\
+=& \sum_j p(Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_1,\dots,X_t,X_{t+1} | Z_t=j, Z_{t+1}=k) \\
+=& \sum_j p(Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_1,\dots,X_t | Z_t=j, Z_{t+1}=k) p(X_{t+1} | Z_t=j, Z_{t+1}=k, X_1,\dots,X_t) \\
+=& \sum_j p(Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_1,\dots,X_t | Z_t=j) p(X_{t+1} | Z_{t+1}=k) \\
+=& \sum_j p(X_1,\dots,X_t, Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_{t+1} | Z_{t+1}=k) \\
+=& \sum_j \alpha_{tj} P_{jk} \  p(X_{t+1} | Z_{t+1}=k) \\
+=& (\alpha_{t\cdot} P)_k \ p(X_{t+1} | Z_{t+1}=k).
+\end{aligned}
+$$
 
 We code this as follows:
 ```{r}
@@ -101,15 +109,23 @@ divide the $\alpha_{tk}$ by $\sum_k \alpha_{tk}$,
 and then store the value of this sum separately. Maybe you can work out the details!
 
 
-# Compute Backwards Probabilities:
+# Compute Backwards Probabilities
 
 We define the backwards probabilities as
-$$\beta_{tk} := p(X_{t+1},\dots,X_{T} | Z_{t}=k)$$.
+$$\beta_{tk} := p(X_{t+1},\dots,X_{T} | Z_{t}=k).$$
 with the "boundary condition" $\beta_{Tk}=1$.
 
 By this definition
-$$\beta_{tk} = \sum_j Pr(X_{t+1},\dots,X_{L}, Z_{t+1}=j | Z_t=k)$$
-$$= \sum_j \beta_{(t+1) j} \ P_{kj} \ p(X_{t+1} | Z_{t+1} = j).$$
+$$
+\begin{aligned}
+\beta_{tk} =& \sum_j Pr(X_{t+1},\dots,X_{L}, Z_{t+1}=j | Z_t=k) \\
+=& \sum_j Pr(X_{t+2},\dots,X_{L}, Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_t=k, X_{t+2},\dots,X_{L}, Z_{t+1}=j) \\
+=& \sum_j Pr(X_{t+2},\dots,X_{L}, Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_{t+1}=j) \\
+=& \sum_j Pr(X_{t+2},\dots,X_{L}|Z_t=k, Z_{t+1}=j) P(Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_{t+1}=j) \\
+=& \sum_j Pr(X_{t+2},\dots,X_{L}|Z_{t+1}=j) P(Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_{t+1}=j) \\
+=& \sum_j \beta_{(t+1) j} \ P_{kj} \ p(X_{t+1} | Z_{t+1} = j).
+\end{aligned}
+$$
 
 Here is code to compute these values iteratively:
 ```{r}
@@ -134,7 +150,13 @@ for(t in (T-1):1){
 We are now in a position to compute the posterior distribution on each state.
 
 By the definitions of $\alpha$ and $\beta$ we have: 
-$$p(X_1,\dots,X_T; Z_t = k) = \alpha_{tk} \  \beta_{tk}.$$
+$$
+\begin{aligned}
+p(X_1,\dots,X_T; Z_t = k) =& p(X_1,\dots,X_t; Z_n=k) p(X_{t+1},\dots,X_T|X_1,\dots,X_t, Z_n=k) \\
+=& p(X_1,\dots,X_t; Z_n=k) p(X_{t+1},\dots,X_{T} | Z_{t}=k) \\
+=& \alpha_{tk} \  \beta_{tk}.
+\end{aligned}
+$$
 Thus we can now compute
 the posterior distribution for each $Z_t$ given the data $X_1,\dots,X_T$:
 $$\Pr(Z_t = k | X_1,\dots,X_T) = \alpha_{tk} \beta_{tk}/ \sum_k \alpha_{tk}\beta_{tk}$$ 
