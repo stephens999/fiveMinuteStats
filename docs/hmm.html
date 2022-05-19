@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Matthew Stephens" />
@@ -15,12 +15,22 @@
 
 <title>HMM example</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -30,12 +40,26 @@
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
-<style type="text/css">code{white-space: pre;}</style>
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
+div.section {
+  padding-top: 12px;
+}
 </style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -48,37 +72,11 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+
+
 
 <style type = "text/css">
 .main-container {
@@ -86,13 +84,8 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -106,40 +99,16 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -167,7 +136,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -179,7 +148,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -190,14 +159,25 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
 
@@ -207,7 +187,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -243,6 +222,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -255,48 +235,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -310,6 +251,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -345,8 +292,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -356,8 +301,18 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
+<div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
@@ -371,7 +326,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -402,20 +357,13 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<!-- Add a small amount of space between sections. -->
-<style type="text/css">
-div.section {
-  padding-top: 12px;
-}
-</style>
-
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
 <h1 class="title toc-ignore">HMM example</h1>
-<h4 class="author"><em>Matthew Stephens</em></h4>
-<h4 class="date"><em>May 15, 2018</em></h4>
+<h4 class="author">Matthew Stephens</h4>
+<h4 class="date">May 15, 2018</h4>
 
 </div>
 
@@ -431,7 +379,7 @@ div.section {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -440,21 +388,21 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-06-03
+<strong>Last updated:</strong> 2022-05-19
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
-This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
-<div id="report" class="tab-pane fade">
+<div id="checks" class="tab-pane fade">
 <div id="workflowr-checks" class="panel-group">
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -488,7 +436,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
 </div>
 </div>
 </div>
@@ -519,13 +467,31 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree588ad69862fb05cabc34b1910fd9b82a97444aabtargetblank588ad69a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/588ad69862fb05cabc34b1910fd9b82a97444aab" target="_blank">588ad69</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree588ad69862fb05cabc34b1910fd9b82a97444aabtargetblank588ad69a" class="panel-collapse collapse">
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree02cafc08b49a53d148dd47f3379cfd775527eb39targetblank02cafc0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/02cafc08b49a53d148dd47f3379cfd775527eb39" target="_blank">02cafc0</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree02cafc08b49a53d148dd47f3379cfd775527eb39targetblank02cafc0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/02cafc08b49a53d148dd47f3379cfd775527eb39" target="_blank">02cafc0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
@@ -533,6 +499,7 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    analysis/.Rhistory
     Ignored:    analysis/bernoulli_poisson_process_cache/
+    Ignored:    data/
 
 Untracked files:
     Untracked:  _workflowr.yml
@@ -541,13 +508,12 @@ Untracked files:
     Untracked:  analysis/libs/
     Untracked:  analysis/results.Rmd
     Untracked:  analysis/shiny/tester/
-    Untracked:  docs/MH_intro_files/
-    Untracked:  docs/citations.bib
-    Untracked:  docs/figure/The Ancestral Process.Rmd/
-    Untracked:  docs/figure/The Coalescent Process.Rmd/
-    Untracked:  docs/hmm_files/
-    Untracked:  docs/libs/
-    Untracked:  docs/shiny/tester/
+    Untracked:  analysis/stan_8schools.Rmd
+
+Unstaged changes:
+    Modified:   analysis/LR_and_BF.Rmd
+    Modified:   analysis/MH_intro.Rmd
+    Deleted:    analysis/r_simplemix_extended.Rmd
 
 </code></pre>
 <p>
@@ -562,7 +528,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/hmm.Rmd</code>) and HTML (<code>docs/hmm.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -586,6 +552,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/eb3a27494fc0cd6ebbd04ff0424dab17d65a3962/analysis/hmm.Rmd" target="_blank">eb3a274</a>
+</td>
+<td>
+GitHub
+</td>
+<td>
+2022-05-19
+</td>
+<td>
+Add a few clarifications to hmm.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/9f401920e39f2641b91016c66a50695235f5cbf9/docs/hmm.html" target="_blank">9f40192</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-06-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -618,6 +618,23 @@ Matthew Stephens
 </td>
 <td>
 Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/0cd28bd3e7aea2258f9c3a55e2e0060c55403123/analysis/hmm.Rmd" target="_blank">0cd28bd</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-03-31
+</td>
+<td>
+workflowr::wflow_publish(all = TRUE)
 </td>
 </tr>
 <tr>
@@ -728,8 +745,18 @@ Matthew Stephens
 </div>
 <div id="compute-forwards-probabilities" class="section level1">
 <h1>Compute Forwards Probabilities</h1>
-<p>We define the forwards probabilities as <span class="math display">\[\alpha_{tk} := p(X_1,\dots,X_t; Z_n=k) \]</span> So <span class="math display">\[\alpha_{1k} = \pi_k p(X_1 | Z_1 = k),\]</span> where <span class="math inline">\(\pi_k = \Pr(Z_1=k)\)</span>. (Here we assume <span class="math inline">\(\pi=(0.5,0.5)\)</span>, which is the stationary distribution of <span class="math inline">\(P\)</span>.)</p>
-<p>Further, we can compute <span class="math inline">\(\alpha_{t+1}\)</span> from <span class="math inline">\(\alpha_t\)</span> using the forward algorithm: <span class="math display">\[\alpha_{(t+1) k} = \sum_j p(X_1,\dots,X_t,X_{t+1}; Z_t=j, Z_{t+1}=k)\]</span> <span class="math display">\[ = \sum_j \alpha_{tj} P_{jk} \  p(X_{t+1} | Z_{t+1}=k)\]</span> <span class="math display">\[ = (\alpha_{t\cdot} P)_k \ p(X_{t+1} | Z_{t+1}=k).\]</span></p>
+<p>We define the forwards probabilities as <span class="math display">\[\alpha_{tk} := p(X_1,\dots,X_t; Z_n=k) = p(X_1,\dots,X_t|Z_n=k)Pr(Z_n=k).\]</span> So <span class="math display">\[\alpha_{1k} = \pi_k p(X_1 | Z_1 = k),\]</span> where <span class="math inline">\(\pi_k = \Pr(Z_1=k)\)</span>. (Here we assume <span class="math inline">\(\pi=(0.5,0.5)\)</span>, which is the stationary distribution of <span class="math inline">\(P\)</span>.)</p>
+<p>Further, we can compute <span class="math inline">\(\alpha_{t+1}\)</span> from <span class="math inline">\(\alpha_t\)</span> using the forward algorithm: <span class="math display">\[
+\begin{aligned}
+\alpha_{(t+1) k} =&amp; \sum_j p(X_1,\dots,X_t,X_{t+1}, Z_t=j, Z_{t+1}=k) \\
+=&amp; \sum_j p(Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_1,\dots,X_t,X_{t+1} | Z_t=j, Z_{t+1}=k) \\
+=&amp; \sum_j p(Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_1,\dots,X_t | Z_t=j, Z_{t+1}=k) p(X_{t+1} | Z_t=j, Z_{t+1}=k, X_1,\dots,X_t) \\
+=&amp; \sum_j p(Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_1,\dots,X_t | Z_t=j) p(X_{t+1} | Z_{t+1}=k) \\
+=&amp; \sum_j p(X_1,\dots,X_t, Z_t=j) p(Z_{t+1}=k | Z_t=j) p(X_{t+1} | Z_{t+1}=k) \\
+=&amp; \sum_j \alpha_{tj} P_{jk} \  p(X_{t+1} | Z_{t+1}=k) \\
+=&amp; (\alpha_{t\cdot} P)_k \ p(X_{t+1} | Z_{t+1}=k).
+\end{aligned}
+\]</span></p>
 <p>We code this as follows:</p>
 <pre class="r"><code># this is the function Pr(X_t | Z_t=k) for our example
 emit = function(k,x){ 
@@ -762,9 +789,18 @@ for(t in 1:(T-1)){
 <p>Notice that these alpha numbers can get very small! This can cause numerical issues if <span class="math inline">\(T\)</span> were larger and we should really be more careful to avoid this! A common strategy is to “renormalize” the <span class="math inline">\(\alpha\)</span>s at each iteration: that is, for each <span class="math inline">\(t\)</span> divide the <span class="math inline">\(\alpha_{tk}\)</span> by <span class="math inline">\(\sum_k \alpha_{tk}\)</span>, and then store the value of this sum separately. Maybe you can work out the details!</p>
 </div>
 <div id="compute-backwards-probabilities" class="section level1">
-<h1>Compute Backwards Probabilities:</h1>
-<p>We define the backwards probabilities as <span class="math display">\[\beta_{tk} := p(X_{t+1},\dots,X_{T} | Z_{t}=k)\]</span>. with the “boundary condition” <span class="math inline">\(\beta_{Tk}=1\)</span>.</p>
-<p>By this definition <span class="math display">\[\beta_{tk} = \sum_j Pr(X_{t+1},\dots,X_{L}, Z_{t+1}=j | Z_t=k)\]</span> <span class="math display">\[= \sum_j \beta_{(t+1) j} \ P_{kj} \ p(X_{t+1} | Z_{t+1} = j).\]</span></p>
+<h1>Compute Backwards Probabilities</h1>
+<p>We define the backwards probabilities as <span class="math display">\[\beta_{tk} := p(X_{t+1},\dots,X_{T} | Z_{t}=k).\]</span> with the “boundary condition” <span class="math inline">\(\beta_{Tk}=1\)</span>.</p>
+<p>By this definition <span class="math display">\[
+\begin{aligned}
+\beta_{tk} =&amp; \sum_j Pr(X_{t+1},\dots,X_{L}, Z_{t+1}=j | Z_t=k) \\
+=&amp; \sum_j Pr(X_{t+2},\dots,X_{L}, Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_t=k, X_{t+2},\dots,X_{L}, Z_{t+1}=j) \\
+=&amp; \sum_j Pr(X_{t+2},\dots,X_{L}, Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_{t+1}=j) \\
+=&amp; \sum_j Pr(X_{t+2},\dots,X_{L}|Z_t=k, Z_{t+1}=j) P(Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_{t+1}=j) \\
+=&amp; \sum_j Pr(X_{t+2},\dots,X_{L}|Z_{t+1}=j) P(Z_{t+1}=j|Z_t=k) Pr(X_{t+1} | Z_{t+1}=j) \\
+=&amp; \sum_j \beta_{(t+1) j} \ P_{kj} \ p(X_{t+1} | Z_{t+1} = j).
+\end{aligned}
+\]</span></p>
 <p>Here is code to compute these values iteratively:</p>
 <pre class="r"><code>beta = matrix(nrow = T,ncol=K)
 
@@ -783,7 +819,13 @@ for(t in (T-1):1){
 <div id="posterior-distribution-of-each-state" class="section level1">
 <h1>Posterior distribution of each state</h1>
 <p>We are now in a position to compute the posterior distribution on each state.</p>
-<p>By the definitions of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> we have: <span class="math display">\[p(X_1,\dots,X_T; Z_t = k) = \alpha_{tk} \  \beta_{tk}.\]</span> Thus we can now compute the posterior distribution for each <span class="math inline">\(Z_t\)</span> given the data <span class="math inline">\(X_1,\dots,X_T\)</span>: <span class="math display">\[\Pr(Z_t = k | X_1,\dots,X_T) = \alpha_{tk} \beta_{tk}/ \sum_k \alpha_{tk}\beta_{tk}\]</span></p>
+<p>By the definitions of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> we have: <span class="math display">\[
+\begin{aligned}
+p(X_1,\dots,X_T; Z_t = k) =&amp; p(X_1,\dots,X_t; Z_n=k) p(X_{t+1},\dots,X_T|X_1,\dots,X_t, Z_n=k) \\
+=&amp; p(X_1,\dots,X_t; Z_n=k) p(X_{t+1},\dots,X_{T} | Z_{t}=k) \\
+=&amp; \alpha_{tk} \  \beta_{tk}.
+\end{aligned}
+\]</span> Thus we can now compute the posterior distribution for each <span class="math inline">\(Z_t\)</span> given the data <span class="math inline">\(X_1,\dots,X_T\)</span>: <span class="math display">\[\Pr(Z_t = k | X_1,\dots,X_T) = \alpha_{tk} \beta_{tk}/ \sum_k \alpha_{tk}\beta_{tk}\]</span></p>
 <p>Here we compute this and plot the posterior on top of the “truth” that we simulated</p>
 <pre class="r"><code>  ab = alpha*beta
   prob = ab/rowSums(ab)
@@ -815,6 +857,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/9f401920e39f2641b91016c66a50695235f5cbf9/docs/figure/hmm.Rmd/unnamed-chunk-5-1.png" target="_blank">9f40192</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2019-06-03
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/5f62ee6cf86b77e9f45e0c6b6e3d6b97c7faf675/docs/figure/hmm.Rmd/unnamed-chunk-5-1.png" target="_blank">5f62ee6</a>
 </td>
 <td>
@@ -828,7 +881,7 @@ Matthew Stephens
 </table>
 </div>
 </div>
-<br> <br>
+<br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -836,13 +889,13 @@ Matthew Stephens
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.2 (2018-12-20)
-Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Mojave 10.14.4
+<pre><code>R version 4.1.0 Patched (2021-07-20 r80657)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Monterey 12.2
 
 Matrix products: default
-BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -851,11 +904,17 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0 Rcpp_1.0.1      digest_0.6.18   rprojroot_1.3-2
- [5] backports_1.1.3 git2r_0.24.0    magrittr_1.5    evaluate_0.12  
- [9] stringi_1.2.4   fs_1.2.6        whisker_0.3-2   rmarkdown_1.11 
-[13] tools_3.5.2     stringr_1.3.1   glue_1.3.0      xfun_0.4       
-[17] yaml_2.2.0      compiler_3.5.2  htmltools_0.3.6 knitr_1.21     </code></pre>
+ [1] Rcpp_1.0.8.3     rstudioapi_0.13  whisker_0.4      knitr_1.39      
+ [5] magrittr_2.0.3   workflowr_1.7.0  R6_2.5.1         rlang_1.0.2     
+ [9] fastmap_1.1.0    fansi_1.0.3      highr_0.9        stringr_1.4.0   
+[13] tools_4.1.0      xfun_0.30        utf8_1.2.2       cli_3.3.0       
+[17] git2r_0.30.1     jquerylib_0.1.4  htmltools_0.5.2  ellipsis_0.3.2  
+[21] rprojroot_2.0.3  yaml_2.3.5       digest_0.6.29    tibble_3.1.7    
+[25] lifecycle_1.0.1  crayon_1.5.1     later_1.3.0      sass_0.4.1      
+[29] vctrs_0.4.1      fs_1.5.2         promises_1.2.0.1 glue_1.6.2      
+[33] evaluate_0.15    rmarkdown_2.14   stringi_1.7.6    bslib_0.3.1     
+[37] compiler_4.1.0   pillar_1.7.0     jsonlite_1.8.0   httpuv_1.6.5    
+[41] pkgconfig_2.0.3 </code></pre>
 </div>
 </div>
 
@@ -886,7 +945,7 @@ loaded via a namespace (and not attached):
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
-http://docs.mathjax.org/en/latest/configuration.html.  This will make
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
 the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
@@ -895,6 +954,8 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
+
+
 
 
 </div>
@@ -906,13 +967,59 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
