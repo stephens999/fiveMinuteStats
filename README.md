@@ -33,10 +33,10 @@ Each vignette is an R Markdown file, saved in the 'analysis' subdirectory. To ad
 
 ```r
 library("workflowr")
-wflow_open("newfile.Rmd")
+wflow_open("analysis/newfile.Rmd")
 ```
 
 See the [workflowr online documentation][docs] to learn more.
 
-[workflowr]: https://github.com/jdblischak/workflowr
-[docs]: https://jdblischak.github.io/workflowr
+[workflowr]: https://github.com/workflowr/workflowr
+[docs]: https://workflowr.github.io/workflowr
