@@ -117,7 +117,7 @@ log_prior = function(p){
     return(0)}
 }
 
-log_likelihood = function(p, nAA, nAa, naa){
+log_likelihood_hwe = function(p, nAA, nAa, naa){
   return((2*nAA)*log(p)  + nAa * log (2*p*(1-p)) + (2*naa)*log(1-p))
 }
 
@@ -127,7 +127,7 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
   for(i in 2:niter){
     currentp = p[i-1]
     newp = currentp + rnorm(1,0,pproposalsd)
-    A = exp(log_prior(newp) + log_likelihood(newp,nAA,nAa,naa) - log_prior(currentp) - log_likelihood(currentp,nAA,nAa,naa))
+    A = exp(log_prior(newp) + log_likelihood_hwe(newp,nAA,nAa,naa) - log_prior(currentp) - log_likelihood_hwe(currentp,nAA,nAa,naa))
     if(runif(1)<A){
       p[i] = newp       # accept move with probabily min(1,A)
     } else {
@@ -204,6 +204,12 @@ Hint: here is a start; you'll need to fill in the ...
 
 
 ```{r eval=FALSE}
+# The first step is probably to code a log-likelihood function for the inbreeding model....
+log_likelihood_inbreeding = function(...){
+  ...
+}
+
+# then use the log-likelihood within your MCMC scheme
 fpsampler = function(nAA, nAa, naa, niter, fstartval, pstartval, fproposalsd, pproposalsd){
   f = rep(0,niter)
   p = rep(0,niter)
