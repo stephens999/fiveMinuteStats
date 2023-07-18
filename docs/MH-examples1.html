@@ -15,7 +15,7 @@
 
 <title>Simple Examples of Metropolis–Hastings Algorithm</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -77,6 +77,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -97,6 +98,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -154,11 +158,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -187,8 +195,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -196,16 +204,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -322,7 +323,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -357,7 +358,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Simple Examples of Metropolis–Hastings Algorithm</h1>
+<h1 class="title toc-ignore">Simple Examples of Metropolis–Hastings
+Algorithm</h1>
 <h4 class="author">Matthew Stephens</h4>
 <h4 class="date">2017-01-24</h4>
 
@@ -366,7 +368,9 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -375,7 +379,9 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -384,17 +390,27 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-04-26
+<strong>Last updated:</strong> 2023-07-18
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
 </p>
 <p>
-<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
 </p>
 <p>
-This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
@@ -403,91 +419,138 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
 <div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(12345)</code> </a>
 </p>
 </div>
-<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div id="strongSeedstrongcodesetseed12345code"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the
+code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
 </p>
 </div>
-<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
 <div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
 <div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree09da4d463240dcabbcb60ee6449e45d00b29436etargetblank09da4d4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephens999/fiveMinuteStats/tree/09da4d463240dcabbcb60ee6449e45d00b29436e" target="_blank">09da4d4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree366ef4e72c3776f6ce4a2740943439d42f40cba6targetblank366ef4ea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/stephens999/fiveMinuteStats/tree/366ef4e72c3776f6ce4a2740943439d42f40cba6" target="_blank">366ef4e</a>
+</a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree09da4d463240dcabbcb60ee6449e45d00b29436etargetblank09da4d4a" class="panel-collapse collapse">
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephens999fiveMinuteStatstree366ef4e72c3776f6ce4a2740943439d42f40cba6targetblank366ef4ea"
+class="panel-collapse collapse">
 <div class="panel-body">
 <p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephens999/fiveMinuteStats/tree/09da4d463240dcabbcb60ee6449e45d00b29436e" target="_blank">09da4d4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version
+<a href="https://github.com/stephens999/fiveMinuteStats/tree/366ef4e72c3776f6ce4a2740943439d42f40cba6" target="_blank">366ef4e</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
 </p>
 <p>
-Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
 </p>
 <pre><code>
 Ignored files:
@@ -513,7 +576,9 @@ Unstaged changes:
 
 </code></pre>
 <p>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
 </p>
 </div>
 </div>
@@ -524,7 +589,12 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/MH-examples1.Rmd</code>) and HTML (<code>docs/MH-examples1.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/MH-examples1.Rmd</code>) and HTML
+(<code>docs/MH-examples1.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -553,6 +623,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/366ef4e72c3776f6ce4a2740943439d42f40cba6/analysis/MH-examples1.Rmd" target="_blank">366ef4e</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2023-07-18
+</td>
+<td>
+workflowr::wflow_publish("analysis/MH-examples1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephens999/fiveMinuteStats/c6b20e2e0e8d3583049e3679dac281b7d9648982/docs/MH-examples1.html" target="_blank">c6b20e2</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-04-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/09da4d463240dcabbcb60ee6449e45d00b29436e/analysis/MH-examples1.Rmd" target="_blank">09da4d4</a>
 </td>
 <td>
@@ -562,7 +666,7 @@ Matthew Stephens
 2022-04-26
 </td>
 <td>
-workflowr::wflow_publish(“MH-examples1.Rmd”)
+workflowr::wflow_publish("MH-examples1.Rmd")
 </td>
 </tr>
 <tr>
@@ -596,7 +700,7 @@ Matthew Stephens
 2022-04-26
 </td>
 <td>
-workflowr::wflow_publish(“MH-examples1.Rmd”)
+workflowr::wflow_publish("MH-examples1.Rmd")
 </td>
 </tr>
 <tr>
@@ -914,19 +1018,31 @@ Files commited by wflow_commit.
 </div>
 <div id="pre-requisites" class="section level1">
 <h1>Pre-requisites</h1>
-<p>You should be familiar with the Metropolis–Hastings Algorithm, introduced <a href="MH_intro.html">here</a>, and elaborated <a href="MH_intro_02.html">here</a>.</p>
+<p>You should be familiar with the Metropolis–Hastings Algorithm,
+introduced <a href="MH_intro.html">here</a>, and elaborated <a
+href="MH_intro_02.html">here</a>.</p>
 </div>
 <div id="caveat-on-code" class="section level1">
 <h1>Caveat on code</h1>
-<p>Note: the code here is designed to be readable by a beginner, rather than “efficient”. The idea is that you can use this code to learn about the basics of MCMC, but not as a model for how to program well in R!</p>
+<p>Note: the code here is designed to be readable by a beginner, rather
+than “efficient”. The idea is that you can use this code to learn about
+the basics of MCMC, but not as a model for how to program well in R!</p>
 </div>
-<div id="example-1-sampling-from-an-exponential-distribution-using-mcmc" class="section level1">
+<div id="example-1-sampling-from-an-exponential-distribution-using-mcmc"
+class="section level1">
 <h1>Example 1: sampling from an exponential distribution using MCMC</h1>
-<p>Any MCMC scheme aims to produce (dependent) samples from a ``target" distribution. In this case we are going to use the exponential distribution with mean 1 as our target distribution. Here we define this function (on log scale):</p>
+<p>Any MCMC scheme aims to produce (dependent) samples from a ``target”
+distribution. In this case we are going to use the exponential
+distribution with mean 1 as our target distribution. Here we define this
+function (on log scale):</p>
 <pre class="r"><code>log_exp_target = function(x){
   return(dexp(x,rate=1, log=TRUE))
 }</code></pre>
-<p>The following code implements a simple MH algorithm. (Note that the parameter <code>log_target</code> is a function which computes the log of the target distribution; you may be unfamiliar with the idea of passing a function as a parameter, but it works just like any other type of parameter…):</p>
+<p>The following code implements a simple MH algorithm. (Note that the
+parameter <code>log_target</code> is a function which computes the log
+of the target distribution; you may be unfamiliar with the idea of
+passing a function as a parameter, but it works just like any other type
+of parameter…):</p>
 <pre class="r"><code>easyMCMC = function(log_target, niter, startval, proposalsd){
   x = rep(0,niter)
   x[1] = startval     
@@ -942,7 +1058,8 @@ Files commited by wflow_commit.
   }
   return(x)
 }</code></pre>
-<p>Now we run the MCMC three times from different starting points and compare results:</p>
+<p>Now we run the MCMC three times from different starting points and
+compare results:</p>
 <pre class="r"><code>z1=easyMCMC(log_exp_target, 1000,3,1)
 z2=easyMCMC(log_exp_target, 1000,1,1)
 z3=easyMCMC(log_exp_target, 1000,5,1)
@@ -1016,6 +1133,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/c6b20e2e0e8d3583049e3679dac281b7d9648982/docs/figure/MH-examples1.Rmd/unnamed-chunk-3-2.png" target="_blank">c6b20e2</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-04-26
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephens999/fiveMinuteStats/blob/154369251207824c4985b873cefbb5ab8c572fbb/docs/figure/MH-examples1.Rmd/unnamed-chunk-3-2.png" target="_blank">1543692</a>
 </td>
 <td>
@@ -1035,25 +1163,87 @@ hist(z1,breaks=seq(0,maxz,length=20))
 hist(z2,breaks=seq(0,maxz,length=20))
 hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
 <p><img src="figure/MH-examples1.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-3">
+Past versions of unnamed-chunk-3-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephens999/fiveMinuteStats/blob/c6b20e2e0e8d3583049e3679dac281b7d9648982/docs/figure/MH-examples1.Rmd/unnamed-chunk-3-3.png" target="_blank">c6b20e2</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2022-04-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="exercise" class="section level2">
 <h2>Exercise</h2>
 <p>Use the function <code>easyMCMC</code> to explore the following:</p>
 <ol style="list-style-type: lower-alpha">
-<li>how do different starting values affect the MCMC scheme? (try some extreme starting points)</li>
-<li>what is the effect of having a bigger/smaller proposal standard deviation? (again, try some extreme values)</li>
+<li>how do different starting values affect the MCMC scheme? (try some
+extreme starting points)</li>
+<li>what is the effect of having a bigger/smaller proposal standard
+deviation? (again, try some extreme values)</li>
 <li>try changing the (log-)target function to the following</li>
 </ol>
 <pre class="r"><code>log_target_bimodal = function(x){
   log(0.8* dnorm(x,-4,1) + 0.2 * dnorm(x, 4, 1)) 
 }</code></pre>
-<p>What does this target distribution look like? What happens if the proposal sd is too small here? (try e.g. 1 and 0.1)</p>
+<p>What does this target distribution look like? What happens if the
+proposal sd is too small here? (try e.g. 1 and 0.1)</p>
 </div>
 </div>
-<div id="example-2-estimating-an-allele-frequency" class="section level1">
+<div id="example-2-estimating-an-allele-frequency"
+class="section level1">
 <h1>Example 2: Estimating an allele frequency</h1>
-<p>A standard assumption when modelling genotypes of bi-allelic loci (e.g. loci with alleles <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span>) is that the population is “randomly mating”. From this assumption it follows that the population will be in “Hardy Weinberg Equilibrium” (HWE), which means that if <span class="math inline">\(p\)</span> is the frequency of the allele <span class="math inline">\(A\)</span> then the genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span> and <span class="math inline">\(aa\)</span> will have frequencies <span class="math inline">\(p^2, 2p(1-p)\)</span> and <span class="math inline">\((1-p)^2\)</span> respectively.</p>
-<p>A simple prior for <span class="math inline">\(p\)</span> is to assume it is uniform on <span class="math inline">\([0,1]\)</span>. Suppose that we sample <span class="math inline">\(n\)</span> individuals, and observe <span class="math inline">\(n_{AA}\)</span> with genotype <span class="math inline">\(AA\)</span>, <span class="math inline">\(n_{Aa}\)</span> with genotype <span class="math inline">\(Aa\)</span> and <span class="math inline">\(n_{aa}\)</span> with genotype <span class="math inline">\(aa\)</span>.</p>
-<p>The following R code gives a short MCMC routine to sample from the posterior distribution of <span class="math inline">\(p\)</span>. Try to go through the code to see how it works.</p>
+<p>A standard assumption when modelling genotypes of bi-allelic loci
+(e.g. loci with alleles <span class="math inline">\(A\)</span> and <span
+class="math inline">\(a\)</span>) is that the population is “randomly
+mating”. From this assumption it follows that the population will be in
+“Hardy Weinberg Equilibrium” (HWE), which means that if <span
+class="math inline">\(p\)</span> is the frequency of the allele <span
+class="math inline">\(A\)</span> then the genotypes <span
+class="math inline">\(AA\)</span>, <span
+class="math inline">\(Aa\)</span> and <span
+class="math inline">\(aa\)</span> will have frequencies <span
+class="math inline">\(p^2, 2p(1-p)\)</span> and <span
+class="math inline">\((1-p)^2\)</span> respectively.</p>
+<p>A simple prior for <span class="math inline">\(p\)</span> is to
+assume it is uniform on <span class="math inline">\([0,1]\)</span>.
+Suppose that we sample <span class="math inline">\(n\)</span>
+individuals, and observe <span class="math inline">\(n_{AA}\)</span>
+with genotype <span class="math inline">\(AA\)</span>, <span
+class="math inline">\(n_{Aa}\)</span> with genotype <span
+class="math inline">\(Aa\)</span> and <span
+class="math inline">\(n_{aa}\)</span> with genotype <span
+class="math inline">\(aa\)</span>.</p>
+<p>The following R code gives a short MCMC routine to sample from the
+posterior distribution of <span class="math inline">\(p\)</span>. Try to
+go through the code to see how it works.</p>
 <pre class="r"><code>log_prior = function(p){
   if((p&lt;0) || (p&gt;1)){  # || here means &quot;or&quot;
     return(-Inf)}
@@ -1061,7 +1251,7 @@ hist(z3,breaks=seq(0,maxz,length=20))</code></pre>
     return(0)}
 }
 
-log_likelihood = function(p, nAA, nAa, naa){
+log_likelihood_hwe = function(p, nAA, nAa, naa){
   return((2*nAA)*log(p)  + nAa * log (2*p*(1-p)) + (2*naa)*log(1-p))
 }
 
@@ -1071,7 +1261,7 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
   for(i in 2:niter){
     currentp = p[i-1]
     newp = currentp + rnorm(1,0,pproposalsd)
-    A = exp(log_prior(newp) + log_likelihood(newp,nAA,nAa,naa) - log_prior(currentp) - log_likelihood(currentp,nAA,nAa,naa))
+    A = exp(log_prior(newp) + log_likelihood_hwe(newp,nAA,nAa,naa) - log_prior(currentp) - log_likelihood_hwe(currentp,nAA,nAa,naa))
     if(runif(1)&lt;A){
       p[i] = newp       # accept move with probabily min(1,A)
     } else {
@@ -1080,9 +1270,15 @@ psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
   }
   return(p)
 }</code></pre>
-<p>Running this sample for <span class="math inline">\(n_{AA}\)</span> = 50, <span class="math inline">\(n_{Aa}\)</span> = 21, <span class="math inline">\(n_{aa}\)</span>=29.</p>
+<p>Running this sample for <span class="math inline">\(n_{AA}\)</span> =
+50, <span class="math inline">\(n_{Aa}\)</span> = 21, <span
+class="math inline">\(n_{aa}\)</span>=29.</p>
 <pre class="r"><code>z=psampler(50,21,29,10000,0.5,0.01)</code></pre>
-<p>Now some R code to compare the sample from the posterior with the theoretical posterior (which in this case is available analytically; since we observed 121 <span class="math inline">\(A\)</span>s, and 79 <span class="math inline">\(a\)</span>s, out of 200, the posterior for <span class="math inline">\(p\)</span> is Beta(121+1,79+1).</p>
+<p>Now some R code to compare the sample from the posterior with the
+theoretical posterior (which in this case is available analytically;
+since we observed 121 <span class="math inline">\(A\)</span>s, and 79
+<span class="math inline">\(a\)</span>s, out of 200, the posterior for
+<span class="math inline">\(p\)</span> is Beta(121+1,79+1).</p>
 <pre class="r"><code>x=seq(0,1,length=1000)
 hist(z,prob=T)
 lines(x,dbeta(x,122, 80))  # overlays beta density on histogram</code></pre>
@@ -1124,7 +1320,8 @@ Matthew Stephens
 </table>
 </div>
 </div>
-<p>You might also like to discard the first 5000 z’s as “burnin”. Here’s one way in R to select only the last 5000 z’s</p>
+<p>You might also like to discard the first 5000 z’s as “burnin”. Here’s
+one way in R to select only the last 5000 z’s</p>
 <pre class="r"><code>hist(z[5001:10000])</code></pre>
 <p><img src="figure/MH-examples1.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1166,21 +1363,58 @@ Matthew Stephens
 </div>
 <div id="exercise-1" class="section level2">
 <h2>Exercise</h2>
-<p>Investigate how the starting point and proposal standard deviation affect the convergence of the algorithm.</p>
+<p>Investigate how the starting point and proposal standard deviation
+affect the convergence of the algorithm.</p>
 </div>
 </div>
-<div id="example-3-estimating-an-allele-frequency-and-inbreeding-coefficient" class="section level1">
-<h1>Example 3: Estimating an allele frequency and inbreeding coefficient</h1>
-<p>A slightly more complex alternative than HWE is to assume that there is a tendency for people to mate with others who are slightly more closely-related than “random” (as might happen in a geographically-structured population, for example). This will result in an excess of homozygotes compared with HWE. A simple way to capture this is to introduce an extra parameter, the “inbreeding coefficient” <span class="math inline">\(f\)</span>, and assume that the genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span> and <span class="math inline">\(aa\)</span> have frequencies <span class="math inline">\(fp + (1-f)p*p, (1-f) 2p(1-p)\)</span>, and <span class="math inline">\(f(1-p) + (1-f)(1-p)(1-p)\)</span>.</p>
-<p>In most cases it would be natural to treat <span class="math inline">\(f\)</span> as a feature of the population, and therefore assume <span class="math inline">\(f\)</span> is constant across loci. For simplicity we will consider just a single locus.</p>
-<p>Note that both <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span> are constrained to lie between 0 and 1 (inclusive). A simple prior for each of these two parameters is to assume that they are independent, uniform on <span class="math inline">\([0,1]\)</span>. Suppose that we sample <span class="math inline">\(n\)</span> individuals, and observe <span class="math inline">\(n_{AA}\)</span> with genotype <span class="math inline">\(AA\)</span>, <span class="math inline">\(n_{Aa}\)</span> with genotype <span class="math inline">\(Aa\)</span> and <span class="math inline">\(n_{aa}\)</span> with genotype <span class="math inline">\(aa\)</span>.</p>
+<div
+id="example-3-estimating-an-allele-frequency-and-inbreeding-coefficient"
+class="section level1">
+<h1>Example 3: Estimating an allele frequency and inbreeding
+coefficient</h1>
+<p>A slightly more complex alternative than HWE is to assume that there
+is a tendency for people to mate with others who are slightly more
+closely-related than “random” (as might happen in a
+geographically-structured population, for example). This will result in
+an excess of homozygotes compared with HWE. A simple way to capture this
+is to introduce an extra parameter, the “inbreeding coefficient” <span
+class="math inline">\(f\)</span>, and assume that the genotypes <span
+class="math inline">\(AA\)</span>, <span
+class="math inline">\(Aa\)</span> and <span
+class="math inline">\(aa\)</span> have frequencies <span
+class="math inline">\(fp + (1-f)p*p, (1-f) 2p(1-p)\)</span>, and <span
+class="math inline">\(f(1-p) + (1-f)(1-p)(1-p)\)</span>.</p>
+<p>In most cases it would be natural to treat <span
+class="math inline">\(f\)</span> as a feature of the population, and
+therefore assume <span class="math inline">\(f\)</span> is constant
+across loci. For simplicity we will consider just a single locus.</p>
+<p>Note that both <span class="math inline">\(f\)</span> and <span
+class="math inline">\(p\)</span> are constrained to lie between 0 and 1
+(inclusive). A simple prior for each of these two parameters is to
+assume that they are independent, uniform on <span
+class="math inline">\([0,1]\)</span>. Suppose that we sample <span
+class="math inline">\(n\)</span> individuals, and observe <span
+class="math inline">\(n_{AA}\)</span> with genotype <span
+class="math inline">\(AA\)</span>, <span
+class="math inline">\(n_{Aa}\)</span> with genotype <span
+class="math inline">\(Aa\)</span> and <span
+class="math inline">\(n_{aa}\)</span> with genotype <span
+class="math inline">\(aa\)</span>.</p>
 <div id="exercise-2" class="section level2">
 <h2>Exercise:</h2>
 <ul>
-<li>Write a short MCMC routine to sample from the joint distribution of <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span>.</li>
+<li>Write a short MCMC routine to sample from the joint distribution of
+<span class="math inline">\(f\)</span> and <span
+class="math inline">\(p\)</span>.</li>
 </ul>
 <p>Hint: here is a start; you’ll need to fill in the …</p>
-<pre class="r"><code>fpsampler = function(nAA, nAa, naa, niter, fstartval, pstartval, fproposalsd, pproposalsd){
+<pre class="r"><code># The first step is probably to code a log-likelihood function for the inbreeding model....
+log_likelihood_inbreeding = function(...){
+  ...
+}
+
+# then use the log-likelihood within your MCMC scheme
+fpsampler = function(nAA, nAa, naa, niter, fstartval, pstartval, fproposalsd, pproposalsd){
   f = rep(0,niter)
   p = rep(0,niter)
   f[1] = fstartval
@@ -1195,38 +1429,60 @@ Matthew Stephens
   return(list(f=f,p=p)) # return a &quot;list&quot; with two elements named f and p
 }</code></pre>
 <ul>
-<li>Use this sample to obtain point estimates for <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span> (e.g. using posterior means) and interval estimates for both <span class="math inline">\(f\)</span> and <span class="math inline">\(p\)</span> (e.g. 90% posterior credible intervals), when the data are <span class="math inline">\(n_{AA} = 50, n_{Aa} = 21, n_{aa}=29\)</span>.</li>
+<li>Use this sample to obtain point estimates for <span
+class="math inline">\(f\)</span> and <span
+class="math inline">\(p\)</span> (e.g. using posterior means) and
+interval estimates for both <span class="math inline">\(f\)</span> and
+<span class="math inline">\(p\)</span> (e.g. 90% posterior credible
+intervals), when the data are <span class="math inline">\(n_{AA} = 50,
+n_{Aa} = 21, n_{aa}=29\)</span>.</li>
 </ul>
 </div>
 </div>
 <div id="addendum-gibbs-sampling" class="section level1">
 <h1>Addendum: Gibbs Sampling</h1>
-<p>You could also tackle this problem with a Gibbs Sampler (see vignettes <a href="gibbs1.Rmd">here</a> and <a href="gibbs2.Rmd">here</a>).</p>
-<p>To do so you will want to use the following “latent variable” representation of the model: <span class="math display">\[z_i \sim Bernoulli(f)\]</span> <span class="math display">\[p(g_i=AA | z_i=1) = p; p(g_i=AA | z_i=0) = p^2\]</span> <span class="math display">\[p(g_i=Aa | z_i = 1)= 0; p(g_i=Aa | z_i=0) = 2p(1-p)\]</span> <span class="math display">\[p(g_i=aa | z_i = 1) = (1-p); p(g_i =aa | z_i=0) = (1-p)^2\]</span></p>
-<p>Summing over <span class="math inline">\(z_i\)</span> gives the same model as above: <span class="math display">\[p(g_i=AA) = fp + (1-f)p^2\]</span></p>
+<p>You could also tackle this problem with a Gibbs Sampler (see
+vignettes <a href="gibbs1.Rmd">here</a> and <a
+href="gibbs2.Rmd">here</a>).</p>
+<p>To do so you will want to use the following “latent variable”
+representation of the model: <span class="math display">\[z_i \sim
+Bernoulli(f)\]</span> <span class="math display">\[p(g_i=AA | z_i=1) =
+p; p(g_i=AA | z_i=0) = p^2\]</span> <span
+class="math display">\[p(g_i=Aa | z_i = 1)= 0; p(g_i=Aa | z_i=0) =
+2p(1-p)\]</span> <span class="math display">\[p(g_i=aa | z_i = 1) =
+(1-p); p(g_i =aa | z_i=0) = (1-p)^2\]</span></p>
+<p>Summing over <span class="math inline">\(z_i\)</span> gives the same
+model as above: <span class="math display">\[p(g_i=AA) = fp +
+(1-f)p^2\]</span></p>
 <div id="exercise-3" class="section level2">
 <h2>Exercise:</h2>
-<p>Using the above, implement a Gibbs Sampler to sample from the joint distribution of <span class="math inline">\(z,f,\)</span> and <span class="math inline">\(p\)</span> given genotype data <span class="math inline">\(g\)</span>.</p>
+<p>Using the above, implement a Gibbs Sampler to sample from the joint
+distribution of <span class="math inline">\(z,f,\)</span> and <span
+class="math inline">\(p\)</span> given genotype data <span
+class="math inline">\(g\)</span>.</p>
 <p>Hint: this requires iterating the following steps</p>
 <ol style="list-style-type: decimal">
-<li>sample <span class="math inline">\(z\)</span> from <span class="math inline">\(p(z | g, f, p)\)</span></li>
-<li>sample <span class="math inline">\(f,p\)</span> from <span class="math inline">\(p(f, p | g, z)\)</span></li>
+<li>sample <span class="math inline">\(z\)</span> from <span
+class="math inline">\(p(z | g, f, p)\)</span></li>
+<li>sample <span class="math inline">\(f,p\)</span> from <span
+class="math inline">\(p(f, p | g, z)\)</span></li>
 </ol>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.1.0 Patched (2021-07-20 r80657)
-Platform: aarch64-apple-darwin20 (64-bit)
-Running under: macOS Monterey 12.2
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRlapack.dylib
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -1235,16 +1491,16 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.7       whisker_0.4      knitr_1.36       magrittr_2.0.2  
- [5] workflowr_1.7.0  R6_2.5.1         rlang_0.4.12     fastmap_1.1.0   
- [9] fansi_0.5.0      highr_0.9        stringr_1.4.0    tools_4.1.0     
-[13] xfun_0.28        utf8_1.2.2       git2r_0.29.0     jquerylib_0.1.4 
-[17] htmltools_0.5.2  ellipsis_0.3.2   rprojroot_2.0.2  yaml_2.2.1      
-[21] digest_0.6.28    tibble_3.1.6     lifecycle_1.0.1  crayon_1.4.2    
-[25] later_1.3.0      sass_0.4.1       vctrs_0.3.8      fs_1.5.0        
-[29] promises_1.2.0.1 glue_1.5.0       evaluate_0.14    rmarkdown_2.11  
-[33] stringi_1.7.5    bslib_0.3.1      compiler_4.1.0   pillar_1.6.4    
-[37] jsonlite_1.7.2   httpuv_1.6.3     pkgconfig_2.0.3 </code></pre>
+ [1] Rcpp_1.0.10      rstudioapi_0.14  whisker_0.4.1    knitr_1.42      
+ [5] magrittr_2.0.3   workflowr_1.7.0  R6_2.5.1         rlang_1.0.6     
+ [9] fastmap_1.1.1    fansi_1.0.4      highr_0.10       stringr_1.5.0   
+[13] tools_4.2.1      xfun_0.37        utf8_1.2.3       cli_3.6.0       
+[17] git2r_0.31.0     jquerylib_0.1.4  htmltools_0.5.4  rprojroot_2.0.3 
+[21] yaml_2.3.7       digest_0.6.31    tibble_3.1.8     lifecycle_1.0.3 
+[25] later_1.3.0      sass_0.4.5       vctrs_0.5.2      fs_1.6.1        
+[29] promises_1.2.0.1 cachem_1.0.7     glue_1.6.2       evaluate_0.20   
+[33] rmarkdown_2.20   stringi_1.7.12   bslib_0.4.2      compiler_4.2.1  
+[37] pillar_1.8.1     jsonlite_1.8.4   httpuv_1.6.9     pkgconfig_2.0.3 </code></pre>
 </div>
 </div>
 </div>
