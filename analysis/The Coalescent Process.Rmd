@@ -1,0 +1,202 @@
+---
+title: "The Coalescent Process"
+author: "Jennifer Blanc"
+date: "3/13/2019"
+output: 
+  html_document:
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+set.seed(12)
+library(ggplot2)
+library(reshape2)
+```
+
+
+### Pre-requisites 
+
+* [Wright-Fisher Model](https://stephens999.github.io/fiveMinuteStats/wright_fisher_model.html)  
+* Intro probability    
+
+### The Coalescent Process
+
+In population genetics, we are often interested in modeling the relationship between a sample of genetic variants. The coalescent works backwards in time to model the genelogical relationship between the alleles in a sample. [Coalescent theory](https://en.wikipedia.org/wiki/Coalescent_theory) was pioneered by [John Kingman](https://en.wikipedia.org/wiki/John_Kingman) in the 1980s and remains one of the most widely used population genetics models. To understand how the coalescent works, it is helpful to first think about the [wright-fisher model](https://stephens999.github.io/fiveMinuteStats/wright_fisher_model.html) where we have idealized population with 2N haploid individuals, a neutral genetic locus, a constant population size of 2N, and offspring being randomly assigned to parents (see Figure 1). While these might sound like idealized and unrealistic conditions, we can still derive interesting and applicable results from this model. Furthermore, it is the foundation on which a variety of more complicated models are built.   
+
+```{r, out.width = "200px", echo=FALSE, out.height="300px", fig.align='center', fig.cap="   Figure 1"}
+knitr::include_graphics("Discrete_Coal_Pic.jpg", dpi = 50)
+```
+
+### Time to Coalescence  
+
+To understand how this model works, the first question we can ask is about the time it takes for two individuals in this population of 2N to share the same parent. In other words, how long does it take them to coalesce? Since we are thinking backwards in time and randomly assigning offspring to parents, the probability that the two individuals shared the same parents is $1/2N$. So the probability that they coalesce in the previous generation is:  
+
+$$P_C = \frac{1}{2N}$$  
+
+By the law of total probability we know that the probability that the two individuals don't coalesce is:  
+
+$$P_{NC} = 1 - \frac{1}{2N}$$  
+
+So if we want to know the probability that these two individuals coalesce in the previous $k+1$ generations, it is just the probability that they do not coalesce for $k$ generations and then do coalesce in the $k+1$ generation:  
+
+$$P_{C,k+1} = \big(1 - \frac{1}{2N}\big)^k\big(\frac{1}{2N}\big)$$  
+
+If we consider a real population, 2N is likely to be large and we can use the Taylor series expansion for e $e^{(\frac{-1}{2N})} \approx(1-\frac{1}{2N})$to approximate the above expression:  
+
+$$P_{C,k+1} = \frac{1}{2N}e^{\frac{-k}{2N}}$$
+
+Looking at this expression, we can recognize it as the probability distribution of an exponential random variable with parameter $\frac{1}{2N}$. Immediately we can derive some interesting results from the expression, namely the expectation and variance of the time to coalescent for two individuals. Calling this time, T:  
+
+$$E[T] = \frac{1}{1/2N} =  2N$$
+$$Var(T) = \big(\frac{1}{1/2N}\big)^2 = 4N^2$$ 
+
+
+So the time to coalescence for two individuals is 2N generations is exponentially distributed with a mean of 2N. We can easily plot this distribution and the expected coalescence time: 
+
+```{r}
+N <- 1000 
+
+f <- function(t){ # Time to coalescent for 2 individuals
+  return(((1/(2*N))* exp(-t *(1/(2*N)))))
+}
+
+# Plot
+curve(f,1,6000, ylab = "P(coalescencence)", xlab = "t")
+abline(v = (2*N), col = "red")
+```
+
+
+## Multiple Coalescence  
+
+We can extend these ideas to model the coalescent times for a sample of size n in a population. Instead of just asking when two individuals coalesce, we instead want to model the time until each pairwise coalescent event until we have reached a single lineage, the common ancestor of all the individuals in our sample. In other would we are interested in in $T_n, T_{n-1}, ... , T_2$ where $T_n$ is the coalescent time of 2 of the n samples, $T_{n-1}$ is the coalescence time of the 2 of the remaining $n-1$ lineages, etc. $T_2$ is the last coalescent event of the 2 remaining lineages into 1.  
+
+First we will consider the case where $n=3$. There are now ${3}\choose{2}$ pairs of lineages, any of which could coalesce. So we can re-write the probability of that 2 of the 3 samples coalesce as:  
+
+$$P_C = \frac{{3}\choose{2}}{2N} = \frac{3}{2N}$$
+
+Just as before, the probability that the first coalescent event happens in $t+1$ generations can be written as:  
+$$P_{C, k+1} = \frac{3}{2N}e^{-\frac{3k}{2N}}$$
+
+Note, that after this coalescent event of 2 of our 3 lineages, we now have only 2 lineages left and the time coalescence for those two is the same as in the first section. We can now extend this idea to an arbitrary number of of samples, n.   
+
+$$P_C = \frac{{n}\choose{2}}{2N}$$
+
+$$P_{C,k+1} = \frac{{n}\choose{2}}{2N}e^{-\frac{{{n}\choose{2}}}{2N}k}$$
+
+We have now written the probability of a coalescent event in a sample of size n in $k+1$ generations. Again, this is an exponentially distributed random variable with parameter $\frac{{n}\choose{2}}{2N}$. Using this distribution we can write can calculate the expected value of the time to first coalescent event in a sample of size n as:  
+
+$$E[T_n] = \frac{2N}{{n}\choose{2}}$$  
+
+We can now return to the wright-fisher popultion from Figure 1. There we had a population of size 2N = 10 and we were considering a sample of size n = 3. Looking at the discrete generations in Figure 1, we can see the geneological relationship between these three samples is highlighted in dark green. This geneology is reproduced on the left in figure 2. The right side of figure 2 shows the continous generation coalescent model where the time to first coalescent event for our sample, $T_3$, is shown by the dotted line in the middle and the last coalescent event, $T_2$, by the top dotted line.  
+
+```{r, out.width = "300px", echo=FALSE, out.height="400px", fig.align='center', fig.cap="   Figure 2"}
+knitr::include_graphics("Cont_Coal_Pic.jpg", dpi = 50)
+```
+
+
+## Simulating Coalescent Times  
+
+We will now simulate the coalescent times for an entire sample. Before we do that, we are going to re-scale our expression slightly. Since we are typically working with large populations, the expected time for two alleles to coalesce ($2N$) is usually a very large number, which can make looking at coalescent times on the scale of generations difficult. Instead, we are going to set $k = 2N \mathrm{ generations} \Longleftrightarrow t = 1$. So each $t$ time-step backwards, actually represents 2N generations. We can now re-write the probability of a coalescent event before $t +1$ as:   
+
+$$P_{C,t+1} = {{n}\choose{2}}e^{-{{n}\choose{2}}}t$$
+
+This is still an exponential distribution that can be written as:  
+
+$$T_n \sim exp{{n}\choose{2}} = exp\big(\frac{n(n-1)}{2}\big)$$
+
+Keeping this in mind, lets simulate the re-scaled coalescent times for a given population:    
+```{r}
+simulate_cumulative_colescent_times <- function(n) {
+  times <- rep(NA, n) 
+  times[n] <- rexp(1, (n*(n-1))/2) # First coalescent time is distributed exp(n(n-1)/2)
+  for (k in (n-1):2) { # After each coal. event we have 1 fewer lineage - so lets loop backwards to last coal. event T2
+    times[k] <- rexp(1, (k*(k-1))/2) + times[k+1] # Coal event happend after a exp(n(n-1)/2) distributed waiting time, add to previous time
+  }
+  times <- c(times[2:n], 0) # Account for starting time of 0
+  return(times)
+}
+
+```
+
+```{r}
+time_sim <- simulate_cumulative_colescent_times(100) # Simulate coal. times for 100 individuals
+num_individuals <-seq(1, 100, 1)
+data <- as.data.frame(cbind(time_sim, num_individuals))
+ggplot(data) + geom_point(aes(x = time_sim, y=num_individuals)) + ylab("Number of Lineages") + xlab("t") + theme_bw()
+```
+
+
+In this plot we are looking backward in time on the x-axis in rescaled coalescent time. Each point is a coalescent event that happens after an exponentially distributed waiting period. So our coalescent times $T_n, T_{n-1}, ..., T_2$ are the distances between each point. From the plot we can see that most coalescence events happen very fast and the longest waiting time occurs before the last coalescent event. We can also see this from our expression for expected waiting time, $E[T_n] = \frac{2N}{{n}\choose{2}}$, the larger the $n$, the shorter the waiting period until the first coalescent event.   
+
+
+## Time to MRCA  
+
+Another question we may as is how long does it take for all of my samples to coalesce? Lets try to answer this question using our simulation.   
+
+```{r}
+mean(replicate(10000, simulate_cumulative_colescent_times(100)[1]))
+```
+
+According to our simulation, the re-scaled time to the most recent common ancestor of all 100 of our individuals is 1.9888. We can actually solve for the $T_{MRCA}$ and check how well our simulation matches with it.  
+
+$$T_{MRCA} = T_n + T_{n-1} + ...T_2$$
+
+$$E[T_{MRCA}] = \sum\limits_{i=2}^n E[T_i] = \sum\limits_{i=2}^n \frac{2}{i(i-1)} = 2\big(\frac{n-1}{n}\big)$$
+
+Using the identity $\sum\limits_{i=2}^x \frac{1}{i(i-1)} = \frac{x-1}{x}$:  
+
+$$= 2\big(\frac{n-1}{n}\big)$$
+
+Plugging in 100 for n:  
+
+$$T_{MRCA} = 2(99/100) = 1.98$$
+
+Our simulation is approximating the time to the most recent common ancestor well. Remembering that we have re-scaled time, we can recognize that no matter the size of the sample we take, all of the individuals will coalesce in before 2*2N generations.   
+
+
+## Tree length  
+
+$L^n$ is the total length of of all the branches in our coalescent process. In other words, it is the sum of all of the coalescent times multiplied the number of active lineages at that time:  
+
+$$L^n :=  2T_2 + 3T_3 + ..nT_n$$  
+
+Let's use our simulation to estimate the expected value of $L^n$:  
+```{r}
+mean(replicate(1000, sum(abs(diff(simulate_cumulative_colescent_times(100))) * seq(2,100))))
+```
+
+It is fairly straight forward to find the expect value for $L^n$:  
+
+$$E[L^n] = \sum\limits_{i=2}^nkE[T_i] = \sum\limits_{i=2}^{n}\frac{2}{1-i}$$
+
+Plugging in n=100:  
+
+$$E[L^{100}] = \sum\limits_{i=2}^{100} \frac{2}{i-1} = 10.35476 $$
+
+Again, our simulation matches the expected total tree length really well. Finally, we will plot $E[T_{MRCA}]$ and $E[L^n]$ for different values of n:  
+
+```{r}
+L <- function(n) { # Calculated total tree length
+  if (n == 1) {
+    return(0)
+  } else{
+   return(sum(2 / (seq(2,n) -1)))
+  }
+}
+
+TMRCA <- function(n) { # Calculate TMRCA 
+  return(2 * ((n-1) / n))
+}
+
+n <- seq(1, 20) # Get Ln and TMRCA for values of n 1 - 20 
+L_n <- sapply(n, L)
+TMRCA_n <- sapply(n, TMRCA)
+
+data <- as.data.frame(cbind(n, L_n, TMRCA_n)) # Prepare data and plot! 
+dat <- melt(data, id = "n")
+ggplot(dat, aes(x = n, y = value, color = variable)) + geom_point() + geom_line() + theme_classic() + scale_color_manual(name = " ", labels = c("E[Ln]", "E[TMRCA]"), values  = c("red4", "navy")) + ylab("Time") + theme(legend.position="bottom")
+```
+
+Figures from: The Coalescent and Measurably Evolving Populations Alexei Drummond Department of Computer Science University of Auckland, NZ  
+
+
