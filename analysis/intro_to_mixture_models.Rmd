@@ -33,7 +33,7 @@ prices      <- numeric(NUM.SAMPLES)
 for(i in seq_len(NUM.SAMPLES)) {
   z.i <- rbinom(1,1,0.5)
   if(z.i == 0) prices[i] <- rnorm(1, mean = 9, sd = 1)
-  else prices[i] <- rnorm(1, mean = 20, sd = 1)
+  else prices[i] <- rnorm(1, mean = 20, sd = 2)
 }
 hist(prices)
 ```
@@ -42,7 +42,7 @@ We see that our histogram is bimodal. Indeed, even though the **mixture componen
 mu.pb   <- 9
 sd.pb   <- 1
 mu.hb   <- 20
-sd.hb   <- 1
+sd.hb   <- 2
 
 sample.pts     <- seq(5, 25, by=0.1)
 density_pb   <- dnorm(sample.pts, mean=mu.pb, sd=sd.pb)
