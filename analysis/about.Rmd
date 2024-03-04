@@ -4,4 +4,4 @@ title: "About"
 
 [Matthew Stephens][github-io] is a Professor in Statistics and Human Genetics at the University of Chicago.
 
-[github-io]: http://stephens999.github.io/
+[github-io]: https://stephens999.github.io/blog/

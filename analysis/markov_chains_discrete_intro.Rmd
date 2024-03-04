@@ -52,7 +52,7 @@ x0%*%P%*%P
 ```
 
 # What about an abitrary number of time steps? 
-To generalize to an arbitrary number of time steps into the future, we can compute a the matrix power.  In R, this can be done easily with the package [expm](https://cran.r-project.org/web/packages/expm/index.html).  Let's load the library and verify the second power is the same as we saw for P%*%P above.
+To generalize to an arbitrary number of time steps into the future, we can compute a the matrix power.  In R, this can be done easily with the package [expm](https://cran.r-project.org/package=expm).  Let's load the library and verify the second power is the same as we saw for P%*%P above.
 ```{r}
 # Load library 
 library(expm)

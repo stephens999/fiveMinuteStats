@@ -79,7 +79,7 @@ The beta approximation has many useful properties but it is not defined at 0.0 a
 
 ### Beta with Spikes
 
-A recent publication described a modification of the beta approximation that helps to solve the problem described above. The essential idea of the publication is to use the same beta distribution as above to approximate the distribution of allele frequencies under the Wright-Fisher as well as additionally adding spikes to the boundries of the distribution, allowing for probability mass at both 0.0 and 1.0. This addition of spikes drastically increases the accuracy of the approximation for a pure drift model but also holds promising applications for modeling allele frequency trajectories with selection. See the paper [here](http://www.genetics.org/content/early/2015/08/26/genetics.115.179606).
+A recent publication described a modification of the beta approximation that helps to solve the problem described above. The essential idea of the publication is to use the same beta distribution as above to approximate the distribution of allele frequencies under the Wright-Fisher as well as additionally adding spikes to the boundries of the distribution, allowing for probability mass at both 0.0 and 1.0. This addition of spikes drastically increases the accuracy of the approximation for a pure drift model but also holds promising applications for modeling allele frequency trajectories with selection. See the paper [here](https://doi.org/10.1534/genetics.115.179606).
 
 # Examples
 

@@ -137,7 +137,7 @@ so you have computed 2000 LRs. Now consider using the LR to classify each tusk a
 
   b) Repeat the above simulation study using 100 tusks from $M_S$ and 1900 tusks from $M_F$. What value of $c$ minimizes the misclassification rate? Comment. 
 
-  Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html) format. See [Karl Broman's tutorial](http://kbroman.org/pkg_primer/pages/docs.html) for example.
+  Note: it is good practice when writing computing code for a simulation study like this to separate the code into small functions each of which accomplishes a clearly-defined task. So, for example, you should write a function to simulate data, and another to compute the LR (possibly using the function L defined above!), and another to compute the misclassification rate, etc. It is also good practice to comment your functions: eg say what the input parameters are and what the output is. I strongly suggest using [roxygen2](https://cran.r-project.org/package=roxygen2) format. See [Karl Broman's tutorial](https://kbroman.org/pkg_primer/pages/docs.html) for example.
 
 
 *DO NOT REPEAT THE SIMULATION STUDY BY COPYING AND PASTING CODE AND MODIFYING A FEW NUMBERS! GET INTO THE HABIT OF DOING IT PROPERLY*
