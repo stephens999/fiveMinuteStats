@@ -1,0 +1,179 @@
+---
+title: "Introduction to Dirichlet Process"
+author: "Kaiqian Zhang"
+date: "3/6/2018"
+output: 
+  html_document:
+    code_folding: hide
+runtime: shiny
+---
+
+## Pre-requisites
+
+You need to know what a Dirichlet distribution is, and some introductory knowledge about mixture models. 
+
+## Introduction
+
+We have introduced one popular stochastic process in Bayesian nonparametric inference, which is the Gaussian process. Dirichlet process is another widely used stochastic process in this field. Like Gaussian process, which has Gaussian distributed finite-dimensional marginal distributions, Dirichlet process has Dirichlet distributed finite-dimensional marginal distributions. We always say that Dirichlet process is a distribution of distributions, i.e. each draw from a Dirichlet Process is a probability measure. 
+
+We have seen that when estimating proportion of a mixture model, Dirichlet distribution is the conjugate prior for the multinomial distribution. In a similar way, the Dirichlet process is the conjugate prior for infinite, nonparametric discrete distributions. We usually use Dirichlet process as a prior distribution in infinite mixture models.
+
+## Motivation: A Clustering Problem
+
+Previously, we talked about mixture models. Suppose we have a Gaussian mixture of $K$ components:
+\[P(x_1,\dots,x_n\mid \boldsymbol{\pi},\boldsymbol{\mu},\boldsymbol{\sigma^2})=\prod_{i=1}^{n}\sum_{k=1}^{K}\pi_kN(x_i\mid \mu_k,\sigma_k),\]
+where $\boldsymbol{\pi}=\{\pi_1,\dots,\pi_K\}, \boldsymbol{\mu}=\{\mu_1,\dots,\mu_K\},$ and $\boldsymbol{\sigma^2}=\{\sigma^2_1,\dots,\sigma^2_K\}.$ 
+
+Suppose we are instereted in estimating the mixture weights $\boldsymbol{\pi}$. The posterior distribution is 
+\[P(\boldsymbol{\pi} \mid x_1,\dots,x_n, \boldsymbol{\mu}, \boldsymbol{\sigma^2}) \propto P(\boldsymbol{\pi}, x_1,\dots,x_n, \boldsymbol{\mu}, \boldsymbol{\sigma^2})\]
+\[ = P(x_1,\dots,x_n\mid \boldsymbol{\pi},\boldsymbol{\mu},\boldsymbol{\sigma^2})P(\boldsymbol{\mu})P(\boldsymbol{\sigma^2})P(\boldsymbol{\pi})\]
+\[\propto P(x_1,\dots,x_n\mid \boldsymbol{\pi},\boldsymbol{\mu},\boldsymbol{\sigma^2})P(\boldsymbol{\pi}).\] 
+To simplify posterior inference, we'd better choose conjugate prior distributions. The conjugate prior for mixture weights $\boldsymbol{\pi}$ is the Dirichlet distribution.
+
+Now consider a mixture model again. This time, however, we do not know the number of mixtures. This is essentially a clustering problem. When defining a prior on mixture wieghts, we need a distribution that allows an infinite number of mixtures. Therefore, we would like a prior that has properties like that of the Dirichlet distribution, but of infinite dimensions.
+
+Hence we have 
+\[(\pi_1,\dots,\pi_K) \sim \text{Dir}(\frac{\alpha}{K},\frac{\alpha}{K},\dots)\]
+and we want to take the limit to get infinite dimensions:
+\[\boldsymbol{\pi} \sim \lim_{K\to \infty}\text{Dir}(\frac{\alpha}{K},\frac{\alpha}{K},\dots).\]
+
+For each $\pi_i$ drawn from the above distribution, we associate a draw $\theta_i$ from a base distribution:
+\[\theta_i \sim H \text{ for i=1,2,...}\infty.\]
+
+We define
+\[G:= \sum_{k=1}^{\infty}\pi_k\delta_{\theta_k}\]
+is a discrete probability measure drawn from a Dirichlet process, $G\sim \text{DP}(H,\alpha)$. We will illustrate this idea by two shiny apps afterwards.
+
+## Definition
+
+We give out the formal definition here:
+
+The Dirichlet process has two parameters, a base distribution $H$ and a concentration scalar $\alpha$. We say that $G$ is Dirichlet process distributed with base distribution $H$ and concentration parameter $\alpha$, denote $G \sim \text{DP}(H,\alpha)$ if 
+\[(G(A_1),G(A_2),\dots,G(A_k)) \sim \text{Dir}(\alpha H(A_1), \alpha H(A_2), \dots, \alpha H(A_k))\]
+for every finite measurable partition $A_1, A_2,\dots, A_k$ of the vector space.
+
+Notice that each draw from a DP model $G$ is a discrete probability measure. $G$ is consist of point masses $\theta_i$, we call them atoms. The position of each atom is drawn from $H$ and its weight $\pi_i$ is determined by $\alpha$. 
+
+## Stick-breaking Process
+
+In practice, we can use a stick-breaking process to construct a Dirichlet process and proceed simulations. Consider a stick of length $1$. We iteratively sample $\beta_i$ from Beta($1,\alpha$) and then break $\beta_i$ of the remaining stick. Every time the length cut from the stick is the weight $\pi_i$ for the atom $\theta_i$. A stick-breaking process is as follows:
+
+* Draw $\beta_1 \sim \text{Beta}(1,\alpha)$
+
+* Set $\pi_1 = \beta_1$
+
+* Draw $\beta_2 \sim \text{Beta}(1,\alpha)$
+
+* Set $\pi_2 = \beta_2(1-\beta_1)$
+
+...
+
+* Set $\pi_k = \beta_k\prod_{i=1}^{k-1}(1-\beta_i).$
+
+Let's draw a probility meausre from DP$(H,\alpha)$. 
+
+```{r}
+simulation.DP = function(K,alpha,H){
+  if (H=="Uniform(0,1)"){
+    theta_positions = runif(K,0,1)
+  }else if(H=="Normal(0,1)"){
+    theta_positions = rnorm(K,0,1)
+  }else{
+    theta_positions = rexp(K,1)
+  }
+  beta_vec = rbeta(K,1,alpha)
+  pi = rep(0,K)
+  #Initialize the first weight pi
+  pi[1]=beta_vec[1]
+  for (k in 2:K){
+    pi[k]=beta_vec[k]*prod(1-beta_vec[1:(k-1)])
+  }
+  plot(theta_positions, pi,type='h',main='Generating G from a Stick-breaking Process')
+}
+```
+
+```{r eruptions, echo=FALSE}
+inputPanel(
+  selectInput("K", label = "Number of breaks:",
+              choices = c(100, 500, 1000, 3000), selected=100),
+  
+  selectInput("alpha", label="alpha:",
+              choices=c(1,5,10,50),selected=10),
+  
+  selectInput("base_dist", label = "Base distribution H:",
+              choices = c("Uniform(0,1)", "Normal(0,1)", "Exponential(1)"))
+)
+
+renderPlot({
+  simulation.DP(as.numeric(input$K),as.numeric(input$alpha),toString(input$base_dist))
+}, height=600,width=1000)
+```
+
+## Chinese Restaurant Process
+Another metaphor for Dirichlet Process is Chinese restaurant process. Imagine a Chinese resaturant with infinitely many tables, each with infinite capacity. As each customer come, one may sit at an occupied table with probability proportionate to how many customers are already seated there, or they may sit at a new table with probability proportionate to $\alpha$. Also, at each table, a dish is selected and shared by all customers in that table; this is analogous to draw a $\theta$ from base distribution $H$. 
+
+We simulate a Chinese restaurant process as follows:
+
+* The first customer always chooses the first table.
+
+* The $n$th customer chooses a new table with probability $\frac{\alpha}{n-1+\alpha}$, and an occupied table with probability $\frac{c}{n-1+\alpha}$, where c is the number of people sitting at that table.
+
+```{r}
+Chinese.restaurant.simulation = function(num_customers, alpha, H){
+  #assign each customer to tables
+  table=c()
+  table[1]=1
+  new_table_prob = alpha/(num_customers-1+alpha)
+  for (i in 2:num_customers){
+    occupied_prob = table/(num_customers-1+alpha)
+    table_assignment = match(1, rmultinom(1, 1, c(occupied_prob,new_table_prob)))
+    if(table_assignment>length(table)){
+      table[table_assignment]=1
+    }else{
+      table[table_assignment] = table[table_assignment]+1
+    }
+  }
+  pi=table/num_customers
+  #draw a dish on each table
+  if (H=="Uniform(0,1)"){
+    theta_positions = runif(length(table),0,1)
+  }else if(H=="Normal(0,1)"){
+    theta_positions = rnorm(length(table),0,1)
+  }else{
+    theta_positions = rexp(length(table),1)
+  }
+  plot(theta_positions, pi,type='h',xlab='dish on each table', ylab='proportion of customers on each table', main='Generating G from a Chinese Restaurant Process')
+}
+```
+
+```{r hithere, echo=FALSE}
+inputPanel(
+  selectInput("num_customers", label = "Number of customers:", choices = c(100, 500, 1000, 3000), selected=100),
+  
+  selectInput("alpha_1", label="alpha:", choices=c(1,5,10,50,100),selected=100),
+  
+  selectInput("base_dist_1", label = "Base distribution H:", choices = c('Uniform(0,1)', 'Normal(0,1)', 'Exponential(1)'))
+)
+
+renderPlot({
+  Chinese.restaurant.simulation(as.numeric(input$num_customers),as.numeric(input$alpha_1),toString(input$base_dist_1))
+}, height=600,width=1000)
+```
+
+## Intuitions on $H$ and $\alpha$
+
+(1) Each draw from a DP model is a discrete distribution. By our stick-breaking process simulation, we observe that the concetration parameter $\alpha$ describes this discreteness. As $\alpha \to 0$, the distributions drawn are concentrated on a single value. As $\alpha \to \infty$, the distributions drawn become continuous and $G \to H$.
+
+(2) The concentration parameter $\alpha$ can also be treated as an inverse variance. $\text{Var}[G(A)] = \frac{H(A)(1-H(A))}{\alpha+1}$. The larger $\alpha$ is, the smaller the variance is, and the DP will concentrate more of its mass around the mean.
+
+(3) The base distribution $H$ is essentially the mean of DP(Dirichlet process). We can think that when a DP draws a random distribution around $H$, it is the same as a normal distribution draws a random number around its mean.
+
+## Citations
+
+https://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
+
+https://en.wikipedia.org/wiki/Dirichlet_process
+
+https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf
+
+
