@@ -46,7 +46,7 @@ when the prior and the (scaled) data likelihood changes:
 
 <div style="text-align: center;"><iframe src="https://nanx.shinyapps.io/conjugate-normal-umkv/" frameborder="0" width="960" height="400"></iframe></div>
 
-The source code of the app can be found [here](https://github.com/road2stat/conjugate-normal-umkv).
+The source code of the app can be found [here](https://github.com/nanxstats/conjugate-normal-umkv).
 
 
 

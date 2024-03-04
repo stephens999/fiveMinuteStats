@@ -19,7 +19,7 @@ Modularizing facilitates sharing the load.
 In principle we can have multiple vignettes for the same concept and users can choose which one they like.
 
 The idea of breaking learning down into small chunks is kind of obvious, but I was personally inspired by
-watching videos with my kids: http://www.artofproblemsolving.com/videos/prealgebra
+watching videos with my kids: <https://artofproblemsolving.com/videos/prealgebra>
 Maybe we can make learning statistics this easy and this much fun?
 However, I decided against video because a) I'm not as funny as this guy, and b) it is harder to collaborate and
 update videos.
@@ -39,4 +39,4 @@ wflow_open("analysis/newfile.Rmd")
 See the [workflowr online documentation][docs] to learn more.
 
 [workflowr]: https://github.com/workflowr/workflowr
-[docs]: https://workflowr.github.io/workflowr
+[docs]: https://workflowr.github.io/workflowr/
